@@ -4,7 +4,7 @@ import { ElMessage } from 'element-plus';
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  timeout: 5000,
+  // timeout: 5000,
   headers: { 'Content-Type': 'application/json' },
 });
 // 添加请求拦截器

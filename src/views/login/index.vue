@@ -23,12 +23,13 @@
 import { ref, reactive } from 'vue';
 import { useUserStore } from '@/store/modules/user';
 import { LoginForm, login } from '@/api/login/index';
-import router from '@/router/index';
+import { useRouter } from 'vue-router';
 import Cookies from 'js-cookie';
 import { setToken } from '@/utils/auth';
 import { ElMessage } from 'element-plus';
 
 const userStore = useUserStore();
+const router = useRouter();
 
 const loading = ref<boolean>(false);
 

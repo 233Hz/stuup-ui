@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia';
 import { store } from '../index';
 import { storeNames } from '../store-name';
+import { removeToken } from '@/utils/auth';
+import Cookies from 'js-cookie';
 
 export interface UserInfoType {
   userId: number | undefined;
@@ -53,7 +55,7 @@ export const useUserStore = defineStore(storeNames.USER, {
     },
   },
   actions: {
-    setUserInfo(userInfo: UserInfoType): void {
+    setUserInfo(userInfo: UserInfoType) {
       this.userId = userInfo.userId;
       this.loginName = userInfo.loginName;
       this.userName = userInfo.userName;
@@ -62,6 +64,21 @@ export const useUserStore = defineStore(storeNames.USER, {
       this.userType = userInfo.userType;
       this.roleIds = userInfo.roleIds;
       this.yearId = userInfo.yearId;
+    },
+    loginOut(): Promise<void> {
+      return new Promise(resolve => {
+        this.userId = void 0;
+        this.loginName = '';
+        this.userName = '';
+        this.mobile = '';
+        this.deptId = void 0;
+        this.userType = void 0;
+        this.roleIds = '';
+        this.yearId = void 0;
+        removeToken();
+        Cookies.remove('user_info');
+        resolve();
+      });
     },
   },
 });

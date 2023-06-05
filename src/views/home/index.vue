@@ -22,9 +22,6 @@
       <div class="cj-kh-flower" />
       <div class="xh-kh-flower" />
       <div class="xh-cg-flower" />
-      <!-- <div class="bm-btn b1" />
-      <div class="cj-btn b1" />
-      <div class="xh-btn b1" /> -->
     </div>
     <video class="background-layer" :src="video" autoplay muted loop />
   </div>
@@ -148,10 +145,7 @@ onMounted(() => {
   addShowTipsEvent(...keys);
   generateBlisters();
 });
-onUnmounted(() => {
-  // 显示底部
-  // footer.style.display = 'block';
-});
+onUnmounted(() => {});
 
 const initFlowers = () => {
   for (const key of Object.keys(flowerIcons)) {

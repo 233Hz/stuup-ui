@@ -18,7 +18,7 @@ export const routes: RouteRecordRaw[] = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory('/stuup/'),
   scrollBehavior: (to, from, savedPosition) => {
     if (savedPosition) {
       return savedPosition;

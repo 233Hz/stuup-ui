@@ -65,9 +65,9 @@ export const usePermissionStore = defineStore(storeNames.PERMISSION, {
       this.setFrontAsideRouters(frontMenus);
       const backMenus = formatAsideMenu(rewriteRoutes, 2);
       this.setBackAsideRouters(backMenus);
-      console.log(frontMenus, backMenus);
+      // console.log(frontMenus, backMenus);
 
-      console.log(router.getRoutes());
+      // console.log(router.getRoutes());
     },
   },
 });
@@ -122,7 +122,7 @@ const formatRouter = (menus: MenuVO[]): RouteRecordRaw[] => {
   };
 
   const isFirstLevelMenu = (menu: MenuVO): boolean => {
-    return menu.pid === 0 && menu.children && menu.children.length > 0;
+    return menu.pid === 0 && menu.children !== undefined && menu.children.length > 0;
   };
 
   const format = (menus: MenuVO[]): RouteRecordRaw[] => {

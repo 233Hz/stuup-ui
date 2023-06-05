@@ -12,10 +12,22 @@
           v-model="showAside"
           inline-prompt
           style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
-          active-text="前往后台"
-          inactive-text="前往前台"
+          active-text="前往前台"
+          inactive-text="前往后台"
           @change="changeAside" />
-        <el-avatar :size="50" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" />
+        <el-dropdown>
+          <span class="el-dropdown-link">
+            {{ userStore.getUserName }}
+            <el-icon class="el-icon--right">
+              <arrow-down />
+            </el-icon>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="handleLoginout">退出登入</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </el-space>
     </div>
   </div>
@@ -24,9 +36,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import logo from '@/assets/logo.png';
-import { usePermissionStore } from '@/store/modules/premission';
 import Menu from './Menu.vue';
+import { useUserStore } from '@/store/modules/user';
+import { usePermissionStore } from '@/store/modules/premission';
+import { ElMessageBox } from 'element-plus';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
+const userStore = useUserStore();
 const premissionStore = usePermissionStore();
 
 const showAside = ref<boolean>(false);
@@ -35,6 +52,20 @@ const emit = defineEmits(['change-aside']);
 
 const changeAside = (val: boolean) => {
   emit('change-aside', val);
+};
+
+const handleLoginout = () => {
+  ElMessageBox.confirm('确认退出？', '退出登入', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(() => {
+      userStore.loginOut().then(() => {
+        router.push('/login');
+      });
+    })
+    .catch(() => {});
 };
 </script>
 
