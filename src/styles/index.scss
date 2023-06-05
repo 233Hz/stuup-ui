@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100&display=swap');
+@import './var.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  font-size: 16px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.b1 {
+  border: 1px solid red;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-box {
+  margin-top: 10px;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+.w-full {
+  width: 100%;
+}
+.w-hull {
+  height: 100%;
+}
+
+.block {
+  display: block;
+}
