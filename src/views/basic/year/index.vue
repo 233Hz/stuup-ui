@@ -116,7 +116,6 @@ import { ref, onMounted, reactive } from 'vue';
 import type { FormInstance, FormRules } from 'element-plus';
 import { YearVO, getYearPage, saveOrUpdateYear, delYear, setCurrentYear } from '@/api/basic/year/index';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { Message } from '@element-plus/icons-vue/dist/types';
 
 onMounted(() => {
   fetchList();

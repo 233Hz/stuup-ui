@@ -71,7 +71,6 @@ import { onMounted, ref } from 'vue';
 import avatar from '@/assets/flower_icons/bm_cg.png';
 import * as echarts from 'echarts';
 import { useChartStore } from '@/store/modules/chart';
-import { Vue3SeamlessScroll } from 'vue3-seamless-scroll';
 
 const chartStore = useChartStore();
 const labelStyle = ref({ paddingTop: '100px' });
