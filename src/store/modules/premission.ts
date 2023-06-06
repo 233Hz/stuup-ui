@@ -3,9 +3,10 @@ import { store } from '../index';
 import { storeNames } from '../store-name';
 import asyncRouters from '@/router/asyncRouters';
 import type { RouteRecordRaw } from 'vue-router';
-const compModels = import.meta.glob('../../views/**/index.vue');
-import Layout from '@/layout/index.vue';
 import type { MenuVO } from '@/api/system/menu/index';
+
+const Layout = () => import('@/layout/index.vue');
+const compModels = import.meta.glob('../../views/**/index.vue');
 
 export interface PermissionState {
   layoutType: boolean;
