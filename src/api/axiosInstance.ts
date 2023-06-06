@@ -17,7 +17,7 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error: any) => {
-    // 处理请求错误s
+    // 处理请求错误
     return Promise.reject(error);
   }
 );

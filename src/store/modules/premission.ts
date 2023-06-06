@@ -9,7 +9,6 @@ const Layout = () => import('@/layout/index.vue');
 const compModels = import.meta.glob('../../views/**/index.vue');
 
 export interface PermissionState {
-  layoutType: boolean;
   routers: RouteRecordRaw[];
   frontAsideRouters: MenuVO[];
   backAsideRouters: MenuVO[];
@@ -18,7 +17,6 @@ export interface PermissionState {
 export const usePermissionStore = defineStore(storeNames.PERMISSION, {
   state: (): PermissionState => {
     return {
-      layoutType: true,
       routers: [],
       // 前端菜单
       frontAsideRouters: [],
@@ -27,9 +25,6 @@ export const usePermissionStore = defineStore(storeNames.PERMISSION, {
     };
   },
   getters: {
-    getLayoutType(): boolean {
-      return this.layoutType;
-    },
     getRouters(): RouteRecordRaw[] {
       return this.routers;
     },
@@ -41,9 +36,6 @@ export const usePermissionStore = defineStore(storeNames.PERMISSION, {
     },
   },
   actions: {
-    setLayoutType(type: boolean): void {
-      this.layoutType = type;
-    },
     setRouters(routers: RouteRecordRaw[]): void {
       this.routers = routers;
     },

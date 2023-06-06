@@ -3,7 +3,7 @@
     <el-card style="margin: 10px 0">
       <template #header>
         <div class="card-header">
-          <span>年份管理</span>
+          <span>成长积分明细</span>
           <el-space>
             <el-button type="primary" @click="fetchList" :loading="loading">
               <el-icon><Search /></el-icon>

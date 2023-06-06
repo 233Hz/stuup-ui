@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import logo from '@/assets/logo.png';
 import Menu from './Menu.vue';
 import { useUserStore } from '@/store/modules/user';
@@ -46,11 +46,17 @@ const router = useRouter();
 const userStore = useUserStore();
 const premissionStore = usePermissionStore();
 
-const showAside = ref<boolean>(false);
+const showAside = ref<boolean>(sessionStorage.getItem('show-aside') === 'true');
 
 const emit = defineEmits(['change-aside']);
 
+onMounted(() => {
+  emit('change-aside', showAside.value);
+});
+
 const changeAside = (val: boolean) => {
+  val ? router.push('/dashboard') : router.push('/');
+  sessionStorage.setItem('show-aside', val.toString());
   emit('change-aside', val);
 };
 
