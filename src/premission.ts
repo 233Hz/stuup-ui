@@ -23,7 +23,8 @@ router.beforeEach(async (to, form, next) => {
           userStore.setUserInfo(JSON.parse(userInfo) as UserInfoType);
         }
         const { data: res } = await queryUserAuthority();
-        premissionStore.generateRoutes(res);
+        await premissionStore.generateRoutes(res);
+        premissionStore.getRouters.forEach(route => router.addRoute(route));
         next({ ...to, replace: true });
       } else {
         next();

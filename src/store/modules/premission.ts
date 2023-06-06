@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { store } from '../index';
 import { storeNames } from '../store-name';
-import router from '@/router';
 import asyncRouters from '@/router/asyncRouters';
 import type { RouteRecordRaw } from 'vue-router';
 const compModels = import.meta.glob('../../views/**/index.vue');
@@ -60,7 +59,6 @@ export const usePermissionStore = defineStore(storeNames.PERMISSION, {
       const dynamicRouter = formatRouter(menus);
       const rewriteRoutes = [...asyncRouters, ...dynamicRouter, { path: '/:path(.*)*', redirect: '/404' }];
       this.setRouters(rewriteRoutes);
-      rewriteRoutes.forEach(route => router.addRoute(route));
       const frontMenus = formatAsideMenu(rewriteRoutes, 1);
       this.setFrontAsideRouters(frontMenus);
       const backMenus = formatAsideMenu(rewriteRoutes, 2);
