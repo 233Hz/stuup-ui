@@ -24,7 +24,6 @@ import { ref, reactive } from 'vue';
 import { useUserStore } from '@/store/modules/user';
 import { LoginForm, login } from '@/api/login/index';
 import { useRouter } from 'vue-router';
-import Cookies from 'js-cookie';
 import { setToken } from '@/utils/auth';
 import { ElMessage } from 'element-plus';
 
@@ -55,7 +54,7 @@ const handleLogin = async () => {
     const res = await login(form);
     setToken(res.token as string);
     userStore.setUserInfo(res.data);
-    Cookies.set('user_info', JSON.stringify(res.data));
+    sessionStorage.setItem('user_info', JSON.stringify(res.data));
     router.push('/');
     ElMessage.success('登入成功');
   } catch {

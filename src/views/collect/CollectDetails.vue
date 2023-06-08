@@ -1,10 +1,12 @@
 <template>
-  <el-dialog v-model="active" title="导入详情" width="60%">
-    <el-auto-resizer>
-      <template #default="{ width }">
-        <el-table-v2 :columns="columns" :data="data" :width="width" :height="500" />
-      </template>
-    </el-auto-resizer>
+  <el-dialog v-model="active" title="导入详情" width="40%">
+    <div style="height: 600px">
+      <el-auto-resizer v-loading="loading">
+        <template #default="{ width, height }">
+          <el-table-v2 :columns="columns" :data="tableData" :width="width" :height="height" />
+        </template>
+      </el-auto-resizer>
+    </div>
   </el-dialog>
 </template>
 
@@ -23,7 +25,7 @@ const columns = [
     dataKey: 'className',
     key: 'className',
     title: '班级',
-    width: 150,
+    width: 300,
   },
   {
     dataKey: 'studentName',
@@ -44,18 +46,6 @@ const columns = [
     width: 150,
   },
   {
-    dataKey: 'growName',
-    key: 'growName',
-    title: '项目名称',
-    width: 150,
-  },
-  {
-    dataKey: 'createTime',
-    key: 'createTime',
-    title: '获得时间',
-    width: 100,
-  },
-  {
     dataKey: 'remark',
     key: 'remark',
     title: '备注',
@@ -64,26 +54,23 @@ const columns = [
 ];
 const batchCode = ref<number>();
 const active = ref<boolean>(false);
-const data = ref<RecDefaultVO[]>([]);
-const searchForm = ref({
-  firstLeveId: undefined,
-  secondLevelId: undefined,
-  threeLevelId: undefined,
-  growName: undefined,
-});
+const loading = ref<boolean>(false);
+const tableData = ref<RecDefaultVO[]>([]);
 
-const open = async (growId: number) => {
-  batchCode.value = growId;
-  // fetchData();
+const open = async (code: number) => {
+  batchCode.value = code;
+  fetchData();
   active.value = true;
 };
 
 const fetchData = async () => {
   if (!batchCode.value) return;
+  loading.value = true;
   try {
-    const { data: res } = await growthRecordDetails(batchCode.value, searchForm.value);
-    data.value = res;
+    const { data } = await growthRecordDetails(batchCode.value);
+    tableData.value = Object.freeze(data) as RecDefaultVO[];
   } finally {
+    loading.value = false;
   }
 };
 

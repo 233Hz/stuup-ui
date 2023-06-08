@@ -9,8 +9,9 @@
 <style scoped lang="scss">
 @include b(main) {
   flex: 1;
+  position: relative;
   width: 100%;
   height: 100%;
-  overflow: auto;
+  overflow-x: hidden;
 }
 </style>

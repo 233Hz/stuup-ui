@@ -10,6 +10,11 @@
           <el-table-column prop="className" label="所属班级" show-overflow-tooltip align="center" />
           <el-table-column prop="classTeacher" label="班主任" show-overflow-tooltip align="center" />
           <el-table-column prop="score" label="成长值" show-overflow-tooltip align="center" />
+          <el-table-column label="成长等级" align="center">
+            <template #default="{ row }">
+              <flower-level-icon :score="row.score" />
+            </template>
+          </el-table-column>
         </el-table>
       </div>
     </transition>
@@ -20,6 +25,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { getSchoolStuRank } from '@/api/ranking/school_stu/index';
 import { useUserStore } from '@/store/modules/user';
+import FlowerLevelIcon from '@/components/FlowerLevelIcon.vue';
 
 const userStore = useUserStore();
 

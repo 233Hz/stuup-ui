@@ -168,7 +168,13 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive, h } from 'vue';
 import type { FormInstance, FormRules } from 'element-plus';
-import { GrowthTreeVO, GrowthItemVO, getGrowthItemPage, saveOrUpdateGrowthItem, delGrowthItem } from '@/api/grow/index';
+import {
+  GrowthTreeVO,
+  GrowthItemVO,
+  getGrowthItemPage,
+  saveOrUpdateGrowthItem,
+  delGrowthItem,
+} from '@/api/grow/project';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import Bus from '@/utils/bus';
 import { PERIOD_NAMES, CALCULATE_TYPE_NAMES } from '@/utils/dict';
@@ -178,9 +184,9 @@ Bus.on('get-tree', (growthTree: GrowthTreeVO) => {
 });
 
 Bus.on('node-click', (keys: number[]) => {
-  searchForm.value.firstLevelId = keys[0] || void 0;
-  searchForm.value.secondLevelId = keys[1] || void 0;
-  searchForm.value.threeLevelId = keys[2] || void 0;
+  searchForm.value.firstLevelId = keys[0];
+  searchForm.value.secondLevelId = keys[1];
+  searchForm.value.threeLevelId = keys[2];
   fetchList();
 });
 

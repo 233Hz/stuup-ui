@@ -133,7 +133,7 @@
 import { ref, onMounted } from 'vue';
 import type { FormInstance } from 'element-plus';
 import { RecScoreVO, getRecScorePage } from '@/api/record/growScore/index';
-import { GrowthTreeVO, getGrowthTree } from '@/api/grow/index';
+import { GrowthTreeVO, getGrowthTree } from '@/api/grow/project';
 import { getGraderList } from '@/api/basic/grade/index';
 import { getYearList } from '@/api/basic/year/index';
 

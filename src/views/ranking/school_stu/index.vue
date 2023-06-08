@@ -4,7 +4,7 @@
       <el-card shadow="never">
         <template #header>
           <div class="card-header">
-            <span>成长积分记录</span>
+            <span>全校排名（个人）</span>
             <el-space>
               <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
               <el-button @click="searchFormRef?.resetFields()">清空</el-button>
@@ -79,6 +79,11 @@
           <el-table-column prop="classTeacher" label="班主任" show-overflow-tooltip align="center" />
           <el-table-column prop="facultyName" label="所属系部" show-overflow-tooltip align="center" />
           <el-table-column prop="score" label="总成长值" show-overflow-tooltip align="center" />
+          <el-table-column label="成长等级" align="center">
+            <template #default="{ row }">
+              <flower-level-icon :score="row.score" />
+            </template>
+          </el-table-column>
         </el-table>
         <div class="page-box">
           <el-pagination
@@ -97,16 +102,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import type { FormInstance } from 'element-plus';
 import { getSchoolStuRank } from '@/api/ranking/school_stu/index';
 import { getGraderList } from '@/api/basic/grade/index';
 import { getYearList } from '@/api/basic/year/index';
 import { useUserStore } from '@/store/modules/user';
+import FlowerLevelIcon from '@/components/FlowerLevelIcon.vue';
 
 const userStore = useUserStore();
 
-onMounted(() => {
+onMounted(async () => {
   initYear();
   initGrade();
   fetchList();
@@ -120,7 +126,7 @@ const loading = ref<boolean>(false);
 const tableData = ref();
 const page = ref({
   current: 1,
-  size: 10,
+  size: 50,
 });
 const total = ref<number>(0);
 const searchForm = ref({

@@ -10,3 +10,9 @@ import zhCn from 'element-plus/lib/locale/lang/zh-cn';
 
 const locale = computed(() => zhCn);
 </script>
+
+<style>
+#app {
+  height: 100%;
+}
+</style>

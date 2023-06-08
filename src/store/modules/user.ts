@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { store } from '../index';
 import { storeNames } from '../store-name';
 import { removeToken } from '@/utils/auth';
-import Cookies from 'js-cookie';
 
 export interface UserInfoType {
   userId: number | undefined;
@@ -76,7 +75,8 @@ export const useUserStore = defineStore(storeNames.USER, {
         this.roleIds = '';
         this.yearId = void 0;
         removeToken();
-        Cookies.remove('user_info');
+        localStorage.clear();
+        sessionStorage.clear();
         resolve();
       });
     },

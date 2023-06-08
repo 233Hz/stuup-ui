@@ -4,7 +4,7 @@
       <el-card shadow="never">
         <template #header>
           <div class="card-header">
-            <span>成长积分记录</span>
+            <span>全校排名（班级）</span>
             <el-space>
               <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
               <el-button @click="searchFormRef?.resetFields">清空</el-button>
@@ -52,6 +52,11 @@
           <el-table-column prop="gradeName" label="所属年级" show-overflow-tooltip align="center" />
           <el-table-column prop="facultyName" label="所属系部" show-overflow-tooltip align="center" />
           <el-table-column prop="score" label="总成长值" show-overflow-tooltip align="center" />
+          <el-table-column label="成长等级" align="center">
+            <template #default="{ row }">
+              <flower-level-icon :score="row.score" />
+            </template>
+          </el-table-column>
         </el-table>
         <div class="page-box">
           <el-pagination
@@ -76,6 +81,7 @@ import { getSchoolClaRank } from '@/api/ranking/school_cla';
 import { getYearList } from '@/api/basic/year/index';
 import { getGraderList } from '@/api/basic/grade/index';
 import { useUserStore } from '@/store/modules/user';
+import FlowerLevelIcon from '@/components/FlowerLevelIcon.vue';
 
 const userStore = useUserStore();
 
@@ -93,7 +99,7 @@ const loading = ref<boolean>(false);
 const tableData = ref();
 const page = ref({
   current: 1,
-  size: 10,
+  size: 50,
 });
 const total = ref<number>(0);
 const searchForm = ref({

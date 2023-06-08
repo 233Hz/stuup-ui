@@ -29,9 +29,6 @@ export const getRecLogPage = async (params: Page): Promise<ApiResult<PageResult<
   return await get('/recLog/page', params);
 };
 
-export const growthRecordDetails = async (
-  batchCode: number,
-  params: Record<string, any>
-): Promise<ApiResult<RecDefaultVO[]>> => {
-  return await get('/recDefault/details/' + batchCode, params);
+export const growthRecordDetails = async (batchCode: number): Promise<ApiResult<RecDefaultVO[]>> => {
+  return await get('/recLog/details/' + batchCode);
 };

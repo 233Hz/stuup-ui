@@ -17,8 +17,6 @@ import Main from './components/Main.vue';
 const showAside = ref<boolean>(false);
 
 const changeAside = (val: boolean) => {
-  console.log(val);
-
   showAside.value = val;
 };
 </script>

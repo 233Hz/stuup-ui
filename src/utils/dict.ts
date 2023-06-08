@@ -1,4 +1,5 @@
 import { PERIOD, CALCULATE_TYPE, LEVEL, MILITARY_LEVEL, WHETHER } from './constant';
+import { EnumImpl } from '@/utils/util';
 
 export const PERIOD_NAMES = {
   [PERIOD.UNLIMITED]: '不限',
@@ -32,3 +33,35 @@ export const WHETHER_NAMES = {
   [WHETHER.YES]: '是',
   [WHETHER.NO]: '否',
 };
+
+/**
+ * 通知类型
+ */
+export const ANNOUNCEMENT_TYPE = new EnumImpl({
+  SYSTEM: ['系统消息', 1],
+  ACTIVE: ['活动通知', 2],
+});
+
+/**
+ * 通知范围
+ */
+export const ANNOUNCEMENT_SCOPE = new EnumImpl({
+  ALL: ['全体用户', 1],
+  DESIGNATED: ['指定用户', 2],
+});
+
+/**
+ * 公告状态
+ */
+export const ANNOUNCEMENT_STATE = new EnumImpl({
+  PUBLISHED: ['已发布', 1],
+  UNPUBLISHED: ['未发布', 2],
+});
+
+/**
+ * 用户类型
+ */
+export const USER_TYPE = new EnumImpl({
+  STUDENT: ['学生', 1],
+  TEACHER: ['老师', 2],
+});

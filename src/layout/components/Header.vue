@@ -89,7 +89,7 @@ const handleLoginout = () => {
     }
   }
   @include e(menu) {
-    flex: 2;
+    flex: 1;
     height: 100%;
   }
   @include e(navbar) {

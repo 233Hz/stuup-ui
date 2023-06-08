@@ -75,7 +75,7 @@
 <script setup lang="ts">
 import { onMounted, ref, reactive, watch, h } from 'vue';
 import type { FormInstance, FormRules } from 'element-plus';
-import { GrowthTreeVO, GrowthVO, getGrowthTree, saveOrUpdateGrowth, delGrowth } from '@/api/grow/index';
+import { GrowthTreeVO, GrowthVO, getGrowthTree, saveOrUpdateGrowth, delGrowth } from '@/api/grow/project';
 import { ElMessage, ElMessageBox, ElTree } from 'element-plus';
 import Bus from '@/utils/bus';
 

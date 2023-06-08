@@ -56,9 +56,6 @@ export const usePermissionStore = defineStore(storeNames.PERMISSION, {
       this.setFrontAsideRouters(frontMenus);
       const backMenus = formatAsideMenu(rewriteRoutes, 2);
       this.setBackAsideRouters(backMenus);
-      // console.log(frontMenus, backMenus);
-
-      // console.log(router.getRoutes());
     },
   },
 });
