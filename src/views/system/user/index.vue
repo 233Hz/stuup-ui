@@ -2,85 +2,100 @@
   <div style="padding: 10px 20px">
     <!-- <el-card style="margin: 10px 0">
       <template #header>
-        <div class="card-header">
-          <span>用户管理</span>
-          <el-space>
-            <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
-            <el-button @click="searchFormRef?.resetFields()">清空</el-button>
-          </el-space>
-        </div>
+        <el-row>
+          <el-col :span="24">
+            <el-form ref="searchFormRef" :model="searchForm" label-width="80px">
+              <el-row>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="用户名" prop="userName">
+                    <el-input v-model="searchForm.userName" placeholder="请输入用户名" />
+                  </el-form-item>
+                </el-col>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="性别" prop="sex">
+                    <el-select v-model="searchForm.sex" placeholder="请输入性别" style="width: 100%"></el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="教师类型" prop="teacherType">
+                    <el-select
+                      v-model="searchForm.teacherType"
+                      placeholder="请选择教师类型"
+                      style="width: 100%"></el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="用户类型" prop="userType">
+                    <el-select
+                      v-model="searchForm.userType"
+                      placeholder="请选择用户类型"
+                      style="width: 100%"></el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="所属部门" prop="deptId">
+                    <el-select v-model="searchForm.deptId" placeholder="请选择所属部门" style="width: 100%"></el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="状态" prop="state">
+                    <el-select v-model="searchForm.state" placeholder="请选择状态" style="width: 100%"></el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+          </el-col>
+        </el-row>
       </template>
-      <el-row>
-        <el-col :span="24">
-          <el-form ref="searchFormRef" :model="searchForm" label-width="80px">
-            <el-row>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="用户名" prop="userName">
-                  <el-input v-model="searchForm.userName" placeholder="请输入用户名" />
-                </el-form-item>
-              </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="性别" prop="sex">
-                  <el-select v-model="searchForm.sex" placeholder="请输入性别" style="width: 100%"></el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="教师类型" prop="teacherType">
-                  <el-select
-                    v-model="searchForm.teacherType"
-                    placeholder="请选择教师类型"
-                    style="width: 100%"></el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="用户类型" prop="userType">
-                  <el-select v-model="searchForm.userType" placeholder="请选择用户类型" style="width: 100%"></el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="所属部门" prop="deptId">
-                  <el-select v-model="searchForm.deptId" placeholder="请选择所属部门" style="width: 100%"></el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="状态" prop="state">
-                  <el-select v-model="searchForm.state" placeholder="请选择状态" style="width: 100%"></el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
-        </el-col>
-      </el-row>
+      <div style="text-align: center">
+        <el-space>
+          <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
+          <el-button @click="searchFormRef?.resetFields()">清空</el-button>
+        </el-space>
+      </div>
     </el-card> -->
     <el-card>
       <template #header>
-        <div class="card-header">
-          <el-space>
-            <el-button type="primary" @click="addRow">
-              <el-icon><Plus /></el-icon>
-              添加
-            </el-button>
-          </el-space>
-          <el-space>
-            <el-button :disabled="loading" circle @click="fetchList">
-              <el-icon><Refresh /></el-icon>
-            </el-button>
-          </el-space>
-        </div>
+        <el-space>
+          <el-button type="primary" @click="addRow">
+            <el-icon><Plus /></el-icon>
+            添加
+          </el-button>
+          <el-divider direction="vertical" />
+          <el-button :disabled="loading" circle @click="fetchList">
+            <el-icon><Refresh /></el-icon>
+          </el-button>
+        </el-space>
       </template>
 
       <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
         <el-table-column prop="loginName" label="登入账号" show-overflow-tooltip align="center" />
         <el-table-column prop="userName" label="用户姓名" show-overflow-tooltip align="center" />
-        <el-table-column prop="sex" label="性别" show-overflow-tooltip align="center" />
+        <el-table-column prop="sex" label="性别" show-overflow-tooltip align="center">
+          <template #default="{ row }">
+            {{ SEX.getKeyForValue(row.sex) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="mobile" label="手机号" show-overflow-tooltip align="center" />
         <el-table-column prop="degree" label="文化程度" show-overflow-tooltip align="center" />
-        <el-table-column prop="teacherType" label="教师类型" show-overflow-tooltip align="center" />
-        <el-table-column prop="userType" label="用户类型" show-overflow-tooltip align="center" />
+        <el-table-column prop="teacherType" label="教师类型" show-overflow-tooltip align="center">
+          <template #default="{ row }">
+            {{ TESCHER_TYPE.getKeyForValue(row.teacherType) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="userType" label="用户类型" show-overflow-tooltip align="center">
+          <template #default="{ row }">
+            {{ USER_TYPE.getKeyForValue(row.userType) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="deptName" label="所属部门" show-overflow-tooltip align="center" />
         <el-table-column prop="idCard" label="身份证号" show-overflow-tooltip align="center" />
         <el-table-column prop="birthday" label="出生年月" show-overflow-tooltip align="center" />
-        <el-table-column prop="state" label="状态" show-overflow-tooltip align="center" />
+        <el-table-column prop="state" label="状态" show-overflow-tooltip align="center">
+          <template #default="{ row }">
+            {{ USER_STATE.getKeyForValue(row.state) }}
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template #default="{ row }">
             <el-button @click="updateRow(row)">修改</el-button>
@@ -109,10 +124,11 @@
       <el-form-item label="用户名" prop="userName">
         <el-input v-model="form.userName" placeholder="请输入用户名" />
       </el-form-item>
-      <!-- TODO 字典 -->
       <el-form-item label="性别" prop="sex">
         <el-radio-group v-model="form.sex">
-          <el-radio label="1" border>男</el-radio>
+          <el-radio v-for="item in SEX.getDict()" :key="item.value" :label="item.value" border>
+            {{ item.label }}
+          </el-radio>
           <el-radio label="2" border>女</el-radio>
         </el-radio-group>
       </el-form-item>
@@ -122,19 +138,14 @@
       <el-form-item label="文化程度" prop="degree">
         <el-input v-model="form.degree" placeholder="请选择文化程度" />
       </el-form-item>
-      <!-- TODO 字典 -->
       <el-form-item label="教师类型" prop="teacherType">
         <el-select v-model="form.teacherType" placeholder="请选择教师类型" style="width: 100%">
-          <el-option label="在职在编" value="1" />
-          <el-option label="编外运行" value="2" />
-          <el-option label="行政外编" value="3" />
+          <el-option v-for="item in TESCHER_TYPE.getDict()" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <!-- TODO 字典 -->
       <el-form-item label="用户类型" prop="userType">
         <el-select v-model="form.userType" placeholder="请选择用户类型" style="width: 100%">
-          <el-option label="学生" value="1" />
-          <el-option label="教师" value="2" />
+          <el-option v-for="item in USER_TYPE.getDict()" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="所属部门" prop="deptId">
@@ -153,11 +164,9 @@
           <el-option v-for="item in role_list" :label="item.value" :value="item.oid" />
         </el-select>
       </el-form-item>
-      <!-- TODO 字典 -->
       <el-form-item label="状态" prop="state">
         <el-select v-model="form.state" placeholder="请选择状态" style="width: 100%">
-          <el-option label="正常" value="1" />
-          <el-option label="禁用" value="2" />
+          <el-option v-for="item in USER_STATE.getDict()" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
     </el-form>
@@ -181,6 +190,7 @@ import { UserVO, getUserPage, saveOrUpdateUser, delUser } from '@/api/system/use
 import { DeptDictVO, getDeptList } from '@/api/basic/dept';
 import { RoleDictVO, getRoleList } from '@/api/system/role/index';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import { SEX, TESCHER_TYPE, USER_TYPE, USER_STATE } from '@/utils/dict';
 
 onMounted(() => {
   initDeptList();

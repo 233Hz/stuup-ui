@@ -68,7 +68,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import avatar from '@/assets/flower_icons/bm_cg.png';
+import avatar from '@/assets/flower_icons/bmh_seed.png';
 import * as echarts from 'echarts';
 import { useChartStore } from '@/store/modules/chart';
 

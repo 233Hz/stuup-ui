@@ -3,69 +3,69 @@
     <el-col :span="24">
       <el-card>
         <template #header>
-          <div class="card-header">
-            <span>记录填报</span>
-            <el-space>
-              <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
-              <el-button @click="searchFormRef?.resetFields()">清空</el-button>
-            </el-space>
-          </div>
+          <el-row>
+            <el-col :span="24">
+              <el-form ref="searchFormRef" :model="searchForm" label-width="80px">
+                <el-row>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="年级" prop="gradeId">
+                      <el-select v-model="searchForm.gradeId" style="width: 100%">
+                        <el-option v-for="item in GRADE" :key="item.oid" :label="item.gradeName" :value="item.oid" />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="所属班级" prop="className">
+                      <el-input v-model="searchForm.className" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="学生姓名" prop="studentName">
+                      <el-input v-model="searchForm.studentName" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="社团名称" prop="name">
+                      <el-input v-model="searchForm.name" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="级别" prop="level">
+                      <el-select v-model="searchForm.level" style="width: 100%">
+                        <el-option
+                          v-for="item in LEVEL_DICT"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value" />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </el-col>
+          </el-row>
         </template>
-        <el-row>
-          <el-col :span="24">
-            <el-form ref="searchFormRef" :model="searchForm" label-width="80px">
-              <el-row>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="年级" prop="gradeId">
-                    <el-select v-model="searchForm.gradeId" style="width: 100%">
-                      <el-option v-for="item in GRADE" :key="item.oid" :label="item.gradeName" :value="item.oid" />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="所属班级" prop="className">
-                    <el-input v-model="searchForm.className" />
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="学生姓名" prop="studentName">
-                    <el-input v-model="searchForm.studentName" />
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="社团名称" prop="name">
-                    <el-input v-model="searchForm.name" />
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="级别" prop="level">
-                    <el-select v-model="searchForm.level" style="width: 100%">
-                      <el-option v-for="item in LEVEL_DICT" :key="item.value" :label="item.label" :value="item.value" />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
-          </el-col>
-        </el-row>
+        <div style="text-align: center">
+          <el-space>
+            <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
+            <el-button @click="searchFormRef?.resetFields()">清空</el-button>
+          </el-space>
+        </div>
       </el-card>
     </el-col>
     <el-col :span="24">
       <el-card>
         <template #header>
-          <div class="card-header">
-            <el-space>
-              <el-button type="primary">
-                <el-icon><Download /></el-icon>
-                导出
-              </el-button>
-            </el-space>
-            <el-space>
-              <el-button :disabled="loading" circle @click="fetchList">
-                <el-icon><Refresh /></el-icon>
-              </el-button>
-            </el-space>
-          </div>
+          <el-space>
+            <el-button type="primary">
+              <el-icon><Download /></el-icon>
+              导出
+            </el-button>
+            <el-divider direction="vertical" />
+            <el-button :disabled="loading" circle @click="fetchList">
+              <el-icon><Refresh /></el-icon>
+            </el-button>
+          </el-space>
         </template>
 
         <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">

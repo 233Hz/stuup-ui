@@ -4,7 +4,7 @@
       <img :src="logo" width="200" />
     </div>
     <div class="bunga-header__menu">
-      <Menu v-show="!showAside" mode="horizontal" :routes="premissionStore.getFrontAsideRouters" />
+      <Menu style="height: 100%" v-show="!showAside" mode="horizontal" :routes="premissionStore.getFrontAsideRouters" />
     </div>
     <div class="bunga-header__navbar">
       <el-space>
@@ -77,11 +77,11 @@ const handleLoginout = () => {
 
 <style scoped lang="scss">
 @include b(header) {
-  height: 60px;
+  height: var(--header-height);
   display: flex;
   background-color: var(--aside-menu-background);
   @include e(logo) {
-    width: 200px;
+    width: var(--aside-width);
     display: flex;
     > img {
       width: 90%;

@@ -37,3 +37,7 @@ export const getAnnouncementPremUser = async (
 ): Promise<ApiResult<PageResult<AnnouncementPremUserVO[]>>> => {
   return await get('/announcement/premUser/page', params);
 };
+
+export const getAnnouncementMyPage = async (params?: Page): Promise<ApiResult<PageResult<AnnouncementVO[]>>> => {
+  return await get('/announcement/myPage', params);
+};

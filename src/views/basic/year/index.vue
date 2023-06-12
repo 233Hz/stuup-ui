@@ -2,49 +2,40 @@
   <div style="padding: 10px 20px">
     <el-card style="margin: 10px 0">
       <template #header>
-        <div class="card-header">
-          <span>年份管理</span>
-          <el-space>
-            <el-button type="primary" @click="fetchList" :loading="loading">
-              <el-icon><Search /></el-icon>
-              查询
-            </el-button>
-            <el-button @click="searchFormRef?.resetFields()">
-              <el-icon><Close /></el-icon>
-              清空
-            </el-button>
-          </el-space>
-        </div>
+        <el-row>
+          <el-col :span="24">
+            <el-form ref="searchFormRef" :model="searchForm">
+              <el-row>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="年份名称" prop="yearName">
+                    <el-input v-model="searchForm.yearName" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+          </el-col>
+        </el-row>
       </template>
-      <el-row>
-        <el-col :span="24">
-          <el-form ref="searchFormRef" :model="searchForm">
-            <el-row>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="年份名称" prop="yearName">
-                  <el-input v-model="searchForm.yearName" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
-        </el-col>
-      </el-row>
+
+      <div style="text-align: center">
+        <el-space>
+          <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
+          <el-button @click="searchFormRef?.resetFields()">清空</el-button>
+        </el-space>
+      </div>
     </el-card>
     <el-card>
       <template #header>
-        <div class="card-header">
-          <el-space>
-            <el-button type="primary" @click="addRow">
-              <el-icon><Plus /></el-icon>
-              添加
-            </el-button>
-          </el-space>
-          <el-space>
-            <el-button :disabled="loading" circle @click="fetchList">
-              <el-icon><Refresh /></el-icon>
-            </el-button>
-          </el-space>
-        </div>
+        <el-space>
+          <el-button type="primary" @click="addRow">
+            <el-icon><Plus /></el-icon>
+            添加
+          </el-button>
+          <el-divider direction="vertical" />
+          <el-button :disabled="loading" circle @click="fetchList">
+            <el-icon><Refresh /></el-icon>
+          </el-button>
+        </el-space>
       </template>
 
       <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">

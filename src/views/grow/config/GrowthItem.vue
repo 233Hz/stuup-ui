@@ -3,64 +3,75 @@
     <el-col :span="24">
       <el-card>
         <template #header>
-          <div class="card-header">
-            <span>年份管理</span>
-            <el-space>
-              <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
-              <el-button @click="searchFormRef?.resetFields()">清空</el-button>
-            </el-space>
-          </div>
+          <el-row>
+            <el-col :span="24">
+              <el-form ref="searchFormRef" :model="searchForm" label-width="120px">
+                <el-row>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="项目名称" prop="name">
+                      <el-input v-model="searchForm.name" placeholder="请输入项目名称" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="分值计算类型" prop="calculateType">
+                      <el-select
+                        v-model="searchForm.calculateType"
+                        placeholder="请选择分值计算类型"
+                        style="width: 100%">
+                        <el-option label="录入加分" :value="1" />
+                        <el-option label="录入扣分" :value="2" />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </el-col>
+          </el-row>
         </template>
-        <el-row>
-          <el-col :span="24">
-            <el-form ref="searchFormRef" :model="searchForm" label-width="120px">
-              <el-row>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="项目名称" prop="name">
-                    <el-input v-model="searchForm.name" placeholder="请输入项目名称" />
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="分值计算类型" prop="calculateType">
-                    <el-select v-model="searchForm.calculateType" placeholder="请选择分值计算类型" style="width: 100%">
-                      <el-option label="录入加分" :value="1" />
-                      <el-option label="录入扣分" :value="2" />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
-          </el-col>
-        </el-row>
+        <div style="text-align: center">
+          <el-space>
+            <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
+            <el-button @click="searchFormRef?.resetFields()">清空</el-button>
+          </el-space>
+        </div>
       </el-card>
     </el-col>
     <el-col :span="24">
       <el-card style="margin: 10px 0">
         <template #header>
-          <div class="card-header">
-            <el-space>
-              <el-button type="primary" @click="addRow">
-                <el-icon><Plus /></el-icon>
-                添加
-              </el-button>
-            </el-space>
-            <el-space>
-              <el-button :disabled="loading" circle @click="fetchList">
-                <el-icon><Refresh /></el-icon>
-              </el-button>
-            </el-space>
-          </div>
+          <el-space>
+            <el-button type="primary" @click="addRow">
+              <el-icon><Plus /></el-icon>
+              添加
+            </el-button>
+            <el-divider direction="vertical" />
+            <el-button :disabled="loading" circle @click="fetchList">
+              <el-icon><Refresh /></el-icon>
+            </el-button>
+          </el-space>
         </template>
 
         <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
           <el-table-column prop="name" label="项目名称" show-overflow-tooltip align="center" />
           <el-table-column prop="code" label="项目编号" show-overflow-tooltip align="center" />
           <el-table-column prop="description" label="填报说明" show-overflow-tooltip align="center" />
-          <el-table-column prop="fillPeriod" label="项目录入周期" show-overflow-tooltip align="center" />
+          <el-table-column prop="fillPeriod" label="项目录入周期" show-overflow-tooltip align="center">
+            <template #default="{ row }">
+              {{ PERIOD.getKeyForValue(row.fillPeriod) }}
+            </template>
+          </el-table-column>
           <el-table-column prop="fillPeriodNum" label="项目周期内可录入次数" show-overflow-tooltip align="center" />
-          <el-table-column prop="scorePeriod" label="分值刷新周期" show-overflow-tooltip align="center" />
+          <el-table-column prop="scorePeriod" label="分值刷新周期" show-overflow-tooltip align="center">
+            <template #default="{ row }">
+              {{ PERIOD.getKeyForValue(row.scorePeriod) }}
+            </template>
+          </el-table-column>
           <el-table-column prop="scoreUpperLimit" label="周期内分值的上限" show-overflow-tooltip align="center" />
-          <el-table-column prop="calculateType" label="分值计算类型" show-overflow-tooltip align="center" />
+          <el-table-column prop="calculateType" label="分值计算类型" show-overflow-tooltip align="center">
+            <template #default="{ row }">
+              {{ CALCULATE_TYPE.getKeyForValue(row.calculateType) }}
+            </template>
+          </el-table-column>
           <el-table-column prop="score" label="项目可获得分值" show-overflow-tooltip align="center" />
           <el-table-column prop="createTime" label="创建时间" show-overflow-tooltip align="center" />
           <el-table-column label="操作" width="300" align="center">
@@ -111,7 +122,7 @@
         </el-form-item>
         <el-form-item label="项目录入周期" prop="fillPeriod">
           <el-select v-model="form.fillPeriod" placeholder="请选择项目录入周期" style="width: 100%">
-            <el-option v-for="[key, value] in Object.entries(PERIOD_NAMES)" :key="key" :label="value" :value="key" />
+            <el-option v-for="item in PERIOD.getDict()" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="项目周期内可录入次数" prop="fillPeriodNum">
@@ -124,7 +135,7 @@
         </el-form-item>
         <el-form-item label="分值刷新周期" prop="scorePeriod">
           <el-select v-model="form.scorePeriod" placeholder="请选择分值刷新周期" style="width: 100%">
-            <el-option v-for="[key, value] in Object.entries(PERIOD_NAMES)" :key="key" :label="value" :value="key" />
+            <el-option v-for="item in PERIOD.getDict()" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="周期内分值的上限" prop="scoreUpperLimit">
@@ -137,8 +148,8 @@
         </el-form-item>
         <el-form-item label="分值计算类型" prop="calculateType">
           <el-radio-group v-model="form.calculateType">
-            <el-radio v-for="[key, value] in Object.entries(CALCULATE_TYPE_NAMES)" :key="key" :label="key" border>
-              {{ value }}
+            <el-radio v-for="item in CALCULATE_TYPE.getDict()" :key="item.value" :label="item.value" border>
+              {{ item.label }}
             </el-radio>
           </el-radio-group>
         </el-form-item>
@@ -177,7 +188,7 @@ import {
 } from '@/api/grow/project';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import Bus from '@/utils/bus';
-import { PERIOD_NAMES, CALCULATE_TYPE_NAMES } from '@/utils/dict';
+import { PERIOD, CALCULATE_TYPE } from '@/utils/dict';
 
 Bus.on('get-tree', (growthTree: GrowthTreeVO) => {
   growth_list.value = growthTree;

@@ -128,6 +128,7 @@ const setExchangeValue = (key: string, num: number) => {
     @include e(content) {
       text-align: center;
       > h2 {
+        font-size: 28px;
         margin-top: 10px;
         color: var(--aside-menu-background);
       }

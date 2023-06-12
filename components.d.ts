@@ -52,7 +52,7 @@ declare module '@vue/runtime-core' {
     ElTree: typeof import('element-plus/es')['ElTree']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     FlowerLevelIcon: typeof import('./src/components/FlowerLevelIcon.vue')['default']
-    Leaderboard: typeof import('./src/components/Leaderboard/index.vue')['default']
+    Leaderboard: typeof import('./src/components/Leaderboard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TableLayout: typeof import('./src/components/TableLayout.vue')['default']

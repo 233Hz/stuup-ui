@@ -1,27 +1,24 @@
 <template>
   <el-card style="margin-top: 10px">
     <template #header>
-      <div class="card-header">
-        <span>成长项目</span>
-        <el-space>
-          <el-button type="primary" :loading="loading" @click="queryAll">
-            <el-icon><Search /></el-icon>
-            查询全部
-          </el-button>
-          <el-button type="primary" :loading="loading" @click="addRow">
-            <el-icon><Plus /></el-icon>
-            添加
-          </el-button>
-          <el-button type="primary" :loading="loading" @click="updateRow">
-            <el-icon><Edit /></el-icon>
-            修改
-          </el-button>
-          <el-button type="danger" :loading="loading" @click="delRow">
-            <el-icon><Delete /></el-icon>
-            删除
-          </el-button>
-        </el-space>
-      </div>
+      <el-space>
+        <el-button type="primary" :loading="loading" @click="queryAll">
+          <el-icon><Search /></el-icon>
+          查询全部
+        </el-button>
+        <el-button type="primary" :loading="loading" @click="addRow">
+          <el-icon><Plus /></el-icon>
+          添加
+        </el-button>
+        <el-button type="primary" :loading="loading" @click="updateRow">
+          <el-icon><Edit /></el-icon>
+          修改
+        </el-button>
+        <el-button type="danger" :loading="loading" @click="delRow">
+          <el-icon><Delete /></el-icon>
+          删除
+        </el-button>
+      </el-space>
     </template>
     <el-input v-model="filterText" placeholder="请输入项目名称" />
     <el-tree

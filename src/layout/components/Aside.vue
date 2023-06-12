@@ -13,7 +13,7 @@ const premissionStore = usePermissionStore();
 
 <style scoped lang="scss">
 @include b(aside) {
-  width: 200px;
+  width: var(--aside-width);
   height: 100%;
   background-color: var(--aside-menu-background);
 }

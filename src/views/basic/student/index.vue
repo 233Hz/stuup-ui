@@ -2,70 +2,75 @@
   <div style="padding: 10px 20px">
     <el-card style="margin: 10px 0">
       <template #header>
-        <div class="card-header">
-          <span>年份管理</span>
-          <el-space>
-            <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
-            <el-button @click="searchFormRef?.resetFields()">清空</el-button>
-          </el-space>
-        </div>
+        <el-row>
+          <el-col :span="24">
+            <el-form ref="searchFormRef" :model="searchForm" label-width="140px">
+              <el-row>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="学生姓名/班级名称" prop="key">
+                    <el-input v-model="searchForm.key" placeholder="请输入学生姓名/班级名称" />
+                  </el-form-item>
+                </el-col>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="所属年级" prop="gradeId">
+                    <el-select v-model="searchForm.gradeId" placeholder="请选择所属年级" style="width: 100%">
+                      <el-option v-for="item in grade_list" :key="item.oid" :label="item.gradeName" :value="item.oid" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="所属专业" prop="majorId">
+                    <el-select v-model="searchForm.majorId" placeholder="请选择所属专业" style="width: 100%">
+                      <el-option v-for="item in major_list" :key="item.oid" :label="item.majorName" :value="item.oid" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+          </el-col>
+        </el-row>
       </template>
-      <el-row>
-        <el-col :span="24">
-          <el-form ref="searchFormRef" :model="searchForm" label-width="140px">
-            <el-row>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="学生姓名/班级名称" prop="key">
-                  <el-input v-model="searchForm.key" placeholder="请输入学生姓名/班级名称" />
-                </el-form-item>
-              </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="所属年级" prop="gradeId">
-                  <el-select v-model="searchForm.gradeId" placeholder="请选择所属年级" style="width: 100%">
-                    <el-option v-for="item in grade_list" :key="item.oid" :label="item.gradeName" :value="item.oid" />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="所属专业" prop="majorId">
-                  <el-select v-model="searchForm.majorId" placeholder="请选择所属专业" style="width: 100%">
-                    <el-option v-for="item in major_list" :key="item.oid" :label="item.majorName" :value="item.oid" />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
-        </el-col>
-      </el-row>
+
+      <div style="text-align: center">
+        <el-space>
+          <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
+          <el-button @click="searchFormRef?.resetFields()">清空</el-button>
+        </el-space>
+      </div>
     </el-card>
     <el-card>
       <template #header>
-        <div class="card-header">
-          <el-space>
-            <el-button type="primary" @click="addRow">
+        <el-space>
+          <!--  <el-button type="primary" @click="addRow">
               <el-icon><Plus /></el-icon>
               添加
-            </el-button>
-          </el-space>
-          <el-space>
-            <el-button :disabled="loading" circle @click="fetchList">
-              <el-icon><Refresh /></el-icon>
-            </el-button>
-          </el-space>
-        </div>
+            </el-button> -->
+          <el-divider direction="vertical" />
+          <el-button :disabled="loading" circle @click="fetchList">
+            <el-icon><Refresh /></el-icon>
+          </el-button>
+        </el-space>
       </template>
 
       <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
         <el-table-column prop="studentNo" label="学号" show-overflow-tooltip align="center" />
         <el-table-column prop="name" label="学生姓名" show-overflow-tooltip align="center" />
-        <el-table-column prop="sex" label="性别" show-overflow-tooltip align="center" />
+        <el-table-column prop="sex" label="性别" show-overflow-tooltip align="center">
+          <template #default="{ row }">
+            {{ SEX.getKeyForValue(row.sex) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="className" label="所属班级" show-overflow-tooltip align="center" />
         <el-table-column prop="gradeName" label="所属年级" show-overflow-tooltip align="center" />
         <el-table-column prop="majorName" label="所属专业" show-overflow-tooltip align="center" />
         <el-table-column prop="idCard" label="身份证号" show-overflow-tooltip align="center" />
         <el-table-column prop="nation" label="民族" show-overflow-tooltip align="center" />
         <el-table-column prop="phone" label="联系方式" show-overflow-tooltip align="center" />
-        <el-table-column prop="status" label="学业状态" show-overflow-tooltip align="center" />
+        <el-table-column prop="status" label="学业状态" show-overflow-tooltip align="center">
+          <template #default="{ row }">
+            {{ SCHOOL_WORD_STATE.getKeyForValue(row.status) }}
+          </template>
+        </el-table-column>
         <!-- <el-table-column label="操作" width="200" align="center">
           <template #default="{ row }">
             <el-button @click="updateRow(row)">修改</el-button>
@@ -93,8 +98,9 @@
       </el-form-item>
       <el-form-item label="性别" prop="sex">
         <el-radio-group v-model="form.sex">
-          <el-radio label="1" border>男</el-radio>
-          <el-radio label="2" border>女</el-radio>
+          <el-radio v-for="item in SEX.getDict()" :key="item.value" :label="item.value" border>
+            {{ item.label }}
+          </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="所属班级" prop="classId">
@@ -116,7 +122,13 @@
         <el-input v-model="form.phone" placeholder="请输入联系电话" />
       </el-form-item>
       <el-form-item label="学业状态" prop="statue">
-        <el-select v-model="form.statue" placeholder="请选择学业状态" style="width: 100%"></el-select>
+        <el-select v-model="form.statue" placeholder="请选择学业状态" style="width: 100%">
+          <el-option
+            v-for="item in SCHOOL_WORD_STATE.getDict()"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value" />
+        </el-select>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -139,6 +151,7 @@ import { getStudentPage, saveStudent, StudentVO } from '@/api/basic/student/inde
 import { GradeDictVO, getGraderList } from '@/api/basic/grade/index';
 import { MajorDictVO, getMajorList } from '@/api/basic/major/index';
 import { ElMessage } from 'element-plus';
+import { SEX, SCHOOL_WORD_STATE } from '@/utils/dict';
 
 onMounted(() => {
   initGradeList();

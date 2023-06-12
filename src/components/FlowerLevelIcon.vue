@@ -4,8 +4,16 @@
       class="flower-icon__item"
       v-for="(item, index) in conversionFlower.calculateConversionFlower(score)"
       :key="index">
-      <div>{{ item.value }}</div>
-      <img :src="item.imageSrc" />
+      <div
+        :style="{
+          width: width / 2 + 'px',
+          height: height / 2 + 'px',
+          lineHeight: height / 2 + 'px',
+          fontSize: (width / 2) * 0.6 + 'px',
+        }">
+        {{ item.value }}
+      </div>
+      <img :width="width" :height="height" :src="item.imageSrc" />
     </div>
   </div>
 </template>
@@ -14,11 +22,16 @@
 import { useConversionFlower } from '@/utils/conversionFlower';
 const conversionFlower = useConversionFlower();
 
-type Props = {
+interface Props {
   score: number;
-};
+  width?: number;
+  height?: number;
+}
 
-defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  width: 40,
+  height: 40,
+});
 </script>
 
 <style scoped lang="scss">
@@ -32,19 +45,15 @@ defineProps<Props>();
     > div {
       position: absolute;
       bottom: 0;
-      right: -10px;
-      width: 20px;
-      height: 20px;
-      line-height: 20px;
+      right: 0;
+      transform: translateX(50%);
+      text-align: center;
       background-color: #e6a23c;
       border-radius: 50%;
-      z-index: 1;
       color: #909399;
-      font-size: 12px;
+      z-index: 1;
     }
     > img {
-      width: 40px;
-      height: 40px;
       display: block;
       border-radius: 50%;
       -webkit-user-drag: none;

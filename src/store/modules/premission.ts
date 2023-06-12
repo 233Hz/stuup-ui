@@ -4,6 +4,7 @@ import { storeNames } from '../store-name';
 import asyncRouters from '@/router/asyncRouters';
 import type { RouteRecordRaw } from 'vue-router';
 import type { MenuVO } from '@/api/system/menu/index';
+import { MENU_TYPE } from '@/utils/dict';
 
 const Layout = () => import('@/layout/index.vue');
 const compModels = import.meta.glob('../../views/**/index.vue');
@@ -50,11 +51,11 @@ export const usePermissionStore = defineStore(storeNames.PERMISSION, {
      */
     async generateRoutes(menus: MenuVO[]) {
       const dynamicRouter = formatRouter(menus);
-      const rewriteRoutes = [...asyncRouters, ...dynamicRouter, { path: '/:path(.*)*', redirect: '/404' }];
+      const rewriteRoutes = [...asyncRouters, ...dynamicRouter];
       this.setRouters(rewriteRoutes);
-      const frontMenus = formatAsideMenu(rewriteRoutes, 1);
+      const frontMenus = formatAsideMenu(rewriteRoutes, MENU_TYPE.FRONT);
       this.setFrontAsideRouters(frontMenus);
-      const backMenus = formatAsideMenu(rewriteRoutes, 2);
+      const backMenus = formatAsideMenu(rewriteRoutes, MENU_TYPE.BACK);
       this.setBackAsideRouters(backMenus);
     },
   },

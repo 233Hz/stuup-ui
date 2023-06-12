@@ -11,7 +11,8 @@
   flex: 1;
   position: relative;
   width: 100%;
-  height: 100%;
-  overflow-x: hidden;
+  height: calc(100% - var(--header-height));
+  overflow: auto;
+  background-color: #f4f5f7;
 }
 </style>

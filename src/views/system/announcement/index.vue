@@ -52,6 +52,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="createTime" label="发布时间" show-overflow-tooltip align="center" />
+        <el-table-column prop="createUser" label="发布人" show-overflow-tooltip align="center" />
         <el-table-column label="操作" width="400" align="center">
           <template #default="{ row }">
             <el-button @click="viewRow(row)">查看</el-button>
@@ -98,9 +99,6 @@
           </el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="指定用户" prop="userIds" v-show="form.scope === ANNOUNCEMENT_SCOPE.DESIGNATED">
-        <UserTable @select="handleSelect" />
-      </el-form-item>
       <el-form-item label="通知内容" prop="content">
         <div style="border: 1px solid #ccc">
           <Toolbar style="border-bottom: 1px solid #ccc" :editor="editorRef" mode="default" />
@@ -140,7 +138,6 @@ import {
   delAnnouncement,
   publishAnnouncement,
 } from '@/api/system/announcement';
-import UserTable from './UserTable.vue';
 
 /**
  * ==================== Ref ====================

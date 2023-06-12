@@ -1,6 +1,19 @@
 import { FlowerVO } from '@/api/grow/model';
 import { userFlowerStoreWithOut } from '@/store/modules/flowers';
 
+import bmh_seed from '@/assets/flower_icons/bmh_seed.png';
+import bmh_sprout from '@/assets/flower_icons/bmh_sprout.png';
+import bmh_bloom from '@/assets/flower_icons/bmh_bloom.jpg';
+import bmh_fruit from '@/assets/flower_icons/bmh_fruit.png';
+import xcj_seed from '@/assets/flower_icons/xcj_seed.png';
+import xcj_sprout from '@/assets/flower_icons/xcj_sprout.png';
+import xcj_bloom from '@/assets/flower_icons/xcj_bloom.png';
+import xcj_fruit from '@/assets/flower_icons/xcj_fruit.png';
+import xhh_seed from '@/assets/flower_icons/xhh_seed.png';
+import xhh_sprout from '@/assets/flower_icons/xhh_sprout.png';
+import xhh_bloom from '@/assets/flower_icons/xhh_bloom.png';
+import xhh_fruit from '@/assets/flower_icons/xhh_fruit.png';
+
 /**
  * 积分换算花朵工具类
  */
@@ -13,18 +26,18 @@ export interface Flowers {
 
 class ConversionFlower {
   readonly flowerImage: Record<string, string> = {
-    bmhSeed: '/src/assets/flower_icons/bmh_seed.png',
-    bmhSprout: '/src/assets/flower_icons/bmh_sprout.png',
-    bmhBloom: '/src/assets/flower_icons/bmh_bloom.jpg',
-    bmhFruit: '/src/assets/flower_icons/bmh_fruit.png',
-    xcjSeed: '/src/assets/flower_icons/xcj_seed.png',
-    xcjSprout: '/src/assets/flower_icons/xcj_sprout.png',
-    xcjBloom: '/src/assets/flower_icons/xcj_bloom.png',
-    xcjFruit: '/src/assets/flower_icons/xcj_fruit.png',
-    xhhSeed: '/src/assets/flower_icons/xhh_seed.png',
-    xhhSprout: '/src/assets/flower_icons/xhh_sprout.png',
-    xhhBloom: '/src/assets/flower_icons/xhh_bloom.png',
-    xhhFruit: '/src/assets/flower_icons/xhh_fruit.png',
+    bmhSeed: bmh_seed,
+    bmhSprout: bmh_sprout,
+    bmhBloom: bmh_bloom,
+    bmhFruit: bmh_fruit,
+    xcjSeed: xcj_seed,
+    xcjSprout: xcj_sprout,
+    xcjBloom: xcj_bloom,
+    xcjFruit: xcj_fruit,
+    xhhSeed: xhh_seed,
+    xhhSprout: xhh_sprout,
+    xhhBloom: xhh_bloom,
+    xhhFruit: xhh_fruit,
   };
   private flowers: Flowers[] = [];
 

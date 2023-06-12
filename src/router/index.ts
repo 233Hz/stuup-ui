@@ -11,7 +11,7 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/login/index.vue'),
   },
   {
-    path: '/404',
+    path: '/:path(.*)*',
     name: '404',
     component: () => import('@/views/error/404.vue'),
   },

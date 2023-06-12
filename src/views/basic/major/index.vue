@@ -2,43 +2,40 @@
   <div style="padding: 10px 20px">
     <el-card style="margin: 10px 0">
       <template #header>
-        <div class="card-header">
-          <span>年份管理</span>
-          <el-space>
-            <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
-            <el-button @click="searchFormRef?.resetFields()">清空</el-button>
-          </el-space>
-        </div>
+        <el-row>
+          <el-col :span="24">
+            <el-form ref="searchFormRef" :model="searchForm" label-width="80px">
+              <el-row>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="专业名称" prop="key">
+                    <el-input v-model="searchForm.key" placeholder="请输入专业名称" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+          </el-col>
+        </el-row>
       </template>
-      <el-row>
-        <el-col :span="24">
-          <el-form ref="searchFormRef" :model="searchForm" label-width="80px">
-            <el-row>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="专业名称" prop="key">
-                  <el-input v-model="searchForm.key" placeholder="请输入专业名称" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
-        </el-col>
-      </el-row>
+
+      <div style="text-align: center">
+        <el-space>
+          <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
+          <el-button @click="searchFormRef?.resetFields()">清空</el-button>
+        </el-space>
+      </div>
     </el-card>
     <el-card>
       <template #header>
-        <div class="card-header">
-          <el-space>
-            <el-button type="primary" @click="addRow">
-              <el-icon><Plus /></el-icon>
-              添加
-            </el-button>
-          </el-space>
-          <el-space>
-            <el-button :disabled="loading" circle @click="fetchList">
-              <el-icon><Refresh /></el-icon>
-            </el-button>
-          </el-space>
-        </div>
+        <el-space>
+          <el-button type="primary" @click="addRow">
+            <el-icon><Plus /></el-icon>
+            添加
+          </el-button>
+          <el-divider direction="vertical" />
+          <el-button :disabled="loading" circle @click="fetchList">
+            <el-icon><Refresh /></el-icon>
+          </el-button>
+        </el-space>
       </template>
 
       <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
@@ -47,7 +44,11 @@
         <el-table-column prop="facultyName" label="所属系部" show-overflow-tooltip align="center" />
         <!-- TODO 字典 -->
         <el-table-column prop="system" label="学制" show-overflow-tooltip align="center" />
-        <el-table-column prop="state" label="状态" show-overflow-tooltip align="center" />
+        <el-table-column prop="state" label="状态" show-overflow-tooltip align="center">
+          <template #default="{ row }">
+            {{ EFFECTIVENESS.getKeyForValue(row.state) }}
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template #default="{ row }">
             <el-button @click="updateRow(row)">修改</el-button>
@@ -93,8 +94,9 @@
       <!-- TODO 字典 -->
       <el-form-item label="专业编号" prop="state">
         <el-radio-group v-model="form.state">
-          <el-radio label="1" border>有效</el-radio>
-          <el-radio label="2" border>无效</el-radio>
+          <el-radio v-for="item in EFFECTIVENESS.getDict()" :key="item.value" :label="item.value" border>
+            {{ item.label }}
+          </el-radio>
         </el-radio-group>
       </el-form-item>
     </el-form>
@@ -117,6 +119,7 @@ import type { FormInstance, FormRules } from 'element-plus';
 import { MajorVO, getMajorPage, saveOrUpdateMajor, delMajor } from '@/api/basic/major/index';
 import { FacultyDictVO, getFacultyList } from '@/api/basic/faculty/index';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import { EFFECTIVENESS } from '@/utils/dict';
 
 onMounted(() => {
   initFacultyList();

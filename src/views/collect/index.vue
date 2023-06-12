@@ -3,55 +3,54 @@
     <el-col :span="24">
       <el-card>
         <template #header>
-          <div class="card-header">
-            <span>成长数据采集</span>
-            <el-space>
-              <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
-              <el-button @click="searchFormRef?.resetFields()">清空</el-button>
-            </el-space>
-          </div>
+          <el-row>
+            <el-col :span="24">
+              <el-form ref="searchFormRef" :model="searchForm" label-width="80px">
+                <el-row>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="学年" prop="yearId">
+                      <el-select v-model="searchForm.yearId" style="width: 100%">
+                        <el-option v-for="item in YEAR" :key="item.oid" :label="item.value" :value="item.oid" />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="一级项目" prop="firstLevelId">
+                      <el-select v-model="searchForm.firstLevelId" @change="firstLevelChange" style="width: 100%">
+                        <el-option v-for="item in FIRST_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="二级项目" prop="secondLevelId">
+                      <el-select v-model="searchForm.secondLevelId" @change="secondLevelChange" style="width: 100%">
+                        <el-option v-for="item in SECOND_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="三级项目" prop="threeLevelId">
+                      <el-select v-model="searchForm.threeLevelId" style="width: 100%">
+                        <el-option v-for="item in THREE_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="成长项目" prop="growName">
+                      <el-input v-model="searchForm.growName" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </el-col>
+          </el-row>
         </template>
-        <el-row>
-          <el-col :span="24">
-            <el-form ref="searchFormRef" :model="searchForm" label-width="80px">
-              <el-row>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="学年" prop="yearId">
-                    <el-select v-model="searchForm.yearId" style="width: 100%">
-                      <el-option v-for="item in YEAR" :key="item.oid" :label="item.value" :value="item.oid" />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="一级项目" prop="firstLevelId">
-                    <el-select v-model="searchForm.firstLevelId" @change="firstLevelChange" style="width: 100%">
-                      <el-option v-for="item in FIRST_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="二级项目" prop="secondLevelId">
-                    <el-select v-model="searchForm.secondLevelId" @change="secondLevelChange" style="width: 100%">
-                      <el-option v-for="item in SECOND_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="三级项目" prop="threeLevelId">
-                    <el-select v-model="searchForm.threeLevelId" style="width: 100%">
-                      <el-option v-for="item in THREE_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="成长项目" prop="growName">
-                    <el-input v-model="searchForm.growName" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
-          </el-col>
-        </el-row>
+        <div style="text-align: center">
+          <el-space>
+            <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
+            <el-button @click="searchFormRef?.resetFields()">清空</el-button>
+          </el-space>
+        </div>
       </el-card>
     </el-col>
     <el-col :span="24" style="margin-top: 10px">
