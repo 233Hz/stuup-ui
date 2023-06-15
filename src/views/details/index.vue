@@ -112,7 +112,7 @@
 import { ref, onMounted, reactive } from 'vue';
 import type { FormInstance, FormRules } from 'element-plus';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { GrowthTreeVO, getGrowthTree } from '@/api/grow/project';
+import { GrowthTreeVO, getGrowthTree } from '@/api/grow/config';
 
 const GROWTH_TREE = ref<GrowthTreeVO[]>([]);
 const YEAR = ref();

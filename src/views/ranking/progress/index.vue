@@ -8,13 +8,6 @@
               <el-form ref="searchFormRef" :model="searchForm" label-width="120px">
                 <el-row>
                   <el-col :sm="24" :md="12" :xl="8">
-                    <el-form-item label="学年" prop="yearId">
-                      <el-select v-model="searchForm.yearId" style="width: 100%">
-                        <el-option v-for="item in YEAR" :key="item.oid" :label="item.value" :value="item.oid" />
-                      </el-select>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :sm="24" :md="12" :xl="8">
                     <el-form-item label="学生姓名" prop="studentName">
                       <el-input v-model="searchForm.studentName" />
                     </el-form-item>
@@ -74,9 +67,18 @@
           </el-space>
         </template>
 
-        <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
-          <el-table-column label="排名" type="index" width="55" align="center" :index="indexRank" />
-          <el-table-column prop="yearName" label="学年" show-overflow-tooltip align="center" />
+        <div style="height: 800px">
+          <el-auto-resizer v-loading="loading">
+            <template #default="{ width, height }">
+              <el-table-v2 :columns="columns" :data="tableData" :width="width" :height="height" />
+            </template>
+          </el-auto-resizer>
+        </div>
+
+        <!-- <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
+          <el-table-column label="排名" type="index" width="55" align="center" />
+          <el-table-column prop="year" label="年份" show-overflow-tooltip align="center" />
+          <el-table-column prop="month" label="月份" show-overflow-tooltip align="center" />
           <el-table-column prop="studentName" label="学生姓名" show-overflow-tooltip align="center" />
           <el-table-column prop="studentNo" label="学号" show-overflow-tooltip align="center" />
           <el-table-column prop="gradeName" label="所属年级" show-overflow-tooltip align="center" />
@@ -85,18 +87,13 @@
           <el-table-column prop="facultyName" label="所属系部" show-overflow-tooltip align="center" />
           <el-table-column prop="majorName" label="所属专业" show-overflow-tooltip align="center" />
           <el-table-column prop="score" label="获得成长值" show-overflow-tooltip align="center" />
-        </el-table>
-        <div class="page-box">
-          <el-pagination
-            background
-            :total="total"
-            v-model:current-page="searchForm.current"
-            v-model:page-size="searchForm.size"
-            :page-sizes="[10, 20, 30, 50, 100]"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            layout="total, sizes, prev, pager, next" />
-        </div>
+          <el-table-column prop="progressState" label="进步状态" show-overflow-tooltip align="center">
+            <template #default="{ row }">
+              {{ PROGRESS_STATE.getKeyForValue(row.progressState) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="progressRanking" label="进步排名" show-overflow-tooltip align="center" />
+        </el-table> -->
       </el-card>
     </el-col>
   </el-row>
@@ -105,33 +102,40 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import type { FormInstance } from 'element-plus';
-import { getYearRanking } from '@/api/ranking/year/index';
-import { getYearList } from '@/api/basic/year/index';
+import { ProgressRankVO, getProgressRanking } from '@/api/ranking/progress';
 import { getGraderList } from '@/api/basic/grade/index';
 import { getMajorList } from '@/api/basic/major/index';
-import { useUserStore } from '@/store/modules/user';
+import { PROGRESS_STATE } from '@/utils/dict';
 
-const userStore = useUserStore();
+const columns = [
+  { dataKey: 'year', key: 'year', title: '年份', width: 100 },
+  { dataKey: 'month', key: 'month', title: '月份', width: 100 },
+  { dataKey: 'studentName', key: 'studentName', title: '学生姓名', width: 100 },
+  { dataKey: 'studentNo', key: 'studentNo', title: '学号', width: 100 },
+  { dataKey: 'gradeName', key: 'gradeName', title: '所属年级', width: 100 },
+  { dataKey: 'className', key: 'className', title: '所属班级', width: 100 },
+  { dataKey: 'classTeacher', key: 'classTeacher', title: '班主任', width: 100 },
+  { dataKey: 'facultyName', key: 'facultyName', title: '所属系部', width: 100 },
+  { dataKey: 'majorName', key: 'majorName', title: '所属专业', width: 100 },
+  { dataKey: 'score', key: 'score', title: '获得成长值', width: 100 },
+  { dataKey: 'progressState', key: 'progressState', title: '进步状态', width: 100 },
+];
 
-onMounted(async () => {
-  initYear();
+onMounted(() => {
   initMajor();
   initGrade();
   fetchList();
 });
 
 // 字典
-const YEAR = ref();
 const GRADE = ref();
 const MAJOR = ref();
 
 const loading = ref<boolean>(false);
-const tableData = ref();
-const total = ref<number>(0);
+const tableData = ref<ProgressRankVO[]>([]);
 const searchForm = ref({
-  current: 1,
-  size: 50,
-  yearId: userStore.getYearId as number,
+  year: void 0,
+  month: void 0,
   studentName: void 0,
   studentNo: void 0,
   className: void 0,
@@ -141,14 +145,6 @@ const searchForm = ref({
 });
 const searchFormRef = ref<FormInstance>();
 
-const indexRank = (index: number) => {
-  return (searchForm.value.current - 1) * searchForm.value.size + index + 1;
-};
-
-const initYear = async () => {
-  const { data: res } = await getYearList();
-  YEAR.value = res;
-};
 const initMajor = async () => {
   const { data: res } = await getMajorList();
   MAJOR.value = res;
@@ -162,20 +158,10 @@ const initGrade = async () => {
 const fetchList = async () => {
   loading.value = true;
   try {
-    const { data: res } = await getYearRanking(searchForm.value);
-    total.value = res.total;
-    tableData.value = res.records;
+    const { data } = await getProgressRanking(searchForm.value);
+    tableData.value = data || [];
   } finally {
     loading.value = false;
   }
-};
-
-const handleCurrentChange = (val: number) => {
-  searchForm.value.current = val;
-  fetchList();
-};
-const handleSizeChange = (val: number) => {
-  searchForm.value.size = val;
-  fetchList();
 };
 </script>

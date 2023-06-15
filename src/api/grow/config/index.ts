@@ -1,4 +1,4 @@
-import { ApiResult, get, post, del } from '@/api/api';
+import { ApiResult, get, post, del, download } from '@/api/api';
 import { Page, PageResult } from '@/types/global';
 
 export interface GrowthTreeVO {
@@ -65,4 +65,16 @@ export const getUserGrowthItems = async (): Promise<ApiResult<GrowthItemVO[]>> =
 
 export const manualTask = async (num: number) => {
   return await get(`/manualTask/task${num}`);
+};
+
+export const downTemp = async (rec_code: string) => {
+  await download('/grow/downTemp', { rec_code });
+};
+
+export const setGrowthItemUser = async (growId: number, userIds: number[]) => {
+  return await post('/growUser/setGrowthItemUser', { growId, userIds });
+};
+
+export const getGrowItemUser = async (growId: number) => {
+  return await get('/growUser/getGrowItemUser/' + growId);
 };

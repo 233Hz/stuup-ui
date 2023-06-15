@@ -32,7 +32,7 @@ export default [
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index.vue'),
         meta: {
-          title: '控制台',
+          title: '首页',
           icon: '',
           flag: 2,
         },

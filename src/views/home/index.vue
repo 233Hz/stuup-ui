@@ -14,7 +14,6 @@
     <span class="xhh_fruit" />
     <span class="xhh-garden" @click="router.push(`/garden/${GARDEN_TYPE.XHH}`)" />
     <div class="blisters-generate-wrapper" />
-    <FlowerLevelIcon class="flower-level" :score="score" :width="100" :height="100" />
   </div>
 </template>
 
@@ -25,12 +24,11 @@ import Leaderboard from '@/components/Leaderboard.vue';
 import { GARDEN_TYPE } from '@/utils/dict';
 import { useRouter } from 'vue-router';
 import { getStudentScore } from '@/api/home';
-import FlowerLevelIcon from '@/components/FlowerLevelIcon.vue';
 
 const router = useRouter();
 
 const show_hint = ref<boolean>(false);
-const className = ref<string>('22中药22213');
+const className = ref<string>('');
 const score = ref<number>(200);
 
 let hint: HTMLDivElement;
@@ -50,7 +48,7 @@ const flowers = new Map([
   [
     'bmh_bloom',
     `<h3>白梅花</h3>
-     <p>梅花：迎寒早开,美丽脱俗。被誉为花中“四君子”之首，因其所处环境恶劣，却仍在凌厉寒风中傲然绽放于枝头，是中华民族最有骨气的花，是民族魂代表。梅的傲骨激励着一代又一代的中国人不畏艰险、奋勇前进、百折不挠。象征正直、纯洁、坚贞、气节、谦虚的品格。</p>`,
+     <p>&nbsp;&nbsp;&nbsp;&nbsp;迎寒早开,美丽脱俗。被誉为花中“四君子”之首，因其所处环境恶劣，却仍在凌厉寒风中傲然绽放于枝头，是中华民族最有骨气的花，是民族魂代表。梅的傲骨激励着一代又一代的中国人不畏艰险、奋勇前进、百折不挠。象征正直、纯洁、坚贞、气节、谦虚的品格。</p>`,
   ],
   [
     'xcj_fruit',
@@ -67,7 +65,7 @@ const flowers = new Map([
   [
     'xcj_bloom',
     `<h3>小雏菊</h3>
-     <p>菊花：盛开在百花凋零之后，隽美多姿，素雅坚贞被称之为“傲霜之花”，受国人爱重，视为高尚情操和坚贞不屈的象征。</p>`,
+     <p>&nbsp;&nbsp;&nbsp;&nbsp;盛开在百花凋零之后，隽美多姿，素雅坚贞被称之为“傲霜之花”，受国人爱重，视为高尚情操和坚贞不屈的象征。</p>`,
   ],
   [
     'xhh_fruit',
@@ -86,7 +84,7 @@ const flowers = new Map([
   [
     'xhh_bloom',
     `<h3>西红花</h3>
-     <p>象征快乐、挂念、真心、多彩、期望和青春的喜悦`,
+     <p>&nbsp;&nbsp;&nbsp;&nbsp;象征快乐、挂念、真心、多彩、期望和青春的喜悦`,
   ],
 ]);
 
@@ -97,7 +95,7 @@ onMounted(() => {
   console.log(keys);
 
   addShowTipsEvent(...keys);
-  generateBlisters();
+  // generateBlisters();
 });
 onUnmounted(() => {});
 
@@ -183,6 +181,7 @@ const getUserScore = async () => {
     top: 0;
     left: 0;
     max-width: 30rem;
+    line-height: 2rem;
     font-size: 1rem;
     background-color: rgba(136, 134, 127, 0.5);
     padding: 1rem;

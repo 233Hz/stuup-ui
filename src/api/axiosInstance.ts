@@ -4,7 +4,7 @@ import { ElMessage } from 'element-plus';
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  // timeout: 5000,
+  timeout: 30000,
   headers: { 'Content-Type': 'application/json' },
 });
 // 添加请求拦截器
@@ -24,6 +24,10 @@ axiosInstance.interceptors.request.use(
 // 添加响应拦截器
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => {
+    // 二进制数据则直接返回
+    if (response.request.responseType === 'blob' || response.request.responseType === 'arraybuffer') {
+      return response;
+    }
     const { data } = response;
     const code = data.code;
     const msg = data.message;

@@ -12,8 +12,7 @@
                 :key="item.id"
                 @click="router.push('/system/announcement')">
                 <span class="message-item__title">{{ index + 1 }}. {{ item.title }}</span>
-                <br />
-                <span class="message-item__time">创建时间：{{ item.createTime }}</span>
+                <span class="message-item__time">发布时间：{{ formatDate(item.createTime, 'YYYY-MM-DD') }}</span>
               </div>
             </el-scrollbar>
           </el-skeleton>
@@ -30,8 +29,7 @@
                 :key="item.id"
                 @click="router.push('/system/announcement')">
                 <span class="message-item__title">{{ index + 1 }}. {{ item.title }}</span>
-                <br />
-                <span class="message-item__time">创建时间：{{ item.createTime }}</span>
+                <span class="message-item__time">发布时间：{{ formatDate(item.createTime, 'YYYY-MM-DD') }}</span>
               </div>
             </el-scrollbar>
           </el-skeleton>
@@ -87,6 +85,7 @@ import collect from '@/assets/svg/collect.svg';
 import record from '@/assets/svg/record.svg';
 import ranking from '@/assets/svg/ranking.svg';
 import userinfo from '@/assets/svg/userinfo.svg';
+import { formatDate } from '@/utils/util';
 
 const router = useRouter();
 
@@ -114,13 +113,20 @@ const initMsg = async () => {
 .message-item {
   padding: 20px;
   font-family: 'Microsoft YaHei', 微软雅黑, 'Microsoft JhengHei', 华文细黑, STHeiti, MingLiu;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   &__title {
+    display: block;
     font-size: 16px;
+    text-align: left;
   }
   &__time {
+    display: block;
     font-size: 12px;
     color: #999;
+    text-align: right;
   }
 
   &:hover {

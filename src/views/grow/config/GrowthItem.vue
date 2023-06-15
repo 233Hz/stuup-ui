@@ -31,7 +31,7 @@
         <div style="text-align: center">
           <el-space>
             <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
-            <el-button @click="searchFormRef?.resetFields()">清空</el-button>
+            <el-button @click="resetSearchForm">清空</el-button>
           </el-space>
         </div>
       </el-card>
@@ -77,7 +77,7 @@
           <el-table-column label="操作" width="300" align="center">
             <template #default="{ row }">
               <el-button @click="updateRow(row)">修改</el-button>
-              <el-button @click="setUser(row.id)">设置项目负责人</el-button>
+              <el-button @click="setGrowUserDrawerRef.open(row.id)">设置项目负责人</el-button>
               <el-button @click="delRow(row)" type="danger">删除</el-button>
             </template>
           </el-table-column>
@@ -95,14 +95,14 @@
         </div>
       </el-card>
     </el-col>
-    <el-dialog v-model="dialog_active" :title="dialog_title" width="40%" draggable @close="resetForm">
+    <el-dialog v-model="active" :title="title" width="40%" draggable @close="resetForm">
       <el-form ref="formRef" :model="form" :rules="rules" :disabled="loading" label-position="top">
         <el-form-item label="所属项目" prop="growthItems">
           <el-cascader
             v-model="form.growthItems"
             placeholder="请选择所属项目"
             clearable
-            :options="growth_list"
+            :options="growthList"
             :props="cascaderProps"
             style="width: 100%" />
         </el-form-item>
@@ -133,8 +133,8 @@
             placeholder="请输入项目周期内可录入次数"
             style="width: 100%" />
         </el-form-item>
-        <el-form-item label="分值刷新周期" prop="scorePeriod">
-          <el-select v-model="form.scorePeriod" placeholder="请选择分值刷新周期" style="width: 100%">
+        <el-form-item label="分值采集周期" prop="scorePeriod">
+          <el-select v-model="form.scorePeriod" placeholder="请选择分值采集周期" style="width: 100%">
             <el-option v-for="item in PERIOD.getDict()" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -163,7 +163,7 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="dialog_active = false">
+        <el-button @click="active = false">
           <el-icon><Close /></el-icon>
           取消
         </el-button>
@@ -173,6 +173,7 @@
         </el-button>
       </template>
     </el-dialog>
+    <SetGrowUserDrawer ref="setGrowUserDrawerRef" />
   </el-row>
 </template>
 
@@ -185,24 +186,21 @@ import {
   getGrowthItemPage,
   saveOrUpdateGrowthItem,
   delGrowthItem,
-} from '@/api/grow/project';
+} from '@/api/grow/config';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import Bus from '@/utils/bus';
 import { PERIOD, CALCULATE_TYPE } from '@/utils/dict';
+import Bus from '@/utils/bus';
+import SetGrowUserDrawer from './SetGrowUserDrawer.vue';
 
+/* Bus */
 Bus.on('get-tree', (growthTree: GrowthTreeVO) => {
-  growth_list.value = growthTree;
+  growthList.value = growthTree;
 });
 
 Bus.on('node-click', (keys: number[]) => {
   searchForm.value.firstLevelId = keys[0];
   searchForm.value.secondLevelId = keys[1];
   searchForm.value.threeLevelId = keys[2];
-  fetchList();
-});
-
-Bus.on('reset-id', () => {
-  growthId.value = undefined;
   fetchList();
 });
 
@@ -215,16 +213,16 @@ const cascaderProps = {
   expandTrigger: 'hover',
 };
 
-onMounted(() => {
-  fetchList();
-});
+/* Ref */
+const searchFormRef = ref<FormInstance>();
+const formRef = ref<FormInstance>();
+const setGrowUserDrawerRef = ref();
 
-const growthId = ref<number>();
-const growth_list = ref<GrowthTreeVO>();
-
+/* Data */
+const growthList = ref<GrowthTreeVO>();
 const loading = ref<boolean>(false);
-const dialog_active = ref<boolean>(false);
-const dialog_title = ref<string>('');
+const active = ref<boolean>(false);
+const title = ref<string>('');
 const tableData = ref<GrowthItemVO[]>();
 const page = ref({
   current: 1,
@@ -251,7 +249,7 @@ const form = ref<GrowthItemVO>({
   scoreUpperLimit: undefined,
   calculateType: undefined,
   score: undefined,
-  growthItems: [4],
+  growthItems: [],
   firstLevelId: undefined,
   secondLevelId: undefined,
   threeLevelId: undefined,
@@ -265,8 +263,14 @@ const rules = reactive<FormRules>({
   calculateType: [{ required: true, message: '请填写分值计算类型', trigger: 'blur' }],
   score: [{ required: true, message: '请填写项目可获得分值', trigger: 'blur' }],
 });
-const searchFormRef = ref<FormInstance>();
-const formRef = ref<FormInstance>();
+
+/* Life Cycle */
+
+onMounted(() => {
+  fetchList();
+});
+
+/* Methods */
 
 const fetchList = async () => {
   loading.value = true;
@@ -289,11 +293,11 @@ const handleSizeChange = (val: number) => {
 };
 
 const addRow = () => {
-  dialog_title.value = '添加';
-  dialog_active.value = true;
+  title.value = '添加';
+  active.value = true;
 };
 const updateRow = (row: GrowthItemVO) => {
-  dialog_title.value = '修改';
+  title.value = '修改';
   form.value.id = row.id;
   form.value.name = row.name;
   form.value.code = row.code;
@@ -314,10 +318,8 @@ const updateRow = (row: GrowthItemVO) => {
     form.value.growthItems.push(row.threeLevelId);
   }
   console.log(form.value);
-  dialog_active.value = true;
+  active.value = true;
 };
-
-const setUser = (id: number) => {};
 
 const delRow = (row: GrowthItemVO) => {
   ElMessageBox({
@@ -355,11 +357,23 @@ const submitForm = async () => {
   try {
     const res = await saveOrUpdateGrowthItem(form.value);
     ElMessage.success(res.message);
-    dialog_active.value = false;
+    active.value = false;
     fetchList();
   } finally {
     loading.value = false;
   }
+};
+
+const resetSearchForm = () => {
+  searchForm.value = {
+    firstLevelId: void 0,
+    secondLevelId: void 0,
+    threeLevelId: void 0,
+    id: void 0,
+    name: void 0,
+    calculateType: void 0,
+  };
+  searchFormRef.value?.resetFields();
 };
 
 const resetForm = () => {

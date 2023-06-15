@@ -20,55 +20,68 @@ import { ElMessage, ElMessageBox } from 'element-plus';
 import { setFlowerConfig } from '@/api/grow/model';
 import { useFlowersStore } from '@/store/modules/flowers';
 
+import xcj_seed from '@/assets/flower_icons/xcj_seed.png';
+import xcj_sprout from '@/assets/flower_icons/xcj_sprout.png';
+import xcj_bloom from '@/assets/flower_icons/xcj_bloom.png';
+import xcj_fruit from '@/assets/flower_icons/xcj_fruit.png';
+import bmh_seed from '@/assets/flower_icons/bmh_seed.png';
+import bmh_sprout from '@/assets/flower_icons/bmh_sprout.png';
+import bmh_bloom from '@/assets/flower_icons/bmh_bloom.jpg';
+import bmh_fruit from '@/assets/flower_icons/bmh_fruit.png';
+import xhh_seed from '@/assets/flower_icons/xhh_seed.png';
+import xhh_sprout from '@/assets/flower_icons/xhh_sprout.png';
+import xhh_bloom from '@/assets/flower_icons/xhh_bloom.png';
+import xhh_fruit from '@/assets/flower_icons/xhh_fruit.png';
+
 const flowersStore = useFlowersStore();
 
 const flowers = {
-  bmhSeed: {
-    src: '/src/assets/flower_icons/bmh_seed.png',
-    name: '白梅花种子',
-  },
-  bmhSprout: {
-    src: '/src/assets/flower_icons/bmh_sprout.png',
-    name: '白梅花发芽',
-  },
-  bmhBloom: {
-    src: '/src/assets/flower_icons/bmh_bloom.jpg',
-    name: '白梅花开花',
-  },
-  bmhFruit: {
-    src: '/src/assets/flower_icons/bmh_fruit.png',
-    name: '白梅花结果',
-  },
   xcjSeed: {
-    src: '/src/assets/flower_icons/xcj_seed.png',
+    src: xcj_seed,
     name: '小雏菊种子',
   },
   xcjSprout: {
-    src: '/src/assets/flower_icons/xcj_sprout.png',
+    src: xcj_sprout,
     name: '小雏菊发芽',
   },
   xcjBloom: {
-    src: '/src/assets/flower_icons/xcj_bloom.png',
+    src: xcj_bloom,
     name: '小雏菊开花',
   },
   xcjFruit: {
-    src: '/src/assets/flower_icons/xcj_fruit.png',
+    src: xcj_fruit,
     name: '小雏菊结果',
   },
+  bmhSeed: {
+    src: bmh_seed,
+    name: '白梅花种子',
+  },
+  bmhSprout: {
+    src: bmh_sprout,
+    name: '白梅花发芽',
+  },
+  bmhBloom: {
+    src: bmh_bloom,
+    name: '白梅花开花',
+  },
+  bmhFruit: {
+    src: bmh_fruit,
+    name: '白梅花结果',
+  },
   xhhSeed: {
-    src: '/src/assets/flower_icons/xhh_seed.png',
+    src: xhh_seed,
     name: '西红花种子',
   },
   xhhSprout: {
-    src: '/src/assets/flower_icons/xhh_sprout.png',
+    src: xhh_sprout,
     name: '西红花发芽',
   },
   xhhBloom: {
-    src: '/src/assets/flower_icons/xhh_bloom.png',
+    src: xhh_bloom,
     name: '西红花开花',
   },
   xhhFruit: {
-    src: '/src/assets/flower_icons/xhh_fruit.png',
+    src: xhh_fruit,
     name: '西红花结果',
   },
 };

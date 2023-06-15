@@ -8,13 +8,13 @@
     </div>
     <div class="bunga-header__navbar">
       <el-space>
-        <el-switch
-          v-model="showAside"
-          inline-prompt
-          style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
-          active-text="前往前台"
-          inactive-text="前往后台"
-          @change="changeAside" />
+        <el-button
+          :type="showAside ? 'primary' : 'warning'"
+          :icon="showAside ? ArrowRightBold : ArrowLeftBold"
+          round
+          @click="showAside = !showAside">
+          {{ showAside ? '前往前台' : '前往后台' }}
+        </el-button>
         <el-dropdown>
           <span class="el-dropdown-link">
             {{ userStore.getUserName }}
@@ -34,31 +34,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import logo from '@/assets/logo.png';
 import Menu from './Menu.vue';
 import { useUserStore } from '@/store/modules/user';
 import { usePermissionStore } from '@/store/modules/premission';
 import { ElMessageBox } from 'element-plus';
 import { useRouter } from 'vue-router';
+import { ArrowLeftBold, ArrowRightBold } from '@element-plus/icons-vue';
 
 const router = useRouter();
 const userStore = useUserStore();
 const premissionStore = usePermissionStore();
 
-const showAside = ref<boolean>(sessionStorage.getItem('show-aside') === 'true');
+const showAside = ref<boolean>(false);
 
 const emit = defineEmits(['change-aside']);
 
 onMounted(() => {
+  showAside.value = sessionStorage.getItem('show-aside') === 'true';
   emit('change-aside', showAside.value);
 });
 
-const changeAside = (val: boolean) => {
-  val ? router.push('/dashboard') : router.push('/');
-  sessionStorage.setItem('show-aside', val.toString());
-  emit('change-aside', val);
-};
+watch(showAside, newVal => {
+  newVal ? router.push('/dashboard') : router.push('/');
+  sessionStorage.setItem('show-aside', newVal.toString());
+  emit('change-aside', newVal);
+});
+
+// const changeAside = (val: boolean) => {
+//   val ? router.push('/dashboard') : router.push('/');
+//   sessionStorage.setItem('show-aside', val.toString());
+//   emit('change-aside', val);
+// };
 
 const handleLoginout = () => {
   ElMessageBox.confirm('确认退出？', '退出登入', {

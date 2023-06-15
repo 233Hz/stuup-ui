@@ -76,12 +76,13 @@ const submit = () => {
 const handleSuccess: UploadProps['onSuccess'] = response => {
   uploadRef.value.clearFiles();
   if (response.code !== 0) return ElMessage.error(response.message);
+  ElMessage.success(response.message);
   if (response.data && response.data.length) {
     errors.value = response.data;
     active.value = true;
+  } else {
+    emit('success');
   }
-  ElMessage.success(response.message);
-  emit('success');
 };
 
 const reset = () => {

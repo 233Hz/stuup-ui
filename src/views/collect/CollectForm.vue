@@ -19,7 +19,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="active = false">取 消</el-button>
-        <el-button type="success" @click="active = false">下载模板</el-button>
+        <el-button type="success" @click="handleDownTemp">下载模板</el-button>
         <el-button type="primary" @click="uploadRef.submit()">导入</el-button>
       </span>
     </template>
@@ -28,8 +28,9 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue';
-import { getUserGrowthItems, GrowthItemVO } from '@/api/grow/project';
+import { getUserGrowthItems, GrowthItemVO, downTemp } from '@/api/grow/config';
 import { ElMessage } from 'element-plus';
+import Bus from '@/utils/bus';
 import UploadVue from '@/components/UploadVue.vue';
 
 const fromRef = ref();
@@ -57,8 +58,13 @@ const open = () => {
   active.value = true;
 };
 
+const handleDownTemp = async () => {
+  downTemp(form.rec_code);
+};
+
 const handleSuccess = () => {
   active.value = false;
+  Bus.emit('upload-success');
 };
 
 const handleClose = () => {

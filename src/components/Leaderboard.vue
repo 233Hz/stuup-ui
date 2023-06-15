@@ -3,6 +3,18 @@
     <div class="hover-container"></div>
     <transition name="fade">
       <div v-show="show" class="content">
+        <el-tabs v-model="activeName">
+          <el-tab-pane label="荣耀榜" name="school" />
+          <el-tab-pane label="班级榜" name="class" />
+          <el-tab-pane label="进步榜" name="progress" />
+        </el-tabs>
+
+        <!-- <el-auto-resizer v-loading="loading">
+          <template #default="{ width }">
+            <el-table-v2 :columns="columns" :data="tableData" :width="width" />
+          </template>
+        </el-auto-resizer> -->
+
         <el-table :data="tableData" stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
           <el-table-column label="排名" type="index" width="55" align="center" />
           <el-table-column prop="studentName" label="学生姓名" show-overflow-tooltip align="center" />
@@ -29,9 +41,24 @@ import FlowerLevelIcon from '@/components/FlowerLevelIcon.vue';
 
 const userStore = useUserStore();
 
+const activeName = ref('school');
 const tableData = ref();
 const loading = ref<boolean>(false);
 const show = ref<boolean>(false);
+
+const columns = [
+  { dataKey: 'year', key: 'year', title: '年份', width: 100 },
+  { dataKey: 'month', key: 'month', title: '月份', width: 100 },
+  { dataKey: 'studentName', key: 'studentName', title: '学生姓名', width: 100 },
+  { dataKey: 'studentNo', key: 'studentNo', title: '学号', width: 100 },
+  { dataKey: 'gradeName', key: 'gradeName', title: '所属年级', width: 100 },
+  { dataKey: 'className', key: 'className', title: '所属班级', width: 100 },
+  { dataKey: 'classTeacher', key: 'classTeacher', title: '班主任', width: 100 },
+  { dataKey: 'facultyName', key: 'facultyName', title: '所属系部', width: 100 },
+  { dataKey: 'majorName', key: 'majorName', title: '所属专业', width: 100 },
+  { dataKey: 'score', key: 'score', title: '获得成长值', width: 100 },
+  { dataKey: 'progressState', key: 'progressState', title: '进步状态', width: 100 },
+];
 
 let hoverContainer: HTMLDivElement;
 let container: HTMLDivElement;

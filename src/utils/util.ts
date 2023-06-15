@@ -1,44 +1,20 @@
-type EnumDefinition = Record<string, [string, string | number]>;
+export const formatDate = (time: string, format: string = 'YYYY-MM-DD hh:mm:ss') => {
+  const date = new Date(time);
 
-interface EnumItem {
-  label: string;
-  value: string | number;
-}
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  const second = date.getSeconds();
 
-interface Enum {
-  [key: string]: any;
-  getValue(enumName: string): string | number;
-  getKeyForValue(value: string | number): string;
-  getDict(): EnumItem[];
-}
+  const preArr = Array.apply(null, Array(10)).map((item, index) => '0' + index);
 
-export class EnumImpl implements Enum {
-  private strToValueMap: Record<string, string | number> = {};
-  private numToDescMap: Record<string | number, string> = {};
-
-  constructor(private readonly definition: EnumDefinition) {
-    for (const enumName of Object.keys(definition)) {
-      const [key, value] = definition[enumName];
-      this.strToValueMap[enumName] = value;
-      this.numToDescMap[value] = key;
-      this[enumName] = value;
-    }
-  }
-
-  getValue(enumName: string): string | number {
-    return (this.definition[enumName] && this.definition[enumName][1]) || '';
-  }
-
-  getKeyForValue(value: string | number): string {
-    return this.numToDescMap[value] || '';
-  }
-
-  getDict(): EnumItem[] {
-    return Object.keys(this.definition).map(enumName => {
-      const [key, value] = this.definition[enumName];
-      return { label: key, value };
-    });
-  }
-
-  [key: keyof EnumDefinition]: any;
-}
+  return format
+    .replace(/YYYY/g, String(year))
+    .replace(/MM/g, preArr[month] || String(month))
+    .replace(/DD/g, preArr[day] || String(day))
+    .replace(/hh/g, preArr[hour] || String(hour))
+    .replace(/mm/g, preArr[minute] || String(minute))
+    .replace(/ss/g, preArr[second] || String(second));
+};

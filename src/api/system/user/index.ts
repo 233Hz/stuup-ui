@@ -19,6 +19,13 @@ export interface UserVO {
   createTime?: Date;
 }
 
+export interface SimpleUserVO {
+  id: number;
+  username: string;
+  teacherNo: string;
+  deptName: string;
+}
+
 export interface UserDictVO {
   oid: number;
   value: string;
@@ -27,6 +34,10 @@ export interface UserDictVO {
 
 export const getUserList = async (): Promise<ApiResult<UserDictVO[]>> => {
   return await get('/user/all');
+};
+
+export const getSimpleUserPage = async (params: Page): Promise<ApiResult<PageResult<SimpleUserVO[]>>> => {
+  return await get('/user/getSimpleUserPage', params);
 };
 
 export const getUserPage = async (params: Page): Promise<ApiResult<PageResult<UserVO[]>>> => {

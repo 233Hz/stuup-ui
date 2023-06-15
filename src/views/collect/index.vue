@@ -67,8 +67,7 @@
               <el-button type="warning" @click="handleTask(3)">计算每月积分（测试）</el-button>
               <el-button type="warning" @click="handleTask(4)">计算每学期积分（测试）</el-button>
               <el-button type="warning" @click="handleTask(5)">计算每年积分（测试）</el-button>
-            </el-space>
-            <el-space>
+              <el-divider direction="vertical" />
               <el-button :disabled="loading" circle @click="fetchList">
                 <el-icon><Refresh /></el-icon>
               </el-button>
@@ -118,12 +117,17 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import type { FormInstance } from 'element-plus';
+import { ElMessage, type FormInstance } from 'element-plus';
 import { getRecLogPage } from '@/api/collect/index';
-import { GrowthTreeVO, getGrowthTree, manualTask } from '@/api/grow/project';
+import { GrowthTreeVO, getGrowthTree, manualTask } from '@/api/grow/config';
 import { getYearList } from '@/api/basic/year/index';
 import CollectForm from './CollectForm.vue';
 import CollectDetails from './CollectDetails.vue';
+import Bus from '@/utils/bus';
+
+Bus.on('upload-success', () => {
+  fetchList();
+});
 
 onMounted(() => {
   initYear();
@@ -214,6 +218,11 @@ const handleSizeChange = (val: number) => {
 
 // =======================测试=======================
 const handleTask = async (num: number) => {
-  await manualTask(num);
+  try {
+    await manualTask(num);
+    ElMessage.success('执行成功');
+  } catch {
+    ElMessage.error('执行失败');
+  }
 };
 </script>

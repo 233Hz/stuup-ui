@@ -2,10 +2,6 @@
   <el-card style="margin-top: 10px">
     <template #header>
       <el-space>
-        <el-button type="primary" :loading="loading" @click="queryAll">
-          <el-icon><Search /></el-icon>
-          查询全部
-        </el-button>
         <el-button type="primary" :loading="loading" @click="addRow">
           <el-icon><Plus /></el-icon>
           添加
@@ -72,7 +68,7 @@
 <script setup lang="ts">
 import { onMounted, ref, reactive, watch, h } from 'vue';
 import type { FormInstance, FormRules } from 'element-plus';
-import { GrowthTreeVO, GrowthVO, getGrowthTree, saveOrUpdateGrowth, delGrowth } from '@/api/grow/project';
+import { GrowthTreeVO, GrowthVO, getGrowthTree, saveOrUpdateGrowth, delGrowth } from '@/api/grow/config';
 import { ElMessage, ElMessageBox, ElTree } from 'element-plus';
 import Bus from '@/utils/bus';
 
@@ -123,10 +119,6 @@ const fetchGetGrowthTree = async () => {
   } finally {
     loading.value = false;
   }
-};
-
-const queryAll = () => {
-  Bus.emit('reset-id');
 };
 
 const addRow = () => {
