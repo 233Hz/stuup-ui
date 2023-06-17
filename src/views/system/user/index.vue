@@ -1,45 +1,25 @@
 <template>
   <div style="padding: 10px 20px">
-    <!-- <el-card style="margin: 10px 0">
+    <el-card style="margin: 10px 0">
       <template #header>
         <el-row>
           <el-col :span="24">
-            <el-form ref="searchFormRef" :model="searchForm" label-width="80px">
+            <el-form ref="searchFormRef" :model="searchForm" label-width="120px">
               <el-row>
                 <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="用户名" prop="userName">
-                    <el-input v-model="searchForm.userName" placeholder="请输入用户名" />
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="性别" prop="sex">
-                    <el-select v-model="searchForm.sex" placeholder="请输入性别" style="width: 100%"></el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="教师类型" prop="teacherType">
-                    <el-select
-                      v-model="searchForm.teacherType"
-                      placeholder="请选择教师类型"
-                      style="width: 100%"></el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="用户类型" prop="userType">
-                    <el-select
-                      v-model="searchForm.userType"
-                      placeholder="请选择用户类型"
-                      style="width: 100%"></el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="所属部门" prop="deptId">
-                    <el-select v-model="searchForm.deptId" placeholder="请选择所属部门" style="width: 100%"></el-select>
+                  <el-form-item label="用户名/手机号" prop="key">
+                    <el-input v-model="searchForm.key" placeholder="请输入用户名/手机号" />
                   </el-form-item>
                 </el-col>
                 <el-col :sm="24" :md="12" :xl="8">
                   <el-form-item label="状态" prop="state">
-                    <el-select v-model="searchForm.state" placeholder="请选择状态" style="width: 100%"></el-select>
+                    <el-select v-model="searchForm.state" placeholder="请选择状态" style="width: 100%">
+                      <el-option
+                        v-for="item in USER_STATE.getDict()"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value" />
+                    </el-select>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -53,7 +33,7 @@
           <el-button @click="searchFormRef?.resetFields()">清空</el-button>
         </el-space>
       </div>
-    </el-card> -->
+    </el-card>
     <el-card>
       <template #header>
         <el-space>
@@ -106,9 +86,9 @@
       <div class="page-box">
         <el-pagination
           background
-          :total="page.total"
-          v-model:current-page="page.current"
-          v-model:page-size="page.size"
+          :total="total"
+          v-model:current-page="searchForm.current"
+          v-model:page-size="searchForm.size"
           :page-sizes="[10, 20, 30, 50, 100]"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -129,7 +109,6 @@
           <el-radio v-for="item in SEX.getDict()" :key="item.value" :label="item.value" border>
             {{ item.label }}
           </el-radio>
-          <el-radio label="2" border>女</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="手机号" prop="mobile">
@@ -206,17 +185,11 @@ const loading = ref<boolean>(false);
 const dialog_active = ref<boolean>(false);
 const dialog_title = ref<string>('');
 const tableData = ref<UserVO[]>();
-const page = ref({
+const total = ref<number>(0);
+const searchForm = ref({
   current: 1,
   size: 10,
-  total: 10,
-});
-const searchForm = ref({
-  userName: '',
-  sex: undefined,
-  teacherType: undefined,
-  userType: '',
-  deptId: undefined,
+  key: void 0,
   state: undefined,
 });
 const form = ref<UserVO>({
@@ -255,8 +228,8 @@ const initRoleList = async () => {
 const fetchList = async () => {
   loading.value = true;
   try {
-    const { data: res } = await getUserPage(Object.assign(page.value, searchForm.value));
-    page.value.total = res.total;
+    const { data: res } = await getUserPage(Object.assign(searchForm.value));
+    total.value = res.total;
     tableData.value = res.records;
   } finally {
     loading.value = false;
@@ -264,11 +237,11 @@ const fetchList = async () => {
 };
 
 const handleCurrentChange = (val: number) => {
-  page.value.current = val;
+  searchForm.value.current = val;
   fetchList();
 };
 const handleSizeChange = (val: number) => {
-  page.value.size = val;
+  searchForm.value.size = val;
   fetchList();
 };
 

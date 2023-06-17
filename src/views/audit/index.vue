@@ -7,8 +7,8 @@
             <el-form ref="searchFormRef" :model="searchForm">
               <el-row>
                 <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="项目名称" prop="yearName">
-                    <el-input v-model="searchForm.name" />
+                  <el-form-item label="项目名称" prop="growName">
+                    <el-input v-model="searchForm.growName" />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -24,17 +24,52 @@
       </div>
     </el-card>
     <el-card>
+      <template #header>
+        <el-space>
+          <el-divider direction="vertical" />
+          <el-button :disabled="loading" circle @click="fetchList">
+            <el-icon><Refresh /></el-icon>
+          </el-button>
+        </el-space>
+      </template>
       <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
-        <el-table-column prop="name" label="申请项目名称" show-overflow-tooltip align="center" />
-        <el-table-column prop="score" label="项目成长值" show-overflow-tooltip align="center" />
-        <el-table-column prop="studentName" label="申请人" show-overflow-tooltip align="center" />
-        <el-table-column prop="createTime" label="申请时间" show-overflow-tooltip align="center" />
-        <el-table-column prop="state" label="审核状态" show-overflow-tooltip align="center" />
+        <el-table-column prop="firstLevelName" label="一级项目" show-overflow-tooltip align="center" />
+        <el-table-column prop="secondLevelName" label="二级项目" show-overflow-tooltip align="center" />
+        <el-table-column prop="thirdLevelName" label="三级项目" show-overflow-tooltip align="center" />
+        <el-table-column prop="growName" label="成长项" show-overflow-tooltip align="center" />
+        <el-table-column prop="applicant" label="提交人" show-overflow-tooltip align="center" />
+        <el-table-column prop="state" label="审核状态" show-overflow-tooltip align="center">
+          <template #default="{ row }">
+            <el-tag v-show="row.state === AUDIT_STATUS.TO_BE_SUBMITTED" type="info">
+              {{ AUDIT_STATUS.getKey('TO_BE_SUBMITTED') }}
+            </el-tag>
+            <el-tag v-show="row.state === AUDIT_STATUS.PENDING_REVIEW">
+              {{ AUDIT_STATUS.getKey('PENDING_REVIEW') }}
+            </el-tag>
+            <el-tag v-show="row.state === AUDIT_STATUS.PASS" type="success">
+              {{ AUDIT_STATUS.getKey('PASS') }}
+            </el-tag>
+            <el-tag v-show="row.state === AUDIT_STATUS.REFUSE" type="danger">
+              {{ AUDIT_STATUS.getKey('REFUSE') }}
+            </el-tag>
+            <el-tag v-show="row.state === AUDIT_STATUS.RETURN" type="warning">
+              {{ AUDIT_STATUS.getKey('RETURN') }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="createTime" label="提交时间" show-overflow-tooltip align="center" />
         <el-table-column label="操作" width="400" align="center">
           <template #default="{ row }">
-            <el-button>查看详情</el-button>
-            <el-button>通过</el-button>
-            <el-button type="danger">拒绝</el-button>
+            <el-button @click="auditInfoRef.open(row)">审核信息</el-button>
+            <el-button :disabled="row.state !== AUDIT_STATUS.PENDING_REVIEW" type="success" @click="passRow(row.id)">
+              通过
+            </el-button>
+            <el-button :disabled="row.state !== AUDIT_STATUS.PENDING_REVIEW" type="danger" @click="refuseRow(row.id)">
+              拒绝
+            </el-button>
+            <el-button :disabled="row.state !== AUDIT_STATUS.PENDING_REVIEW" type="warning" @click="returnRow(row.id)">
+              退回
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -43,115 +78,123 @@
           background
           :disabled="loading"
           :total="total"
-          v-model:current-page="page.current"
-          v-model:page-size="page.size"
+          v-model:current-page="searchForm.current"
+          v-model:page-size="searchForm.size"
           :page-sizes="[10, 20, 30, 50, 100]"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           layout="total, sizes, prev, pager, next" />
       </div>
     </el-card>
+    <AuditInfo ref="auditInfoRef" />
   </div>
-  <el-dialog v-model="dialog_active" :title="dialog_title" width="500" draggable @close="resetForm">
-    <template #footer>
-      <el-button @click="dialog_active = false">
-        <el-icon><Close /></el-icon>
-        取消
-      </el-button>
-      <el-button type="primary" :loading="loading" @click="submitForm">
-        <el-icon><Check /></el-icon>
-        提交
-      </el-button>
-    </template>
-  </el-dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue';
-import type { FormInstance, FormRules } from 'element-plus';
+import { ref, onMounted } from 'vue';
+import type { FormInstance } from 'element-plus';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import { pageGrowAuditRecord, passGrowItem, refuseGrowItem, returnGrowItem } from '@/api/audit';
+import { AUDIT_STATUS } from '@/utils/dict';
+import AuditInfo from '@/components/AuditInfo.vue';
 
+//REF
+const searchFormRef = ref<FormInstance>();
+const auditInfoRef = ref();
+
+// DATA
 const loading = ref<boolean>(false);
-const dialog_active = ref<boolean>(false);
-const dialog_title = ref<string>('');
 const tableData = ref([{}]);
-const page = ref({
-  current: 1,
-  size: 10,
-});
 const total = ref<number>(0);
 const searchForm = ref({
-  name: '',
+  current: 1,
+  size: 10,
+  firstLevelId: void 0,
+  secondLevelId: void 0,
+  thirdLevelId: void 0,
+  growName: void 0,
+  state: void 0,
 });
-const form = ref({});
-const rules = reactive<FormRules>({});
-const searchFormRef = ref<FormInstance>();
-const formRef = ref<FormInstance>();
 
+onMounted(() => {
+  fetchList();
+});
+
+//METHODS
 const fetchList = async () => {
   loading.value = true;
   try {
-    // TODO
+    const { data } = await pageGrowAuditRecord(searchForm.value);
+    total.value = data.total;
+    tableData.value = data.records;
   } finally {
     loading.value = false;
   }
 };
 
-const handleCurrentChange = (val: number) => {
-  page.value.current = val;
-  fetchList();
-};
-const handleSizeChange = (val: number) => {
-  page.value.size = val;
-  fetchList();
-};
-
-const addRow = () => {
-  dialog_title.value = '添加';
-  dialog_active.value = true;
-};
-const updateRow = row => {
-  dialog_title.value = '修改';
-  dialog_active.value = true;
-};
-const delRow = (oid: number) => {
-  ElMessageBox.confirm('确认删除？', '删除学年', {
+const passRow = (id: number) => {
+  ElMessageBox.confirm('确认通过？', '通过该申请记录', {
     confirmButtonText: '确认',
     cancelButtonText: '取消',
-    type: 'warning',
+    type: 'success',
   })
     .then(async () => {
       loading.value = true;
       try {
-        // TODO
-      } finally {
+        const data = await passGrowItem(id);
+        ElMessage.success(data.message);
+        fetchList();
+      } catch {
+        loading.value = false;
+      }
+    })
+    .catch(() => {});
+};
+const refuseRow = (id: number) => {
+  ElMessageBox.prompt('请输入拒绝原因', '拒绝原因', {
+    inputPlaceholder: '原因',
+    confirmButtonText: '确 认',
+    cancelButtonText: '取 消',
+    inputErrorMessage: '请输入原因',
+  })
+    .then(async ({ value }) => {
+      loading.value = true;
+      try {
+        const data = await refuseGrowItem(id, value);
+        ElMessage.success(data.message);
+        fetchList();
+      } catch {
+        loading.value = false;
+      }
+    })
+    .catch(() => {});
+};
+const returnRow = (id: number) => {
+  ElMessageBox.prompt('请输入退回原因', '退回原因', {
+    inputPlaceholder: '原因',
+    confirmButtonText: '确 认',
+    cancelButtonText: '取 消',
+    inputErrorMessage: '请输入原因',
+  })
+    .then(async ({ value }) => {
+      loading.value = true;
+      try {
+        const data = await returnGrowItem(id, value);
+        ElMessage.success(data.message);
+        fetchList();
+      } catch {
         loading.value = false;
       }
     })
     .catch(() => {});
 };
 
-const submitForm = async () => {
-  if (!formRef) return;
-  const valid = await formRef.value?.validate();
-  if (!valid) return;
-  loading.value = true;
-  try {
-    // TODO
-  } finally {
-    loading.value = false;
-  }
+const handleCurrentChange = (val: number) => {
+  searchForm.value.current = val;
+  fetchList();
 };
-
-const resetForm = () => {
-  form.value = {
-    yearName: '',
-    yearRange: [],
-    yearStart: '',
-    yearEnd: '',
-    lastSemester: '',
-    nextSemester: '',
-  };
-  formRef.value?.resetFields();
+const handleSizeChange = (val: number) => {
+  searchForm.value.size = val;
+  fetchList();
 };
 </script>

@@ -4,6 +4,9 @@ dependencies:
   '@element-plus/icons-vue':
     specifier: ^2.1.0
     version: 2.1.0(vue@3.2.47)
+  '@form-create/element-ui':
+    specifier: ^3.1.21
+    version: registry.npmmirror.com/@form-create/element-ui@3.1.21(vue@3.2.47)
   '@rollup/plugin-alias':
     specifier: ^5.0.0
     version: registry.npmmirror.com/@rollup/plugin-alias@5.0.0
@@ -1545,6 +1548,107 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  registry.npmmirror.com/@form-create/component-elm-checkbox@3.1.15:
+    resolution: {integrity: sha512-bAl3k0p76wwMX0OxeR8KAEiUl2RP1Jl1kAqbjD762EcSXGgaXgP94v9ag1JhUoiwZkSKWl6IF+e/utjEonRSFw==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@form-create/component-elm-checkbox/-/component-elm-checkbox-3.1.15.tgz}
+    name: '@form-create/component-elm-checkbox'
+    version: 3.1.15
+    dependencies:
+      '@form-create/utils': registry.npmmirror.com/@form-create/utils@3.1.15
+    dev: false
+
+  registry.npmmirror.com/@form-create/component-elm-frame@3.1.15:
+    resolution: {integrity: sha512-78WbMpMLTYwTo3QP7Fa+N2VF/u1vmRuwDmiobtBtVg9EE7m6//bQV96ibnLNXX27MD41gIg+o1GUJtx/qxZ8Ew==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@form-create/component-elm-frame/-/component-elm-frame-3.1.15.tgz}
+    name: '@form-create/component-elm-frame'
+    version: 3.1.15
+    dependencies:
+      '@form-create/utils': registry.npmmirror.com/@form-create/utils@3.1.15
+    dev: false
+
+  registry.npmmirror.com/@form-create/component-elm-group@3.1.19:
+    resolution: {integrity: sha512-1BCfU8lj+hkDZhUNeKm+A2VRDdKfkWUaaISVLMyOsatjdQ35W2AAcaYVdtD4eWvWrtenV94GRgBmcnRUPC/cgw==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@form-create/component-elm-group/-/component-elm-group-3.1.19.tgz}
+    name: '@form-create/component-elm-group'
+    version: 3.1.19
+    dependencies:
+      '@form-create/utils': registry.npmmirror.com/@form-create/utils@3.1.15
+    dev: false
+
+  registry.npmmirror.com/@form-create/component-elm-radio@3.1.15:
+    resolution: {integrity: sha512-qAf1VlhrUvMlgzkz6BYLRn0UOLahkTI/cbzt8nkp5PL1oGoSXp5xqIOtHMjbnGEkEXW57kjRKI5Q7UjzIhYmvQ==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@form-create/component-elm-radio/-/component-elm-radio-3.1.15.tgz}
+    name: '@form-create/component-elm-radio'
+    version: 3.1.15
+    dependencies:
+      '@form-create/utils': registry.npmmirror.com/@form-create/utils@3.1.15
+    dev: false
+
+  registry.npmmirror.com/@form-create/component-elm-select@3.1.15:
+    resolution: {integrity: sha512-ZnvPn/TGqgFDed7bKabjRvlwlQ8RYq5WCG9Iy63d2igC8577tv5QTI2rNvfGfxxH/254MPwgNlA94JukxzEOTw==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@form-create/component-elm-select/-/component-elm-select-3.1.15.tgz}
+    name: '@form-create/component-elm-select'
+    version: 3.1.15
+    dependencies:
+      '@form-create/utils': registry.npmmirror.com/@form-create/utils@3.1.15
+    dev: false
+
+  registry.npmmirror.com/@form-create/component-elm-tree@3.1.15:
+    resolution: {integrity: sha512-4VPN406A8Mvannn8P/2DvStqDYFfDHZ+ILG/0JndOyfe+GdYdSA5SwD3LfC4zD6AhpGrkOJXbd4YYXlBUtzt8g==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@form-create/component-elm-tree/-/component-elm-tree-3.1.15.tgz}
+    name: '@form-create/component-elm-tree'
+    version: 3.1.15
+    dependencies:
+      '@form-create/utils': registry.npmmirror.com/@form-create/utils@3.1.15
+    dev: false
+
+  registry.npmmirror.com/@form-create/component-elm-upload@3.1.18:
+    resolution: {integrity: sha512-+jHZ1vfNusEqKSvpLpFcKbF0lE7S+YuWtAturzW2O5K+qYDw6SmGyB3/XeYqVXN9rfne0rqMbyYw6CGglVe7nw==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@form-create/component-elm-upload/-/component-elm-upload-3.1.18.tgz}
+    name: '@form-create/component-elm-upload'
+    version: 3.1.18
+    dependencies:
+      '@form-create/utils': registry.npmmirror.com/@form-create/utils@3.1.15
+    dev: false
+
+  registry.npmmirror.com/@form-create/component-subform@3.1.5:
+    resolution: {integrity: sha512-JHNEFGuwpnjGvCJ0I0GCqPL5al0qXoN4ymnRBpm+oL+6MMo5bz1kUyoqMX1MutuC96gHTqpeqc67hssi8g2mIw==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@form-create/component-subform/-/component-subform-3.1.5.tgz}
+    name: '@form-create/component-subform'
+    version: 3.1.5
+    dev: false
+
+  registry.npmmirror.com/@form-create/core@3.1.21(vue@3.2.47):
+    resolution: {integrity: sha512-wlAC/KnnjTBMOkqmyEcIVJ18rmanCOqjUwVJy8IZpaslAsObaQM6tO9/AccCrgJnw4ANp7p6pL5VUGvdXgq2Fg==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@form-create/core/-/core-3.1.21.tgz}
+    id: registry.npmmirror.com/@form-create/core/3.1.21
+    name: '@form-create/core'
+    version: 3.1.21
+    peerDependencies:
+      vue: ^3.1.0
+    dependencies:
+      '@form-create/utils': registry.npmmirror.com/@form-create/utils@3.1.15
+      vue: 3.2.47
+    dev: false
+
+  registry.npmmirror.com/@form-create/element-ui@3.1.21(vue@3.2.47):
+    resolution: {integrity: sha512-+SumVp1fPHa9SyHwd02f3ewfofpUhypFAfemGC2V3HEP1lFYAboLZayH4G7kn6RZd5RgTkfzcpltZTNU7EeIjA==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@form-create/element-ui/-/element-ui-3.1.21.tgz}
+    id: registry.npmmirror.com/@form-create/element-ui/3.1.21
+    name: '@form-create/element-ui'
+    version: 3.1.21
+    peerDependencies:
+      vue: ^3.1.0
+    dependencies:
+      '@form-create/component-elm-checkbox': registry.npmmirror.com/@form-create/component-elm-checkbox@3.1.15
+      '@form-create/component-elm-frame': registry.npmmirror.com/@form-create/component-elm-frame@3.1.15
+      '@form-create/component-elm-group': registry.npmmirror.com/@form-create/component-elm-group@3.1.19
+      '@form-create/component-elm-radio': registry.npmmirror.com/@form-create/component-elm-radio@3.1.15
+      '@form-create/component-elm-select': registry.npmmirror.com/@form-create/component-elm-select@3.1.15
+      '@form-create/component-elm-tree': registry.npmmirror.com/@form-create/component-elm-tree@3.1.15
+      '@form-create/component-elm-upload': registry.npmmirror.com/@form-create/component-elm-upload@3.1.18
+      '@form-create/component-subform': registry.npmmirror.com/@form-create/component-subform@3.1.5
+      '@form-create/core': registry.npmmirror.com/@form-create/core@3.1.21(vue@3.2.47)
+      '@form-create/utils': registry.npmmirror.com/@form-create/utils@3.1.15
+      vue: 3.2.47
+    dev: false
+
+  registry.npmmirror.com/@form-create/utils@3.1.15:
+    resolution: {integrity: sha512-tP6Z/c2XC6OYrI8D9/XWvJc2h6apsyMFTy051sY+tCcxppqyR7dBEEXmgfWOrAr980N7k10g27kwJ9TdVn+bfw==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@form-create/utils/-/utils-3.1.15.tgz}
+    name: '@form-create/utils'
+    version: 3.1.15
+    dev: false
 
   registry.npmmirror.com/@rollup/plugin-alias@5.0.0:
     resolution: {integrity: sha512-l9hY5chSCjuFRPsnRm16twWBiSApl2uYFLsepQYwtBuAxNMQ/1dJqADld40P0Jkqm65GRTLy/AC6hnpVebtLsA==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@rollup/plugin-alias/-/plugin-alias-5.0.0.tgz}

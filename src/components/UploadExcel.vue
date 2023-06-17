@@ -34,7 +34,6 @@ import { ElMessage } from 'element-plus';
 
 type Props = {
   url?: string;
-  temp_url?: string;
   data?: any;
   accept?: string;
   disabled?: boolean;
@@ -49,7 +48,6 @@ interface ExcelError {
 
 withDefaults(defineProps<Props>(), {
   url: '',
-  temp_url: '',
   data: {},
   accept: '.xlsx, .xls',
   disabled: false,

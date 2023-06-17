@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
+    "@form-create/element-ui": "^3.1.21",
     "@rollup/plugin-alias": "^5.0.0",
     "@types/echarts": "^4.9.18",
     "@types/js-cookie": "^3.0.3",

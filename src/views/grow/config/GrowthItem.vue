@@ -161,6 +161,13 @@
             placeholder="请输入分值"
             style="width: 100%" />
         </el-form-item>
+        <el-form-item label="项目采集者" prop="gatherer">
+          <el-radio-group v-model="form.gatherer">
+            <el-radio v-for="item in GROWITEM_GATHERER.getDict()" :key="item.value" :label="item.value" border>
+              {{ item.label }}
+            </el-radio>
+          </el-radio-group>
+        </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="active = false">
@@ -188,7 +195,8 @@ import {
   delGrowthItem,
 } from '@/api/grow/config';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { PERIOD, CALCULATE_TYPE } from '@/utils/dict';
+import { PERIOD, CALCULATE_TYPE, GROWITEM_GATHERER } from '@/utils/dict';
+import { requiredRule } from '@/utils/rules';
 import Bus from '@/utils/bus';
 import SetGrowUserDrawer from './SetGrowUserDrawer.vue';
 
@@ -239,29 +247,31 @@ const searchForm = ref({
 });
 
 const form = ref<GrowthItemVO>({
-  id: undefined,
-  name: '',
-  code: '',
-  description: '',
-  fillPeriod: undefined,
-  fillPeriodNum: undefined,
-  scorePeriod: undefined,
-  scoreUpperLimit: undefined,
-  calculateType: undefined,
-  score: undefined,
+  id: void 0,
+  name: void 0,
+  code: void 0,
+  description: void 0,
+  fillPeriod: void 0,
+  fillPeriodNum: void 0,
+  scorePeriod: void 0,
+  scoreUpperLimit: void 0,
+  calculateType: void 0,
+  score: void 0,
+  gatherer: void 0,
   growthItems: [],
-  firstLevelId: undefined,
-  secondLevelId: undefined,
-  threeLevelId: undefined,
+  firstLevelId: void 0,
+  secondLevelId: void 0,
+  threeLevelId: void 0,
 });
 const rules = reactive<FormRules>({
-  growthItems: [{ required: true, message: '请选择所属项目', trigger: 'blur' }],
-  name: [{ required: true, message: '请填写项目名称', trigger: 'blur' }],
-  code: [{ required: true, message: '请填写项目编号', trigger: 'blur' }],
-  fillPeriod: [{ required: true, message: '请填写项目录入周期', trigger: 'blur' }],
-  scorePeriod: [{ required: true, message: '请填写分值刷新周期', trigger: 'blur' }],
-  calculateType: [{ required: true, message: '请填写分值计算类型', trigger: 'blur' }],
-  score: [{ required: true, message: '请填写项目可获得分值', trigger: 'blur' }],
+  growthItems: [requiredRule('所属项目')],
+  name: [requiredRule('项目名称')],
+  code: [requiredRule('项目编号')],
+  fillPeriod: [requiredRule('项目录入周期')],
+  scorePeriod: [requiredRule('分值刷新周期')],
+  calculateType: [requiredRule('分值计算类型')],
+  score: [requiredRule('项目可获得分值')],
+  gatherer: [requiredRule('项目可获得分值')],
 });
 
 /* Life Cycle */
@@ -308,6 +318,7 @@ const updateRow = (row: GrowthItemVO) => {
   form.value.scoreUpperLimit = row.scoreUpperLimit;
   form.value.calculateType = row.calculateType;
   form.value.score = row.score;
+  form.value.gatherer = row.gatherer;
   if (row.firstLevelId) {
     form.value.growthItems.push(row.firstLevelId);
   }

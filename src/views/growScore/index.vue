@@ -114,9 +114,9 @@
         <div class="page-box">
           <el-pagination
             background
-            :total="page.total"
-            v-model:current-page="page.current"
-            v-model:page-size="page.size"
+            :total="total"
+            v-model:current-page="searchForm.current"
+            v-model:page-size="searchForm.size"
             :page-sizes="[10, 20, 30, 50, 100]"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -130,7 +130,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import type { FormInstance } from 'element-plus';
-import { RecScoreVO, getRecScorePage } from '@/api/record/growScore/index';
+import { RecScoreVO, getRecScorePage } from '@/api/growScore/index';
 import { GrowthTreeVO, getGrowthTree } from '@/api/grow/config';
 import { getGraderList } from '@/api/basic/grade/index';
 import { getYearList } from '@/api/basic/year/index';
@@ -152,12 +152,10 @@ const THREE_LEVEL = ref();
 
 const loading = ref<boolean>(false);
 const tableData = ref<RecScoreVO[]>();
-const page = ref({
+const total = ref<number>(0);
+const searchForm = ref({
   current: 1,
   size: 10,
-  total: 10,
-});
-const searchForm = ref({
   yearId: undefined,
   firstLevelId: undefined,
   secondLevelId: undefined,
@@ -200,10 +198,9 @@ const handleSearch = () => {
 
 const fetchList = async () => {
   loading.value = true;
-  const { datatimeRange, ...search } = searchForm.value;
   try {
-    const { data: res } = await getRecScorePage(Object.assign(page.value, search));
-    page.value.total = res.total;
+    const { data: res } = await getRecScorePage(searchForm.value);
+    total.value = res.total;
     tableData.value = res.records;
   } finally {
     loading.value = false;
@@ -234,16 +231,18 @@ const secondLevelChange = (val: number) => {
 };
 
 const handleCurrentChange = (val: number) => {
-  page.value.current = val;
+  searchForm.value.current = val;
   fetchList();
 };
 const handleSizeChange = (val: number) => {
-  page.value.size = val;
+  searchForm.value.size = val;
   fetchList();
 };
 
 const searchFormReset = () => {
   searchForm.value = {
+    current: 1,
+    size: 10,
     yearId: undefined,
     firstLevelId: undefined,
     secondLevelId: undefined,

@@ -13,14 +13,19 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item>
-        <UploadVue ref="uploadRef" url="/api/grow/import" :data="form" :disabled="loading" @success="handleSuccess" />
+        <UploadExcel
+          ref="uploadExcelRef"
+          url="/api/grow/import"
+          :data="form"
+          :disabled="loading"
+          @success="handleSuccess" />
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="active = false">取 消</el-button>
         <el-button type="success" @click="handleDownTemp">下载模板</el-button>
-        <el-button type="primary" @click="uploadRef.submit()">导入</el-button>
+        <el-button type="primary" @click="uploadExcelRef.submit()">导入</el-button>
       </span>
     </template>
   </el-dialog>
@@ -31,10 +36,10 @@ import { onMounted, reactive, ref } from 'vue';
 import { getUserGrowthItems, GrowthItemVO, downTemp } from '@/api/grow/config';
 import { ElMessage } from 'element-plus';
 import Bus from '@/utils/bus';
-import UploadVue from '@/components/UploadVue.vue';
+import UploadExcel from '@/components/UploadExcel.vue';
 
 const fromRef = ref();
-const uploadRef = ref();
+const uploadExcelRef = ref();
 
 const active = ref<boolean>(false);
 const loading = ref<boolean>(false);
@@ -69,7 +74,7 @@ const handleSuccess = () => {
 
 const handleClose = () => {
   form.rec_code = growItems.value[0].code;
-  uploadRef.value.reset();
+  uploadExcelRef.value.reset();
 };
 
 defineExpose({ open });

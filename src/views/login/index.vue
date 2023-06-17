@@ -1,13 +1,16 @@
 <template>
   <div class="login-container">
+    <section class="login-header">
+      <div class="login-header-logo" />
+      <!-- <div>学生成长百草园</div> -->
+    </section>
     <section class="login-content">
       <div class="login-image">
         <img :src="bgSrc" />
       </div>
       <div class="login-wrapper">
-        <h2>登录</h2>
         <div class="login-form">
-          <el-form :model="form" :rules="rules" label-position="top">
+          <el-form :model="form" :rules="rules" label-position="top" size="large">
             <el-form-item label="用户名" prop="loginName">
               <el-input v-model="form.loginName" />
             </el-form-item>
@@ -15,7 +18,7 @@
               <el-input v-model="form.password" type="password" show-password />
             </el-form-item>
             <el-form-item action>
-              <el-button type="primary" style="width: 100%" :loading="loading" @click="handleLogin">登录</el-button>
+              <el-button type="success" style="width: 100%" :loading="loading" @click="handleLogin">登录</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -31,7 +34,7 @@ import { LoginForm, login } from '@/api/login/index';
 import { useRouter } from 'vue-router';
 import { setToken } from '@/utils/auth';
 import { ElMessage } from 'element-plus';
-import bgSrc from '@/assets/svg/login-bg.svg';
+import bgSrc from '@/assets/svg/login_background.svg';
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -80,6 +83,18 @@ const handleLogin = async () => {
   justify-content: center;
   align-items: center;
 
+  .login-header {
+    height: 40px;
+    display: flex;
+    align-items: center;
+
+    &-logo {
+      height: 60px;
+      height: 100%;
+      background: url(../../assets/logo.png) no-repeat;
+    }
+  }
+
   .login-content {
     width: 100%;
     height: 600px;
@@ -89,8 +104,8 @@ const handleLogin = async () => {
     align-items: center;
 
     .login-image {
-      width: 400px;
-      height: 400px;
+      width: 600px;
+      height: 300px;
       margin-right: 200px;
 
       > img {
@@ -107,7 +122,7 @@ const handleLogin = async () => {
       border-radius: 6px;
       box-sizing: border-box;
       padding: 0 20px;
-      background: rgba(150, 150, 150, 0.5);
+      background: rgba(255, 242, 242, 0.644);
       backdrop-filter: saturate(180%) blur(20px);
       display: flex;
       flex-direction: column;

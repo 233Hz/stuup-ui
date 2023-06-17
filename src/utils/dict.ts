@@ -167,3 +167,38 @@ export const GROWITEM_TYPE = new Enum({
   CUSTOM: ['自定义', 1],
   SYSTEM: ['系统类', 2],
 });
+
+/**
+ * 成长项目采集者
+ */
+export const GROWITEM_GATHERER = new Enum({
+  ASSIGN: ['指定用户', 1],
+  STUDENT: ['学生', 2],
+});
+
+/**
+ * 审核状态
+ */
+export const AUDIT_STATUS = new Enum({
+  TO_BE_SUBMITTED: ['待提交', 1],
+  PENDING_REVIEW: ['待审核', 2],
+  PASS: ['通过', 3],
+  REFUSE: ['拒绝', 4],
+  RETURN: ['退回', 5],
+});
+
+export const AUDIT_LOG_STATUS = new Enum({
+  SUBMIT: ['提交', 2],
+  PASS: ['通过', 3],
+  REFUSE: ['拒绝', 4],
+  RETURN: ['退回', 5],
+});
+
+/**
+ * 弹窗类型
+ */
+export const DIALOG_TYPE = new Enum({
+  ADD: ['添加', 1],
+  EDIT: ['修改', 2],
+  VIEW: ['查看', 3],
+});

@@ -9,6 +9,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AuditInfo: typeof import('./src/components/AuditInfo.vue')['default']
     BaseCard: typeof import('./src/components/BaseCard.vue')['default']
     ElAlert: typeof import('element-plus/es')['ElAlert']
     ElAutoResizer: typeof import('element-plus/es')['ElAutoResizer']
@@ -51,13 +52,19 @@ declare module '@vue/runtime-core' {
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTag: typeof import('element-plus/es')['ElTag']
+    ElTimeline: typeof import('element-plus/es')['ElTimeline']
+    ElTimelineItem: typeof import('element-plus/es')['ElTimelineItem']
     ElTree: typeof import('element-plus/es')['ElTree']
     ElUpload: typeof import('element-plus/es')['ElUpload']
+    Excel: typeof import('./src/components/Excel.vue')['default']
+    ExcelUpload: typeof import('./src/components/ExcelUpload.vue')['default']
     FlowerLevelIcon: typeof import('./src/components/FlowerLevelIcon.vue')['default']
     Leaderboard: typeof import('./src/components/Leaderboard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TableLayout: typeof import('./src/components/TableLayout.vue')['default']
+    Upload: typeof import('./src/components/Upload.vue')['default']
+    UploadExcel: typeof import('./src/components/UploadExcel.vue')['default']
     UploadVue: typeof import('./src/components/UploadVue.vue')['default']
   }
   export interface ComponentCustomProperties {

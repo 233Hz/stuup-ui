@@ -7,6 +7,7 @@ interface EnumItem {
 
 interface EnumType {
   [key: string]: any;
+  getKey(enumName: string): string;
   getValue(enumName: string): string | number;
   getKeyForValue(value: string | number): string;
   getDict(): EnumItem[];
@@ -23,6 +24,10 @@ export class Enum implements EnumType {
       this.numToDescMap[value] = key;
       this[enumName] = value;
     }
+  }
+
+  getKey(enumName: string): string {
+    return (this.definition[enumName] && this.definition[enumName][0]) || '';
   }
 
   getValue(enumName: string): string | number {

@@ -60,7 +60,7 @@
             <el-space>
               <el-button type="primary" @click="collectFormRef.open()">
                 <el-icon class="el-icon--left"><Upload /></el-icon>
-                导入
+                导入成长项目
               </el-button>
               <el-button type="warning" @click="handleTask(1)">计算每天积分（测试）</el-button>
               <el-button type="warning" @click="handleTask(2)">计算每周积分（测试）</el-button>

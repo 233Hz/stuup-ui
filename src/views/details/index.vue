@@ -1,135 +1,134 @@
 <template>
-  <div style="padding: 10px 20px">
-    <el-card style="margin: 10px 0">
-      <template #header>
-        <div class="card-header">
-          <span>成长积分明细</span>
+  <el-row style="margin: 20px">
+    <el-col :span="24">
+      <el-card>
+        <template #header>
+          <el-row>
+            <el-col :span="24">
+              <el-form ref="searchFormRef" :model="searchForm" label-width="120px">
+                <el-row>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="一级项目" prop="firstLevelId">
+                      <el-select v-model="searchForm.firstLevelId" @change="firstLevelChange" style="width: 100%">
+                        <el-option v-for="item in FIRST_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="二级项目" prop="secondLevelId">
+                      <el-select v-model="searchForm.secondLevelId" @change="secondLevelChange" style="width: 100%">
+                        <el-option v-for="item in SECOND_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="三级项目" prop="threeLevelId">
+                      <el-select v-model="searchForm.threeLevelId" style="width: 100%">
+                        <el-option v-for="item in THREE_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="成长项目" prop="growName">
+                      <el-input v-model="searchForm.growName" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="学年" prop="yearId">
+                      <el-select v-model="searchForm.yearId" style="width: 100%">
+                        <el-option v-for="item in YEAR" :key="item.oid" :label="item.value" :value="item.oid" />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="获取时间" prop="datatimeRange">
+                      <el-date-picker
+                        v-model="searchForm.datatimeRange"
+                        type="datetimerange"
+                        range-separator="至"
+                        start-placeholder="开始时间"
+                        end-placeholder="结束时间"
+                        value-format="YYYY-MM-DD HH:mm:ss" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </el-col>
+          </el-row>
+        </template>
+        <div style="text-align: center">
           <el-space>
-            <el-button type="primary" @click="fetchList" :loading="loading">
-              <el-icon><Search /></el-icon>
-              查询
-            </el-button>
-            <el-button @click="searchFormRef?.resetFields()">
-              <el-icon><Close /></el-icon>
-              清空
-            </el-button>
+            <el-button type="primary" @click="handleSearch" :loading="loading">查询</el-button>
+            <el-button @click="searchFormReset">清空</el-button>
           </el-space>
         </div>
-      </template>
-      <el-row>
-        <el-col :span="24">
-          <el-form ref="searchFormRef" :model="searchForm" label-width="120px">
-            <el-row>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="一级项目" prop="firstLevelId">
-                  <el-select v-model="searchForm.firstLevelId" @change="firstLevelChange" style="width: 100%">
-                    <el-option v-for="item in FIRST_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="二级项目" prop="secondLevelId">
-                  <el-select v-model="searchForm.secondLevelId" @change="secondLevelChange" style="width: 100%">
-                    <el-option v-for="item in SECOND_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="三级项目" prop="threeLevelId">
-                  <el-select v-model="searchForm.threeLevelId" style="width: 100%">
-                    <el-option v-for="item in THREE_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="成长项目" prop="growName">
-                  <el-input v-model="searchForm.growName" />
-                </el-form-item>
-              </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="学年" prop="yearId">
-                  <el-select v-model="searchForm.yearId" style="width: 100%">
-                    <el-option v-for="item in YEAR" :key="item.oid" :label="item.value" :value="item.oid" />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="获取时间" prop="datatimeRange">
-                  <el-date-picker
-                    v-model="searchForm.datatimeRange"
-                    type="datetimerange"
-                    range-separator="至"
-                    start-placeholder="开始时间"
-                    end-placeholder="结束时间"
-                    value-format="YYYY-MM-DD HH:mm:ss" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
-        </el-col>
-      </el-row>
-    </el-card>
-    <el-card>
-      <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
-        <el-table-column prop="firstLevelName" label="一级栏目" show-overflow-tooltip align="center" />
-        <el-table-column prop="secondLevelName" label="二级栏目" show-overflow-tooltip align="center" />
-        <el-table-column prop="threeLevelName" label="三级栏目" show-overflow-tooltip align="center" />
-        <el-table-column prop="growName" label="成长项目" show-overflow-tooltip align="center" />
-        <el-table-column prop="yearName" label="获取学年" show-overflow-tooltip align="center" />
-        <el-table-column prop="yearName" label="成长值" show-overflow-tooltip align="center" />
-        <el-table-column prop="yearName" label="获取时间" show-overflow-tooltip align="center" />
-        <el-table-column prop="resone" label="备注" show-overflow-tooltip align="center" />
-      </el-table>
-      <div class="page-box">
-        <el-pagination
-          background
-          :disabled="loading"
-          :total="total"
-          v-model:current-page="page.current"
-          v-model:page-size="page.size"
-          :page-sizes="[10, 20, 30, 50, 100]"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next" />
-      </div>
-    </el-card>
-  </div>
-  <el-dialog v-model="dialog_active" :title="dialog_title" width="500" draggable @close="resetForm">
-    <template #footer>
-      <el-button @click="dialog_active = false">
-        <el-icon><Close /></el-icon>
-        取消
-      </el-button>
-      <el-button type="primary" :loading="loading" @click="submitForm">
-        <el-icon><Check /></el-icon>
-        提交
-      </el-button>
-    </template>
-  </el-dialog>
+      </el-card>
+    </el-col>
+    <el-col :span="24">
+      <el-card style="margin: 10px 0">
+        <template #header>
+          <el-space>
+            <el-divider direction="vertical" />
+            <el-button :disabled="loading" circle @click="fetchList">
+              <el-icon><Refresh /></el-icon>
+            </el-button>
+          </el-space>
+        </template>
+
+        <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
+          <el-table-column prop="firstLevelName" label="一级栏目" show-overflow-tooltip align="center" />
+          <el-table-column prop="secondLevelName" label="二级栏目" show-overflow-tooltip align="center" />
+          <el-table-column prop="threeLevelName" label="三级栏目" show-overflow-tooltip align="center" />
+          <el-table-column prop="growName" label="成长项目" show-overflow-tooltip align="center" />
+          <el-table-column prop="yearName" label="获取学年" show-overflow-tooltip align="center" />
+          <el-table-column prop="score" label="获得积分" show-overflow-tooltip align="center" />
+          <el-table-column prop="createTime" label="获取时间" show-overflow-tooltip align="center" />
+        </el-table>
+        <div class="page-box">
+          <el-pagination
+            background
+            :total="total"
+            v-model:current-page="searchForm.current"
+            v-model:page-size="searchForm.size"
+            :page-sizes="[10, 20, 30, 50, 100]"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            layout="total, sizes, prev, pager, next" />
+        </div>
+      </el-card>
+    </el-col>
+  </el-row>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue';
-import type { FormInstance, FormRules } from 'element-plus';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ref, onMounted } from 'vue';
+import type { FormInstance } from 'element-plus';
+import { StudentRecScoreVO, pageStudentRecScore } from '@/api/details';
 import { GrowthTreeVO, getGrowthTree } from '@/api/grow/config';
+import { getGraderList } from '@/api/basic/grade/index';
+import { getYearList } from '@/api/basic/year/index';
 
+onMounted(() => {
+  initYear();
+  initGrade();
+  initGrowth();
+  fetchList();
+});
+
+// 字典
 const GROWTH_TREE = ref<GrowthTreeVO[]>([]);
 const YEAR = ref();
+const GRADE = ref();
 const FIRST_LEVEL = ref();
 const SECOND_LEVEL = ref();
 const THREE_LEVEL = ref();
 
 const loading = ref<boolean>(false);
-const dialog_active = ref<boolean>(false);
-const dialog_title = ref<string>('');
-const tableData = ref([]);
-const page = ref({
-  current: 1,
-  size: 10,
-});
+const tableData = ref<StudentRecScoreVO[]>();
 const total = ref<number>(0);
 const searchForm = ref({
+  current: 1,
+  size: 10,
   yearId: undefined,
   firstLevelId: undefined,
   secondLevelId: undefined,
@@ -139,27 +138,42 @@ const searchForm = ref({
   startTime: undefined,
   endTime: undefined,
 });
-const form = ref({});
-const rules = reactive<FormRules>({});
 const searchFormRef = ref<FormInstance>();
-const formRef = ref<FormInstance>();
+
+const initYear = async () => {
+  const { data: res } = await getYearList();
+  YEAR.value = res;
+};
+
+const initGrade = async () => {
+  const { data: res } = await getGraderList();
+  GRADE.value = res;
+};
+
+const initGrowth = async () => {
+  const { data: res } = await getGrowthTree();
+  GROWTH_TREE.value = res;
+  FIRST_LEVEL.value = res;
+};
+
+const handleSearch = () => {
+  const timeRange = searchForm.value.datatimeRange;
+  if (timeRange && timeRange.length) {
+    searchForm.value.startTime = timeRange[0];
+    searchForm.value.endTime = timeRange[1];
+  }
+  fetchList();
+};
 
 const fetchList = async () => {
   loading.value = true;
   try {
-    // TODO
+    const { data: res } = await pageStudentRecScore(searchForm.value);
+    total.value = res.total;
+    tableData.value = res.records;
   } finally {
     loading.value = false;
   }
-};
-
-const handleCurrentChange = (val: number) => {
-  page.value.current = val;
-  fetchList();
-};
-const handleSizeChange = (val: number) => {
-  page.value.size = val;
-  fetchList();
 };
 
 const findChildrenById = (list: GrowthTreeVO[], id: number): GrowthTreeVO[] | [] => {
@@ -185,52 +199,27 @@ const secondLevelChange = (val: number) => {
   THREE_LEVEL.value = findChildrenById(GROWTH_TREE.value, val);
 };
 
-const addRow = () => {
-  dialog_title.value = '添加';
-  dialog_active.value = true;
+const handleCurrentChange = (val: number) => {
+  searchForm.value.current = val;
+  fetchList();
 };
-const updateRow = row => {
-  dialog_title.value = '修改';
-  dialog_active.value = true;
-};
-const delRow = (oid: number) => {
-  ElMessageBox.confirm('确认删除？', '删除学年', {
-    confirmButtonText: '确认',
-    cancelButtonText: '取消',
-    type: 'warning',
-  })
-    .then(async () => {
-      loading.value = true;
-      try {
-        // TODO
-      } finally {
-        loading.value = false;
-      }
-    })
-    .catch(() => {});
+const handleSizeChange = (val: number) => {
+  searchForm.value.size = val;
+  fetchList();
 };
 
-const submitForm = async () => {
-  if (!formRef) return;
-  const valid = await formRef.value?.validate();
-  if (!valid) return;
-  loading.value = true;
-  try {
-    // TODO
-  } finally {
-    loading.value = false;
-  }
-};
-
-const resetForm = () => {
-  form.value = {
-    yearName: '',
-    yearRange: [],
-    yearStart: '',
-    yearEnd: '',
-    lastSemester: '',
-    nextSemester: '',
+const searchFormReset = () => {
+  searchForm.value = {
+    current: 1,
+    size: 10,
+    yearId: undefined,
+    firstLevelId: undefined,
+    secondLevelId: undefined,
+    threeLevelId: undefined,
+    growName: undefined,
+    datatimeRange: [],
+    startTime: undefined,
+    endTime: undefined,
   };
-  formRef.value?.resetFields();
 };
 </script>

@@ -4,6 +4,9 @@ import { setupStore } from '@/store';
 // Element Plus
 import { setupElementPlusIcon } from '@/plugins/ElementPlus';
 
+// Form Create
+import { setupFormCreate } from '@/plugins/FormCreate';
+
 // 路由
 import { setupRouter } from '@/router';
 
@@ -25,6 +28,7 @@ const setupAll = async () => {
   setupStore(app);
   setupRouter(app);
   setupElementPlusIcon(app);
+  setupFormCreate(app);
   setupGlobalComponents(app);
   app.mount('#app');
 };
