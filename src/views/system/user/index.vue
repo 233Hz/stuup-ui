@@ -83,7 +83,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="page-box">
+      <div class="page-r">
         <el-pagination
           background
           :total="total"

@@ -1,13 +1,13 @@
 import { ApiResult, get } from '@/api/api';
-import { Page, PageResult } from '@/types/global';
 
 export interface MajorRankVO {
-  id: string;
+  majorId: number;
+  rank: number;
   majorName: string;
   facultyName: string;
-  score: string;
+  score: number;
 }
 
-export const getMajorRanking = async (params: Page): Promise<ApiResult<PageResult<MajorRankVO[]>>> => {
-  return await get('/stuScore/majorRanking', params);
+export const getMajorRank = async (): Promise<ApiResult<MajorRankVO[]>> => {
+  return await get('/rank/realTime/major');
 };

@@ -64,7 +64,7 @@
       <el-card shadow="never">
         <template #header>
           <el-space>
-            <el-button type="primary">
+            <el-button type="primary" @click="downloadRec">
               <el-icon><Download /></el-icon>
               导出
             </el-button>
@@ -91,7 +91,7 @@
           <el-table-column prop="endTime" label="结束时间" show-overflow-tooltip align="center" />
           <el-table-column prop="role" label="角色" show-overflow-tooltip align="center" />
         </el-table>
-        <div class="page-box">
+        <div class="page-r">
           <el-pagination
             background
             :total="page.total"
@@ -113,7 +113,8 @@ import type { FormInstance } from 'element-plus';
 import { RecCaucusVO, getRecCaucusPage } from '@/api/record/caucus/index';
 import { getGraderList } from '@/api/basic/grade/index';
 import { getYearList } from '@/api/basic/year/index';
-import { AWARD_LEVEL } from '@/utils/dict';
+import { AWARD_LEVEL, REC_CODE } from '@/utils/dict';
+import { downRecord } from '@/api/record';
 
 onMounted(() => {
   initYear();
@@ -161,6 +162,16 @@ const fetchList = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+const downloadRec = async () => {
+  await downRecord(
+    Object.assign({
+      rec_code: REC_CODE.REC_CAUCUS,
+      ...searchForm.value,
+    }),
+    `${REC_CODE.getKey('REC_CAUCUS')}.xlsx`
+  );
 };
 
 const handleCurrentChange = (val: number) => {

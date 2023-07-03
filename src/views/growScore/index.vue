@@ -111,7 +111,7 @@
           <el-table-column prop="score" label="获得积分" show-overflow-tooltip align="center" />
           <el-table-column prop="createTime" label="获取时间" show-overflow-tooltip align="center" />
         </el-table>
-        <div class="page-box">
+        <div class="page-r">
           <el-pagination
             background
             :total="total"
@@ -212,9 +212,6 @@ const findChildrenById = (list: GrowthTreeVO[], id: number): GrowthTreeVO[] | []
     if (item.id === id) {
       return item.children || [];
     }
-    if (item.children) {
-      return findChildrenById(item.children, id);
-    }
   }
   return [];
 };
@@ -222,12 +219,12 @@ const findChildrenById = (list: GrowthTreeVO[], id: number): GrowthTreeVO[] | []
 const firstLevelChange = (val: number) => {
   searchForm.value.secondLevelId = undefined;
   searchForm.value.threeLevelId = undefined;
-  SECOND_LEVEL.value = findChildrenById(GROWTH_TREE.value, val);
+  SECOND_LEVEL.value = findChildrenById(FIRST_LEVEL.value, val);
 };
 
 const secondLevelChange = (val: number) => {
   searchForm.value.threeLevelId = undefined;
-  THREE_LEVEL.value = findChildrenById(GROWTH_TREE.value, val);
+  THREE_LEVEL.value = findChildrenById(SECOND_LEVEL.value, val);
 };
 
 const handleCurrentChange = (val: number) => {

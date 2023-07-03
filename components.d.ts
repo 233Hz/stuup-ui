@@ -11,7 +11,6 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AuditInfo: typeof import('./src/components/AuditInfo.vue')['default']
     BaseCard: typeof import('./src/components/BaseCard.vue')['default']
-    ElAlert: typeof import('element-plus/es')['ElAlert']
     ElAutoResizer: typeof import('element-plus/es')['ElAutoResizer']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -36,6 +35,7 @@ declare module '@vue/runtime-core' {
     ElMenu: typeof import('element-plus/es')['ElMenu']
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
     ElOption: typeof import('element-plus/es')['ElOption']
+    ElPageHeader: typeof import('element-plus/es')['ElPageHeader']
     ElPagination: typeof import('element-plus/es')['ElPagination']
     ElRadio: typeof import('element-plus/es')['ElRadio']
     ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']
@@ -56,16 +56,12 @@ declare module '@vue/runtime-core' {
     ElTimelineItem: typeof import('element-plus/es')['ElTimelineItem']
     ElTree: typeof import('element-plus/es')['ElTree']
     ElUpload: typeof import('element-plus/es')['ElUpload']
-    Excel: typeof import('./src/components/Excel.vue')['default']
-    ExcelUpload: typeof import('./src/components/ExcelUpload.vue')['default']
     FlowerLevelIcon: typeof import('./src/components/FlowerLevelIcon.vue')['default']
     Leaderboard: typeof import('./src/components/Leaderboard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TableLayout: typeof import('./src/components/TableLayout.vue')['default']
-    Upload: typeof import('./src/components/Upload.vue')['default']
     UploadExcel: typeof import('./src/components/UploadExcel.vue')['default']
-    UploadVue: typeof import('./src/components/UploadVue.vue')['default']
   }
   export interface ComponentCustomProperties {
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']

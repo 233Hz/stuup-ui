@@ -83,8 +83,9 @@
           <el-table-column prop="yearName" label="获取学年" show-overflow-tooltip align="center" />
           <el-table-column prop="score" label="获得积分" show-overflow-tooltip align="center" />
           <el-table-column prop="createTime" label="获取时间" show-overflow-tooltip align="center" />
+          <el-table-column prop="description" label="说明" show-overflow-tooltip align="center" />
         </el-table>
-        <div class="page-box">
+        <div class="page-r">
           <el-pagination
             background
             :total="total"

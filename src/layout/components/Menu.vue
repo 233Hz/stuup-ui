@@ -3,7 +3,6 @@
     v-bind="$attrs"
     :default-active="route.path"
     unique-opened
-    router
     text-color="var(--aside-menu-text)"
     active-text-color="var(--aside-menu-text)"
     background-color="var(--aside-menu-background)">

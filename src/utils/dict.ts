@@ -1,23 +1,34 @@
-import { LEVEL, MILITARY_LEVEL, WHETHER } from './constant';
 import { Enum } from '@/utils/enum';
 
-export const LEVEL_NAMES = {
-  [LEVEL.SCHOOL]: '校级',
-  [LEVEL.DISTRICT]: '区（行级）',
-  [LEVEL.CITY]: '市级',
-  [LEVEL.COUNTRY]: '国家',
-  [LEVEL.INTERNATIONAL]: '国际',
-};
+/**
+ * 是/否
+ */
+export const WHETHER = new Enum({
+  YES: ['是', 1],
+  NO: ['否', 2],
+});
 
-export const MILITARY_LEVEL_NAMES = {
-  [MILITARY_LEVEL.QUALIFIED]: '合格',
-  [MILITARY_LEVEL.UNQUALIFIED]: '不合格',
-};
+/**
+ * 合格/不合格
+ */
+export const MILITARY_LEVEL = new Enum({
+  QUALIFIED: ['合格', 1],
+  UNQUALIFIED: ['不合格', 2],
+});
 
-export const WHETHER_NAMES = {
-  [WHETHER.YES]: '是',
-  [WHETHER.NO]: '否',
-};
+/**
+ * 菜单类型
+ */
+export const REC_CODE = new Enum({
+  REC_CAUCUS: ['参加党团学习项目记录填报', 'CZ_005'],
+  REC_HONOR: ['个人荣誉记录填报', 'CZ_031'],
+  REC_LABOR_TIME: ['生产劳动实践记录填报', 'CZ_065'],
+  REC_MILITARY_EXCELLENT: ['军事训练记录填报', 'CZ_009'],
+  REC_MILITARY_QUALIFIED: ['军事训练记录填报', 'CZ_010'],
+  REC_NATION: ['参加国防民防项目记录填报', 'CZ_008'],
+  REC_SOCIETY: ['参加社团记录填报', 'CZ_011'],
+  REC_VOLUNTEER: ['志愿者活动记录填报', 'CZ_060'],
+});
 
 /**
  * 菜单类型
@@ -47,8 +58,8 @@ export const ANNOUNCEMENT_SCOPE = new Enum({
  * 公告状态
  */
 export const ANNOUNCEMENT_STATE = new Enum({
-  PUBLISHED: ['已发布', 1],
-  UNPUBLISHED: ['未发布', 2],
+  UNPUBLISHED: ['未发布', 1],
+  PUBLISHED: ['已发布', 2],
 });
 
 /**

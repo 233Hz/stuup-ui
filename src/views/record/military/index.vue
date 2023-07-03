@@ -48,7 +48,7 @@
       <el-card shadow="never">
         <template #header>
           <el-space>
-            <el-button type="primary">
+            <el-button type="primary" @click="downloadRec">
               <el-icon><Download /></el-icon>
               导出
             </el-button>
@@ -69,25 +69,25 @@
           <el-table-column prop="level" label="等级" show-overflow-tooltip align="center">
             <template #default="{ row }">
               <el-tag v-show="row.level === MILITARY_LEVEL.QUALIFIED" type="success">
-                {{ MILITARY_LEVEL_NAMES[MILITARY_LEVEL.QUALIFIED] }}
+                {{ MILITARY_LEVEL.getKey('QUALIFIED') }}
               </el-tag>
               <el-tag v-show="row.level === MILITARY_LEVEL.UNQUALIFIED" type="danger">
-                {{ MILITARY_LEVEL_NAMES[MILITARY_LEVEL.UNQUALIFIED] }}
+                {{ MILITARY_LEVEL.getKey('UNQUALIFIED') }}
               </el-tag>
             </template>
           </el-table-column>
           <el-table-column prop="excellent" label="是否优秀" show-overflow-tooltip align="center">
             <template #default="{ row }">
               <el-tag v-show="row.excellent === WHETHER.YES" type="success">
-                {{ WHETHER_NAMES[WHETHER.YES] }}
+                {{ WHETHER.getKey('YES') }}
               </el-tag>
               <el-tag v-show="row.excellent === WHETHER.NO" type="danger">
-                {{ WHETHER_NAMES[WHETHER.NO] }}
+                {{ WHETHER.getKey('NO') }}
               </el-tag>
             </template>
           </el-table-column>
         </el-table>
-        <div class="page-box">
+        <div class="page-r">
           <el-pagination
             background
             :total="page.total"
@@ -109,8 +109,8 @@ import type { FormInstance } from 'element-plus';
 import { RecMilitaryVO, getRecMilitaryPage } from '@/api/record/military/index';
 import { getGraderList } from '@/api/basic/grade/index';
 import { getYearList } from '@/api/basic/year/index';
-import { MILITARY_LEVEL, WHETHER } from '@/utils/constant';
-import { MILITARY_LEVEL_NAMES, WHETHER_NAMES } from '@/utils/dict';
+import { MILITARY_LEVEL, WHETHER, REC_CODE } from '@/utils/dict';
+import { downRecord } from '@/api/record';
 
 onMounted(() => {
   initYear();
@@ -118,10 +118,14 @@ onMounted(() => {
   fetchList();
 });
 
-// 字典
+// REF
+const searchFormRef = ref<FormInstance>();
+
+// DICT
 const YEAR = ref();
 const GRADE = ref();
 
+// DATA
 const loading = ref<boolean>(false);
 const tableData = ref<RecMilitaryVO[]>([]);
 const page = ref({
@@ -137,8 +141,8 @@ const searchForm = ref({
   name: undefined,
   level: undefined,
 });
-const searchFormRef = ref<FormInstance>();
 
+// METHODS
 const initYear = async () => {
   const { data: res } = await getYearList();
   YEAR.value = res;
@@ -157,6 +161,16 @@ const fetchList = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+const downloadRec = async () => {
+  await downRecord(
+    Object.assign({
+      rec_code: REC_CODE.REC_MILITARY_EXCELLENT,
+      ...searchForm.value,
+    }),
+    `${REC_CODE.getKey('REC_MILITARY_EXCELLENT')}.xlsx`
+  );
 };
 
 const handleCurrentChange = (val: number) => {

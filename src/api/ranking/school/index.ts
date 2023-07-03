@@ -1,8 +1,8 @@
 import { ApiResult, get } from '@/api/api';
-import { Page, PageResult } from '@/types/global';
 
 export interface SchoolRankVO {
-  id: string;
+  studentId: number;
+  rank: number;
   studentName: string;
   studentNo: string;
   gradeName: string;
@@ -10,9 +10,9 @@ export interface SchoolRankVO {
   classTeacher: string;
   facultyName: string;
   majorName: string;
-  score: string;
+  score: number;
 }
 
-export const getSchoolRanking = async (params: Page): Promise<ApiResult<PageResult<SchoolRankVO[]>>> => {
-  return await get('/stuScore/schoolRanking', params);
+export const getSchoolRank = async (): Promise<ApiResult<SchoolRankVO[]>> => {
+  return await get('/rank/realTime/school');
 };

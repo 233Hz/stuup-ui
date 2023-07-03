@@ -2,16 +2,16 @@
 import { setupStore } from '@/store';
 
 // Element Plus
-import { setupElementPlusIcon } from '@/plugins/ElementPlus';
-
-// Form Create
-import { setupFormCreate } from '@/plugins/FormCreate';
+import { setupElementPlus } from '@/plugins/ElementPlus';
 
 // 路由
 import { setupRouter } from '@/router';
 
 // 全局组件
 import { setupGlobalComponents } from '@/plugins/GlobalComponents';
+
+// unocss
+import 'uno.css';
 
 import { createApp } from 'vue';
 
@@ -27,8 +27,7 @@ const setupAll = async () => {
   const app = createApp(App);
   setupStore(app);
   setupRouter(app);
-  setupElementPlusIcon(app);
-  setupFormCreate(app);
+  setupElementPlus(app);
   setupGlobalComponents(app);
   app.mount('#app');
 };

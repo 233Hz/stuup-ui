@@ -1,8 +1,8 @@
 <template>
   <div class="login-container">
     <section class="login-header">
-      <div class="login-header-logo" />
-      <!-- <div>学生成长百草园</div> -->
+      <img :src="logo" />
+      <span>学生成长百草园</span>
     </section>
     <section class="login-content">
       <div class="login-image">
@@ -24,6 +24,7 @@
         </div>
       </div>
     </section>
+    <section class="login-footer">Copyright &copy;2017 泼猴信息技术(上海)有限公司AIl Rights Reserved</section>
   </div>
 </template>
 
@@ -35,6 +36,7 @@ import { useRouter } from 'vue-router';
 import { setToken } from '@/utils/auth';
 import { ElMessage } from 'element-plus';
 import bgSrc from '@/assets/svg/login_background.svg';
+import logo from '@/assets/logo.png';
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -63,7 +65,7 @@ const handleLogin = async () => {
     const res = await login(form);
     setToken(res.token as string);
     userStore.setUserInfo(res.data);
-    sessionStorage.setItem('user_info', JSON.stringify(res.data));
+    localStorage.setItem('user_info', JSON.stringify(res.data));
     router.push('/');
     ElMessage.success('登录成功');
   } catch {
@@ -84,14 +86,19 @@ const handleLogin = async () => {
   align-items: center;
 
   .login-header {
-    height: 40px;
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
     display: flex;
     align-items: center;
+    font-size: 32px;
+    font-weight: bold;
 
-    &-logo {
-      height: 60px;
+    > img {
+      width: 200px;
       height: 100%;
-      background: url(../../assets/logo.png) no-repeat;
+      margin-left: 20%;
+      margin-right: 20px;
     }
   }
 
@@ -139,6 +146,12 @@ const handleLogin = async () => {
         padding: 20px;
       }
     }
+  }
+
+  .login-footer {
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
   }
 }
 </style>

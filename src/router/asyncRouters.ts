@@ -6,21 +6,12 @@ const Layout = () => import('@/layout/index.vue');
 export default [
   {
     path: '/',
-    component: Layout,
-    redirect: '/index',
-    meta: {},
-    children: [
-      {
-        path: '/index',
-        name: 'Index',
-        component: () => import('@/views/home/index.vue'),
-        meta: {
-          title: '首页',
-          icon: '',
-          flag: 1,
-        },
-      },
-    ],
+    component: () => import('@/views/home/index.vue'),
+    meta: {
+      title: '首页',
+      icon: '',
+      flag: 1,
+    },
   },
   {
     path: '/dashboard',

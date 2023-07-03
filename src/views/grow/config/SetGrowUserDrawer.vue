@@ -35,7 +35,7 @@
     </el-row>
     <el-card shadow="never">
       <template #header><span style="font-size: 14px">项目负责人</span></template>
-      <el-tag v-for="item in tagData" :key="item.id" closable @close="handleTagClose" style="margin: 0 2px">
+      <el-tag v-for="item in tagData" :key="item.id" class="mx-2">
         {{ item.username }}
       </el-tag>
     </el-card>
@@ -54,7 +54,7 @@
       <el-table-column prop="teacherNo" label="工号" show-overflow-tooltip align="center" />
       <el-table-column prop="deptName" label="所属部门" show-overflow-tooltip align="center" />
     </el-table>
-    <div class="page-box">
+    <div class="page-r">
       <el-pagination
         background
         :total="total"
@@ -162,10 +162,6 @@ const setGrowUser = async () => {
 
 const handleSelectionChange = (val: SimpleUserVO[]) => {
   form.value.userIds = val.map(item => item.id);
-};
-
-const handleTagClose = (val: SimpleUserVO[]) => {
-  console.log(val);
 };
 
 const handleCurrentChange = (val: number) => {

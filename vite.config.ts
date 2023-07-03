@@ -1,24 +1,28 @@
 import { defineConfig, ConfigEnv, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
 import path from 'path';
 import Components from 'unplugin-vue-components/vite';
 import AutoImport from 'unplugin-auto-import/vite';
 import postcsspxtoviewport from 'postcss-px-to-viewport-update';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
+import unocss from 'unocss/vite';
 
 // https://vitejs.dev/config/
 const viteConfig = defineConfig(async ({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
-    base: mode === 'development' ? '/' : '/stuup',
+    base: mode === 'production' ? '/stuup' : '/',
     plugins: [
       vue(),
+      vueJsx(),
       AutoImport({
         resolvers: [ElementPlusResolver()],
       }),
       Components({
         resolvers: [ElementPlusResolver()],
       }),
+      unocss(),
     ],
     css: {
       preprocessorOptions: {

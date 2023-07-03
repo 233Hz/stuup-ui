@@ -12,6 +12,7 @@ export interface UserInfoType {
   userType: number | undefined;
   roleIds: string;
   yearId: number | undefined;
+  isExitst: boolean;
 }
 
 export const useUserStore = defineStore(storeNames.USER, {
@@ -25,6 +26,7 @@ export const useUserStore = defineStore(storeNames.USER, {
       userType: void 0,
       roleIds: '',
       yearId: void 0,
+      isExitst: false,
     };
   },
   getters: {
@@ -52,6 +54,9 @@ export const useUserStore = defineStore(storeNames.USER, {
     getYearId(): number | undefined {
       return this.yearId;
     },
+    getIsExitst(): boolean {
+      return this.isExitst;
+    },
   },
   actions: {
     setUserInfo(userInfo: UserInfoType) {
@@ -63,6 +68,7 @@ export const useUserStore = defineStore(storeNames.USER, {
       this.userType = userInfo.userType;
       this.roleIds = userInfo.roleIds;
       this.yearId = userInfo.yearId;
+      this.isExitst = true;
     },
     loginOut(): Promise<void> {
       return new Promise(resolve => {
@@ -74,6 +80,7 @@ export const useUserStore = defineStore(storeNames.USER, {
         this.userType = void 0;
         this.roleIds = '';
         this.yearId = void 0;
+        this.isExitst = false;
         removeToken();
         localStorage.clear();
         sessionStorage.clear();

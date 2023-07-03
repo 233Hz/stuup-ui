@@ -1,16 +1,16 @@
 <template>
   <div style="margin: 20px">
     <el-row :gutter="20">
-      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" style="margin-bottom: 20px">
+      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="mb-20">
         <el-card shadow="never">
-          <template #header>系统通知</template>
+          <template #header>通知公告</template>
           <el-skeleton :rows="10" animated :loading="loading">
             <el-scrollbar height="600px">
               <div
                 class="message-item"
-                v-for="(item, index) in systemMags"
+                v-for="(item, index) in activeMags"
                 :key="item.id"
-                @click="router.push('/system/announcement')">
+                @click="router.push('/article/' + item.id)">
                 <span class="message-item__title">{{ index + 1 }}. {{ item.title }}</span>
                 <span class="message-item__time">发布时间：{{ formatDate(item.createTime, 'YYYY-MM-DD') }}</span>
               </div>
@@ -18,18 +18,14 @@
           </el-skeleton>
         </el-card>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" style="margin-bottom: 20px">
+      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="mb-20">
         <el-card shadow="never">
-          <template #header>活动公告</template>
+          <template #header>智慧提醒</template>
           <el-skeleton :rows="10" animated :loading="loading">
             <el-scrollbar height="600px">
-              <div
-                class="message-item"
-                v-for="(item, index) in activeMags"
-                :key="item.id"
-                @click="router.push('/system/announcement')">
+              <div class="message-item" v-for="(item, index) in systemMags" :key="item.id">
                 <span class="message-item__title">{{ index + 1 }}. {{ item.title }}</span>
-                <span class="message-item__time">发布时间：{{ formatDate(item.createTime, 'YYYY-MM-DD') }}</span>
+                <span class="message-item__time">通知时间：{{ formatDate(item.createTime, 'YYYY-MM-DD') }}</span>
               </div>
             </el-scrollbar>
           </el-skeleton>
@@ -37,15 +33,10 @@
       </el-col>
       <el-col :span="24">
         <el-card shadow="never">
-          <template #header>快捷入口</template>
           <el-skeleton :rows="10" animated :loading="loading">
             <div class="bunga-icon">
               <div class="bunga-icon__wrapper">
-                <div class="bunga-icon__item" @click="router.push('/system/user')">
-                  <img :src="userinfo" />
-                  用户信息
-                </div>
-                <div class="bunga-icon__item" @click="router.push('/grow/project')">
+                <div class="bunga-icon__item" @click="router.push('/grow/config')">
                   <img :src="project" />
                   成长项目设置
                 </div>
@@ -57,11 +48,15 @@
                   <img :src="collect" />
                   数据采集
                 </div>
-                <div class="bunga-icon__item" @click="router.push('/record/growScore')">
-                  <img :src="record" />
+                <div class="bunga-icon__item" @click="router.push('/record')">
+                  <img :src="record_2" />
+                  综评记录
+                </div>
+                <div class="bunga-icon__item" @click="router.push('/growScore')">
+                  <img :src="record_1" />
                   采集记录
                 </div>
-                <div class="bunga-icon__item" @click="router.push('/ranking/school_stu')">
+                <div class="bunga-icon__item" @click="router.push('/ranking/school')">
                   <img :src="ranking" />
                   成长排名
                 </div>
@@ -82,9 +77,9 @@ import { ANNOUNCEMENT_TYPE } from '@/utils/dict';
 import project from '@/assets/svg/project.svg';
 import model from '@/assets/svg/model.svg';
 import collect from '@/assets/svg/collect.svg';
-import record from '@/assets/svg/record.svg';
+import record_1 from '@/assets/svg/record_1.svg';
 import ranking from '@/assets/svg/ranking.svg';
-import userinfo from '@/assets/svg/userinfo.svg';
+import record_2 from '@/assets/svg/record_2.svg';
 import { formatDate } from '@/utils/util';
 
 const router = useRouter();
@@ -138,7 +133,7 @@ const initMsg = async () => {
   width: 100%;
   display: flex;
   @include e(wrapper) {
-    width: 900px;
+    width: 1800px;
     margin: auto;
     display: flex;
     justify-content: center;

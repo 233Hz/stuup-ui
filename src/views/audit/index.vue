@@ -4,11 +4,43 @@
       <template #header>
         <el-row>
           <el-col :span="24">
-            <el-form ref="searchFormRef" :model="searchForm">
+            <el-form ref="searchFormRef" :model="searchForm" label-width="100px">
               <el-row>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="一级项目" prop="firstLevelId">
+                    <el-select v-model="searchForm.firstLevelId" @change="firstLevelChange" style="width: 100%">
+                      <el-option v-for="item in FIRST_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="二级项目" prop="secondLevelId">
+                    <el-select v-model="searchForm.secondLevelId" @change="secondLevelChange" style="width: 100%">
+                      <el-option v-for="item in SECOND_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="三级项目" prop="thirdLevelId">
+                    <el-select v-model="searchForm.thirdLevelId" style="width: 100%">
+                      <el-option v-for="item in THIRD_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
                 <el-col :sm="24" :md="12" :xl="8">
                   <el-form-item label="项目名称" prop="growName">
                     <el-input v-model="searchForm.growName" />
+                  </el-form-item>
+                </el-col>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="状态" prop="state">
+                    <el-select v-model="searchForm.state" style="width: 100%">
+                      <el-option
+                        v-for="item in AUDIT_STATUS.getDict()"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value" />
+                    </el-select>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -73,7 +105,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="page-box">
+      <div class="page-r">
         <el-pagination
           background
           :disabled="loading"
@@ -95,8 +127,15 @@ import { ref, onMounted } from 'vue';
 import type { FormInstance } from 'element-plus';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { pageGrowAuditRecord, passGrowItem, refuseGrowItem, returnGrowItem } from '@/api/audit';
+import { GrowthTreeVO, getGrowthTree } from '@/api/grow/config';
 import { AUDIT_STATUS } from '@/utils/dict';
 import AuditInfo from '@/components/AuditInfo.vue';
+
+//DICT
+const GROWTH_TREE = ref<GrowthTreeVO[]>([]);
+const FIRST_LEVEL = ref();
+const SECOND_LEVEL = ref();
+const THIRD_LEVEL = ref();
 
 //REF
 const searchFormRef = ref<FormInstance>();
@@ -117,10 +156,18 @@ const searchForm = ref({
 });
 
 onMounted(() => {
+  initGrowth();
   fetchList();
 });
 
 //METHODS
+
+const initGrowth = async () => {
+  const { data: res } = await getGrowthTree();
+  GROWTH_TREE.value = res;
+  FIRST_LEVEL.value = res;
+};
+
 const fetchList = async () => {
   loading.value = true;
   try {
@@ -187,6 +234,26 @@ const returnRow = (id: number) => {
       }
     })
     .catch(() => {});
+};
+
+const findChildrenById = (list: GrowthTreeVO[], id: number): GrowthTreeVO[] | [] => {
+  for (const item of list) {
+    if (item.id === id) {
+      return item.children || [];
+    }
+  }
+  return [];
+};
+
+const firstLevelChange = (val: number) => {
+  searchForm.value.secondLevelId = undefined;
+  searchForm.value.thirdLevelId = undefined;
+  SECOND_LEVEL.value = findChildrenById(FIRST_LEVEL.value, val);
+};
+
+const secondLevelChange = (val: number) => {
+  searchForm.value.thirdLevelId = undefined;
+  THIRD_LEVEL.value = findChildrenById(SECOND_LEVEL.value, val);
 };
 
 const handleCurrentChange = (val: number) => {

@@ -13,13 +13,7 @@ const locale = computed(() => zhCn);
 
 <style>
 #app {
+  width: 100%;
   height: 100%;
-  min-width: 1920px;
-}
-
-@media (max-width: 1920px) {
-  #app {
-    overflow: auto;
-  }
 }
 </style>

@@ -12,9 +12,9 @@
                   </el-form-item>
                 </el-col>
                 <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="通知类型" prop="type">
-                    <el-select v-model="searchForm.type" class="w-full">
-                      <el-option v-for="item in ANNOUNCEMENT_TYPE.getDict()" :label="item.label" :value="item.value" />
+                  <el-form-item label="发布状态" prop="state">
+                    <el-select v-model="searchForm.state" class="w-full">
+                      <el-option v-for="item in ANNOUNCEMENT_STATE.getDict()" :label="item.label" :value="item.value" />
                     </el-select>
                   </el-form-item>
                 </el-col>
@@ -46,28 +46,39 @@
 
       <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
         <el-table-column prop="title" label="公告标题" show-overflow-tooltip align="center" />
-        <el-table-column prop="type" label="公告类型" show-overflow-tooltip align="center">
-          <template #default="{ row }">
-            {{ ANNOUNCEMENT_TYPE.getKeyForValue(row.type) }}
-          </template>
-        </el-table-column>
         <el-table-column prop="createTime" label="发布时间" show-overflow-tooltip align="center" />
         <el-table-column prop="createUser" label="发布人" show-overflow-tooltip align="center" />
+        <el-table-column label="发布状态" show-overflow-tooltip align="center">
+          <template #default="{ row }">
+            {{ ANNOUNCEMENT_STATE.getKeyForValue(row.state) }}
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="400" align="center">
           <template #default="{ row }">
             <el-button @click="viewRow(row)">查看</el-button>
-            <el-button @click="updateRow(row)">修改</el-button>
-            <el-button @click="publishRow(row.id, row.title)" v-show="row.publish !== ANNOUNCEMENT_STATE.PUBLISHED">
+            <el-button :disabled="row.state === ANNOUNCEMENT_STATE.PUBLISHED" @click="updateRow(row)">修改</el-button>
+            <el-button
+              type="warning"
+              @click="publishRow(row.id, row.title)"
+              v-show="row.state === ANNOUNCEMENT_STATE.PUBLISHED">
               撤回
             </el-button>
-            <el-button @click="publishRow(row.id, row.title)" v-show="row.publish === ANNOUNCEMENT_STATE.UNPUBLISHED">
+            <el-button
+              type="success"
+              @click="publishRow(row.id, row.title)"
+              v-show="row.state === ANNOUNCEMENT_STATE.UNPUBLISHED">
               发布
             </el-button>
-            <el-button @click="delRow(row.id, row.title)" type="danger">删除</el-button>
+            <el-button
+              :disabled="row.state === ANNOUNCEMENT_STATE.PUBLISHED"
+              @click="delRow(row.id, row.title)"
+              type="danger">
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
-      <div class="page-box">
+      <div class="page-r">
         <el-pagination
           background
           :total="total"
@@ -84,13 +95,6 @@
     <el-form ref="formRef" :model="form" :rules="rules" :disabled="disabled" label-position="top">
       <el-form-item label="通知标题" prop="title">
         <el-input v-model="form.title" maxlength="30" show-word-limit />
-      </el-form-item>
-      <el-form-item label="通知类型" prop="type">
-        <el-radio-group v-model="form.type">
-          <el-radio v-for="item in ANNOUNCEMENT_TYPE.getDict()" :label="item.value" border>
-            {{ item.label }}
-          </el-radio>
-        </el-radio-group>
       </el-form-item>
       <el-form-item label="通知范围" prop="scope">
         <el-radio-group v-model="form.scope">
@@ -114,21 +118,25 @@
     <template #footer>
       <el-button @click="active = false">
         <el-icon><Close /></el-icon>
-        取消
+        取 消
       </el-button>
-      <el-button type="primary" :loading="loading" @click="submitForm">
+      <el-button type="primary" :loading="loading" @click="submitForm(false)">
         <el-icon><Check /></el-icon>
-        提交
+        保 存
+      </el-button>
+      <el-button type="success" :loading="loading" @click="submitForm(true)">
+        <el-icon><Check /></el-icon>
+        保存并发布
       </el-button>
     </template>
   </el-dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive, shallowRef, onBeforeUnmount, watch, h } from 'vue';
+import { ref, onMounted, reactive, shallowRef, onBeforeUnmount, h, nextTick } from 'vue';
 import type { FormInstance, FormRules } from 'element-plus';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { ANNOUNCEMENT_TYPE, ANNOUNCEMENT_SCOPE, ANNOUNCEMENT_STATE } from '@/utils/dict';
+import { ANNOUNCEMENT_SCOPE, ANNOUNCEMENT_STATE } from '@/utils/dict';
 import '@wangeditor/editor/dist/css/style.css'; // 引入 css
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
 import { requiredRule } from '@/utils/rules';
@@ -160,18 +168,17 @@ const searchForm = ref({
   size: 10,
   title: void 0,
   type: void 0,
+  state: void 0,
 });
 const form = ref({
   id: void 0,
-  title: '',
-  type: void 0,
+  title: void 0,
   scope: void 0,
   userIds: [],
-  content: '',
+  content: ' ',
 });
 const rules = reactive<FormRules>({
   title: [requiredRule('公告标题')],
-  type: [requiredRule('请选择公告类型')],
   scope: [requiredRule('请选择公告范围')],
   userIds: [],
 });
@@ -189,22 +196,6 @@ onBeforeUnmount(() => {
   if (editor == null) return;
   editor.destroy();
 });
-
-/**
- * ==================== 侦听器 ====================
- */
-
-watch(
-  () => form.value.scope,
-  scope => {
-    form.value.userIds = [];
-    if (scope === ANNOUNCEMENT_SCOPE.DESIGNATED) {
-      rules.userIds = [requiredRule('指定用户')];
-    } else {
-      rules.userIds = [];
-    }
-  }
-);
 
 /**
  * ==================== 方法 ====================
@@ -228,14 +219,15 @@ const fetchList = async () => {
 const viewRow = row => {
   title.value = '查看';
   active.value = true;
-  disabled.value = true;
-  editorRef.value.disable();
-  form.value.id = row.id;
-  form.value.title = row.title;
-  form.value.type = row.type;
-  form.value.scope = row.scope;
-  form.value.userIds = row.userIds;
-  form.value.content = row.content;
+  nextTick(() => {
+    disabled.value = true;
+    editorRef.value.disable();
+    form.value.id = row.id;
+    form.value.title = row.title;
+    form.value.scope = row.scope;
+    form.value.userIds = row.userIds;
+    form.value.content = row.content || '';
+  });
 };
 
 const addRow = () => {
@@ -245,12 +237,13 @@ const addRow = () => {
 const updateRow = row => {
   title.value = '修改';
   active.value = true;
-  form.value.id = row.id;
-  form.value.title = row.title;
-  form.value.type = row.type;
-  form.value.scope = row.scope;
-  form.value.userIds = row.userIds;
-  form.value.content = row.content;
+  nextTick(() => {
+    form.value.id = row.id;
+    form.value.title = row.title;
+    form.value.scope = row.scope;
+    form.value.userIds = row.userIds;
+    form.value.content = row.content || '';
+  });
 };
 const delRow = (id: number, title: string) => {
   ElMessageBox({
@@ -300,23 +293,21 @@ const publishRow = (id: number, title: string) => {
     .catch(() => {});
 };
 
-const submitForm = async () => {
+const submitForm = async (publish: boolean) => {
   if (!formRef) return;
   const valid = await formRef.value?.validate();
   if (!valid) return;
   loading.value = true;
+  console.log(Object.assign(form.value, { publish }));
+
   try {
-    const res = await saveOrUpdateAnnouncement(form.value);
+    const res = await saveOrUpdateAnnouncement(Object.assign({ publish }, form.value));
     ElMessage.success(res.message);
     active.value = false;
     fetchList();
   } finally {
     loading.value = false;
   }
-};
-
-const handleSelect = (ids: number[]) => {
-  form.value.userIds = ids;
 };
 
 const handleCurrentChange = (val: number) => {
@@ -331,11 +322,10 @@ const handleSizeChange = (val: number) => {
 const resetForm = () => {
   form.value = {
     id: void 0,
-    title: '',
-    type: void 0,
+    title: void 0,
     scope: void 0,
     userIds: [],
-    content: '',
+    content: ' ',
   };
   formRef.value?.resetFields();
   disabled.value = false;

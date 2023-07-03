@@ -10,8 +10,9 @@ export interface StudentRecScoreVO {
   growName?: string;
   score?: string;
   createTime?: Date;
+  description?: Date;
 }
 
 export const pageStudentRecScore = async (params: Page): Promise<ApiResult<PageResult<StudentRecScoreVO[]>>> => {
-  return get('/recScore/student/page', params);
+  return get('/stuScoreLog/page', params);
 };

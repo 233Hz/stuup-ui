@@ -1,11 +1,9 @@
 import { ApiResult, get } from '@/api/api';
-import { Page, PageResult } from '@/types/global';
 
 export interface ProgressRankVO {
-  id: string;
+  rank: number;
   year: number;
   month: number;
-  yearName: string;
   studentName: string;
   studentNo: string;
   gradeName: string;
@@ -13,15 +11,12 @@ export interface ProgressRankVO {
   classTeacher: string;
   facultyName: string;
   majorName: string;
-  score: string;
-  progressState: number;
-  progressRanking: number;
+  score: number;
+  rankTrend: number;
+  rankChange: number;
+  scoreChange: number;
 }
 
-interface YearRankingQueryParams extends Page {
-  yearId: number;
-}
-
-export const getProgressRanking = async (params: Record<string, any>): Promise<ApiResult<ProgressRankVO[]>> => {
-  return await get('/rankingMonth/progressRanking', params);
+export const getProgressRank = async (): Promise<ApiResult<ProgressRankVO[]>> => {
+  return await get('/rank/progress');
 };

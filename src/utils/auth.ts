@@ -10,7 +10,7 @@ export const getToken = (): string | undefined => {
 
 // ↓设置token
 export const setToken = (token: string): string | undefined => {
-  return Cookies.set(tokenKey, token);
+  return Cookies.set(tokenKey, token, { expires: 1 });
 };
 
 // ↓删除token

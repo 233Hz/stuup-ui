@@ -12,7 +12,7 @@
           :type="showAside ? 'primary' : 'warning'"
           :icon="showAside ? ArrowRightBold : ArrowLeftBold"
           round
-          @click="showAside = !showAside">
+          @click="changeLayout">
           {{ showAside ? '前往前台' : '前往后台' }}
         </el-button>
         <el-dropdown>
@@ -24,6 +24,8 @@
           </span>
           <template #dropdown>
             <el-dropdown-menu>
+              <el-dropdown-item @click="router.push('/self/center')">个人中心</el-dropdown-item>
+              <el-dropdown-item @click="router.push('/self/notify')">我的消息</el-dropdown-item>
               <el-dropdown-item @click="handleLoginout">退出登入</el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -34,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import logo from '@/assets/logo.png';
 import Menu from './Menu.vue';
 import { useUserStore } from '@/store/modules/user';
@@ -42,6 +44,7 @@ import { usePermissionStore } from '@/store/modules/premission';
 import { ElMessageBox } from 'element-plus';
 import { useRouter } from 'vue-router';
 import { ArrowLeftBold, ArrowRightBold } from '@element-plus/icons-vue';
+import { USER_TYPE } from '@/utils/dict';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -56,17 +59,22 @@ onMounted(() => {
   emit('change-aside', showAside.value);
 });
 
+const hiddenBackBtn = computed(() => {
+  return userStore.getUserType === USER_TYPE.TEACHER;
+});
+
 watch(showAside, newVal => {
-  newVal ? router.push('/dashboard') : router.push('/');
+  // newVal ? router.push('/dashboard') : router.push('/');
   sessionStorage.setItem('show-aside', newVal.toString());
   emit('change-aside', newVal);
 });
 
-// const changeAside = (val: boolean) => {
-//   val ? router.push('/dashboard') : router.push('/');
-//   sessionStorage.setItem('show-aside', val.toString());
-//   emit('change-aside', val);
-// };
+const changeLayout = () => {
+  showAside.value = !showAside.value;
+  showAside.value ? router.push('/dashboard') : router.push('/');
+  sessionStorage.setItem('show-aside', showAside.value.toString());
+  emit('change-aside', showAside.value);
+};
 
 const handleLoginout = () => {
   ElMessageBox.confirm('确认退出？', '退出登入', {

@@ -11,21 +11,18 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/login/index.vue'),
   },
   {
-    path: '/:path(.*)*',
+    path: '/404',
     name: '404',
     component: () => import('@/views/error/404.vue'),
   },
+  // {
+  //   path: '/:pathMatch(.*)*',
+  //   redirect: '/404',
+  // },
 ];
 
 const router = createRouter({
-  history: createWebHistory('/stuup/'),
-  scrollBehavior: (to, from, savedPosition) => {
-    if (savedPosition) {
-      return savedPosition;
-    } else {
-      return { top: 0 };
-    }
-  },
+  history: createWebHistory(import.meta.env.MODE === 'production' ? '/stuup' : '/'),
   routes,
 });
 

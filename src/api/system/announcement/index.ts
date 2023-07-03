@@ -1,13 +1,25 @@
 import { ApiResult, get, post, del } from '@/api/api';
 import { Page, PageResult } from '@/types/global';
 
+export interface Announcement {
+  id: number;
+  title: string;
+  type: number;
+  scope: number;
+  content: string;
+  state: number;
+  createUser: number;
+  createTime: Date;
+  updateTime: Date;
+}
+
 export interface AnnouncementVO {
   id?: number;
   title: string;
   type: number;
   scope: number;
   userIds: number[];
-  content?: string;
+  publish?: boolean;
 }
 
 export interface AnnouncementPremUserVO {
@@ -40,4 +52,8 @@ export const getAnnouncementPremUser = async (
 
 export const getAnnouncementMyPage = async (params?: Page): Promise<ApiResult<PageResult<AnnouncementVO[]>>> => {
   return await get('/announcement/myPage', params);
+};
+
+export const getAnnouncementById = async (id: number): Promise<ApiResult<Announcement>> => {
+  return await get('/announcement/' + id);
 };

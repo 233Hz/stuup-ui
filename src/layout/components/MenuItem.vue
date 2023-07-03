@@ -3,7 +3,9 @@
     <template #title>{{ route.name }}</template>
     <menu-item v-for="(children, index) in route.children" :key="children.path + index" :route="children" />
   </el-sub-menu>
-  <el-menu-item v-else :index="route.path">{{ route.name }}</el-menu-item>
+  <router-link v-else :to="route.path">
+    <el-menu-item :index="route.path">{{ route.name }}</el-menu-item>
+  </router-link>
 </template>
 
 <script setup lang="ts">

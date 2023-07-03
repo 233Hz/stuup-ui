@@ -30,6 +30,7 @@ export async function download(url: string, params?: any, fileName?: string) {
   });
   try {
     const response = await axiosInstance.get(url, { responseType: 'blob', params });
+    debugger;
     const blob = new Blob([response.data]); // 创建 href 超链接，点击进行下载
     const a = document.createElement('a');
     const URL = window.URL || window.webkitURL;

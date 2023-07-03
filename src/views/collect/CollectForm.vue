@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="active" title="导入成长项目" width="30%" center @close="handleClose">
+  <el-dialog v-model="active" title="导入成长项目" width="40%" center @close="handleClose">
     <el-form ref="fromRef" :model="form" :disabled="loading" label-position="top">
       <el-form-item label="成长项目" prop="rec_code">
         <el-radio-group v-model="form.rec_code">

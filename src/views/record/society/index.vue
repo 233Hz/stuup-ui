@@ -33,7 +33,7 @@
                     <el-form-item label="级别" prop="level">
                       <el-select v-model="searchForm.level" style="width: 100%">
                         <el-option
-                          v-for="item in LEVEL_DICT"
+                          v-for="item in AWARD_LEVEL.getDict()"
                           :key="item.value"
                           :label="item.label"
                           :value="item.value" />
@@ -57,7 +57,7 @@
       <el-card>
         <template #header>
           <el-space>
-            <el-button type="primary">
+            <el-button type="primary" @click="downloadRec">
               <el-icon><Download /></el-icon>
               导出
             </el-button>
@@ -76,12 +76,16 @@
           <el-table-column prop="studentNo" label="学号" show-overflow-tooltip align="center" />
           <el-table-column prop="idCard" label="证件号" show-overflow-tooltip align="center" />
           <el-table-column prop="name" label="社团名称" show-overflow-tooltip align="center" />
-          <el-table-column prop="level" label="级别" show-overflow-tooltip align="center" />
+          <el-table-column prop="level" label="级别" show-overflow-tooltip align="center">
+            <template #default="{ row }">
+              {{ AWARD_LEVEL.getKeyForValue(row.level) }}
+            </template>
+          </el-table-column>
           <el-table-column prop="startTime" label="开始时间" show-overflow-tooltip align="center" />
           <el-table-column prop="endTime" label="结束时间" show-overflow-tooltip align="center" />
           <el-table-column prop="role" label="角色" show-overflow-tooltip align="center" />
         </el-table>
-        <div class="page-box">
+        <div class="page-r">
           <el-pagination
             background
             :total="total"
@@ -102,8 +106,8 @@ import { ref, onMounted } from 'vue';
 import type { FormInstance } from 'element-plus';
 import { RecSocietyVO, getRecSocietyPage } from '@/api/record/society/index';
 import { getGraderList } from '@/api/basic/grade/index';
-import { LEVEL } from '@/utils/constant';
-import { LEVEL_NAMES } from '@/utils/dict';
+import { AWARD_LEVEL, REC_CODE } from '@/utils/dict';
+import { downRecord } from '@/api/record';
 
 onMounted(() => {
   initGrade();
@@ -112,16 +116,6 @@ onMounted(() => {
 
 // 字典
 const GRADE = ref();
-const LEVEL_DICT = Object.entries(LEVEL_NAMES)
-  .filter(([key]) => {
-    return Number(key) !== LEVEL.COUNTRY && Number(key) !== LEVEL.INTERNATIONAL;
-  })
-  .map(([key, value]) => {
-    return {
-      label: value,
-      value: key,
-    };
-  });
 
 const loading = ref<boolean>(false);
 const tableData = ref<RecSocietyVO[]>();
@@ -158,6 +152,16 @@ const fetchList = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+const downloadRec = async () => {
+  await downRecord(
+    Object.assign({
+      rec_code: REC_CODE.REC_SOCIETY,
+      ...searchForm.value,
+    }),
+    `${REC_CODE.getKey('REC_SOCIETY')}.xlsx`
+  );
 };
 
 const handleCurrentChange = (val: number) => {

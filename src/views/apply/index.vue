@@ -4,11 +4,43 @@
       <template #header>
         <el-row>
           <el-col :span="24">
-            <el-form ref="searchFormRef" :model="searchForm">
+            <el-form ref="searchFormRef" :model="searchForm" label-width="100px">
               <el-row>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="一级项目" prop="firstLevelId">
+                    <el-select v-model="searchForm.firstLevelId" @change="firstLevelChange" class="w-full">
+                      <el-option v-for="item in FIRST_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="二级项目" prop="secondLevelId">
+                    <el-select v-model="searchForm.secondLevelId" @change="secondLevelChange" class="w-full">
+                      <el-option v-for="item in SECOND_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="三级项目" prop="thirdLevelId">
+                    <el-select v-model="searchForm.thirdLevelId" class="w-full">
+                      <el-option v-for="item in THIRD_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
                 <el-col :sm="24" :md="12" :xl="8">
                   <el-form-item label="项目名称" prop="growName">
                     <el-input v-model="searchForm.growName" />
+                  </el-form-item>
+                </el-col>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="状态" prop="state">
+                    <el-select v-model="searchForm.state" class="w-full">
+                      <el-option
+                        v-for="item in AUDIT_STATUS.getDict()"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value" />
+                    </el-select>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -91,7 +123,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="page-box">
+      <div class="page-r">
         <el-pagination
           background
           :disabled="loading"
@@ -174,13 +206,18 @@ import {
   deleteAudGrow,
   submitGrowItem,
 } from '@/api/apply';
+import { GrowthTreeVO, getGrowthTree } from '@/api/grow/config';
 import { requiredRule } from '@/utils/rules';
 import { getToken } from '@/utils/auth';
 import { AUDIT_STATUS } from '@/utils/dict';
-import type { UploadProps, UploadUserFile } from 'element-plus';
+import type { UploadProps } from 'element-plus';
 import AuditInfo from '@/components/AuditInfo.vue';
 
 //DICT
+const GROWTH_TREE = ref<GrowthTreeVO[]>([]);
+const FIRST_LEVEL = ref();
+const SECOND_LEVEL = ref();
+const THIRD_LEVEL = ref();
 const GROW_ITEM = ref();
 
 //REF
@@ -197,7 +234,11 @@ const total = ref<number>(0);
 const searchForm = ref({
   current: 1,
   size: 10,
+  firstLevelId: undefined,
+  secondLevelId: undefined,
+  thirdLevelId: undefined,
   growName: void 0,
+  state: void 0,
 });
 const form = ref({
   id: void 0,
@@ -212,6 +253,7 @@ const rules = reactive<FormRules>({
 
 //INIT
 onMounted(() => {
+  initGrowth();
   initGrowthItem();
   fetchList();
 });
@@ -226,15 +268,11 @@ const headers = computed(() => {
 //WATCH
 
 //METHODS
-const fetchList = async () => {
-  loading.value = true;
-  try {
-    const { data } = await pageGrowApplyRecord(searchForm.value);
-    total.value = data.total;
-    tableData.value = data.records;
-  } finally {
-    loading.value = false;
-  }
+
+const initGrowth = async () => {
+  const { data: res } = await getGrowthTree();
+  GROWTH_TREE.value = res;
+  FIRST_LEVEL.value = res;
 };
 
 const initGrowthItem = async () => {
@@ -246,6 +284,37 @@ const initGrowthItem = async () => {
       desc: `${item.firstLevelName}-${item.secondLevelName}-${item.thirdLevelName}`,
     };
   });
+};
+
+const fetchList = async () => {
+  loading.value = true;
+  try {
+    const { data } = await pageGrowApplyRecord(searchForm.value);
+    total.value = data.total;
+    tableData.value = data.records;
+  } finally {
+    loading.value = false;
+  }
+};
+
+const findChildrenById = (list: GrowthTreeVO[], id: number): GrowthTreeVO[] | [] => {
+  for (const item of list) {
+    if (item.id === id) {
+      return item.children || [];
+    }
+  }
+  return [];
+};
+
+const firstLevelChange = (val: number) => {
+  searchForm.value.secondLevelId = undefined;
+  searchForm.value.thirdLevelId = undefined;
+  SECOND_LEVEL.value = findChildrenById(FIRST_LEVEL.value, val);
+};
+
+const secondLevelChange = (val: number) => {
+  searchForm.value.thirdLevelId = undefined;
+  THIRD_LEVEL.value = findChildrenById(SECOND_LEVEL.value, val);
 };
 
 const addRow = () => {

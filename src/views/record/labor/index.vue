@@ -48,7 +48,7 @@
       <el-card>
         <template #header>
           <el-space>
-            <el-button type="primary">
+            <el-button type="primary" @click="downloadRec">
               <el-icon><Download /></el-icon>
               导出
             </el-button>
@@ -68,7 +68,7 @@
           <el-table-column prop="idCard" label="证件号" show-overflow-tooltip align="center" />
           <el-table-column prop="hours" label="累计课时" show-overflow-tooltip align="center" />
         </el-table>
-        <div class="page-box">
+        <div class="page-r">
           <el-pagination
             background
             :total="page.total"
@@ -90,6 +90,8 @@ import type { FormInstance } from 'element-plus';
 import { RecLaborTimeVO, getRecLaborTimePage } from '@/api/record/labor/index';
 import { getYearList } from '@/api/basic/year/index';
 import { getGraderList } from '@/api/basic/grade/index';
+import { REC_CODE } from '@/utils/dict';
+import { downRecord } from '@/api/record';
 
 onMounted(() => {
   initYear();
@@ -136,6 +138,16 @@ const fetchList = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+const downloadRec = async () => {
+  await downRecord(
+    Object.assign({
+      rec_code: REC_CODE.REC_LABOR_TIME,
+      ...searchForm.value,
+    }),
+    `${REC_CODE.getKey('REC_LABOR_TIME')}.xlsx`
+  );
 };
 
 const handleCurrentChange = (val: number) => {

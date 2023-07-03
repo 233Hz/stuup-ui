@@ -32,6 +32,22 @@ export interface UserDictVO {
   disabled: boolean;
 }
 
+export interface CusUser {
+  userId: number;
+  userName: string;
+  loginName: string;
+  sex: number;
+  idCard: string;
+  birthday: string;
+  mobile: string;
+  deptId: number;
+  deptName: string;
+  userType: number;
+  degree: string;
+  roleIds: number[];
+  yearId: number;
+}
+
 export const getUserList = async (): Promise<ApiResult<UserDictVO[]>> => {
   return await get('/user/all');
 };
@@ -54,4 +70,8 @@ export const delUser = async (ids: string) => {
 
 export const queryUserAuthority = async (): Promise<ApiResult<MenuVO[]>> => {
   return post('/user/queryUserAuthority');
+};
+
+export const getUserInfo = async (): Promise<ApiResult<CusUser>> => {
+  return get('/user/info');
 };

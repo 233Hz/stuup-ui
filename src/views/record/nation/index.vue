@@ -40,10 +40,10 @@
                     <el-form-item label="获得奖项（级别）" prop="level">
                       <el-select v-model="searchForm.level" style="width: 100%">
                         <el-option
-                          v-for="[key, value] in Object.entries(LEVEL_NAMES)"
-                          :key="key"
-                          :label="value"
-                          :value="key" />
+                          v-for="item in AWARD_LEVEL.getDict()"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value" />
                       </el-select>
                     </el-form-item>
                   </el-col>
@@ -64,7 +64,7 @@
       <el-card shadow="never">
         <template #header>
           <el-space>
-            <el-button type="primary">
+            <el-button type="primary" @click="downloadRec">
               <el-icon><Download /></el-icon>
               导出
             </el-button>
@@ -85,11 +85,15 @@
           <el-table-column prop="studentNo" label="学号" show-overflow-tooltip align="center" />
           <el-table-column prop="idCard" label="证件号" show-overflow-tooltip align="center" />
           <el-table-column prop="name" label="项目名称" show-overflow-tooltip align="center" />
-          <el-table-column prop="level" label="获得奖项（级别）" show-overflow-tooltip align="center" />
+          <el-table-column prop="level" label="获得奖项（级别）" show-overflow-tooltip align="center">
+            <template #default="{ row }">
+              {{ AWARD_LEVEL.getKeyForValue(row.level) }}
+            </template>
+          </el-table-column>
           <el-table-column prop="org" label="组织机构（主办方）" show-overflow-tooltip align="center" />
           <el-table-column prop="hours" label="累计时间（课时）" show-overflow-tooltip align="center" />
         </el-table>
-        <div class="page-box">
+        <div class="page-r">
           <el-pagination
             background
             :total="page.total"
@@ -111,7 +115,8 @@ import type { FormInstance } from 'element-plus';
 import { RecNationVO, getRecNationPage } from '@/api/record/nation/index';
 import { getGraderList } from '@/api/basic/grade/index';
 import { getYearList } from '@/api/basic/year/index';
-import { LEVEL_NAMES } from '@/utils/dict';
+import { AWARD_LEVEL, REC_CODE } from '@/utils/dict';
+import { downRecord } from '@/api/record';
 
 onMounted(() => {
   initYear();
@@ -158,6 +163,16 @@ const fetchList = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+const downloadRec = async () => {
+  await downRecord(
+    Object.assign({
+      rec_code: REC_CODE.REC_NATION,
+      ...searchForm.value,
+    }),
+    `${REC_CODE.getKey('REC_NATION')}.xlsx`
+  );
 };
 
 const handleCurrentChange = (val: number) => {
