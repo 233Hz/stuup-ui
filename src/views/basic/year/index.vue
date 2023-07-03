@@ -27,10 +27,10 @@
     <el-card>
       <template #header>
         <el-space>
-          <el-button type="primary" @click="addRow">
+          <!-- <el-button type="primary" @click="addRow">
             <el-icon><Plus /></el-icon>
             添加
-          </el-button>
+          </el-button> -->
           <el-divider direction="vertical" />
           <el-button :disabled="loading" circle @click="fetchList">
             <el-icon><Refresh /></el-icon>
@@ -43,7 +43,12 @@
         <el-table-column prop="yearStart" label="开始时间" show-overflow-tooltip align="center" />
         <el-table-column prop="yearEnd" label="结束时间" show-overflow-tooltip align="center" />
         <el-table-column prop="createTime" label="创建时间" show-overflow-tooltip align="center" />
-        <el-table-column label="操作" width="300" align="center">
+        <el-table-column label="当前学年" show-overflow-tooltip align="center">
+          <template #default="{ row }">
+            <el-tag v-show="row.curr === WHETHER.YES">当前学年</el-tag>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="操作" width="300" align="center">
           <template #default="{ row }">
             <el-button :disabled="row.curr === 1" @click="setCurrent(row.oid)" :type="row.curr === 1 ? 'success' : ''">
               {{ row.curr === 1 ? '当前学年' : '设置为当前年' }}
@@ -51,7 +56,7 @@
             <el-button @click="updateRow(row)">修改</el-button>
             <el-button @click="delRow(row.oid)" type="danger">删除</el-button>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
       <div class="page-r">
         <el-pagination
@@ -107,6 +112,7 @@ import { ref, onMounted, reactive } from 'vue';
 import type { FormInstance, FormRules } from 'element-plus';
 import { YearVO, getYearPage, saveOrUpdateYear, delYear, setCurrentYear } from '@/api/basic/year/index';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import { WHETHER } from '@/utils/dict';
 
 onMounted(() => {
   fetchList();

@@ -33,10 +33,10 @@
     <el-card>
       <template #header>
         <el-space>
-          <el-button type="primary" :disabled="loading" @click="addRow">
+          <!-- <el-button type="primary" :disabled="loading" @click="addRow">
             <el-icon class="mr-4"><Plus /></el-icon>
             添加
-          </el-button>
+          </el-button> -->
           <el-divider direction="vertical" />
           <el-button :disabled="loading" circle @click="fetchList">
             <el-icon><Refresh /></el-icon>
@@ -50,7 +50,12 @@
         <el-table-column prop="startTime" label="开始时间" show-overflow-tooltip align="center" />
         <el-table-column prop="endTime" label="结束时间" show-overflow-tooltip align="center" />
         <el-table-column prop="createTime" label="创建时间" show-overflow-tooltip align="center" />
-        <el-table-column label="操作" align="center">
+        <el-table-column label="当前学期" show-overflow-tooltip align="center">
+          <template #default="{ row }">
+            <el-tag v-show="row.isCurrent === WHETHER.YES">当前学期</el-tag>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="操作" align="center">
           <template #default="{ row }">
             <el-button
               :disabled="row.isCurrent === WHETHER.YES"
@@ -61,7 +66,7 @@
             <el-button :disabled="loading" @click="updateRow(row)">修改</el-button>
             <el-button type="danger" :disabled="loading" @click="delRow(row.id)">删除</el-button>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
       <div class="page-r">
         <el-pagination
