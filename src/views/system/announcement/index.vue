@@ -116,18 +116,20 @@
       </el-form-item>
     </el-form>
     <template #footer>
-      <el-button @click="active = false">
-        <el-icon><Close /></el-icon>
-        取 消
-      </el-button>
-      <el-button type="primary" :loading="loading" @click="submitForm(false)">
-        <el-icon><Check /></el-icon>
-        保 存
-      </el-button>
-      <el-button type="success" :loading="loading" @click="submitForm(true)">
-        <el-icon><Check /></el-icon>
-        保存并发布
-      </el-button>
+      <el-space v-show="title != '查看'">
+        <el-button @click="active = false">
+          <el-icon><Close /></el-icon>
+          取 消
+        </el-button>
+        <el-button type="primary" :loading="loading" @click="submitForm(false)">
+          <el-icon><Check /></el-icon>
+          保 存
+        </el-button>
+        <el-button type="success" :loading="loading" @click="submitForm(true)">
+          <el-icon><Check /></el-icon>
+          保存并发布
+        </el-button>
+      </el-space>
     </template>
   </el-dialog>
 </template>
@@ -298,8 +300,6 @@ const submitForm = async (publish: boolean) => {
   const valid = await formRef.value?.validate();
   if (!valid) return;
   loading.value = true;
-  console.log(Object.assign(form.value, { publish }));
-
   try {
     const res = await saveOrUpdateAnnouncement(Object.assign({ publish }, form.value));
     ElMessage.success(res.message);
