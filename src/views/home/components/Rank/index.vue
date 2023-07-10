@@ -3,7 +3,7 @@
     <div class="rank-wrapper">
       <RankItem1 rank-name="学年全校排行榜" :data="generateRankData1()" />
       <RankItem2 rank-name="学年班级排行榜" :data="generateRankData2()" />
-      <RankItem1 rank-name="每月进步榜" background-color="color4" :data="generateRankData3()">
+      <RankItem1 rank-name="每月进步榜" background-color="color2" :data="generateRankData3()">
         <template #default="{ row }">
           <div style="font-size: 20px; color: #67c5ce">↑{{ row.rankChange }}</div>
         </template>

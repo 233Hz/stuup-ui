@@ -8,13 +8,7 @@
     </div>
     <div class="bunga-header__navbar">
       <el-space>
-        <el-button
-          :type="showAside ? 'primary' : 'warning'"
-          :icon="showAside ? ArrowRightBold : ArrowLeftBold"
-          round
-          @click="changeLayout">
-          {{ showAside ? '前往前台' : '前往后台' }}
-        </el-button>
+        <el-button type="primary" :icon="ArrowRightBold" round @click="router.push('/')">前往后台</el-button>
         <el-dropdown>
           <span class="el-dropdown-link">
             {{ userStore.getUserName }}
@@ -69,12 +63,12 @@ watch(showAside, newVal => {
   emit('change-aside', newVal);
 });
 
-const changeLayout = () => {
-  showAside.value = !showAside.value;
-  showAside.value ? router.push('/dashboard') : router.push('/');
-  sessionStorage.setItem('show-aside', showAside.value.toString());
-  emit('change-aside', showAside.value);
-};
+// const backHome = () => {
+//   showAside.value = !showAside.value;
+//   showAside.value ? router.push('/dashboard') : router.push('/');
+//   sessionStorage.setItem('show-aside', showAside.value.toString());
+//   emit('change-aside', showAside.value);
+// };
 
 const handleLoginout = () => {
   ElMessageBox.confirm('确认退出？', '退出登入', {

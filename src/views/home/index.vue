@@ -34,27 +34,39 @@
         <div class="xhh_fruit" />
         <div class="xhh_garden" @click="router.push(`/garden/${GARDEN_TYPE.XHH}`)" />
         <div class="sun" @click="rankRef.open">荣誉榜</div>
-        <div class="user-self">
-          <div class="user-self__wrapper">
-            <div class="user-avatar">
-              <div class="user-avatar__wrapper">
-                <img :src="defaultAvatar" />
-              </div>
-            </div>
-            <div class="user-info">
-              <div class="user-info__wrapper">
-                <div class="user-name">张三</div>
-                <div class="user-score">
-                  <div class="user-score__icon">
-                    <img :src="waterDrop" />
-                  </div>
-                  <div class="user-score__number">100</div>
+        <div class="user">
+          <div class="user-self">
+            <div class="user-self__wrapper">
+              <div class="user-avatar">
+                <div class="user-avatar__wrapper">
+                  <img :src="defaultAvatar" />
                 </div>
               </div>
+              <div class="user-info">
+                <div class="user-info__wrapper">
+                  <div class="user-name">张三</div>
+                  <div class="user-rank">
+                    全校排名
+                    <span>1111</span>
+                  </div>
+                </div>
+              </div>
+              <div class="user-score">
+                <span>总积分</span>
+                <span>100</span>
+              </div>
             </div>
-            <div class="user-rank">
-              <span>全校排名</span>
-              <span>1111</span>
+          </div>
+          <div class="user-level">
+            <div class="user-level__wrapper">
+              <div class="level-icon">
+                <div
+                  class="level-icon__item"
+                  v-for="(item, index) in conversionFlower.calculateConversionFlower(57)"
+                  :key="index">
+                  <img :src="item.imageSrc" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -72,7 +84,7 @@
               </div>
               <div class="item-name">我的积分明细</div>
             </li>
-            <li class="menu-wrapper__item">
+            <li class="menu-wrapper__item" @click="router.push('/portrait')">
               <div class="item-icon">
                 <img :src="portraitSvg" />
               </div>
@@ -84,12 +96,19 @@
               </div>
               <div class="item-name">我的成长报告</div>
             </li>
+            <li class="menu-wrapper__item" @click="router.push('/dashboard')">
+              <div class="item-icon">
+                <img :src="backSvg" />
+              </div>
+              <div class="item-name">后台管理</div>
+            </li>
           </ul>
         </div>
       </div>
+      <div class="home-wrapper__blisters"></div>
+      <Turntable ref="turntableRef" class="home-wrapper__turntable" />
       <Rank ref="rankRef" class="home-wrapper__rank" />
     </div>
-    <!-- <Header class="home-header" /> -->
   </div>
 </template>
 
@@ -97,19 +116,22 @@
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { GARDEN_TYPE } from '@/utils/dict';
-import Header from '@/layout/components/Header.vue';
 import Rank from './components/Rank/index.vue';
+import Turntable from './components/Turntable/index.vue';
 import defaultAvatar from '@/assets/image/default_avatar.png';
-import waterDrop from '@/assets/image/water-drop.png';
 import applaySvg from '@/assets/svg/home-applay.svg';
 import detailsSvg from '@/assets/svg/home-score.svg';
 import portraitSvg from '@/assets/svg/home-portrait.svg';
 import reportSvg from '@/assets/svg/home-report.svg';
+import backSvg from '@/assets/svg/home-back.svg';
+import { useConversionFlower } from '@/utils/conversionFlower';
 
 //REF
+const turntableRef = ref();
 const rankRef = ref();
 
 const router = useRouter();
+const conversionFlower = useConversionFlower();
 const show_hint = ref<boolean>(false);
 const flowerHint: Record<string, string> = {
   bmh_fruit: `<h3>白梅花</h3>
@@ -149,9 +171,9 @@ const flowerHint: Record<string, string> = {
 };
 
 onMounted(() => {
-  registerFlowerHint();
   resetSize();
-  // generateBlisters();
+  registerFlowerHint();
+  generateBlisters();
 });
 
 const width = 1920;
@@ -192,37 +214,37 @@ const registerFlowerHint = (): void => {
   });
 };
 
-// const generateBlisters = (): void => {
-//   const wrapper = document.querySelector('.upper_layer') as HTMLDivElement;
-//   for (let i = 0; i < 1; i++) {
-//     let blistersEl = document.createElement('div') as HTMLDivElement;
-//     const score = Math.floor(Math.random() * 3) + 1;
-//     let textNode = document.createTextNode(`+${score}`);
-//     blistersEl.setAttribute('score', score.toString());
-//     blistersEl.append(textNode);
-//     blistersEl.classList.add('blisters');
-//     const blistersDiameter: number = 50;
-//     const x = `${Math.floor(Math.random() * (wrapper.offsetHeight - blistersDiameter * 2)) + blistersDiameter}px`;
-//     const y = `${Math.floor(Math.random() * (wrapper.offsetWidth - blistersDiameter * 2)) + blistersDiameter}px`;
-//     blistersEl.style.transform = `translate(${400}px, ${400}px)`;
-//     wrapper.appendChild(blistersEl);
-//   }
+const generateBlisters = (): void => {
+  const wrapper = document.querySelector('.home-wrapper__blisters') as HTMLDivElement;
+  const wrapperRect = wrapper.getBoundingClientRect();
+  const blistersDiameter: number = 50;
+  for (let i = 0; i < 10; i++) {
+    let blistersEl = document.createElement('div') as HTMLDivElement;
+    const score = Math.floor(Math.random() * 3) + 1;
+    let textNode = document.createTextNode(`+${score}`);
+    blistersEl.setAttribute('score', score.toString());
+    blistersEl.append(textNode);
+    blistersEl.classList.add('blisters');
+    blistersEl.style.left = `${Math.floor(
+      Math.random() * (wrapperRect.width - blistersDiameter) + blistersDiameter
+    )}px`;
+    blistersEl.style.top = `${Math.floor(
+      Math.random() * (wrapperRect.height - blistersDiameter) + blistersDiameter
+    )}px`;
+    console.log(blistersEl.style.left + '+' + blistersEl.style.top);
+    wrapper.appendChild(blistersEl);
+  }
 
-//   wrapper.addEventListener('click', (e: MouseEvent) => {
-//     const target = e.target as HTMLDivElement;
-//     if (target.classList.contains('blisters')) {
-//       target.clientWidth;
-//       target.style.transform = `translate(${800}px, ${200}px)`;
-//       setInterval(() => {
-//         const xhhSeedEl = document.querySelector('.xhh_seed') as HTMLDivElement;
-//         const xhhSproutEl = document.querySelector('.xhh_sprout') as HTMLDivElement;
-//         xhhSproutEl.style.opacity = '1';
-//         xhhSeedEl.classList.add('bounce_anim');
-//         target.remove();
-//       }, 1000);
-//     }
-//   });
-// };
+  wrapper.addEventListener('click', (e: MouseEvent) => {
+    const target = e.target as HTMLDivElement;
+    if (target.classList.contains('blisters')) {
+      const elements = document.querySelectorAll('.blisters');
+      elements.forEach(element => {
+        element.remove();
+      });
+    }
+  });
+};
 </script>
 
 <style scoped lang="scss">
@@ -659,111 +681,169 @@ const registerFlowerHint = (): void => {
         }
       }
 
-      .user-self {
+      .user {
         position: absolute;
         top: 0;
         left: 0;
         width: 300px;
-        height: 100px;
-        padding: 20px 45px 20px 40px;
-        background: url(../../assets/image/user-self-border.png) no-repeat center center;
-        background-size: 100% 100%;
 
-        &__wrapper {
+        &-self {
           position: relative;
           width: 100%;
-          height: 100%;
-          background-color: #16a085;
-          background-image: linear-gradient(90deg, #16a085 0%, #f4d03f 100%);
-          border-radius: 8px;
-          display: flex;
+          height: 100px;
+          padding: 20px 45px 20px 40px;
+          background: url(../../assets/image/user-self-border.png) no-repeat center center;
+          background-size: 100% 100%;
 
-          .user-avatar {
-            width: 60px;
+          &__wrapper {
+            position: relative;
+            width: 100%;
             height: 100%;
-            background-color: #f4d03f;
-            background-image: linear-gradient(132deg, #f4d03f 0%, #16a085 100%);
+            background-color: #16a085;
+            background-image: linear-gradient(90deg, #16a085 0%, #f4d03f 100%);
             border-radius: 8px;
+            display: flex;
 
-            &__wrapper {
-              width: 100%;
+            .user-avatar {
+              width: 60px;
               height: 100%;
+              background-color: #f4d03f;
+              background-image: linear-gradient(132deg, #f4d03f 0%, #16a085 100%);
+              border-radius: 8px;
 
-              > img {
+              &__wrapper {
                 width: 100%;
                 height: 100%;
-                object-fit: cover;
+
+                > img {
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                }
+              }
+            }
+
+            .user-info {
+              width: 100px;
+              height: 100%;
+              padding: 2.5px;
+
+              &__wrapper {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+
+                .user-name {
+                  height: 20px;
+                  line-height: 20px;
+                  font-size: 14px;
+                  color: #e0cc45;
+                  font-weight: bold;
+                }
+                .user-rank {
+                  height: 30px;
+                  line-height: 30px;
+                  font-size: 12px;
+                  color: white;
+
+                  > span {
+                    font-size: 14px;
+                    font-weight: bold;
+                  }
+                }
+              }
+            }
+
+            .user-score {
+              width: 65px;
+              height: 100%;
+
+              color: white;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+
+              > span:nth-child(1) {
+                display: block;
+                text-align: center;
+                font-size: 14px;
+              }
+              > span:nth-child(2) {
+                display: 2000;
+                font-style: italic;
+                font-size: 24px;
+                background-color: #fa8bff;
+                background-image: linear-gradient(45deg, #fa8bff 0%, #2bd2ff 52%, #2bff88 90%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
               }
             }
           }
+        }
 
-          .user-info {
-            width: 100px;
+        &-level {
+          position: relative;
+          width: 100%;
+          height: 120px;
+
+          &__wrapper {
+            width: 100%;
             height: 100%;
-            padding: 2.5px;
+            display: flex;
 
-            &__wrapper {
+            .level-icon {
+              margin: auto;
               width: 100%;
-              height: 100%;
+              height: 110px;
               display: flex;
-              flex-direction: column;
-              justify-content: space-around;
+              justify-content: center;
 
-              .user-name {
-                height: 20px;
-                line-height: 20px;
-                font-size: 14px;
-                color: #e0cc45;
-                font-weight: bold;
-              }
-              .user-score {
-                height: 30px;
-                line-height: 30px;
+              &__item {
+                width: 100px;
+                height: 100px;
+                margin: 5px;
+                border-radius: 50%;
+                overflow: hidden;
                 display: flex;
 
-                &-icon {
-                  width: 30px;
-                  height: 100%;
+                background: linear-gradient(
+                  60deg,
+                  #16a085,
+                  #f4d03f,
+                  #16a085,
+                  #f4d03f,
+                  #5073b8,
+                  #1098ad,
+                  #07b39b,
+                  #6fba82
+                );
+                background-size: 300% 300%;
+                animation: animatedgradient 3s ease alternate infinite;
 
-                  > img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
+                @keyframes animatedgradient {
+                  0% {
+                    background-position: 0% 50%;
+                  }
+                  50% {
+                    background-position: 100% 50%;
+                  }
+                  100% {
+                    background-position: 0% 50%;
                   }
                 }
 
-                &__number {
-                  margin-left: 5px;
-                  font-size: 16px;
-                  font-weight: bold;
-                  color: white;
+                > img {
+                  display: block;
+                  margin: auto;
+                  border-radius: 50%;
+                  width: 90px;
+                  height: 90px;
+                  object-fit: cover;
+                  -webkit-user-drag: none;
                 }
               }
-            }
-          }
-
-          .user-rank {
-            width: 65px;
-            height: 100%;
-
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-
-            > span:nth-child(1) {
-              display: block;
-
-              font-size: 14px;
-            }
-            > span:nth-child(2) {
-              display: 2000;
-              font-style: italic;
-              font-size: 24px;
-              background-color: #fa8bff;
-              background-image: linear-gradient(45deg, #fa8bff 0%, #2bd2ff 52%, #2bff88 90%);
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
             }
           }
         }
@@ -801,13 +881,14 @@ const registerFlowerHint = (): void => {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
+                -webkit-user-drag: none;
               }
             }
             .item-name {
               flex: 1;
               width: 100%;
               font-size: 12px;
-              color: #16a085;
+              color: #19c975;
               text-align: center;
             }
           }
@@ -815,8 +896,22 @@ const registerFlowerHint = (): void => {
       }
     }
 
-    &__rank {
+    &__blisters {
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 300px;
+      border: red solid 1px;
       z-index: 30;
+    }
+
+    &__turntable {
+      z-index: 40;
+    }
+
+    &__rank {
+      z-index: 40;
     }
   }
 
@@ -874,9 +969,11 @@ const registerFlowerHint = (): void => {
   color: #1a8e00;
   box-shadow: inset 10px 10px 10px rgba(0, 0, 0, 0.5), 15px 25px 10px rgba(255, 255, 255, 0.05),
     15px 20px 20px rgba(255, 255, 255, 0.05);
-  // animation: blisters_anim_1 3s infinite alternate-reverse linear;
   cursor: pointer;
-  transition: 1s;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 
   // &::before {
   //   content: '';
@@ -898,10 +995,6 @@ const registerFlowerHint = (): void => {
   //   height: 10px;
   //   border-radius: 50%;
   //   background: #fff;
-  // }
-
-  // &:hover {
-  //   transform: scale(1.05);
   // }
 }
 

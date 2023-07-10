@@ -27,7 +27,7 @@ const viteConfig = defineConfig(async ({ command, mode }) => {
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: `@import "./src/styles/bem.scss";`,
+          additionalData: `@use "sass:math";@import "./src/styles/bem.scss";`,
         },
       },
       // postcss: {

@@ -4,12 +4,8 @@
       <span>{{ props.rankName }}</span>
     </p>
     <ul class="rank-list__wrapper">
-      <li
-        class="rank-list__item"
-        :class="props.backgroundColor"
-        v-for="(item, index) in props.data"
-        :key="item[props.dataKey] || index">
-        <div class="item-wrapper">
+      <li class="rank-list__item" v-for="(item, index) in props.data" :key="item[props.dataKey] || index">
+        <div class="item-wrapper" :class="props.backgroundColor">
           <div class="item-wrapper__avatar">
             <img class="avatar" :src="item.avatarUrl || defaultAvatar" />
           </div>
@@ -78,20 +74,20 @@ const props = withDefaults(defineProps<Props>(), {
 
 <style scoped lang="scss">
 .color1 {
-  background-color: #ffdee9;
-  background-image: linear-gradient(0deg, #ffdee9 0%, #b5fffc 100%);
+  background-color: #ffdee9 !important;
+  background-image: linear-gradient(0deg, #ffdee9 0%, #b5fffc 100%) !important;
 }
 .color2 {
-  background-color: #a9c9ff;
-  background-image: linear-gradient(180deg, #a9c9ff 0%, #ffbbec 100%);
+  background-color: #a9c9ff !important;
+  background-image: linear-gradient(180deg, #a9c9ff 0%, #ffbbec 100%) !important;
 }
 .color3 {
-  background-color: #74ebd5;
-  background-image: linear-gradient(90deg, #74ebd5 0%, #9face6 100%);
+  background-color: #74ebd5 !important;
+  background-image: linear-gradient(90deg, #74ebd5 0%, #9face6 100%) !important;
 }
 .color4 {
-  background-color: #a9c9ff;
-  background-image: linear-gradient(180deg, #a9c9ff 0%, #ffbbec 100%);
+  background-color: #a9c9ff !important;
+  background-image: linear-gradient(180deg, #a9c9ff 0%, #ffbbec 100%) !important;
 }
 
 .rank-list {

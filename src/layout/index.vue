@@ -1,8 +1,8 @@
 <template>
   <div class="bunga-container">
-    <Header @change-aside="changeAside" />
+    <Header />
     <div class="bunga-container__content">
-      <Aside v-show="showAside" />
+      <Aside />
       <Main />
     </div>
   </div>
