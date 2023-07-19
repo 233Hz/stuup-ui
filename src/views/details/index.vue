@@ -1,226 +1,138 @@
 <template>
-  <el-row style="margin: 20px">
-    <el-col :span="24">
-      <el-card>
-        <template #header>
-          <el-row>
-            <el-col :span="24">
-              <el-form ref="searchFormRef" :model="searchForm" label-width="120px">
-                <el-row>
-                  <el-col :sm="24" :md="12" :xl="8">
-                    <el-form-item label="一级项目" prop="firstLevelId">
-                      <el-select v-model="searchForm.firstLevelId" @change="firstLevelChange" style="width: 100%">
-                        <el-option v-for="item in FIRST_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
-                      </el-select>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :sm="24" :md="12" :xl="8">
-                    <el-form-item label="二级项目" prop="secondLevelId">
-                      <el-select v-model="searchForm.secondLevelId" @change="secondLevelChange" style="width: 100%">
-                        <el-option v-for="item in SECOND_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
-                      </el-select>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :sm="24" :md="12" :xl="8">
-                    <el-form-item label="三级项目" prop="threeLevelId">
-                      <el-select v-model="searchForm.threeLevelId" style="width: 100%">
-                        <el-option v-for="item in THREE_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
-                      </el-select>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :sm="24" :md="12" :xl="8">
-                    <el-form-item label="成长项目" prop="growName">
-                      <el-input v-model="searchForm.growName" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :sm="24" :md="12" :xl="8">
-                    <el-form-item label="学年" prop="yearId">
-                      <el-select v-model="searchForm.yearId" style="width: 100%">
-                        <el-option v-for="item in YEAR" :key="item.oid" :label="item.value" :value="item.oid" />
-                      </el-select>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :sm="24" :md="12" :xl="8">
-                    <el-form-item label="获取时间" prop="datatimeRange">
-                      <el-date-picker
-                        v-model="searchForm.datatimeRange"
-                        type="datetimerange"
-                        range-separator="至"
-                        start-placeholder="开始时间"
-                        end-placeholder="结束时间"
-                        value-format="YYYY-MM-DD HH:mm:ss" />
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-              </el-form>
-            </el-col>
-          </el-row>
-        </template>
-        <div style="text-align: center">
-          <el-space>
-            <el-button type="primary" @click="handleSearch" :loading="loading">查询</el-button>
-            <el-button @click="searchFormReset">清空</el-button>
-          </el-space>
-        </div>
-      </el-card>
-    </el-col>
-    <el-col :span="24">
-      <el-card style="margin: 10px 0">
-        <template #header>
-          <el-space>
-            <el-divider direction="vertical" />
-            <el-button :disabled="loading" circle @click="fetchList">
-              <el-icon><Refresh /></el-icon>
-            </el-button>
-          </el-space>
-        </template>
-
-        <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
-          <el-table-column prop="firstLevelName" label="一级栏目" show-overflow-tooltip align="center" />
-          <el-table-column prop="secondLevelName" label="二级栏目" show-overflow-tooltip align="center" />
-          <el-table-column prop="threeLevelName" label="三级栏目" show-overflow-tooltip align="center" />
-          <el-table-column prop="growName" label="成长项目" show-overflow-tooltip align="center" />
-          <el-table-column prop="yearName" label="获取学年" show-overflow-tooltip align="center" />
-          <el-table-column prop="score" label="获得积分" show-overflow-tooltip align="center" />
-          <el-table-column prop="createTime" label="获取时间" show-overflow-tooltip align="center" />
-          <el-table-column prop="description" label="说明" show-overflow-tooltip align="center" />
-        </el-table>
-        <div class="page-r">
-          <el-pagination
-            background
-            :total="total"
-            v-model:current-page="searchForm.current"
-            v-model:page-size="searchForm.size"
-            :page-sizes="[10, 20, 30, 50, 100]"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            layout="total, sizes, prev, pager, next" />
-        </div>
-      </el-card>
-    </el-col>
-  </el-row>
+  <div class="details">
+    <div class="details-wrapper">
+      <el-page-header :icon="ArrowLeft"></el-page-header>
+      <div class="details-wrapper__header">
+        <p class="total-score">100</p>
+        <p class="total-text">当前总积分</p>
+      </div>
+      <div class="details-wrapper__content">
+        <ul class="content-wrapper" v-infinite-scroll="load">
+          <li class="content-wrapper__item" v-for="item in count" :key="item">
+            <div class="item-left">
+              <div class="score-source">每日签到</div>
+              <div class="score-time">{{ new Date() }}</div>
+            </div>
+            <div class="item-right">
+              <div class="score-number">+2</div>
+            </div>
+          </li>
+          <li class="flex justify-center">
+            <el-icon :class="loading ? 'is-loading' : ''"><Loading /></el-icon>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import type { FormInstance } from 'element-plus';
-import { StudentRecScoreVO, pageStudentRecScore } from '@/api/details';
-import { GrowthTreeVO, getGrowthTree } from '@/api/grow/config';
-import { getGraderList } from '@/api/basic/grade/index';
-import { getYearList } from '@/api/basic/year/index';
-
-onMounted(() => {
-  initYear();
-  initGrade();
-  initGrowth();
-  fetchList();
-});
-
-// 字典
-const GROWTH_TREE = ref<GrowthTreeVO[]>([]);
-const YEAR = ref();
-const GRADE = ref();
-const FIRST_LEVEL = ref();
-const SECOND_LEVEL = ref();
-const THREE_LEVEL = ref();
-
-const loading = ref<boolean>(false);
-const tableData = ref<StudentRecScoreVO[]>();
-const total = ref<number>(0);
-const searchForm = ref({
-  current: 1,
-  size: 10,
-  yearId: undefined,
-  firstLevelId: undefined,
-  secondLevelId: undefined,
-  threeLevelId: undefined,
-  growName: undefined,
-  datatimeRange: [],
-  startTime: undefined,
-  endTime: undefined,
-});
-const searchFormRef = ref<FormInstance>();
-
-const initYear = async () => {
-  const { data: res } = await getYearList();
-  YEAR.value = res;
-};
-
-const initGrade = async () => {
-  const { data: res } = await getGraderList();
-  GRADE.value = res;
-};
-
-const initGrowth = async () => {
-  const { data: res } = await getGrowthTree();
-  GROWTH_TREE.value = res;
-  FIRST_LEVEL.value = res;
-};
-
-const handleSearch = () => {
-  const timeRange = searchForm.value.datatimeRange;
-  if (timeRange && timeRange.length) {
-    searchForm.value.startTime = timeRange[0];
-    searchForm.value.endTime = timeRange[1];
-  }
-  fetchList();
-};
-
-const fetchList = async () => {
+import { ref } from 'vue';
+import { ArrowLeft, Loading } from '@element-plus/icons-vue';
+const loading = ref(false);
+const count = ref(10);
+const load = () => {
   loading.value = true;
-  try {
-    const { data: res } = await pageStudentRecScore(searchForm.value);
-    total.value = res.total;
-    tableData.value = res.records;
-  } finally {
+  setTimeout(() => {
+    console.log('aaa');
+    count.value += 2;
     loading.value = false;
-  }
-};
-
-const findChildrenById = (list: GrowthTreeVO[], id: number): GrowthTreeVO[] | [] => {
-  for (const item of list) {
-    if (item.id === id) {
-      return item.children || [];
-    }
-    if (item.children) {
-      return findChildrenById(item.children, id);
-    }
-  }
-  return [];
-};
-
-const firstLevelChange = (val: number) => {
-  searchForm.value.secondLevelId = undefined;
-  searchForm.value.threeLevelId = undefined;
-  SECOND_LEVEL.value = findChildrenById(GROWTH_TREE.value, val);
-};
-
-const secondLevelChange = (val: number) => {
-  searchForm.value.threeLevelId = undefined;
-  THREE_LEVEL.value = findChildrenById(GROWTH_TREE.value, val);
-};
-
-const handleCurrentChange = (val: number) => {
-  searchForm.value.current = val;
-  fetchList();
-};
-const handleSizeChange = (val: number) => {
-  searchForm.value.size = val;
-  fetchList();
-};
-
-const searchFormReset = () => {
-  searchForm.value = {
-    current: 1,
-    size: 10,
-    yearId: undefined,
-    firstLevelId: undefined,
-    secondLevelId: undefined,
-    threeLevelId: undefined,
-    growName: undefined,
-    datatimeRange: [],
-    startTime: undefined,
-    endTime: undefined,
-  };
+  }, 2000);
 };
 </script>
+
+<style scoped lang="scss">
+.details {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Arial', 'SimSun';
+
+  &-wrapper {
+    position: relative;
+    margin: auto;
+    width: 50%;
+    height: 100%;
+    padding: 20px;
+
+    &__header {
+      text-align: center;
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-bottom: #ccc solid 1px;
+
+      .total-score {
+        font-size: 48px;
+        font-weight: 600;
+        color: #0a0a24;
+      }
+
+      .total-text {
+        font-size: 16px;
+        color: #818181;
+      }
+    }
+
+    &__content {
+      width: 100%;
+
+      .content-wrapper {
+        position: relative;
+        width: 100%;
+
+        &__item {
+          width: 100%;
+          height: 100px;
+          margin: 10px 0;
+          padding: 10px;
+          border-radius: 4px;
+          overflow: hidden;
+          display: flex;
+          cursor: pointer;
+          min-width: 300px;
+
+          &:hover {
+            color: #409eff;
+            background-color: rgba(87, 87, 87, 0.1);
+          }
+
+          .item-left {
+            flex: 1;
+            width: 100%;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            .score-source,
+            .score-time {
+              width: 100%;
+            }
+            .score-source {
+              font-size: 18px;
+              font-weight: 600;
+            }
+            .score-time {
+              margin-top: 10px;
+              font-size: 12px;
+              color: #818181;
+            }
+          }
+
+          .item-right {
+            width: 100px;
+            height: 100%;
+            line-height: 100px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #0a0a24;
+          }
+        }
+      }
+    }
+  }
+}
+</style>

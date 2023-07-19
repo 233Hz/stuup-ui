@@ -1,6 +1,8 @@
 import axios, { InternalAxiosRequestConfig, AxiosInstance, AxiosResponse } from 'axios';
-import { getToken } from '@/utils/auth';
+import { getToken, setToken } from '@/utils/auth';
 import { ElMessage } from 'element-plus';
+import { resetRouter } from '@/router';
+import { useUserStoreWithOut } from '@/store/modules/user';
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -31,7 +33,23 @@ axiosInstance.interceptors.response.use(
     const { data } = response;
     const code = data.code;
     const msg = data.message;
-    if (code !== 0) {
+
+    if (code === 1002) {
+      ElMessage.error('登录超时,请重新登录');
+      const userStore = useUserStoreWithOut();
+      resetRouter();
+      userStore.loginOut();
+      // 干掉token后再走一次路由让它过router.beforeEach的校验
+      window.location.href = window.location.href;
+    } else if (code === 1004) {
+      const refreshToken = data.token;
+      // 获取当前失败的请求
+      const config = response.config;
+      // 更新本地token
+      setToken(refreshToken);
+      // 重试当前请求并返回promise
+      return axiosInstance(config);
+    } else if (code !== 0) {
       ElMessage.error(msg);
       return Promise.reject(msg);
     }

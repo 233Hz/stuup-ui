@@ -1,6 +1,5 @@
 <template>
   <div ref="turntableRef" class="turntable" v-show="show">
-    <button @click="playAnimate()">TEST</button>
     <div class="turntable-outer">
       <div ref="turntableInnerRef" class="turntable-outer__wrapper">
         <div class="sector"><img id="bmhSeed" src="@/assets/flower_icons/xcj_seed.png" /></div>
@@ -30,15 +29,13 @@ const turntableInnerRef = ref<HTMLDivElement>();
 
 const show = ref<boolean>(false);
 
-const playAnimate = () => {
+const playAnimate = (options: { endX: number; endY: number }) => {
   show.value = true;
-  if (!show.value) {
+  if (show.value) {
     const imageEl = document.getElementById('bmhBloom') as HTMLImageElement;
     const parentElement = imageEl.parentElement as HTMLDivElement;
     const angle = getElTransformAngle(parentElement);
-    console.log(angle);
 
-    flag = true;
     gsap.to(turntableInnerRef.value!, {
       rotation: `-=${720 + angle}`,
       ease: 'power4.out',
@@ -70,7 +67,7 @@ const playAnimate = () => {
               onComplete: () => {
                 turntableRef.value?.removeChild(image);
                 gsap.set(turntableInnerRef.value!, { rotation: 0 });
-                show.value = true;
+                show.value = false;
               },
             });
           },
@@ -83,6 +80,8 @@ const playAnimate = () => {
 const getElTransformAngle = (el: Element): number => {
   const computedStyle = getComputedStyle(el);
   const transform = computedStyle.transform; // 处理不同浏览器的前缀
+  console.log(computedStyle);
+  console.log(transform);
   let angle = 0;
 
   if (transform && transform !== 'none') {

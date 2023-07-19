@@ -15,16 +15,26 @@ export const routes: RouteRecordRaw[] = [
     name: '404',
     component: () => import('@/views/error/404.vue'),
   },
-  // {
-  //   path: '/:pathMatch(.*)*',
-  //   redirect: '/404',
-  // },
+  {
+    path: '/visual_test',
+    component: () => import('@/views/visual_test/index.vue'),
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.MODE === 'production' ? '/stuup' : '/'),
   routes,
 });
+
+export const resetRouter = () => {
+  const resetWhiteNameList = ['Redirect', 'Login', '404'];
+  router.getRoutes().forEach(route => {
+    const { name } = route;
+    if (name && !resetWhiteNameList.includes(name as string)) {
+      router.hasRoute(name) && router.removeRoute(name);
+    }
+  });
+};
 
 export const setupRouter = (app: App<Element>) => {
   app.use(router);

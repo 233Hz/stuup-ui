@@ -12,7 +12,6 @@ declare module '@vue/runtime-core' {
     AuditInfo: typeof import('./src/components/AuditInfo.vue')['default']
     BaseCard: typeof import('./src/components/BaseCard.vue')['default']
     ElAutoResizer: typeof import('element-plus/es')['ElAutoResizer']
-    ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
     ElCascader: typeof import('element-plus/es')['ElCascader']
@@ -49,8 +48,6 @@ declare module '@vue/runtime-core' {
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTableV2: typeof import('element-plus/es')['ElTableV2']
-    ElTabPane: typeof import('element-plus/es')['ElTabPane']
-    ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTag: typeof import('element-plus/es')['ElTag']
     ElTimeline: typeof import('element-plus/es')['ElTimeline']
     ElTimelineItem: typeof import('element-plus/es')['ElTimelineItem']
@@ -64,6 +61,7 @@ declare module '@vue/runtime-core' {
     UploadExcel: typeof import('./src/components/UploadExcel.vue')['default']
   }
   export interface ComponentCustomProperties {
+    vInfiniteScroll: typeof import('element-plus/es')['ElInfiniteScroll']
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }

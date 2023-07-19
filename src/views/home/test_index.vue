@@ -3,13 +3,19 @@
     <canvas id="canvas1">您的浏览器版本过低,请升级浏览器</canvas>
     <img id="layer1" src="../../assets/image/home_bg.png" />
     <img id="animate1" src="../../assets/image/bmh_bloom.png" />
+    <img id="animate2" src="../../assets/image/chicken_anim.png" />
+    <img id="animate3" src="../../assets/image/butterfly_anim.png" />
+    <img id="animate4" src="../../assets/image/bird_1_anim.png" />
+    <img id="animate5" src="../../assets/image/bird_2_anim.png" />
+    <img id="animate6" src="../../assets/image/squirrel_anim.png" />
   </div>
 </template>
 
 <script setup>
 import { onMounted } from 'vue';
 import { BackGround } from './backGround.js';
-import { BmhAnimationEl } from './animationEl.js';
+import { BmhBloom, Chicken, Butterfly, Bird1, Bird2, Squirrel } from './animationEl.js';
+import { BmhBloomHover } from './MouseHoverHandle.js';
 
 onMounted(() => {
   main();
@@ -20,34 +26,50 @@ const main = () => {
   const ctx = canvas.getContext('2d');
   canvas.width = 1920;
   canvas.height = 1080;
+  let mouseCoord = {};
+  canvas.addEventListener('mousemove', e => {
+    mouseCoord.x = e.offsetX;
+    mouseCoord.y = e.offsetY;
+  });
   const game = new Game(canvas.width, canvas.height);
   console.log(game);
-  const animate = () => {
+  let lastTimer = 0;
+  const animate = timestamp => {
+    const detalTimer = timestamp - lastTimer;
+    lastTimer = timestamp;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    game.update();
-    game.draw(ctx);
+    game.update(detalTimer);
+    game.draw(ctx, mouseCoord);
     requestAnimationFrame(animate);
   };
 
-  animate();
+  animate(0);
 };
 
 class Game {
-  constructor(width, height) {
+  constructor(width, height, mouseX, mouseY) {
     this.width = width;
     this.height = height;
     this.backGround = new BackGround(this);
-    this.animate1 = new BmhAnimationEl(this);
-    this.animates = [this.animate1];
+    this.animates = [
+      new BmhBloom(this),
+      new Chicken(this),
+      new Butterfly(this),
+      new Bird1(this),
+      new Bird2(this),
+      new Squirrel(this),
+    ];
+    this.hovers = [new BmhBloomHover(this)];
   }
 
-  update() {
-    this.animates.forEach(animate => animate.update());
+  update(detalTimer) {
+    this.animates.forEach(animate => animate.update(detalTimer));
   }
 
-  draw(context) {
+  draw(context, mouseCoord) {
     this.backGround.draw(context);
     this.animates.forEach(animate => animate.draw(context));
+    this.hovers.forEach(hover => hover.draw(context, mouseCoord));
   }
 }
 </script>
@@ -69,7 +91,12 @@ class Game {
   }
 
   #layer1,
-  #animate1 {
+  #animate1,
+  #animate2,
+  #animate3,
+  #animate4,
+  #animate5,
+  #animate6 {
     display: none;
   }
 

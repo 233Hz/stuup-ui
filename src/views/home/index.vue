@@ -104,8 +104,33 @@
             </li>
           </ul>
         </div>
+        <div class="land">
+          <div class="land-wrapper">
+            <div class="botany"></div>
+          </div>
+        </div>
+        <div class="stake"></div>
+        <div class="grass"></div>
+        <div class="pot">
+          <div class="pot-wrapper">
+            <div class="kettle"></div>
+          </div>
+        </div>
+        <div class="progress-bar"></div>
+        <!-- <div class="garden">
+          <div class="garden-wrapper">
+            <div class="garden-wrapper__sky"></div>
+            <div class="garden-wrapper__pond"></div>
+            <div class="garden-wrapper__grassland">
+              <div class="grassland-wrapper">
+                <div class="flowers-plants"></div>
+              </div>
+            </div>
+            <div class="garden-wrapper__house"></div>
+          </div>
+        </div> -->
       </div>
-      <div class="home-wrapper__blisters"></div>
+      <!-- <div class="home-wrapper__blisters"></div> -->
       <Turntable ref="turntableRef" class="home-wrapper__turntable" />
       <Rank ref="rankRef" class="home-wrapper__rank" />
     </div>
@@ -173,7 +198,7 @@ const flowerHint: Record<string, string> = {
 onMounted(() => {
   resetSize();
   registerFlowerHint();
-  generateBlisters();
+  // generateBlisters();
 });
 
 const width = 1920;
@@ -239,9 +264,8 @@ const generateBlisters = (): void => {
     const target = e.target as HTMLDivElement;
     if (target.classList.contains('blisters')) {
       const elements = document.querySelectorAll('.blisters');
-      elements.forEach(element => {
-        element.remove();
-      });
+      elements.forEach(element => element.remove());
+      turntableRef.value.playAnimate();
     }
   });
 };
@@ -313,6 +337,7 @@ const generateBlisters = (): void => {
           }
         }
       }
+
       .butterfly {
         position: absolute;
         top: 300px;
@@ -894,6 +919,155 @@ const generateBlisters = (): void => {
           }
         }
       }
+
+      // .garden {
+      //   position: absolute;
+      //   bottom: 0;
+      //   left: 500px;
+      //   width: 294.06px;
+      //   height: 600.06px;
+      //   background-color: white;
+
+      //   &-wrapper {
+      //     position: relative;
+      //     width: 100%;
+      //     height: 100%;
+
+      //     &__sky {
+      //       position: absolute;
+      //       left: 0;
+      //       top: 0;
+      //       width: 100%;
+      //       height: 294.78px;
+      //       background: url(../../assets/image/sky.png) no-repeat center center;
+      //       background-size: 100% 100%;
+      //     }
+
+      //     &__pond {
+      //       position: absolute;
+      //       right: 0;
+      //       top: 80px;
+      //       width: 204.54px;
+      //       height: 393.3px;
+      //       background: url(../../assets/image/pond.png) no-repeat center center;
+      //       background-size: 100% 100%;
+      //     }
+
+      //     &__house {
+      //       position: absolute;
+      //       left: 0;
+      //       top: 176px;
+      //       width: 177.54px;
+      //       height: 189.06px;
+      //       background: url(../../assets/image/house.png) no-repeat center center;
+      //       background-size: 100% 100%;
+      //     }
+
+      //     &__grassland {
+      //       position: absolute;
+      //       left: 0;
+      //       bottom: 0;
+      //       width: 100%;
+      //       height: 271.02px;
+      //       background: url(../../assets/image/grassland.png) no-repeat center center;
+      //       background-size: 100% 100%;
+
+      //       .grassland-wrapper {
+      //         position: relative;
+      //         width: 100%;
+      //         height: 100%;
+
+      //         .flowers-plants {
+      //           position: absolute;
+      //           left: 0;
+      //           bottom: 0;
+      //           width: 100%;
+      //           height: 129.54px;
+      //           background: url(../../assets/image/flowers-plants.png) no-repeat center center;
+      //           background-size: 100% 100%;
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
+      .land {
+        position: absolute;
+        bottom: 200px;
+        left: 500px;
+        width: 368.8px;
+        height: 135px;
+        background: url(../../assets/image/land.png) no-repeat center center;
+        background-size: 100% 100%;
+
+        &-wrapper {
+          position: relative;
+          width: 100%;
+          height: 100%;
+
+          .botany {
+            position: absolute;
+            top: 30px;
+            left: 120px;
+            width: 50px;
+            height: 50px;
+            background: url(../../assets/image/seed_1.png) no-repeat center center;
+            background-size: 100% 100%;
+          }
+        }
+      }
+      .stake {
+        position: absolute;
+        bottom: 260px;
+        left: 750px;
+        width: 70.1px;
+        height: 159.7px;
+        background: url(../../assets/image/stake.png) no-repeat center center;
+        background-size: 100% 100%;
+      }
+      .grass {
+        position: absolute;
+        bottom: 190px;
+        left: 400px;
+        width: 208.8px;
+        height: 113.4px;
+        background: url(../../assets/image/grass.png) no-repeat center center;
+        background-size: 100% 100%;
+      }
+      .pot {
+        position: absolute;
+        bottom: 160px;
+        left: 760px;
+        width: 137.6px;
+        height: 119.7px;
+        // background: url(../../assets/image/kettle-border.png) no-repeat center center;
+        // background-size: 100% 100%;
+
+        &-wrapper {
+          position: relative;
+          width: 100%;
+          height: 100%;
+
+          .kettle {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 110.9px;
+            height: 93px;
+            background: url(../../assets/image/kettle.png) no-repeat center center;
+            background-size: 100% 100%;
+          }
+        }
+      }
+      .progress-bar {
+        position: absolute;
+        bottom: 180px;
+        left: 500px;
+        width: 251.4px;
+        height: 32.2px;
+        background: url(../../assets/image/progress_bar.png) no-repeat center center;
+        background-size: 100% 100%;
+      }
     }
 
     &__blisters {
@@ -902,16 +1076,15 @@ const generateBlisters = (): void => {
       bottom: 0;
       left: 0;
       height: 300px;
-      border: red solid 1px;
-      z-index: 30;
+      z-index: 40;
     }
 
     &__turntable {
-      z-index: 40;
+      z-index: 50;
     }
 
     &__rank {
-      z-index: 40;
+      z-index: 50;
     }
   }
 

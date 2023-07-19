@@ -7,7 +7,7 @@ import { useUserStoreWithOut, UserInfoType } from '@/store/modules/user';
 import { userFlowerStoreWithOut } from './store/modules/flowers';
 import pageRouter from '@/router/pageRouter';
 
-const whiteList: string[] = ['/login', '/404'];
+const whiteList: string[] = ['/login', '/404', '/visual_test'];
 
 // ↓全局后置钩子
 router.beforeEach(async (to, from, next) => {
@@ -44,7 +44,7 @@ router.beforeEach(async (to, from, next) => {
         // if (to.name === '404') {
         //   next({ path: to.path, query: to.query });
         // } else {
-        //   // 请求带有 redirect 重定向时，登录自动重定向到该地址
+        // 请求带有 redirect 重定向时，登录自动重定向到该地址
         //   if (from.query.redirect) {
         //     const redirect = decodeURIComponent(from.query.redirect as string);
         //     console.log(redirect);
