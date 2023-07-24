@@ -24,12 +24,6 @@ export default defineConfig({
     [/^h-(\d+)$/, ([, d]) => ({ height: `${Number(d)}px` })],
     [/^size-(\d+)$/, ([, d]) => ({ 'font-size': `${Number(d)}` })],
     [/^weight-(\d+)$/, ([, d]) => ({ 'font-weight': `${Number(d)}` })],
-    [/^border-(\d+)$/, ([, d]) => ({ border: `${Number(d)}` })],
-    [/^border-t-(\d+)$/, ([, d]) => ({ 'border-top': `${Number(d)}` })],
-    [/^border-r-(\d+)$/, ([, d]) => ({ 'border-right': `${Number(d)}` })],
-    [/^border-b-(\d+)$/, ([, d]) => ({ 'border-bottom': `${Number(d)}` })],
-    [/^border-l-(\d+)$/, ([, d]) => ({ 'border-left': `${Number(d)}` })],
-    ['flex', { display: 'flex' }],
   ],
   theme: {},
 });

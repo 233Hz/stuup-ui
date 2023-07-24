@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div class="home-wrapper">
+    <div class="home-wrapper z-10">
       <div class="home-wrapper__bg" />
       <div class="home-wrapper__animation">
         <div class="bmh-bloom">
@@ -22,7 +22,7 @@
           <div class="anim" />
         </div>
       </div>
-      <div class="home-wrapper__interaction">
+      <div class="home-wrapper__interaction z-20">
         <div class="flower_hint" v-show="show_hint"></div>
         <div class="bmh_bloom_hint" />
         <div class="bmh_fruit" />
@@ -104,35 +104,9 @@
             </li>
           </ul>
         </div>
-        <div class="land">
-          <div class="land-wrapper">
-            <div class="botany"></div>
-          </div>
-        </div>
-        <div class="stake"></div>
-        <div class="grass"></div>
-        <div class="pot">
-          <div class="pot-wrapper">
-            <div class="kettle"></div>
-          </div>
-        </div>
-        <div class="progress-bar"></div>
-        <!-- <div class="garden">
-          <div class="garden-wrapper">
-            <div class="garden-wrapper__sky"></div>
-            <div class="garden-wrapper__pond"></div>
-            <div class="garden-wrapper__grassland">
-              <div class="grassland-wrapper">
-                <div class="flowers-plants"></div>
-              </div>
-            </div>
-            <div class="garden-wrapper__house"></div>
-          </div>
-        </div> -->
       </div>
-      <!-- <div class="home-wrapper__blisters"></div> -->
-      <Turntable ref="turntableRef" class="home-wrapper__turntable" />
-      <Rank ref="rankRef" class="home-wrapper__rank" />
+      <GrowthAnimation class="z-30" />
+      <Rank ref="rankRef" class="z-50" />
     </div>
   </div>
 </template>
@@ -141,8 +115,8 @@
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { GARDEN_TYPE } from '@/utils/dict';
+import GrowthAnimation from './components/GrowthAnimation/index.vue';
 import Rank from './components/Rank/index.vue';
-import Turntable from './components/Turntable/index.vue';
 import defaultAvatar from '@/assets/image/default_avatar.png';
 import applaySvg from '@/assets/svg/home-applay.svg';
 import detailsSvg from '@/assets/svg/home-score.svg';
@@ -310,7 +284,6 @@ const generateBlisters = (): void => {
       position: absolute;
       left: 0;
       top: 0;
-      z-index: 10;
 
       .bmh-bloom {
         position: absolute;
@@ -473,7 +446,6 @@ const generateBlisters = (): void => {
       left: 0;
       top: 0;
       overflow: hidden;
-      z-index: 20;
 
       .user-level {
         position: absolute;
@@ -1077,14 +1049,6 @@ const generateBlisters = (): void => {
       left: 0;
       height: 300px;
       z-index: 40;
-    }
-
-    &__turntable {
-      z-index: 50;
-    }
-
-    &__rank {
-      z-index: 50;
     }
   }
 
