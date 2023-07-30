@@ -1,5 +1,5 @@
 <template>
-  <div class="rank" v-show="show">
+  <div class="absolute top-0 left-0 w-full h-full select-none text-center rank" v-show="show">
     <div class="rank-wrapper">
       <RankItem1 rank-name="学年全校排行榜" :data="generateRankData1()" />
       <RankItem2 rank-name="学年班级排行榜" :data="generateRankData2()" />
@@ -68,14 +68,6 @@ defineExpose({ open });
 
 <style scoped lang="scss">
 .rank {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  text-align: center;
-  user-select: none;
-
   &::before {
     content: '';
     position: absolute;

@@ -6,6 +6,10 @@
 import { ref, onMounted } from 'vue';
 import * as echarts from 'echarts';
 
+const data = Array.from({ length: 7 }, (_, index) => {
+  return Math.floor(Math.random() * 800 + 200);
+});
+
 const chartRef = ref();
 const option = ref({
   tooltip: {
@@ -30,7 +34,7 @@ const option = ref({
       type: 'radar',
       data: [
         {
-          value: [653, 456, 345, 544, 123, 22],
+          value: data,
           name: '成长方向',
         },
       ],

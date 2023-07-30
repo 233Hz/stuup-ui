@@ -7,7 +7,7 @@ import { useUserStoreWithOut, UserInfoType } from '@/store/modules/user';
 import { userFlowerStoreWithOut } from './store/modules/flowers';
 import pageRouter from '@/router/pageRouter';
 
-const whiteList: string[] = ['/login', '/404', '/visual_test', '/portrait', '/home'];
+const whiteList: string[] = ['/login', '/404', '/visual_test', '/portrait', '/home', '/growthReport'];
 
 // ↓全局后置钩子
 router.beforeEach(async (to, from, next) => {

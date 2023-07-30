@@ -1,61 +1,68 @@
 <template>
-  <div class="user-info">
-    <div class="user-info-wrapper">
-      <div class="avatar">
-        <div class="avatar-wrapper">
-          <img :src="defaultAvatar" alt="头像" />
+  <div class="flex">
+    <div class="w-198 relative">
+      <div class="w-150 h-150 m-auto br-8 overflow-hidden">
+        <img :src="defaultAvatar" alt="avatar" class="w-full h-full object-cover" />
+      </div>
+    </div>
+    <div class="flex-1 flex flex-col gap-12">
+      <p class="line-h-42">
+        <span class="fs-24 text-black font-bold cursor-pointer hover:text-sky-400">张三</span>
+      </p>
+      <p class="fs-18">
+        <span class="text-gray-500 mr-24">班级:</span>
+        <span class="text-gray-400">22药剂（药品物流）中澳合作22623</span>
+      </p>
+      <p class="fs-18">
+        <span class="text-gray-500 mr-24">专业:</span>
+        <span class="text-gray-400">药品食品检验（药品质量检验）（中高职）</span>
+      </p>
+      <p class="fs-18">
+        <span class="text-gray-500 mr-24">年级:</span>
+        <span class="text-gray-400">2023级</span>
+      </p>
+      <p class="fs-18">
+        <span class="text-gray-500 mr-24">手机号:</span>
+        <span class="text-gray-400">13888888888</span>
+      </p>
+      <div class="flex mt-24 items-end gap-24">
+        <div class="min-w-100 br-8 px-12 py-6 border-dashed border-1 border-gray-300">
+          <p><span class="fs-18 text-gray-400">当前排名</span></p>
+          <h1 class="fs-32 text-gray-700 font-bold mt-12">1</h1>
+        </div>
+        <div class="min-w-100 br-8 px-12 py-6 border-dashed border-1 border-gray-300">
+          <p><span class="fs-18 text-gray-400">总成长值</span></p>
+          <h1 class="fs-32 text-gray-700 font-bold mt-12">10000</h1>
+        </div>
+        <div class="min-w-100 br-8 px-12 py-6 border-dashed border-1 border-gray-300">
+          <p><span class="fs-18 text-gray-400">成长扣分</span></p>
+          <h1 class="fs-32 text-gray-700 font-bold mt-12">0</h1>
+        </div>
+        <div class="min-w-98 br-8 px-12 py-6 border-dashed border-1 border-gray-300">
+          <p><span class="fs-18 text-gray-400">成长等级</span></p>
+          <div class="flex gap-12 junstify-center pt-12">
+            <div
+              class="w-60 h-60 relative"
+              v-for="(item, index) in conversionFlower.calculateConversionFlower(100)"
+              :key="index">
+              <div class="absolute w-full l-0 b-0 text-center text-white fs-12 bg-orange-400 rounded-full">
+                <span class="mr-2">x</span>
+                <span class="fs-14">{{ item.value }}</span>
+              </div>
+              <img
+                :src="item.imageSrc"
+                class="w-full h-full object-cover rounded-full"
+                style="-webkit-user-drag: none"
+                alt="用户等级" />
+            </div>
+          </div>
         </div>
       </div>
-      <div class="info">
-        <div class="info-wrapper">
-          <p class="name">
-            张三
-            <span class="sex">♂</span>
-          </p>
-          <div class="info-wrapper__item">
-            <span>班级:</span>
-            <span>22药剂（药品物流）中澳合作22623</span>
-          </div>
-          <div class="info-wrapper__item">
-            <span>班主任:</span>
-            <span>李四</span>
-          </div>
-          <div class="info-wrapper__item">
-            <span>专业:</span>
-            <span>药品食品检验（药品质量检验）（中高职）</span>
-          </div>
-          <div class="info-wrapper__item">
-            <span>手机号:</span>
-            <span>13888888888</span>
-          </div>
-          <div class="info-wrapper__item cursor-pointer">
-            <span>成长总积分:</span>
-            <span class="text-xl text-blue-400 font-bold">1000</span>
-          </div>
-          <div class="info-wrapper__item cursor-pointer">
-            <span>成长扣分:</span>
-            <span class="text-xl text-red-400 font-bold">100</span>
-          </div>
-          <div class="info-wrapper__item">
-            <span>成长等级:</span>
-            <span>
-              <div
-                class="w-50 h-50 mx-2 rounded-md overflow-hidden inline-block relative"
-                v-for="item in conversionFlower.calculateConversionFlower(100)">
-                <img :src="item.imageSrc" :alt="item.key" class="w-full h-full" style="-webkit-user-drag: none" />
-                <div class="absolute top-0 left-0 block text-xs text-white text-center bg-blue-400 rounded-br-lg">
-                  {{ item.value }}
-                </div>
-              </div>
-            </span>
-          </div>
-          <div class="info-wrapper__item">
-            <span>加入社团:</span>
-            <span>
-              <div class="w-full rounded-md bg-white relative shadow-inner p-4">
-                <el-tag class="mx-2" v-for="item in 10" :key="item">社团{{ item }}</el-tag>
-              </div>
-            </span>
+      <div class="fs-18">
+        <p><span class="text-gray-500 mr-24">参加社团</span></p>
+        <div class="mt-12 flex gap-12 flex-wrap">
+          <div class="mb-12" v-for="item in 10" :key="item">
+            <span class="bg-sky-300 br-4 px-12 py-8 text-white mr-12">社团{{ item }}</span>
           </div>
         </div>
       </div>
@@ -64,86 +71,8 @@
 </template>
 
 <script setup lang="ts">
-import defaultAvatar from '@/assets/image/default_avatar.png';
+import defaultAvatar from '@/assets/image/default_avatar.webp';
 import { useConversionFlower } from '@/utils/conversionFlower';
 
 const conversionFlower = useConversionFlower();
 </script>
-
-<style scoped lang="scss">
-$blue: #66a3ff;
-
-.user-info {
-  width: 300px;
-  height: 884px;
-  background-color: white;
-
-  &-wrapper {
-    width: 100%;
-    height: 100%;
-
-    .avatar {
-      width: 100%;
-      height: 150px;
-      position: relative;
-
-      &-wrapper {
-        margin: auto;
-        width: 150px;
-        height: 150px;
-        padding: 10px;
-
-        > img {
-          display: block;
-          border-radius: 12px;
-          width: 100%;
-          height: 100%;
-        }
-      }
-    }
-
-    .info {
-      width: 100%;
-
-      &-wrapper {
-        width: 100%;
-        border-radius: 8px;
-        padding: 20px;
-
-        .name {
-          text-align: center;
-          font-size: 24px;
-          color: black;
-          line-height: 48px;
-
-          .sex {
-            font-size: 24px;
-            color: $blue;
-            font-weight: bold;
-          }
-        }
-
-        &__item {
-          font-size: 16px;
-          line-height: 36px;
-          color: #696b6c;
-          display: flex;
-
-          > span {
-            display: block;
-
-            &:nth-child(1) {
-              width: 100px;
-              color: $blue;
-              font-weight: 700;
-            }
-            &:nth-child(2) {
-              flex: 1;
-            }
-          }
-        }
-      }
-    }
-  }
-}
-</style>

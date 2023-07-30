@@ -20,7 +20,6 @@ export class BackGround {
     this.width = 1920;
     this.height = 1080;
     this.layerImage1 = document.getElementById('layer1');
-    console.log(this.layerImage1);
     this.layer1 = new Layer(this.game, this.width, this.height, this.layerImage1);
     this.BacKGroundLayers = [this.layer1];
   }

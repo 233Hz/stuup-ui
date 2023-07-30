@@ -8,38 +8,40 @@
     <img id="animate4" src="../../assets/image/bird_1_anim.png" />
     <img id="animate5" src="../../assets/image/bird_2_anim.png" />
     <img id="animate6" src="../../assets/image/squirrel_anim.png" />
+    <img id="upgarde-background-border" src="../../assets/image/GrowthAnimation/background-border.png" />
+    <img id="upgarde-background" src="../../assets/image/GrowthAnimation/background.png" />
+    <img id="upgarde-board" src="../../assets/image/GrowthAnimation/board.png" />
+    <img id="upgarde-barrel" src="../../assets/image/GrowthAnimation/barrel.png" />
+    <img id="upgarde-spoon" src="../../assets/image/GrowthAnimation/spoon.png" />
+    <img id="upgarde-flowing-water-anim" src="../../assets/image/GrowthAnimation/flowing-water-anim.png" />
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { onMounted } from 'vue';
 import { BackGround } from './backGround.js';
-import { BmhBloom, Chicken, Butterfly, Bird1, Bird2, Squirrel } from './animationEl.js';
-import { BmhBloomHover } from './MouseHoverHandle.js';
+import { AnimationEl, BmhBloom, Chicken, Butterfly, Bird1, Bird2, Squirrel } from './animationEl.js';
+import { HoverHint, BmhBloomHover } from './MouseHoverHandle.js';
+import { UpgradeUI } from './upgradeUI.js';
 
 onMounted(() => {
   main();
 });
 
 const main = () => {
-  const canvas = document.getElementById('canvas1');
-  const ctx = canvas.getContext('2d');
+  const canvas = document.getElementById('canvas1') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
   canvas.width = 1920;
   canvas.height = 1080;
-  let mouseCoord = {};
-  canvas.addEventListener('mousemove', e => {
-    mouseCoord.x = e.offsetX;
-    mouseCoord.y = e.offsetY;
-  });
   const game = new Game(canvas.width, canvas.height);
   console.log(game);
   let lastTimer = 0;
-  const animate = timestamp => {
+  const animate = (timestamp: number) => {
     const detalTimer = timestamp - lastTimer;
     lastTimer = timestamp;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     game.update(detalTimer);
-    game.draw(ctx, mouseCoord);
+    game.draw(ctx);
     requestAnimationFrame(animate);
   };
 
@@ -47,7 +49,13 @@ const main = () => {
 };
 
 class Game {
-  constructor(width, height, mouseX, mouseY) {
+  width: number;
+  height: number;
+  backGround: BackGround;
+  animates: AnimationEl[];
+  upgradeUI: UpgradeUI;
+  hovers: HoverHint[];
+  constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
     this.backGround = new BackGround(this);
@@ -59,17 +67,19 @@ class Game {
       new Bird2(this),
       new Squirrel(this),
     ];
+    this.upgradeUI = new UpgradeUI(this);
     this.hovers = [new BmhBloomHover(this)];
   }
 
-  update(detalTimer) {
+  update(detalTimer: number) {
     this.animates.forEach(animate => animate.update(detalTimer));
   }
 
-  draw(context, mouseCoord) {
+  draw(context: CanvasRenderingContext2D) {
     this.backGround.draw(context);
     this.animates.forEach(animate => animate.draw(context));
-    this.hovers.forEach(hover => hover.draw(context, mouseCoord));
+    this.upgradeUI.draw(context);
+    // this.hovers.forEach(hover => hover.draw(context, mouseCoord));
   }
 }
 </script>
@@ -96,7 +106,13 @@ class Game {
   #animate3,
   #animate4,
   #animate5,
-  #animate6 {
+  #animate6,
+  #upgarde-background-border,
+  #upgarde-background,
+  #upgarde-board,
+  #upgarde-barrel,
+  #upgarde-spoon,
+  #upgarde-flowing-water-anim {
     display: none;
   }
 
@@ -106,11 +122,5 @@ class Game {
       height: 100vh;
     }
   }
-  //   @media (aspect-ratio: 1/1), (max-aspect-ratio: 1/1) {
-  //     #canvas {
-  //       width: 100vw;
-  //       height: auto;
-  //     }
-  //   }
 }
 </style>
