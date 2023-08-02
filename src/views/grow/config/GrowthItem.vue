@@ -31,7 +31,7 @@
         <div style="text-align: center">
           <el-space>
             <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
-            <el-button @click="resetSearchForm">清空</el-button>
+            <el-button @click="searchFormRef?.resetFields()">清空</el-button>
           </el-space>
         </div>
       </el-card>
@@ -55,18 +55,13 @@
           <el-table-column prop="name" label="项目名称" show-overflow-tooltip align="center" />
           <el-table-column prop="code" label="项目编号" show-overflow-tooltip align="center" />
           <el-table-column prop="description" label="填报说明" show-overflow-tooltip align="center" />
-          <el-table-column prop="fillPeriod" label="项目录入周期" show-overflow-tooltip align="center">
-            <template #default="{ row }">
-              {{ PERIOD.getKeyForValue(row.fillPeriod) }}
-            </template>
-          </el-table-column>
-          <el-table-column prop="fillPeriodNum" label="项目周期内可录入次数" show-overflow-tooltip align="center" />
           <el-table-column prop="scorePeriod" label="分值刷新周期" show-overflow-tooltip align="center">
             <template #default="{ row }">
               {{ PERIOD.getKeyForValue(row.scorePeriod) }}
             </template>
           </el-table-column>
           <el-table-column prop="scoreUpperLimit" label="周期内分值的上限" show-overflow-tooltip align="center" />
+          <el-table-column prop="collectLimit" label="可采集次数" show-overflow-tooltip align="center" />
           <el-table-column prop="calculateType" label="分值计算类型" show-overflow-tooltip align="center">
             <template #default="{ row }">
               {{ CALCULATE_TYPE.getKeyForValue(row.calculateType) }}
@@ -95,7 +90,12 @@
         </div>
       </el-card>
     </el-col>
-    <el-dialog v-model="active" :title="title" width="40%" draggable @close="resetForm">
+    <el-dialog
+      v-model="active"
+      :title="DIALOG_TYPE.getKeyForValue(dialogType)"
+      width="30%"
+      draggable
+      @close="formRef?.resetFields()">
       <el-form ref="formRef" :model="form" :rules="rules" :disabled="loading" label-position="top">
         <el-form-item label="所属项目" prop="growthItems">
           <el-cascader
@@ -110,7 +110,7 @@
           <el-input v-model="form.name" placeholder="请输入项目名称" />
         </el-form-item>
         <el-form-item label="项目编号" prop="code">
-          <el-input v-model="form.code" placeholder="请输入项目编号" />
+          <el-input v-model="form.code" placeholder="请输入项目编号" :disabled="dialogType === DIALOG_TYPE.EDIT" />
         </el-form-item>
         <el-form-item label="填报说明" prop="description">
           <el-input
@@ -119,19 +119,6 @@
             show-word-limit
             maxlength="200"
             placeholder="请输入填报说明" />
-        </el-form-item>
-        <el-form-item label="项目录入周期" prop="fillPeriod">
-          <el-select v-model="form.fillPeriod" placeholder="请选择项目录入周期" style="width: 100%">
-            <el-option v-for="item in PERIOD.getDict()" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="项目周期内可录入次数" prop="fillPeriodNum">
-          <el-input-number
-            v-model="form.fillPeriodNum"
-            :min="0"
-            controls-position="right"
-            placeholder="请输入项目周期内可录入次数"
-            style="width: 100%" />
         </el-form-item>
         <el-form-item label="分值采集周期" prop="scorePeriod">
           <el-select v-model="form.scorePeriod" placeholder="请选择分值采集周期" style="width: 100%">
@@ -144,6 +131,14 @@
             :min="0"
             controls-position="right"
             placeholder="请输入周期内分值的上限"
+            style="width: 100%" />
+        </el-form-item>
+        <el-form-item label="可采集次数" prop="collectLimit" v-show="form.scorePeriod === PERIOD.UNLIMITED">
+          <el-input-number
+            v-model="form.collectLimit"
+            :min="1"
+            controls-position="right"
+            placeholder="请输入可采集次数"
             style="width: 100%" />
         </el-form-item>
         <el-form-item label="分值计算类型" prop="calculateType">
@@ -185,7 +180,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive, h } from 'vue';
+import { ref, onMounted, watch, h } from 'vue';
 import type { FormInstance, FormRules } from 'element-plus';
 import {
   GrowthTreeVO,
@@ -195,7 +190,7 @@ import {
   delGrowthItem,
 } from '@/api/grow/config';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { PERIOD, CALCULATE_TYPE, GROWITEM_GATHERER } from '@/utils/dict';
+import { PERIOD, CALCULATE_TYPE, GROWITEM_GATHERER, DIALOG_TYPE } from '@/utils/dict';
 import { requiredRule } from '@/utils/rules';
 import Bus from '@/utils/bus';
 import SetGrowUserDrawer from './SetGrowUserDrawer.vue';
@@ -216,7 +211,6 @@ const cascaderProps = {
   label: 'name',
   value: 'id',
   children: 'children',
-  // emitPath: false,
   checkStrictly: true,
   expandTrigger: 'hover',
 };
@@ -230,55 +224,39 @@ const setGrowUserDrawerRef = ref();
 const growthList = ref<GrowthTreeVO>();
 const loading = ref<boolean>(false);
 const active = ref<boolean>(false);
-const title = ref<string>('');
+const dialogType = ref<string>('');
 const tableData = ref<GrowthItemVO[]>();
 const page = ref({
   current: 1,
   size: 10,
 });
 const total = ref<number>(0);
-const searchForm = ref({
-  firstLevelId: void 0,
-  secondLevelId: void 0,
-  threeLevelId: void 0,
-  id: void 0,
-  name: void 0,
-  calculateType: void 0,
-});
+const searchForm = ref<Partial<GrowthItemVO>>({});
 
-const form = ref<GrowthItemVO>({
-  id: void 0,
-  name: void 0,
-  code: void 0,
-  description: void 0,
-  fillPeriod: void 0,
-  fillPeriodNum: void 0,
-  scorePeriod: void 0,
-  scoreUpperLimit: void 0,
-  calculateType: void 0,
-  score: void 0,
-  gatherer: void 0,
-  growthItems: [],
-  firstLevelId: void 0,
-  secondLevelId: void 0,
-  threeLevelId: void 0,
-});
-const rules = reactive<FormRules>({
+const form = ref<Partial<GrowthItemVO>>({});
+const rules = ref<FormRules>({
   growthItems: [requiredRule('所属项目')],
   name: [requiredRule('项目名称')],
   code: [requiredRule('项目编号')],
-  fillPeriod: [requiredRule('项目录入周期')],
   scorePeriod: [requiredRule('分值刷新周期')],
   calculateType: [requiredRule('分值计算类型')],
   score: [requiredRule('项目可获得分值')],
   gatherer: [requiredRule('项目可获得分值')],
 });
 
-/* Life Cycle */
+/* ONMOUNT */
 
 onMounted(() => {
   fetchList();
 });
+
+/* WATCH */
+watch(
+  () => form.value.scorePeriod,
+  (newValue, oldValue) => {
+    if (newValue !== PERIOD.UNLIMITED) form.value.collectLimit = void 0;
+  }
+);
 
 /* Methods */
 
@@ -303,22 +281,22 @@ const handleSizeChange = (val: number) => {
 };
 
 const addRow = () => {
-  title.value = '添加';
+  dialogType.value = DIALOG_TYPE.ADD;
   active.value = true;
 };
 const updateRow = (row: GrowthItemVO) => {
-  title.value = '修改';
+  dialogType.value = DIALOG_TYPE.EDIT;
   form.value.id = row.id;
   form.value.name = row.name;
   form.value.code = row.code;
   form.value.description = row.description;
-  form.value.fillPeriod = row.fillPeriod;
-  form.value.fillPeriodNum = row.fillPeriodNum;
   form.value.scorePeriod = row.scorePeriod;
   form.value.scoreUpperLimit = row.scoreUpperLimit;
+  form.value.collectLimit = row.collectLimit;
   form.value.calculateType = row.calculateType;
   form.value.score = row.score;
   form.value.gatherer = row.gatherer;
+  form.value.growthItems = [];
   if (row.firstLevelId) {
     form.value.growthItems.push(row.firstLevelId);
   }
@@ -362,48 +340,20 @@ const submitForm = async () => {
   const valid = await formRef.value?.validate();
   if (!valid) return;
   loading.value = true;
-  form.value.firstLevelId = form.value.growthItems[0];
-  form.value.secondLevelId = form.value.growthItems[1] || undefined;
-  form.value.threeLevelId = form.value.growthItems[2] || undefined;
+  if (form.value.growthItems && form.value.growthItems.length > 0) {
+    form.value.firstLevelId = form.value.growthItems[0];
+    form.value.secondLevelId = form.value.growthItems[1] || undefined;
+    form.value.threeLevelId = form.value.growthItems[2] || undefined;
+  } else {
+    ElMessage.warning('请旋转所属项目');
+  }
   try {
-    const res = await saveOrUpdateGrowthItem(form.value);
+    const res = await saveOrUpdateGrowthItem(form.value as GrowthItemVO);
     ElMessage.success(res.message);
     active.value = false;
     fetchList();
   } finally {
     loading.value = false;
   }
-};
-
-const resetSearchForm = () => {
-  searchForm.value = {
-    firstLevelId: void 0,
-    secondLevelId: void 0,
-    threeLevelId: void 0,
-    id: void 0,
-    name: void 0,
-    calculateType: void 0,
-  };
-  searchFormRef.value?.resetFields();
-};
-
-const resetForm = () => {
-  form.value = {
-    id: undefined,
-    name: '',
-    code: '',
-    description: '',
-    fillPeriod: undefined,
-    fillPeriodNum: undefined,
-    scorePeriod: undefined,
-    scoreUpperLimit: undefined,
-    calculateType: undefined,
-    score: undefined,
-    growthItems: [],
-    firstLevelId: undefined,
-    secondLevelId: undefined,
-    threeLevelId: undefined,
-  };
-  formRef.value?.resetFields();
 };
 </script>

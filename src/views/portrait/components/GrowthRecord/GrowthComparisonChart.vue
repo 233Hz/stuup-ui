@@ -78,7 +78,7 @@ const xData = [
 
 const yData1 = Array.from({ length: xData.length }, (_, index) => Math.floor(Math.random() * 80 + 20));
 const yData2 = Array.from({ length: xData.length }, (_, index) => Math.floor(Math.random() * 80 + 20));
-const option = {
+let option: echarts.EChartOption = {
   dataZoom: [
     {
       type: 'slider', //隐藏或显示（true）组件
@@ -86,8 +86,9 @@ const option = {
       startValue: 0,
       endValue: 5,
       filterMode: 'empty',
-      zoomLoxk: true, // 是否锁定选择区域（或叫做数据窗口）的大小
-      handleSize: 0, //控制手柄的尺寸
+      zoomLock: true, // 是否锁定选择区域（或叫做数据窗口）的大小
+      brushSelect: false,
+      fillerColor: 'rgb(3, 187, 154)',
     },
     {
       //没有下面这块的话，只能拖动滚动条，鼠标滚轮在区域内不能控制外部滚动条
@@ -97,6 +98,7 @@ const option = {
       moveOnMouseWheel: true,
     },
   ],
+  tooltip: {},
   legend: {},
   xAxis: {
     type: 'category',
@@ -107,7 +109,7 @@ const option = {
   },
   series: [
     {
-      name: '我的积分',
+      name: '我的成长积分',
       data: yData1,
       type: 'bar',
       showBackground: true,
@@ -115,15 +117,17 @@ const option = {
         color: 'rgba(180, 180, 180, 0.2)',
       },
       itemStyle: {
-        color: '#BBFFFF',
+        color: '#03aa8c',
       },
       label: {
         show: true,
         formatter: '{c} 分',
+        fontSize: 18,
+        color: '#fff',
       },
     },
     {
-      name: '平均值',
+      name: '全校成长平均值',
       data: yData2,
       type: 'bar',
       showBackground: true,
@@ -131,11 +135,13 @@ const option = {
         color: 'rgba(180, 180, 180, 0.2)',
       },
       itemStyle: {
-        color: '#C1FFC1',
+        color: '#14b8a6',
       },
       label: {
         show: true,
         formatter: '{c} 分',
+        fontSize: 18,
+        color: '#fff',
       },
     },
   ],

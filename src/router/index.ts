@@ -15,22 +15,22 @@ export const routes: RouteRecordRaw[] = [
     name: '404',
     component: () => import('@/views/error/404.vue'),
   },
-  {
-    path: '/visual_test',
-    component: () => import('@/views/visual_test/index.vue'),
-  },
-  {
-    path: '/portrait',
-    component: () => import('@/views/portrait/index.vue'),
-  },
-  {
-    path: '/home',
-    component: () => import('@/views/home/index.vue'),
-  },
-  {
-    path: '/growthReport',
-    component: () => import('@/views/growthReport/index.vue'),
-  },
+  // {
+  //   path: '/visual_test',
+  //   component: () => import('@/views/visual_test/index.vue'),
+  // },
+  // {
+  //   path: '/portrait',
+  //   component: () => import('@/views/portrait/index.vue'),
+  // },
+  // {
+  //   path: '/home',
+  //   component: () => import('@/views/home/index.vue'),
+  // },
+  // {
+  //   path: '/growthReport',
+  //   component: () => import('@/views/growthReport/index.vue'),
+  // },
 ];
 
 const router = createRouter({

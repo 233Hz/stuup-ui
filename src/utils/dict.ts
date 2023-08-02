@@ -139,8 +139,6 @@ export const PERIOD = new Enum({
   MONTH: ['每月', 4],
   SEMESTER: ['每学期', 5],
   YEAR: ['每学年', 6],
-  THREE_YEAR: ['每三年', 7],
-  FIVE_YEAR: ['每五年', 8],
 });
 
 /**

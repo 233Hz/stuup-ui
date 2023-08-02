@@ -16,9 +16,6 @@
     "@fast-crud/ui-interface": "^1.14.1",
     "@kjgl77/datav-vue3": "^1.6.1",
     "@rollup/plugin-alias": "^5.0.0",
-    "@types/echarts": "^4.9.18",
-    "@types/js-cookie": "^3.0.3",
-    "@types/nprogress": "^0.2.0",
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",
     "axios": "^1.4.0",
@@ -26,7 +23,6 @@
     "echarts": "^5.4.2",
     "element-plus": "^2.3.5",
     "gsap": "^3.12.1",
-    "i": "^0.3.7",
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
@@ -38,6 +34,9 @@
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
+    "@types/echarts": "^4.9.18",
+    "@types/js-cookie": "^3.0.3",
+    "@types/nprogress": "^0.2.0",
     "@types/md5": "^2.3.2",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitejs/plugin-vue-jsx": "^3.0.1",

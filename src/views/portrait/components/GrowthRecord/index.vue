@@ -3,10 +3,10 @@
     <div class="growth-record-wrapper">
       <ul class="record-link fs-14 line-h-42 flex">
         <li
-          v-for="(item, index) in ['一', '二', '三', '四', '五', '六']"
+          v-for="(item, index) in ['2020上', '2020下', '2021上', '2021下', '2022上', '2022下']"
           :key="index"
           :class="index === 0 ? 'tab-active' : ''"
-          class="min-w-80 text-center mx-12 my-4 br-8 hover:cursor-pointer hover:bg-teal-50 hover:text-teal-500 hover:font-bold">
+          class="min-w-80 text-center px-12 mx-12 br-8 hover:cursor-pointer hover:bg-teal-50 hover:text-teal-500 hover:font-bold">
           第{{ item }}学期
         </li>
       </ul>
@@ -25,14 +25,7 @@
         </div>
       </div>
       <el-divider>成长对比</el-divider>
-      <div class="flex">
-        <div class="flex-2">
-          <GrowthComparisonChart />
-        </div>
-        <div class="flex-1">
-          <GrowthComparisonTable />
-        </div>
-      </div>
+      <GrowthComparisonChart />
     </div>
   </div>
 </template>
@@ -40,7 +33,6 @@
 <script setup lang="ts">
 import CrowthData from './CrowthData.vue';
 import CourseComparisonChart from './CourseComparisonChart.vue';
-import GrowthComparisonTable from './GrowthComparisonTable.vue';
 import GrowthComparisonChart from './GrowthComparisonChart.vue';
 
 const list = [

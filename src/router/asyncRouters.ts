@@ -6,7 +6,7 @@ const Layout = () => import('@/layout/index.vue');
 export default [
   {
     path: '/',
-    component: () => import('@/views/home/test_index.vue'),
+    component: () => import('@/views/home/index.vue'),
     meta: {
       title: '首页',
       icon: '',

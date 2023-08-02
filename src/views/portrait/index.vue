@@ -1,13 +1,13 @@
 <template>
   <div class="w-full h-full overflow-auto">
     <div class="w-1400 relative m-auto mt-24 p-24 flex flex-col gap-12">
-      <PortraitCard title="用户信息">
+      <PortraitCard title="个人信息">
         <UserInfo />
       </PortraitCard>
+      <PortraitCard class="flex-1" title="成长能力">
+        <GrowthEvaluationChart />
+      </PortraitCard>
       <div class="flex gap-12">
-        <PortraitCard class="flex-1" title="成长能力">
-          <GrowthEvaluationChart />
-        </PortraitCard>
         <PortraitCard class="flex-1" title="获奖">
           <AwardRecord />
         </PortraitCard>
@@ -15,17 +15,17 @@
           <ActivityRecord />
         </PortraitCard>
       </div>
-      <PortraitCard title="每学期排名变化">
+      <PortraitCard title="学期成长排名曲线图">
         <GradeScoreChart />
       </PortraitCard>
-      <PortraitCard title="历史成长记录">
-        <GrowthRecord />
-      </PortraitCard>
-      <PortraitCard title="历史状态">
+      <PortraitCard title="成长分析">
         <GrowthStatus />
       </PortraitCard>
       <PortraitCard title="学习成绩">
         <FinalGradeChart />
+      </PortraitCard>
+      <PortraitCard title="历史成长记录">
+        <GrowthRecord />
       </PortraitCard>
     </div>
   </div>

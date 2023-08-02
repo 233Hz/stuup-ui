@@ -19,21 +19,20 @@ export interface GrowthVO {
 }
 
 export interface GrowthItemVO {
-  id: number | undefined;
-  name: string | undefined;
-  code: string | undefined;
-  description: string | undefined;
-  fillPeriod: number | undefined;
-  fillPeriodNum: number | undefined;
-  scorePeriod: number | undefined;
-  scoreUpperLimit: number | undefined;
-  calculateType: number | undefined;
-  score: number | undefined;
-  gatherer: number | undefined;
-  growthItems: number[] | [];
-  firstLevelId?: number | undefined;
-  secondLevelId?: number | undefined;
-  threeLevelId?: number | undefined;
+  id: number;
+  name: string;
+  code: string;
+  description?: string;
+  scorePeriod?: number;
+  scoreUpperLimit: number;
+  collectLimit: number;
+  calculateType?: number;
+  score?: number;
+  gatherer?: number;
+  growthItems: number[];
+  firstLevelId: number;
+  secondLevelId?: number;
+  threeLevelId?: number;
 }
 
 export const getGrowthTree = async (): Promise<ApiResult<GrowthTreeVO[]>> => {

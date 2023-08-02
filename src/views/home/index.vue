@@ -6,7 +6,7 @@
       style="background: url(src/assets/image/home_bg.png) no-repeat center 0; background-size: 100% 100%">
       <AnimationLayer class="z-10" />
       <OperationLayer class="z-20" />
-      <GrowthAnimation class="z-30" />
+      <!-- <GrowthAnimation class="z-30" /> -->
       <Rank class="z-30" />
     </div>
   </div>

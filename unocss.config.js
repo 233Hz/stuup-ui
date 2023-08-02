@@ -40,6 +40,12 @@ export default defineConfig({
     [/^br-(\d+)$/, ([, d]) => ({ 'border-radius': `${Number(d)}px` })],
     [/^gap-(\d+)$/, ([, d]) => ({ gap: `${Number(d)}px` })],
     [/^flex-(\d+)$/, ([, d]) => ({ flex: `${Number(d)}` })],
+    ['bg-system', { 'background-color': 'var(--base-color)' }],
+    ['text-system', { color: 'var(--base-color)' }],
+    ['el-shadow', { 'box-shadow': 'var(--el-box-shadow)' }],
+    ['el-shadow-light', { 'box-shadow': 'var(--el-box-shadow-light)' }],
+    ['el-shadow-lighter', { 'box-shadow': 'var(--el-box-shadow-lighter)' }],
+    ['el-shadow-dark', { 'box-shadow': 'var(--el-box-shadow-dark)' }],
   ],
   theme: {},
 });

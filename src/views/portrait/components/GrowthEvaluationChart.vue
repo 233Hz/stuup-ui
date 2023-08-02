@@ -6,27 +6,43 @@
 import { ref, onMounted } from 'vue';
 import * as echarts from 'echarts';
 
-const data = Array.from({ length: 7 }, (_, index) => {
-  return Math.floor(Math.random() * 800 + 200);
+const indicator = ['道德与公民素养', '技能与学习素养', '运动与身心健康', '审美与艺术修养', '劳动与职业素养'];
+const data = indicator.map(item => {
+  const value = Math.floor(Math.random() * 1500 + 200);
+  return {
+    name: `${item}(${value}分)`,
+    max: 1000,
+    value,
+  };
 });
 
+const indicatorData = data.map(({ name, max }) => {
+  return { name, max };
+});
+
+const values = data.map(({ value }) => value);
+
 const chartRef = ref();
-const option = ref({
+let option: echarts.EChartOption = {
   tooltip: {
     trigger: 'item',
+  },
+  grid: {
+    top: '50%',
+    bottom: '50%',
+    left: '50%',
+    right: '50%',
   },
   legend: {
     data: ['Allocated Budget', 'Actual Spending'],
   },
   radar: {
     shape: 'circle',
-    indicator: [
-      { name: '道德与公民素养', max: 1000 },
-      { name: '技能与学习素养', max: 1000 },
-      { name: '运动与身心健康', max: 1000 },
-      { name: '审美与艺术修养', max: 1000 },
-      { name: '劳动与职业素养', max: 1000 },
-    ],
+    indicator: indicatorData,
+    axisName: {
+      fontSize: 18,
+      color: '#03aa8c',
+    },
   },
   series: [
     {
@@ -34,16 +50,16 @@ const option = ref({
       type: 'radar',
       data: [
         {
-          value: data,
+          value: values,
           name: '成长方向',
         },
       ],
     },
   ],
-});
+};
 
 onMounted(() => {
   const chart = echarts.init(chartRef.value);
-  option.value && chart.setOption(option.value);
+  option && chart.setOption(option);
 });
 </script>

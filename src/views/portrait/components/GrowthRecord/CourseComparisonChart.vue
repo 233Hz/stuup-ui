@@ -8,14 +8,23 @@ import * as echarts from 'echarts';
 
 const chartRef = ref();
 
-const data1 = Array.from({ length: 7 }, (_, index) => {
-  return Math.floor(Math.random() * 50 + 50);
-});
-const data2 = Array.from({ length: 7 }, (_, index) => {
-  return Math.floor(Math.random() * 50 + 50);
+const indicator = ['课程1', '课程2', '课程3', '课程4', '课程5', '课程6', '课程7'];
+const data = indicator.map(item => {
+  const value = Math.floor(Math.random() * 80 + 20);
+  return {
+    name: `${item}(${value}分)`,
+    max: 100,
+    value,
+  };
 });
 
-const option = ref({
+const indicatorData = data.map(({ name, max }) => {
+  return { name, max };
+});
+
+const values = data.map(({ value }) => value);
+
+let option: echarts.EChartOption = {
   tooltip: {
     trigger: 'item',
   },
@@ -24,15 +33,11 @@ const option = ref({
   },
   radar: {
     shape: 'circle',
-    indicator: [
-      { name: '课程1', max: 100 },
-      { name: '课程2', max: 100 },
-      { name: '课程3', max: 100 },
-      { name: '课程4', max: 100 },
-      { name: '课程5', max: 100 },
-      { name: '课程6', max: 100 },
-      { name: '课程7', max: 100 },
-    ],
+    indicator: indicatorData,
+    axisName: {
+      fontSize: 18,
+      color: '#03aa8c',
+    },
   },
   series: [
     {
@@ -40,21 +45,17 @@ const option = ref({
       type: 'radar',
       data: [
         {
-          value: data1,
+          value: values,
           name: '课程成绩',
-        },
-        {
-          value: data2,
-          name: '平均成绩',
         },
       ],
     },
   ],
-});
+};
 
 onMounted(() => {
   const chart = echarts.init(chartRef.value);
-  option.value && chart.setOption(option.value);
+  option && chart.setOption(option);
 });
 </script>
 

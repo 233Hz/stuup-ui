@@ -6,6 +6,7 @@
 import { ref, onMounted } from 'vue';
 import * as echarts from 'echarts';
 
+const xData = ['2020上学期', '2020下学期', '2021上学期', '2021下学期', '2022上学期', '2022下学期'];
 const data = Array.from({ length: 7 }, (_, index) => {
   return Math.floor(Math.random() * 1000 + 200);
 });
@@ -14,7 +15,7 @@ const chartRef = ref();
 const option = ref({
   xAxis: {
     type: 'category',
-    data: ['第一学期', '第二学期', '第三学期', '第四学期', '第五学期', '第六学期'],
+    data: xData,
   },
   yAxis: {
     type: 'value',
@@ -27,6 +28,8 @@ const option = ref({
         formatter: ({ value }: { value: number }) => {
           return `${value} 名(${Math.floor(Math.random() * 1000 + 500)}分)`;
         },
+        fontSize: 18,
+        color: '#03aa8c',
       },
       data: data,
       type: 'line',
