@@ -1,18 +1,18 @@
-import { ApiResult, get, post, del } from '@/api/api';
-import { Page, PageResult } from '@/types/global';
+import { ApiResult, get } from '@/api/api';
+import { Page } from '@/types/global';
 
 export interface StudentRecScoreVO {
   id: number;
-  yearName?: string;
-  firstLevelName?: string;
-  secondLevelName?: string;
-  threeLevelName?: string;
-  growName?: string;
-  score?: string;
-  createTime?: Date;
-  description?: Date;
+  name: string;
+  score: string;
+  createTime: Date;
 }
 
-export const pageStudentRecScore = async (params: Page): Promise<ApiResult<PageResult<StudentRecScoreVO[]>>> => {
+export interface StudentScoreDetailsVO {
+  totalScore: number;
+  records: StudentRecScoreVO[];
+}
+
+export const pageStudentRecScore = async (params: Page): Promise<ApiResult<StudentScoreDetailsVO>> => {
   return get('/stuScoreLog/page', params);
 };

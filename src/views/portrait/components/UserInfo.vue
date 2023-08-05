@@ -39,7 +39,7 @@
               </div>
               <img
                 :src="item.imageSrc"
-                class="w-full h-full object-cover rounded-full"
+                class="w-full h-full object-cover rounded-full bg-green-100"
                 style="-webkit-user-drag: none"
                 alt="用户等级" />
             </div>

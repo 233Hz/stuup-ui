@@ -53,3 +53,6 @@ export const setupRouter = (app: App<Element>) => {
 };
 
 export default router;
+
+
+// vue-router动态路由怎么写

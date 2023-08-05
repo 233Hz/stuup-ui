@@ -3,22 +3,26 @@
     <div class="details-wrapper">
       <el-page-header :icon="ArrowLeft"></el-page-header>
       <div class="details-wrapper__header">
-        <p class="total-score">100</p>
+        <p class="total-score">{{ totalScore }}</p>
         <p class="total-text">当前总积分</p>
       </div>
       <div class="details-wrapper__content">
-        <ul class="content-wrapper" v-infinite-scroll="load">
-          <li class="content-wrapper__item" v-for="item in count" :key="item">
+        <ul class="content-wrapper">
+          <li class="content-wrapper__item" v-for="item in list" :key="item.id">
             <div class="item-left">
-              <div class="score-source">每日签到</div>
-              <div class="score-time">{{ new Date() }}</div>
+              <div class="score-source">{{ item.name }}</div>
+              <div class="score-time">{{ item.createTime }}</div>
             </div>
             <div class="item-right">
-              <div class="score-number">+2</div>
+              <div class="score-number">{{ item.score }}</div>
             </div>
           </li>
-          <li class="flex justify-center">
-            <el-icon :class="loading ? 'is-loading' : ''"><Loading /></el-icon>
+          <li class="flex justify-center py-10">
+            <el-button type="primary" plain v-show="!loading" @click="load">
+              {{ isNoMore ? '没有更多了' : '加载更多' }}
+              <el-icon v-if="!isNoMore"><ArrowRight /></el-icon>
+            </el-button>
+            <el-icon v-show="loading" class="is-loading"><Loading /></el-icon>
           </li>
         </ul>
       </div>
@@ -27,18 +31,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { ArrowLeft, Loading } from '@element-plus/icons-vue';
+import { ref, onMounted } from 'vue';
+import { pageStudentRecScore, StudentRecScoreVO } from '@/api/details';
+import { ArrowLeft, Loading, ArrowRight } from '@element-plus/icons-vue';
+
 const loading = ref(false);
-const count = ref(10);
+const size = 10;
+const page = ref(1);
+const isNoMore = ref<boolean>(false);
+const totalScore = ref<number>(0);
+const list = ref<StudentRecScoreVO[]>([]);
+
 const load = () => {
+  if (isNoMore.value) return;
   loading.value = true;
-  setTimeout(() => {
-    console.log('aaa');
-    count.value += 2;
-    loading.value = false;
-  }, 2000);
+  pageStudentRecScore({ current: page.value, size })
+    .then(({ data }) => {
+      if (data.records && data.records.length) {
+        totalScore.value = data.totalScore;
+        data.records.forEach(item => list.value!.push(item));
+        page.value++;
+      } else {
+        isNoMore.value = true;
+      }
+    })
+    .finally(() => {
+      loading.value = false;
+    });
 };
+
+onMounted(() => {
+  load();
+});
 </script>
 
 <style scoped lang="scss">
