@@ -10,24 +10,25 @@
           :class="kls"
           :cell-props="cellProps"
           row-key="facultyId"
-          fixed />
+          fixed
+        />
       </template>
     </el-auto-resizer>
   </div>
 </template>
 
 <script setup lang="tsx">
-import { ref, onMounted } from 'vue';
-import type { Column } from 'element-plus';
-import { getFacultyRank, FacultyRankVO } from '@/api/ranking/faculty/index';
-import { ElButton, ElIcon, ElPopover } from 'element-plus';
-import { Filter } from '@element-plus/icons-vue';
+import { ref, onMounted } from 'vue'
+import type { Column } from 'element-plus'
+import { getFacultyRank, FacultyRankVO } from '@/api/ranking/faculty/index'
+import { ElButton, ElIcon, ElPopover } from 'element-plus'
+import { Filter } from '@element-plus/icons-vue'
 
-import type { HeaderCellSlotProps } from 'element-plus';
+import type { HeaderCellSlotProps } from 'element-plus'
 
 // TYPE
 interface FilterFormType {
-  facultyName: string;
+  facultyName: string
 }
 
 // CONST
@@ -47,18 +48,30 @@ const columns: Column[] = [
       return (
         <div class="flex items-center justify-center">
           <span class="mr-2 size-14 weight-700">{props.column.title}</span>
-          <ElPopover v-model:visible={visible.value} trigger="click" {...{ width: 200 }}>
+          <ElPopover
+            v-model:visible={visible.value}
+            trigger="click"
+            {...{ width: 200 }}
+          >
             {{
               default: () => (
                 <div>
                   <div>
-                    <el-input v-model={filterForm.value.facultyName} placeholder="请选择专业" />
+                    <el-input
+                      v-model={filterForm.value.facultyName}
+                      placeholder="请选择专业"
+                    />
                   </div>
                   <div class="flex items-center justify-center mt-4">
                     <ElButton text onClick={onFilter}>
                       确 认
                     </ElButton>
-                    <ElButton text onClick={() => onReset(props.column.dataKey as keyof FilterFormType)}>
+                    <ElButton
+                      text
+                      onClick={() =>
+                        onReset(props.column.dataKey as keyof FilterFormType)
+                      }
+                    >
                       清 空
                     </ElButton>
                   </div>
@@ -72,7 +85,7 @@ const columns: Column[] = [
             }}
           </ElPopover>
         </div>
-      );
+      )
     },
   },
   {
@@ -81,62 +94,62 @@ const columns: Column[] = [
     title: '成长值',
     width: 100,
   },
-];
+]
 
 const cellProps = ({ columnIndex }: { columnIndex: number }) => {
-  const key = `hovering-col-${columnIndex}`;
+  const key = `hovering-col-${columnIndex}`
   return {
     ['data-key']: key,
     onMouseenter: () => {
-      kls.value = key;
+      kls.value = key
     },
     onMouseleave: () => {
-      kls.value = '';
+      kls.value = ''
     },
-  };
-};
+  }
+}
 
 // DATA
-let data: readonly FacultyRankVO[];
-const loading = ref<boolean>(false);
-const tableData = ref<FacultyRankVO[]>([]);
-const kls = ref<string>('');
-const visible = ref(false);
+let data: readonly FacultyRankVO[]
+const loading = ref<boolean>(false)
+const tableData = ref<FacultyRankVO[]>([])
+const kls = ref<string>('')
+const visible = ref(false)
 const filterForm = ref<FilterFormType>({
   facultyName: '',
-});
+})
 
 // ONMOUNTED
 onMounted(() => {
-  fetchList();
-});
+  fetchList()
+})
 
 // METHOD
 const fetchList = async () => {
-  loading.value = true;
+  loading.value = true
   try {
-    const { data: res } = await getFacultyRank();
-    data = Object.freeze(res);
-    tableData.value = [...data];
+    const { data: res } = await getFacultyRank()
+    data = Object.freeze(res)
+    tableData.value = [...data]
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const onFilter = () => {
-  const { facultyName } = filterForm.value;
+  const { facultyName } = filterForm.value
 
-  tableData.value = data.filter(item => {
+  tableData.value = data.filter((item) => {
     if (facultyName && !item.facultyName.includes(facultyName)) {
-      return false;
+      return false
     }
-    return true;
-  });
-};
+    return true
+  })
+}
 const onReset = (columnKey: keyof FilterFormType) => {
-  filterForm.value[columnKey] = '';
-  onFilter();
-};
+  filterForm.value[columnKey] = ''
+  onFilter()
+}
 </script>
 
 <style>

@@ -1,4 +1,4 @@
-const Layout = () => import('@/layout/index.vue');
+const Layout = () => import('@/layout/index.vue')
 
 /**
  * 不需要菜单的路由
@@ -41,4 +41,4 @@ export default [
     path: '/portrait',
     component: () => import('@/views/portrait/index.vue'),
   },
-];
+]

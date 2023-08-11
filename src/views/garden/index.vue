@@ -29,7 +29,12 @@
           </el-form-item>
           <el-form-item prop="gradeId">
             <el-select v-model="searchForm.gradeId">
-              <el-option v-for="item in GRADE" :key="item.oid" :label="item.gradeName" :value="item.oid" />
+              <el-option
+                v-for="item in GRADE"
+                :key="item.oid"
+                :label="item.gradeName"
+                :value="item.oid"
+              />
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -47,7 +52,8 @@
                 { first: calculateRank(index) === 1 },
                 { second: calculateRank(index) === 2 },
                 { third: calculateRank(index) === 3 },
-              ]">
+              ]"
+            >
               {{ calculateRank(index) }}
             </div>
             <div class="list-item-avatar">
@@ -63,7 +69,13 @@
               <span>{{ item.score }}</span>
             </div>
           </li>
-          <li class="list-item" style="text-align: center" v-show="listData.length === 0">没了有哦~~~</li>
+          <li
+            class="list-item"
+            style="text-align: center"
+            v-show="listData.length === 0"
+          >
+            没了有哦~~~
+          </li>
         </ul>
         <div class="pagination">
           <el-pagination
@@ -74,7 +86,8 @@
             :total="total"
             style="text-align: center"
             :hide-on-single-page="listData.length === 0"
-            @current-change="handleCurrentChange" />
+            @current-change="handleCurrentChange"
+          />
         </div>
       </el-skeleton>
     </div>
@@ -82,19 +95,19 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import type { FormInstance } from 'element-plus';
-import { GrowGardenVO, getGrowGarden } from '@/api/garden';
-import { getGraderList } from '@/api/basic/grade/index';
-import { GARDEN_TYPE } from '@/utils/dict';
-import icon from '@/assets/flower_icons/bmh_bloom.jpg';
-const route = useRoute();
-const router = useRouter();
+import { onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import type { FormInstance } from 'element-plus'
+import { GrowGardenVO, getGrowGarden } from '@/api/garden'
+import { getGraderList } from '@/api/basic/grade/index'
+import { GARDEN_TYPE } from '@/utils/dict'
+import icon from '@/assets/flower_icons/bmh_bloom.jpg'
+const route = useRoute()
+const router = useRouter()
 
-const searchFormRef = ref<FormInstance>();
+const searchFormRef = ref<FormInstance>()
 
-const GRADE = ref();
+const GRADE = ref()
 
 const searchForm = ref({
   current: 1,
@@ -104,41 +117,41 @@ const searchForm = ref({
   studentNo: void 0,
   className: void 0,
   gradeId: void 0,
-});
-const total = ref<number>(0);
-const listData = ref<GrowGardenVO[]>([]);
-const loading = ref<boolean>(false);
+})
+const total = ref<number>(0)
+const listData = ref<GrowGardenVO[]>([])
+const loading = ref<boolean>(false)
 
 onMounted(() => {
-  initGrade();
-  fetchList();
-});
+  initGrade()
+  fetchList()
+})
 
 const initGrade = async () => {
-  const { data: res } = await getGraderList();
-  GRADE.value = res;
-};
+  const { data: res } = await getGraderList()
+  GRADE.value = res
+}
 
 const fetchList = async () => {
-  loading.value = true;
+  loading.value = true
 
   try {
-    const { data } = await getGrowGarden(searchForm.value);
-    total.value = data.total;
-    listData.value = data.records;
+    const { data } = await getGrowGarden(searchForm.value)
+    total.value = data.total
+    listData.value = data.records
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const calculateRank = (index: number): number => {
-  return (searchForm.value.current - 1) * searchForm.value.size + index + 1;
-};
+  return (searchForm.value.current - 1) * searchForm.value.size + index + 1
+}
 
 const handleCurrentChange = (val: number) => {
-  searchForm.value.current = val;
-  fetchList();
-};
+  searchForm.value.current = val
+  fetchList()
+}
 </script>
 
 <style scoped lang="scss">
@@ -222,7 +235,14 @@ const handleCurrentChange = (val: number) => {
 
         &-ranking {
           margin: 20px;
-          font-family: Helvetica Neue, Tahoma, Arial, PingFangSC-Regular, Hiragino Sans GB, Microsoft Yahei, sans-serif;
+          font-family:
+            Helvetica Neue,
+            Tahoma,
+            Arial,
+            PingFangSC-Regular,
+            Hiragino Sans GB,
+            Microsoft Yahei,
+            sans-serif;
           font-size: 16px;
           font-weight: 700;
           width: 30px;

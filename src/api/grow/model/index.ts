@@ -1,25 +1,21 @@
-import { ApiResult, get, post } from '@/api/api';
+import { get, post } from '@/api/api'
+import type { FlowerVO, FlowerForm } from './type'
 
-export interface FlowerVO {
-  bmhSeed: number;
-  bmhSprout: number;
-  bmhBloom: number;
-  bmhFruit: number;
-  xcjSeed: number;
-  xcjSprout: number;
-  xcjBloom: number;
-  xcjFruit: number;
-  xhhSeed: number;
-  xhhSprout: number;
-  xhhBloom: number;
-  xhhFruit: number;
-  [key: string]: number;
+enum API {
+  GET_FLOWERS_EXCHANGE_NUM_URL = '/growthModel/flowers',
+  SET_FLOWERS_EXCHANGE_NUM_URL = '/growthModel/setFlowerConfig',
 }
 
-export const getFlowerConfig = async (): Promise<ApiResult<FlowerVO>> => {
-  return await get('/growthModel/flowers');
-};
+/**
+ * 获取花朵兑换数
+ * @returns
+ */
+export const reqFlowerExchangeNum = async () =>
+  get<FlowerVO>(API.GET_FLOWERS_EXCHANGE_NUM_URL)
 
-export const setFlowerConfig = async (data: { key: string; value: number }) => {
-  return await post('/growthModel/setFlowerConfig', data);
-};
+/**
+ * 设置花朵兑换数
+ * @returns
+ */
+export const setFlowerConfig = async (data: FlowerForm) =>
+  post(API.SET_FLOWERS_EXCHANGE_NUM_URL, data)

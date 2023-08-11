@@ -41,7 +41,7 @@ const providedProps = {
     md: 12,
     xl: 8,
   },
-};
+}
 </script>
 
 <style scoped lang="scss">

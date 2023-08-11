@@ -1,14 +1,14 @@
 <template>
   <el-scrollbar class="bunga-aside">
-    <Menu :routes="premissionStore.getBackAsideRouters" />
+    <Menu :routes="premissionStore.backAsideRouters" />
   </el-scrollbar>
 </template>
 
 <script setup lang="ts">
-import { usePermissionStore } from '@/store/modules/premission';
-import Menu from './Menu.vue';
+import usePermissionStore from '@/store/modules/premission'
+import Menu from './Menu.vue'
 
-const premissionStore = usePermissionStore();
+const premissionStore = usePermissionStore()
 </script>
 
 <style scoped lang="scss">

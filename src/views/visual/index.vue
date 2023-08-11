@@ -6,20 +6,20 @@
 
 <script setup lang="ts">
 const resetSize = () => {
-  const { innerWidth, innerHeight } = window;
-  const content = document.querySelector('.visual-wrapper') as HTMLDivElement;
-  const contentRect = content.getBoundingClientRect();
-  console.log(contentRect.height, contentRect.width);
+  const { innerWidth, innerHeight } = window
+  const content = document.querySelector('.visual-wrapper') as HTMLDivElement
+  const contentRect = content.getBoundingClientRect()
+  console.log(contentRect.height, contentRect.width)
 
   if (innerWidth > innerHeight && innerWidth / innerHeight > 16 / 9) {
-    content.style.transform = `scale(${innerHeight / 1920})`;
+    content.style.transform = `scale(${innerHeight / 1920})`
   } else {
-    content.style.transform = `scale(${innerWidth / 1080})`;
+    content.style.transform = `scale(${innerWidth / 1080})`
   }
-};
+}
 window.onresize = () => {
-  resetSize();
-};
+  resetSize()
+}
 </script>
 
 <style lang="scss" scoped>

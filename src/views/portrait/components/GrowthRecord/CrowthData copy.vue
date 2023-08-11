@@ -1,7 +1,11 @@
 <template>
   <div class="wrapper">
     <div ref="wrapperRef" class="wrapper-content">
-      <div v-for="(item, index) in data" :key="index" class="item shadow-lg text-center text-white bg-red-500 flex">
+      <div
+        v-for="(item, index) in data"
+        :key="index"
+        class="item shadow-lg text-center text-white bg-red-500 flex"
+      >
         <div class="w-50 h-full bg-red=200 flex">
           <img :src="icon" class="w-40 h-40 m-auto" />
         </div>
@@ -19,9 +23,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { gsap } from 'gsap';
-import icon from '@/assets/svg/home-applay.svg';
+import { ref, onMounted } from 'vue'
+import { gsap } from 'gsap'
+import icon from '@/assets/svg/home-applay.svg'
 
 const data = [
   {
@@ -48,50 +52,50 @@ const data = [
     label: '获得证书',
     value: 1,
   },
-];
+]
 
-let items: NodeListOf<HTMLDivElement>;
-const r = 300;
-let step = 0;
-let pDeg: number;
-const wrapperRef = ref<HTMLDataElement>();
+let items: NodeListOf<HTMLDivElement>
+const r = 300
+let step = 0
+let pDeg: number
+const wrapperRef = ref<HTMLDataElement>()
 
 onMounted(() => {
-  items = document.querySelectorAll('.item');
-  pDeg = 360 / items.length;
-  layout();
-  let isDragging = false;
-  let startPosX = 0;
-  wrapperRef.value?.addEventListener('mousedown', e => {
-    isDragging = true;
-    startPosX = e.clientX;
+  items = document.querySelectorAll('.item')
+  pDeg = 360 / items.length
+  layout()
+  let isDragging = false
+  let startPosX = 0
+  wrapperRef.value?.addEventListener('mousedown', (e) => {
+    isDragging = true
+    startPosX = e.clientX
     // wrapperRef.value!.style.cursor = 'grabbing';
-  });
+  })
 
-  wrapperRef.value?.addEventListener('mouseup', e => {
-    isDragging = false;
+  wrapperRef.value?.addEventListener('mouseup', (e) => {
+    isDragging = false
     // wrapperRef.value!.style.cursor = 'grab';
-    const offsetX = e.clientX - startPosX;
-    if (offsetX < 50 && offsetX > -50) return;
-    offsetX > 0 ? step++ : step--;
-    layout(step);
-  });
-});
+    const offsetX = e.clientX - startPosX
+    if (offsetX < 50 && offsetX > -50) return
+    offsetX > 0 ? step++ : step--
+    layout(step)
+  })
+})
 
 const layout = (step: number = 0) => {
   items.forEach((item, index) => {
-    const angle = (index + step) * pDeg;
-    console.log(step);
-    const x = r * Math.sin((angle * Math.PI) / 180);
-    const z = r * Math.cos((angle * Math.PI) / 180);
+    const angle = (index + step) * pDeg
+    console.log(step)
+    const x = r * Math.sin((angle * Math.PI) / 180)
+    const z = r * Math.cos((angle * Math.PI) / 180)
     gsap.to(item, {
       x: x,
       z: z,
       duration: 0.5,
       rotateY: Math.abs(angle),
-    });
-  });
-};
+    })
+  })
+}
 </script>
 
 <style scoped lang="scss">

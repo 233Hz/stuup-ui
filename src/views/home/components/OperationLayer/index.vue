@@ -1,42 +1,59 @@
 <template>
   <div class="absolute t-0 l-0 w-full h-full">
-    <div class="relative t-0 l-0 w-full h-full">
+    <div ref="wrapperRef" class="relative t-0 l-0 w-full h-full">
       <div
         ref="tipRef"
         class="absolute t-0 l-0 max-w-500 p-16 text-white fs-24 tracking-widest rounded-lg z-9999"
         style="background-color: rgba(136, 134, 127, 0.5)"
-        v-show="show_hint"></div>
+        v-show="show_hint"
+      />
       <div class="bmh_bloom absolute l-0 t-300 w-300 h-400" />
       <div class="bmh_fruit absolute l-260 t-770 w-100 h-100" />
-      <div class="absolute l-330 t-550 w-150 h-150" @click="router.push(`/garden/${GARDEN_TYPE.BMH}`)" />
+      <div
+        class="absolute l-330 t-550 w-150 h-150"
+        @click="router.push(`/garden/${GARDEN_TYPE.BMH}`)"
+      />
       <div class="xcj_bloom absolute l-1100 t-400 w-300 h-260" />
       <div class="xcj_fruit absolute l-790 t-580 w-100 h-100" />
-      <div class="absolute l-880 t-420 w-150 h-150" @click="router.push(`/garden/${GARDEN_TYPE.XCJ}`)" />
+      <div
+        class="absolute l-880 t-420 w-150 h-150"
+        @click="router.push(`/garden/${GARDEN_TYPE.XCJ}`)"
+      />
       <div class="xhh_bloom absolute l-1260 t-750 w-300 h-150" />
       <div class="xhh_fruit absolute l-1430 t-710 w-100 h-100" />
-      <div class="absolute l-1640 t-670 w-150 h-150" @click="router.push(`/garden/${GARDEN_TYPE.XHH}`)" />
-      <div class="sun">荣誉榜</div>
+      <div
+        class="absolute l-1640 t-670 w-150 h-150"
+        @click="router.push(`/garden/${GARDEN_TYPE.XHH}`)"
+      />
+      <div class="sun" @click="bus.emit('show-rank')">荣誉榜</div>
       <!-- 用户头像&等级 -->
-      <div class="user absolute t-0 l-0 w-500">
+      <div
+        class="user absolute t-0 l-0 w-500"
+        v-if="userStore.userInfo.userType === USER_TYPE.STUDENT"
+      >
         <div class="user-self relative w-full h-200 user-info-border">
           <div class="relative w-full h-full flex user-info-bg">
-            <div class="w-100">
+            <div class="w-100 p-10">
               <img :src="defaultAvatar" class="w-full h-full object-cover" />
             </div>
             <div class="flex-1 flex">
               <div class="flex-1 m-auto">
                 <div class="absolute b-20">
-                  <p class="fs-24 font-bold" style="color: #e0cc45">张三</p>
+                  <p class="fs-24 font-bold" style="color: #e0cc45">
+                    {{ growthInfo?.studentName }}
+                  </p>
                   <p class="text-white">
                     <span class="fs-18">全校排名:</span>
-                    <span class="fs-28">1111</span>
+                    <span class="fs-28">{{ growthInfo?.ranking }}</span>
                   </p>
                 </div>
               </div>
               <div class="flex-1 flex">
                 <div class="m-auto">
                   <p class="text-center text-white fs-24">总积分</p>
-                  <h1 class="text-center fs-36 italic total-score-text">10000</h1>
+                  <h1 class="text-center fs-36 italic total-score-text">
+                    {{ growthInfo?.totalScore }}
+                  </h1>
                 </div>
               </div>
             </div>
@@ -45,9 +62,16 @@
         <div class="flex justify-center">
           <div
             class="w-120 h-120 rounded-full overflow-hidden p-10 level-item"
-            v-for="(item, index) in conversionFlower.calculateConversionFlower(57)"
-            :key="index">
-            <img :src="item.imageSrc" class="w-full h-full object-cover rounded-full" style="-webkit-user-drag: none" />
+            v-for="(item, index) in conversionFlower.calculateConversionFlower(
+              growthInfo?.ranking!,
+            )"
+            :key="index"
+          >
+            <img
+              :src="item.imageSrc"
+              class="w-full h-full object-cover rounded-full"
+              style="-webkit-user-drag: none"
+            />
           </div>
         </div>
       </div>
@@ -58,7 +82,8 @@
             class="w-80 mx-10 cursor-pointer fs-12"
             v-for="(item, index) in menus"
             :key="index"
-            @click="item.path ? router.push(item.path) : ''">
+            @click="item.path ? router.push(item.path) : ''"
+          >
             <div class="w-full h-80 p-10">
               <img :src="item.icon" class="w-full h-full object-cover" />
             </div>
@@ -71,22 +96,28 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { GARDEN_TYPE } from '@/utils/dict';
-import defaultAvatar from '@/assets/image/default_avatar.png';
-import applaySvg from '@/assets/svg/home-applay.svg';
-import detailsSvg from '@/assets/svg/home-score.svg';
-import portraitSvg from '@/assets/svg/home-portrait.svg';
-import reportSvg from '@/assets/svg/home-report.svg';
-import backSvg from '@/assets/svg/home-back.svg';
-import { useConversionFlower } from '@/utils/conversionFlower';
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { GARDEN_TYPE, USER_TYPE } from '@/utils/dict'
+import defaultAvatar from '@/assets/image/default_avatar.png'
+import applaySvg from '@/assets/svg/home-applay.svg'
+import detailsSvg from '@/assets/svg/home-score.svg'
+import portraitSvg from '@/assets/svg/home-portrait.svg'
+import reportSvg from '@/assets/svg/home-report.svg'
+import backSvg from '@/assets/svg/home-back.svg'
+import { useConversionFlower } from '@/utils/conversionFlower'
+import bus from '@/utils/bus'
+import useUserStore from '@/store/modules/user'
+import { reqGrowthInfo, reqUpdateRecordState } from '@/api/home/index'
+import { GrowthInfo } from '@/api/home/type'
 
-const router = useRouter();
-const conversionFlower = useConversionFlower();
+const router = useRouter()
+const conversionFlower = useConversionFlower()
+const userStore = useUserStore()
 
-const tipRef = ref();
-const show_hint = ref<boolean>(false);
+const wrapperRef = ref()
+const tipRef = ref()
+const show_hint = ref<boolean>(false)
 const flowerHint: Record<string, string> = {
   bmh_fruit: `<h3>白梅花</h3>
      <p>异名：绿萼梅</p>
@@ -122,7 +153,7 @@ const flowerHint: Record<string, string> = {
      <p>保健用法：泡茶：每天5-7根</p>`,
   xhh_bloom: `<h3>西红花</h3>
      <p>&nbsp;&nbsp;&nbsp;&nbsp;象征快乐、挂念、真心、多彩、期望和青春的喜悦`,
-};
+}
 
 const menus = [
   {
@@ -150,63 +181,91 @@ const menus = [
     icon: backSvg,
     path: '/dashboard',
   },
-];
+]
 
-onMounted(() => {
-  registerFlowerHint();
-});
+const growthInfo = ref<GrowthInfo>()
 
-const registerFlowerHint = () => {
-  Object.keys(flowerHint).forEach(className => {
-    const el = document.querySelector(`.${className}`) as HTMLDivElement;
-    el.addEventListener('mouseenter', () => {
-      show_hint.value = true;
-      tipRef.value.innerHTML = flowerHint[className] as string;
-      requestAnimationFrame(() => {
-        tipRef.value.style.left = el.offsetLeft + el.clientWidth / 2 + 'px';
-        tipRef.value.style.top = el.offsetTop - tipRef.value.clientHeight + 'px';
-      });
-    });
-    el.addEventListener('mouseleave', () => {
-      show_hint.value = false;
-      tipRef.value.innerHTML = '';
-      tipRef.value.style.top = 0 + 'px';
-      tipRef.value.style.left = 0 + 'px';
-    });
-  });
-};
-
-const turntableRef = ref();
-const generateBlisters = (): void => {
-  const wrapper = document.querySelector('.home-wrapper__blisters') as HTMLDivElement;
-  const wrapperRect = wrapper.getBoundingClientRect();
-  const blistersDiameter: number = 50;
-  for (let i = 0; i < 10; i++) {
-    let blistersEl = document.createElement('div') as HTMLDivElement;
-    const score = Math.floor(Math.random() * 3) + 1;
-    let textNode = document.createTextNode(`+${score}`);
-    blistersEl.setAttribute('score', score.toString());
-    blistersEl.append(textNode);
-    blistersEl.classList.add('blisters');
-    blistersEl.style.left = `${Math.floor(
-      Math.random() * (wrapperRect.width - blistersDiameter) + blistersDiameter
-    )}px`;
-    blistersEl.style.top = `${Math.floor(
-      Math.random() * (wrapperRect.height - blistersDiameter) + blistersDiameter
-    )}px`;
-    console.log(blistersEl.style.left + '+' + blistersEl.style.top);
-    wrapper.appendChild(blistersEl);
+onMounted(async () => {
+  init()
+  if (userStore.userInfo.userType === USER_TYPE.STUDENT) {
+    const { data } = await reqGrowthInfo()
+    growthInfo.value = data
+    data.unearnedPoints.forEach((item) => {
+      generateBlisters(item.id, item.score)
+    })
   }
+})
 
-  wrapper.addEventListener('click', (e: MouseEvent) => {
-    const target = e.target as HTMLDivElement;
-    if (target.classList.contains('blisters')) {
-      const elements = document.querySelectorAll('.blisters');
-      elements.forEach(element => element.remove());
-      turntableRef.value.playAnimate();
+const init = () => {
+  Object.keys(flowerHint).forEach((className) => {
+    const el = document.querySelector(`.${className}`) as HTMLDivElement
+    el.addEventListener('mouseenter', () => {
+      show_hint.value = true
+      tipRef.value.innerHTML = flowerHint[className] as string
+      requestAnimationFrame(() => {
+        tipRef.value.style.left = el.offsetLeft + el.clientWidth / 2 + 'px'
+        tipRef.value.style.top = el.offsetTop - tipRef.value.clientHeight + 'px'
+      })
+    })
+    el.addEventListener('mouseleave', () => {
+      show_hint.value = false
+      tipRef.value.innerHTML = ''
+      tipRef.value.style.top = 0 + 'px'
+      tipRef.value.style.left = 0 + 'px'
+    })
+  })
+
+  wrapperRef.value.addEventListener('click', async (e: MouseEvent) => {
+    const target = e.target as HTMLDivElement
+    if (target.classList.contains('drop')) {
+      const elements = document.querySelectorAll('.drop')
+      elements.forEach((element) => {
+        element.remove()
+      })
+      // 更新分数
+      const totalScore = growthInfo.value?.unearnedPoints.reduce(
+        (accumulator, item) => accumulator + item.score,
+        0,
+      )
+      growthInfo.value!.totalScore += totalScore!
+      // 更新记录状态
+      const idArr = growthInfo.value?.unearnedPoints.map((item) => item.id)
+      const idStr = idArr?.join(',')
+      await reqUpdateRecordState(idStr!)
+      // 通知显示升级动画
+      bus.emit('collect-drop', growthInfo.value?.totalScore)
     }
-  });
-};
+  })
+}
+
+const generateBlisters = (key: number | string, score: number): void => {
+  const size: number = 60
+  let dropElement = document.createElement('div') as HTMLDivElement
+  let textNode = document.createTextNode(`+${score}`)
+  dropElement.setAttribute('key', key.toString())
+  dropElement.setAttribute('score', score.toString())
+  dropElement.append(textNode)
+  dropElement.style.position = 'absolute'
+  dropElement.style.width = `${size}px`
+  dropElement.style.height = `${size}px`
+  dropElement.style.borderRadius = '50%'
+  dropElement.style.boxShadow = `inset 5px 5px 5px rgba(0, 0, 0, 0.05),
+    15px 25px 10px rgba(0, 0, 0, 0.1),
+    15px 20px 20px rgba(0, 0, 0, 0.05),
+    inset -5px -5px 10px rgba(255, 255, 255, 0.5)`
+  dropElement.style.backgroundColor = '#19c975'
+  dropElement.style.color = '#ccff5a'
+  dropElement.style.lineHeight = `${size}px`
+  dropElement.style.textAlign = 'center'
+  dropElement.style.fontSize = '24px'
+  dropElement.style.cursor = 'pointer'
+  dropElement.style.top =
+    Math.floor(Math.random() * (1080 / 2 - size * 2)) + 1080 / 2 + size + 'px'
+  dropElement.style.left =
+    Math.floor(Math.random() * (1920 - size * 2)) + size + 'px'
+  dropElement.classList.add('drop')
+  wrapperRef.value.appendChild(dropElement)
+}
 </script>
 
 <style scoped lang="scss">
@@ -247,13 +306,28 @@ const generateBlisters = (): void => {
 
 .total-score-text {
   background-color: #fa8bff;
-  background-image: linear-gradient(45deg, #fa8bff 0%, #2bd2ff 52%, #2bff88 90%);
+  background-image: linear-gradient(
+    45deg,
+    #fa8bff 0%,
+    #2bd2ff 52%,
+    #2bff88 90%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .level-item {
-  background: linear-gradient(60deg, #16a085, #f4d03f, #16a085, #f4d03f, #5073b8, #1098ad, #07b39b, #6fba82);
+  background: linear-gradient(
+    60deg,
+    #16a085,
+    #f4d03f,
+    #16a085,
+    #f4d03f,
+    #5073b8,
+    #1098ad,
+    #07b39b,
+    #6fba82
+  );
   background-size: 300% 300%;
   animation: animatedgradient 3s ease alternate infinite;
 
@@ -267,6 +341,24 @@ const generateBlisters = (): void => {
     100% {
       background-position: 0% 50%;
     }
+  }
+}
+
+.drop {
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+/* 注释为水滴动态效果，感兴趣的朋友可以自行设计水滴形状变化border-radius的值，使其变化更逼真 */
+@keyframes move {
+  25% {
+    transform: translateY(-1%);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(1%);
   }
 }
 </style>

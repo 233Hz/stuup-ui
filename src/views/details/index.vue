@@ -31,38 +31,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { pageStudentRecScore, StudentRecScoreVO } from '@/api/details';
-import { ArrowLeft, Loading, ArrowRight } from '@element-plus/icons-vue';
+import { ref, onMounted } from 'vue'
+import { pageStudentRecScore, StudentRecScoreVO } from '@/api/details'
+import { ArrowLeft, Loading, ArrowRight } from '@element-plus/icons-vue'
 
-const loading = ref(false);
-const size = 10;
-const page = ref(1);
-const isNoMore = ref<boolean>(false);
-const totalScore = ref<number>(0);
-const list = ref<StudentRecScoreVO[]>([]);
+const loading = ref(false)
+const size = 10
+const page = ref(1)
+const isNoMore = ref<boolean>(false)
+const totalScore = ref<number>(0)
+const list = ref<StudentRecScoreVO[]>([])
 
 const load = () => {
-  if (isNoMore.value) return;
-  loading.value = true;
+  if (isNoMore.value) return
+  loading.value = true
   pageStudentRecScore({ current: page.value, size })
     .then(({ data }) => {
       if (data.records && data.records.length) {
-        totalScore.value = data.totalScore;
-        data.records.forEach(item => list.value!.push(item));
-        page.value++;
+        totalScore.value = data.totalScore
+        data.records.forEach((item) => list.value!.push(item))
+        page.value++
       } else {
-        isNoMore.value = true;
+        isNoMore.value = true
       }
     })
     .finally(() => {
-      loading.value = false;
-    });
-};
+      loading.value = false
+    })
+}
 
 onMounted(() => {
-  load();
-});
+  load()
+})
 </script>
 
 <style scoped lang="scss">

@@ -1,70 +1,52 @@
-import { defineConfig, ConfigEnv, loadEnv } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import vueJsx from '@vitejs/plugin-vue-jsx';
-import path from 'path';
-import Components from 'unplugin-vue-components/vite';
-import AutoImport from 'unplugin-auto-import/vite';
-import postcsspxtoviewport from 'postcss-px-to-viewport-update';
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
-import unocss from 'unocss/vite';
+import { defineConfig, loadEnv } from 'vite'
+import path from 'path'
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import { viteMockServe } from 'vite-plugin-mock'
+import unocss from 'unocss/vite'
+import vueJsx from '@vitejs/plugin-vue-jsx'
+import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
-const viteConfig = defineConfig(async ({ command, mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
+export default defineConfig(({ command, mode }) => {
+  const env = loadEnv(mode, process.cwd())
   return {
     base: mode === 'production' ? '/stuup' : '/',
     plugins: [
       vue(),
       vueJsx(),
-      AutoImport({
-        resolvers: [ElementPlusResolver()],
+      createSvgIconsPlugin({
+        iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
+        symbolId: 'icon-[dir]-[name]',
       }),
-      Components({
-        resolvers: [ElementPlusResolver()],
+      viteMockServe({
+        localEnabled: command === 'serve',
       }),
       unocss(),
     ],
+    resolve: {
+      alias: {
+        '@': path.resolve('./src'), // 相对路径别名配置，使用 @ 代替 src
+      },
+    },
     css: {
       preprocessorOptions: {
         scss: {
           additionalData: `@use "sass:math";@import "./src/styles/bem.scss";`,
         },
       },
-      // postcss: {
-      //   plugins: [
-      //     postcsspxtoviewport({
-      //       unitToConvert: 'px', // 要转化的单位
-      //       viewportWidth: 1920, // UI设计稿的宽度
-      //       unitPrecision: 6, // 转换后的精度，即小数点位数
-      //       propList: ['*'], // 指定转换的css属性的单位，*代表全部css属性的单位都进行转换
-      //       viewportUnit: 'vw', // 指定需要转换成的视窗单位，默认vw
-      //       fontViewportUnit: 'vw', // 指定字体需要转换成的视窗单位，默认vw
-      //       selectorBlackList: ['ignore-'], // 指定不转换为视窗单位的类名，
-      //       minPixelValue: 1, // 默认值1，小于或等于1px则不进行转换
-      //       mediaQuery: true, // 是否在媒体查询的css代码中也进行转换，默认false
-      //       replace: true, // 是否转换后直接更换属性值
-      //       landscape: false, // 是否处理横屏情况
-      //       include: [/src\/views\/home\/index/],
-      //     }),
-      //   ],
-      // },
-    },
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, './src'),
-      },
     },
     server: {
       port: 1111,
       proxy: {
-        '/api': {
-          target: env.VITE_API_URL,
+        [env.VITE_APP_BASE_API]: {
+          //获取数据的服务器地址设置
+          target: env.VITE_SERVE,
+          //需要代理跨域
           changeOrigin: true,
-          rewrite: path => path.replace(/^\/api/, ''), //重写路径,替换/api
+          //路径重写
+          rewrite: (path) => path.replace(/^\/api/, ''),
         },
       },
     },
-  };
-});
-
-export default viteConfig;
+  }
+})

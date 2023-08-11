@@ -1,17 +1,45 @@
-import { defineConfig, presetAttributify, presetUno, presetIcons } from 'unocss';
+import { defineConfig, presetAttributify, presetUno, presetIcons } from 'unocss'
 
 export default defineConfig({
-  presets: [presetUno(), presetAttributify(), presetIcons({ scale: 1.2, warn: true })],
+  presets: [
+    presetUno(),
+    presetAttributify(),
+    presetIcons({ scale: 1.2, warn: true }),
+  ],
   shortcuts: {
     'page-r': 'flex justify-end items-center mt-10',
   },
   rules: [
     [/^m-(\d+)$/, ([, d]) => ({ margin: `${Number(d)}px` })],
     [/^p-(\d+)$/, ([, d]) => ({ padding: `${Number(d)}px` })],
-    [/^mx-(\d+)$/, ([, d]) => ({ 'margin-left': `${Number(d)}px`, 'margin-right': `${Number(d)}px` })],
-    [/^my-(\d+)$/, ([, d]) => ({ 'margin-top': `${Number(d)}px`, 'margin-bottom': `${Number(d)}px` })],
-    [/^px-(\d+)$/, ([, d]) => ({ 'padding-left': `${Number(d)}px`, 'padding-right': `${Number(d)}px` })],
-    [/^py-(\d+)$/, ([, d]) => ({ 'padding-top': `${Number(d)}px`, 'padding-bottom': `${Number(d)}px` })],
+    [
+      /^mx-(\d+)$/,
+      ([, d]) => ({
+        'margin-left': `${Number(d)}px`,
+        'margin-right': `${Number(d)}px`,
+      }),
+    ],
+    [
+      /^my-(\d+)$/,
+      ([, d]) => ({
+        'margin-top': `${Number(d)}px`,
+        'margin-bottom': `${Number(d)}px`,
+      }),
+    ],
+    [
+      /^px-(\d+)$/,
+      ([, d]) => ({
+        'padding-left': `${Number(d)}px`,
+        'padding-right': `${Number(d)}px`,
+      }),
+    ],
+    [
+      /^py-(\d+)$/,
+      ([, d]) => ({
+        'padding-top': `${Number(d)}px`,
+        'padding-bottom': `${Number(d)}px`,
+      }),
+    ],
     [/^ml-(\d+)$/, ([, d]) => ({ 'margin-left': `${Number(d)}px` })],
     [/^mr-(\d+)$/, ([, d]) => ({ 'margin-right': `${Number(d)}px` })],
     [/^mt-(\d+)$/, ([, d]) => ({ 'margin-top': `${Number(d)}px` })],
@@ -48,4 +76,4 @@ export default defineConfig({
     ['el-shadow-dark', { 'box-shadow': 'var(--el-box-shadow-dark)' }],
   ],
   theme: {},
-});
+})

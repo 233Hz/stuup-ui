@@ -1,14 +1,9 @@
-import { defineStore } from 'pinia';
-import { store } from '../index';
-import { storeNames } from '../store-name';
-import { FlowerVO, getFlowerConfig } from '@/api/grow/model';
+import { defineStore } from 'pinia'
+import type { FlowersState } from './types/type'
+import { reqFlowerExchangeNum } from '@/api/grow/model'
+import type { FlowerVO } from '@/api/grow/model/type'
 
-export interface FlowersState {
-  flowers: FlowerVO;
-  isExist: boolean;
-}
-
-export const useFlowersStore = defineStore(storeNames.FLOERTS, {
+let useFlowersStore = defineStore('Flowers', {
   state: (): FlowersState => {
     return {
       flowers: {
@@ -26,27 +21,18 @@ export const useFlowersStore = defineStore(storeNames.FLOERTS, {
         xhhFruit: 0,
       },
       isExist: false,
-    };
-  },
-  getters: {
-    getIsExist(): boolean {
-      return this.isExist;
-    },
-    getFlowers(): FlowerVO {
-      return this.flowers;
-    },
+    }
   },
   actions: {
-    setFlowers(key: string, value: number) {
-      this.flowers[key] = value;
+    setFlowers(key: keyof FlowerVO, value: number) {
+      this.flowers[key] = value
     },
-    async loadFLowersConfig() {
-      await getFlowerConfig().then(({ data }) => {
-        this.isExist = true;
-        this.flowers = data;
-      });
+    async getFlowers() {
+      const { data } = await reqFlowerExchangeNum()
+      this.flowers = data
+      this.isExist = true
     },
   },
-});
+})
 
-export const userFlowerStoreWithOut = () => useFlowersStore(store);
+export default useFlowersStore

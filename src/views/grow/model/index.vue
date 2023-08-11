@@ -1,41 +1,54 @@
 <template>
   <div class="bunga-flower" v-loading="loading">
-    <div class="bunga-flower-item" v-for="[key, value] in Object.entries(flowers)" :key="key">
+    <div
+      class="bunga-flower-item"
+      v-for="[key, value] in Object.entries(flowers)"
+      :key="key"
+    >
       <img :src="value.src" />
       <div class="bunga-flower-item__content">
         <h2>{{ value.name }}</h2>
         <p>
           所需水滴：
-          <span>{{ flowersStore.getFlowers[key] }}</span>
+          <span>{{ flowersStore.flowers[key] }}</span>
         </p>
-        <el-button @click="setExchangeValue(key, flowersStore.getFlowers[key])">设置兑换值</el-button>
+        <el-button @click="setExchangeValue(key, flowersStore.flowers[key])">
+          设置兑换值
+        </el-button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
-import { setFlowerConfig } from '@/api/grow/model';
-import { useFlowersStore } from '@/store/modules/flowers';
+import { ref } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { setFlowerConfig } from '@/api/grow/model'
+import { FlowerVO } from '@/api/grow/model/type'
+import useFlowersStore from '@/store/modules/flowers'
 
-import xcj_seed from '@/assets/flower_icons/xcj_seed.png';
-import xcj_sprout from '@/assets/flower_icons/xcj_sprout.png';
-import xcj_bloom from '@/assets/flower_icons/xcj_bloom.png';
-import xcj_fruit from '@/assets/flower_icons/xcj_fruit.png';
-import bmh_seed from '@/assets/flower_icons/bmh_seed.png';
-import bmh_sprout from '@/assets/flower_icons/bmh_sprout.png';
-import bmh_bloom from '@/assets/flower_icons/bmh_bloom.jpg';
-import bmh_fruit from '@/assets/flower_icons/bmh_fruit.png';
-import xhh_seed from '@/assets/flower_icons/xhh_seed.png';
-import xhh_sprout from '@/assets/flower_icons/xhh_sprout.png';
-import xhh_bloom from '@/assets/flower_icons/xhh_bloom.png';
-import xhh_fruit from '@/assets/flower_icons/xhh_fruit.png';
+import xcj_seed from '@/assets/flower_icons/xcj_seed.png'
+import xcj_sprout from '@/assets/flower_icons/xcj_sprout.png'
+import xcj_bloom from '@/assets/flower_icons/xcj_bloom.png'
+import xcj_fruit from '@/assets/flower_icons/xcj_fruit.png'
+import bmh_seed from '@/assets/flower_icons/bmh_seed.png'
+import bmh_sprout from '@/assets/flower_icons/bmh_sprout.png'
+import bmh_bloom from '@/assets/flower_icons/bmh_bloom.jpg'
+import bmh_fruit from '@/assets/flower_icons/bmh_fruit.png'
+import xhh_seed from '@/assets/flower_icons/xhh_seed.png'
+import xhh_sprout from '@/assets/flower_icons/xhh_sprout.png'
+import xhh_bloom from '@/assets/flower_icons/xhh_bloom.png'
+import xhh_fruit from '@/assets/flower_icons/xhh_fruit.png'
 
-const flowersStore = useFlowersStore();
+const flowersStore = useFlowersStore()
 
-const flowers = {
+const flowers: Record<
+  keyof FlowerVO,
+  {
+    src: string
+    name: string
+  }
+> = {
   xcjSeed: {
     src: xcj_seed,
     name: '小雏菊种子',
@@ -84,11 +97,11 @@ const flowers = {
     src: xhh_fruit,
     name: '西红花结果',
   },
-};
+}
 
-const loading = ref<boolean>(false);
+const loading = ref<boolean>(false)
 
-const setExchangeValue = (key: string, num: number) => {
+const setExchangeValue = (key: keyof FlowerVO, num: number) => {
   ElMessageBox.prompt('请输入兑换值', '设置兑换值', {
     inputPlaceholder: '请输入数量',
     inputValue: String(num),
@@ -98,17 +111,17 @@ const setExchangeValue = (key: string, num: number) => {
     inputErrorMessage: '请输入数字',
   })
     .then(async ({ value }) => {
-      loading.value = true;
+      loading.value = true
       try {
-        await setFlowerConfig({ key, value: Number(value) });
-        ElMessage.success('设置成功');
-        flowersStore.setFlowers(key, Number(value));
+        await setFlowerConfig({ key, value: Number(value) })
+        ElMessage.success('设置成功')
+        flowersStore.setFlowers(key, Number(value))
       } finally {
-        loading.value = false;
+        loading.value = false
       }
     })
-    .catch(() => {});
-};
+    .catch(() => {})
+}
 </script>
 
 <style scoped lang="scss">

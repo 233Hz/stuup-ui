@@ -10,8 +10,8 @@
 </template>
 
 <script setup lang="ts">
-import GrowthTree from './GrowthTree.vue';
-import GrowthItem from './GrowthItem.vue';
+import GrowthTree from './GrowthTree.vue'
+import GrowthItem from './GrowthItem.vue'
 </script>
 
 <style scoped lang="scss"></style>

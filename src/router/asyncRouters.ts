@@ -1,4 +1,4 @@
-const Layout = () => import('@/layout/index.vue');
+const Layout = () => import('@/layout/index.vue')
 
 /**
  * 路由
@@ -7,10 +7,12 @@ export default [
   {
     path: '/',
     component: () => import('@/views/home/index.vue'),
+    name: 'Layout',
     meta: {
       title: '首页',
       icon: '',
       flag: 1,
+      hidden: false,
     },
   },
   {
@@ -26,8 +28,9 @@ export default [
           title: '首页',
           icon: '',
           flag: 2,
+          hidden: false,
         },
       },
     ],
   },
-];
+]

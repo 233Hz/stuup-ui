@@ -3,12 +3,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import * as echarts from 'echarts';
+import { ref, onMounted } from 'vue'
+import * as echarts from 'echarts'
 
-const chartRef = ref();
-const colors = ['#FFAE57', '#FF7853', '#EA5151', '#CC3F57', '#9A2555'];
-const bgColor = '#fff';
+const chartRef = ref()
+const colors = ['#FFAE57', '#FF7853', '#EA5151', '#CC3F57', '#9A2555']
+const bgColor = '#fff'
 // const data = [
 //   {
 //     name: '道德与公民素养',
@@ -321,8 +321,8 @@ const data = [
       },
     ],
   },
-];
-console.log(data);
+]
+console.log(data)
 
 const option = {
   backgroundColor: bgColor,
@@ -334,9 +334,9 @@ const option = {
       data: data,
       sort: function (a, b) {
         if (a.depth === 1) {
-          return b.getValue() - a.getValue();
+          return b.getValue() - a.getValue()
         } else {
-          return a.dataIndex - b.dataIndex;
+          return a.dataIndex - b.dataIndex
         }
       },
       label: {
@@ -395,10 +395,10 @@ const option = {
       ],
     },
   ],
-};
+}
 
 onMounted(() => {
-  const chart = echarts.init(chartRef.value);
-  option && chart.setOption(option);
-});
+  const chart = echarts.init(chartRef.value)
+  option && chart.setOption(option)
+})
 </script>

@@ -3,10 +3,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import * as echarts from 'echarts';
+import { ref, onMounted } from 'vue'
+import * as echarts from 'echarts'
 
-const chartRef = ref();
+const chartRef = ref()
 
 const yData = [
   '爱国主义教育',
@@ -74,7 +74,7 @@ const yData = [
   '日常家务劳动',
   '值日值周',
   '修满学分',
-];
+]
 const option = {
   tooltip: {},
   legend: {},
@@ -111,8 +111,8 @@ const option = {
       type: 'value',
       inverse: true,
       min: 0,
-      max: val => {
-        return Math.floor(val.max * 1.1);
+      max: (val) => {
+        return Math.floor(val.max * 1.1)
       },
       axisLine: {
         show: true,
@@ -139,8 +139,8 @@ const option = {
       type: 'value',
       gridIndex: 1,
       min: 0,
-      max: val => {
-        return Math.floor(val.max * 1.1);
+      max: (val) => {
+        return Math.floor(val.max * 1.1)
       },
       axisLine: {
         show: true,
@@ -263,9 +263,10 @@ const option = {
       yAxisIndex: 0,
       barMaxWidth: '20%',
       data: [
-        83, 7, 92, 55, 20, 41, 62, 87, 49, 73, 14, 98, 30, 77, 66, 35, 18, 70, 3, 52, 95, 81, 29, 59, 8, 44, 67, 12, 37,
-        64, 28, 16, 91, 50, 1, 25, 97, 2, 96, 84, 53, 17, 79, 46, 86, 13, 19, 60, 40, 23, 31, 6, 78, 33, 57, 88, 39, 48,
-        63, 76, 43, 21, 69, 27, 9, 54, 32, 47, 11,
+        83, 7, 92, 55, 20, 41, 62, 87, 49, 73, 14, 98, 30, 77, 66, 35, 18, 70,
+        3, 52, 95, 81, 29, 59, 8, 44, 67, 12, 37, 64, 28, 16, 91, 50, 1, 25, 97,
+        2, 96, 84, 53, 17, 79, 46, 86, 13, 19, 60, 40, 23, 31, 6, 78, 33, 57,
+        88, 39, 48, 63, 76, 43, 21, 69, 27, 9, 54, 32, 47, 11,
       ],
     },
     {
@@ -275,18 +276,19 @@ const option = {
       yAxisIndex: 1,
       barMaxWidth: '20%',
       data: [
-        89, 15, 26, 64, 100, 70, 39, 80, 17, 48, 86, 4, 73, 51, 33, 91, 56, 23, 12, 42, 79, 36, 62, 94, 8, 68, 20, 40,
-        90, 16, 83, 28, 6, 74, 55, 11, 59, 7, 85, 25, 31, 45, 71, 99, 50, 19, 95, 30, 67, 3, 22, 72, 13, 37, 57, 87, 52,
-        35, 81, 2, 47, 63, 38, 9, 54, 10, 98, 46, 24, 75,
+        89, 15, 26, 64, 100, 70, 39, 80, 17, 48, 86, 4, 73, 51, 33, 91, 56, 23,
+        12, 42, 79, 36, 62, 94, 8, 68, 20, 40, 90, 16, 83, 28, 6, 74, 55, 11,
+        59, 7, 85, 25, 31, 45, 71, 99, 50, 19, 95, 30, 67, 3, 22, 72, 13, 37,
+        57, 87, 52, 35, 81, 2, 47, 63, 38, 9, 54, 10, 98, 46, 24, 75,
       ],
     },
   ],
-};
+}
 
 onMounted(() => {
-  const chart = echarts.init(chartRef.value);
-  option && chart.setOption(option);
-});
+  const chart = echarts.init(chartRef.value)
+  option && chart.setOption(option)
+})
 </script>
 
 <style scoped lang="scss"></style>

@@ -8,7 +8,10 @@
               <el-row>
                 <el-col :sm="24" :md="12" :xl="8">
                   <el-form-item label="年级名称" prop="key">
-                    <el-input v-model="searchForm.key" placeholder="请选择年级名称" />
+                    <el-input
+                      v-model="searchForm.key"
+                      placeholder="请选择年级名称"
+                    />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -19,7 +22,9 @@
 
       <div style="text-align: center">
         <el-space>
-          <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
+          <el-button type="primary" @click="fetchList" :loading="loading">
+            查询
+          </el-button>
           <el-button @click="searchFormRef?.resetFields()">清空</el-button>
         </el-space>
       </div>
@@ -38,9 +43,26 @@
         </el-space>
       </template>
 
-      <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
-        <el-table-column prop="gradeName" label="年级名称" show-overflow-tooltip align="center" />
-        <el-table-column prop="year" label="年份" show-overflow-tooltip align="center" />
+      <el-table
+        :data="tableData"
+        border
+        stripe
+        v-loading="loading"
+        empty-text="空空如也~~"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="gradeName"
+          label="年级名称"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="year"
+          label="年份"
+          show-overflow-tooltip
+          align="center"
+        />
         <!-- <el-table-column label="操作" width="200" align="center">
           <template #default="{ row }">
             <el-button @click="updateRow(row)">修改</el-button>
@@ -57,18 +79,40 @@
           :page-sizes="[10, 20, 30, 50, 100]"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next" />
+          layout="total, sizes, prev, pager, next"
+        />
       </div>
     </el-card>
   </div>
-  <el-dialog v-model="dialog_active" :title="dialog_title" width="500" draggable @close="resetForm">
-    <el-form ref="formRef" :model="form" :rules="rules" :disabled="loading" label-position="top">
+  <el-dialog
+    v-model="dialog_active"
+    :title="dialog_title"
+    width="500"
+    draggable
+    @close="resetForm"
+  >
+    <el-form
+      ref="formRef"
+      :model="form"
+      :rules="rules"
+      :disabled="loading"
+      label-position="top"
+    >
       <el-form-item label="年级名称" prop="gradeName">
         <el-input v-model="form.gradeName" placeholder="请选择年级名称" />
       </el-form-item>
       <el-form-item label="年份" prop="year">
-        <el-select v-model="form.year" placeholder="请选择年份" style="width: 100%">
-          <el-option v-for="item in year_list" :key="item.oid" :label="item.value" :value="item.value" />
+        <el-select
+          v-model="form.year"
+          placeholder="请选择年份"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="item in year_list"
+            :key="item.oid"
+            :label="item.value"
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
     </el-form>
@@ -86,79 +130,86 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue';
-import type { FormInstance, FormRules } from 'element-plus';
-import { GradeVO, getGraderPage, saveOrUpdateGrade, delGrade } from '@/api/basic/grade/index';
-import { YearDictVO, getYearList } from '@/api/basic/year/index';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ref, onMounted, reactive } from 'vue'
+import type { FormInstance, FormRules } from 'element-plus'
+import {
+  GradeVO,
+  getGraderPage,
+  saveOrUpdateGrade,
+  delGrade,
+} from '@/api/basic/grade/index'
+import { YearDictVO, getYearList } from '@/api/basic/year/index'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 onMounted(() => {
-  fetchYear();
-  fetchList();
-});
+  fetchYear()
+  fetchList()
+})
 
 /**字典值 */
-const year_list = ref<YearDictVO[]>();
+const year_list = ref<YearDictVO[]>()
 
-const loading = ref<boolean>(false);
-const dialog_active = ref<boolean>(false);
-const dialog_title = ref<string>('');
-const tableData = ref<GradeVO[]>();
+const loading = ref<boolean>(false)
+const dialog_active = ref<boolean>(false)
+const dialog_title = ref<string>('')
+const tableData = ref<GradeVO[]>()
 const page = ref({
   current: 1,
   size: 10,
   total: 10,
-});
+})
 const searchForm = ref({
   key: '',
-});
+})
 const form = ref<GradeVO>({
   gradeName: '',
   year: '',
-});
+})
 const rules = reactive<FormRules>({
   gradeName: [{ required: true, message: '请填写年级名称', trigger: 'blur' }],
   year: [{ required: true, message: '请填写年份', trigger: 'blur' }],
-});
-const searchFormRef = ref<FormInstance>();
-const formRef = ref<FormInstance>();
+})
+const searchFormRef = ref<FormInstance>()
+const formRef = ref<FormInstance>()
 
 const fetchYear = async () => {
-  const { data: res } = await getYearList();
-  year_list.value = res;
-};
+  const { data: res } = await getYearList()
+  year_list.value = res
+}
 
 const fetchList = async () => {
-  loading.value = true;
+  loading.value = true
   try {
-    const { data: res } = await getGraderPage(Object.assign(page.value, searchForm.value));
-    page.value.total = res.total;
-    tableData.value = res.records;
+    const { data: res } = await getGraderPage(
+      Object.assign(page.value, searchForm.value),
+    )
+    page.value.total = res.total
+    tableData.value = res.records
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const handleCurrentChange = (val: number) => {
-  page.value.current = val;
-  fetchList();
-};
+  page.value.current = val
+  fetchList()
+}
 const handleSizeChange = (val: number) => {
-  page.value.size = val;
-  fetchList();
-};
+  page.value.size = val
+  fetchList()
+}
 
 const addRow = () => {
-  dialog_title.value = '添加';
-  dialog_active.value = true;
-};
+  dialog_title.value = '添加'
+  dialog_active.value = true
+}
 const updateRow = (row: GradeVO) => {
-  dialog_title.value = '修改';
-  dialog_active.value = true;
-  form.value.oid = row.oid;
-  form.value.gradeName = row.gradeName;
-  form.value.year = row.year;
-};
+  dialog_title.value = '修改'
+  dialog_active.value = true
+  form.value.oid = row.oid
+  form.value.gradeName = row.gradeName
+  form.value.year = row.year
+}
 const delRow = (oid: number) => {
   ElMessageBox.confirm('确认删除？', '删除学年', {
     confirmButtonText: '确认',
@@ -166,39 +217,39 @@ const delRow = (oid: number) => {
     type: 'warning',
   })
     .then(async () => {
-      loading.value = true;
+      loading.value = true
       try {
-        const res = await delGrade(oid.toString());
-        ElMessage.success(res.message);
-        fetchList();
+        const res = await delGrade(oid.toString())
+        ElMessage.success(res.message)
+        fetchList()
       } finally {
-        loading.value = false;
+        loading.value = false
       }
     })
-    .catch(() => {});
-};
+    .catch(() => {})
+}
 
 const submitForm = async () => {
-  if (!formRef) return;
-  const valid = await formRef.value?.validate();
-  if (!valid) return;
-  loading.value = true;
+  if (!formRef) return
+  const valid = await formRef.value?.validate()
+  if (!valid) return
+  loading.value = true
   try {
-    const data = form.value as unknown as GradeVO;
-    const res = await saveOrUpdateGrade(data);
-    ElMessage.success(res.message);
-    dialog_active.value = false;
-    fetchList();
+    const data = form.value as unknown as GradeVO
+    const res = await saveOrUpdateGrade(data)
+    ElMessage.success(res.message)
+    dialog_active.value = false
+    fetchList()
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const resetForm = () => {
   form.value = {
     gradeName: '',
     year: '',
-  };
-  formRef.value?.resetFields();
-};
+  }
+  formRef.value?.resetFields()
+}
 </script>

@@ -1,7 +1,17 @@
 <template>
   <el-table :data="tableData" style="width: 100%" :height="400">
-    <el-table-column prop="name" label="项目名称" header-align="center" align="center" />
-    <el-table-column prop="score" label="获得积分" header-align="center" align="center" />
+    <el-table-column
+      prop="name"
+      label="项目名称"
+      header-align="center"
+      align="center"
+    />
+    <el-table-column
+      prop="score"
+      label="获得积分"
+      header-align="center"
+      align="center"
+    />
   </el-table>
 </template>
 
@@ -72,12 +82,12 @@ const names = [
   '日常家务劳动',
   '值日值周',
   '修满学分',
-];
+]
 
-const tableData = names.map(name => {
+const tableData = names.map((name) => {
   return {
     name: name,
     score: Math.floor(Math.random() * 100 + 10),
-  };
-});
+  }
+})
 </script>

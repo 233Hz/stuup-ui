@@ -5,19 +5,39 @@
         <template #header>
           <el-row>
             <el-col :span="24">
-              <el-form ref="searchFormRef" :model="searchForm" label-width="140px">
+              <el-form
+                ref="searchFormRef"
+                :model="searchForm"
+                label-width="140px"
+              >
                 <el-row>
                   <el-col :sm="24" :md="12" :xl="8">
                     <el-form-item label="学年" prop="yearId">
-                      <el-select v-model="searchForm.yearId" style="width: 100%">
-                        <el-option v-for="item in YEAR" :key="item.oid" :label="item.value" :value="item.oid" />
+                      <el-select
+                        v-model="searchForm.yearId"
+                        style="width: 100%"
+                      >
+                        <el-option
+                          v-for="item in YEAR"
+                          :key="item.oid"
+                          :label="item.value"
+                          :value="item.oid"
+                        />
                       </el-select>
                     </el-form-item>
                   </el-col>
                   <el-col :sm="24" :md="12" :xl="8">
                     <el-form-item label="年级" prop="gradeId">
-                      <el-select v-model="searchForm.gradeId" style="width: 100%">
-                        <el-option v-for="item in GRADE" :key="item.oid" :label="item.gradeName" :value="item.oid" />
+                      <el-select
+                        v-model="searchForm.gradeId"
+                        style="width: 100%"
+                      >
+                        <el-option
+                          v-for="item in GRADE"
+                          :key="item.oid"
+                          :label="item.gradeName"
+                          :value="item.oid"
+                        />
                       </el-select>
                     </el-form-item>
                   </el-col>
@@ -43,7 +63,8 @@
                           v-for="item in AWARD_LEVEL.getDict()"
                           :key="item.value"
                           :label="item.label"
-                          :value="item.value" />
+                          :value="item.value"
+                        />
                       </el-select>
                     </el-form-item>
                   </el-col>
@@ -54,7 +75,9 @@
         </template>
         <div style="text-align: center">
           <el-space>
-            <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
+            <el-button type="primary" @click="fetchList" :loading="loading">
+              查询
+            </el-button>
             <el-button @click="searchFormRef?.resetFields()">清空</el-button>
           </el-space>
         </div>
@@ -75,23 +98,90 @@
           </el-space>
         </template>
 
-        <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
-          <el-table-column prop="yearName" label="学年" show-overflow-tooltip align="center" />
-          <el-table-column prop="unit" label="主管单位" show-overflow-tooltip align="center" />
-          <el-table-column prop="school" label="学校" show-overflow-tooltip align="center" />
-          <el-table-column prop="gradeName" label="年级" show-overflow-tooltip align="center" />
-          <el-table-column prop="className" label="班级名称" show-overflow-tooltip align="center" />
-          <el-table-column prop="studentName" label="学生姓名" show-overflow-tooltip align="center" />
-          <el-table-column prop="studentNo" label="学号" show-overflow-tooltip align="center" />
-          <el-table-column prop="idCard" label="证件号" show-overflow-tooltip align="center" />
-          <el-table-column prop="name" label="项目名称" show-overflow-tooltip align="center" />
-          <el-table-column prop="level" label="获得奖项（级别）" show-overflow-tooltip align="center">
+        <el-table
+          :data="tableData"
+          border
+          stripe
+          v-loading="loading"
+          empty-text="空空如也~~"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="yearName"
+            label="学年"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="unit"
+            label="主管单位"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="school"
+            label="学校"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="gradeName"
+            label="年级"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="className"
+            label="班级名称"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="studentName"
+            label="学生姓名"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="studentNo"
+            label="学号"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="idCard"
+            label="证件号"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="name"
+            label="项目名称"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="level"
+            label="获得奖项（级别）"
+            show-overflow-tooltip
+            align="center"
+          >
             <template #default="{ row }">
               {{ AWARD_LEVEL.getKeyForValue(row.level) }}
             </template>
           </el-table-column>
-          <el-table-column prop="org" label="组织机构（主办方）" show-overflow-tooltip align="center" />
-          <el-table-column prop="hours" label="累计时间（课时）" show-overflow-tooltip align="center" />
+          <el-table-column
+            prop="org"
+            label="组织机构（主办方）"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="hours"
+            label="累计时间（课时）"
+            show-overflow-tooltip
+            align="center"
+          />
         </el-table>
         <div class="page-r">
           <el-pagination
@@ -102,7 +192,8 @@
             :page-sizes="[10, 20, 30, 50, 100]"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            layout="total, sizes, prev, pager, next" />
+            layout="total, sizes, prev, pager, next"
+          />
         </div>
       </el-card>
     </el-col>
@@ -110,31 +201,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import type { FormInstance } from 'element-plus';
-import { RecNationVO, getRecNationPage } from '@/api/record/nation/index';
-import { getGraderList } from '@/api/basic/grade/index';
-import { getYearList } from '@/api/basic/year/index';
-import { AWARD_LEVEL, REC_CODE } from '@/utils/dict';
-import { downRecord } from '@/api/record';
+import { ref, onMounted } from 'vue'
+import type { FormInstance } from 'element-plus'
+import { RecNationVO, getRecNationPage } from '@/api/record/nation/index'
+import { getGraderList } from '@/api/basic/grade/index'
+import { getYearList } from '@/api/basic/year/index'
+import { AWARD_LEVEL, REC_CODE } from '@/utils/dict'
+import { downRecord } from '@/api/record'
 
 onMounted(() => {
-  initYear();
-  initGrade();
-  fetchList();
-});
+  initYear()
+  initGrade()
+  fetchList()
+})
 
 // 字典
-const YEAR = ref();
-const GRADE = ref();
+const YEAR = ref()
+const GRADE = ref()
 
-const loading = ref<boolean>(false);
-const tableData = ref<RecNationVO[]>();
+const loading = ref<boolean>(false)
+const tableData = ref<RecNationVO[]>()
 const page = ref({
   current: 1,
   size: 10,
   total: 10,
-});
+})
 const searchForm = ref({
   yearId: undefined,
   gradeId: undefined,
@@ -142,28 +233,30 @@ const searchForm = ref({
   studentName: undefined,
   name: undefined,
   level: undefined,
-});
-const searchFormRef = ref<FormInstance>();
+})
+const searchFormRef = ref<FormInstance>()
 
 const initYear = async () => {
-  const { data: res } = await getYearList();
-  YEAR.value = res;
-};
+  const { data: res } = await getYearList()
+  YEAR.value = res
+}
 
 const initGrade = async () => {
-  const { data: res } = await getGraderList();
-  GRADE.value = res;
-};
+  const { data: res } = await getGraderList()
+  GRADE.value = res
+}
 const fetchList = async () => {
-  loading.value = true;
+  loading.value = true
   try {
-    const { data: res } = await getRecNationPage(Object.assign(page.value, searchForm.value));
-    page.value.total = res.total;
-    tableData.value = res.records;
+    const { data: res } = await getRecNationPage(
+      Object.assign(page.value, searchForm.value),
+    )
+    page.value.total = res.total
+    tableData.value = res.records
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const downloadRec = async () => {
   await downRecord(
@@ -171,18 +264,18 @@ const downloadRec = async () => {
       rec_code: REC_CODE.REC_NATION,
       ...searchForm.value,
     }),
-    `${REC_CODE.getKey('REC_NATION')}.xlsx`
-  );
-};
+    `${REC_CODE.getKey('REC_NATION')}.xlsx`,
+  )
+}
 
 const handleCurrentChange = (val: number) => {
-  page.value.current = val;
-  fetchList();
-};
+  page.value.current = val
+  fetchList()
+}
 const handleSizeChange = (val: number) => {
-  page.value.size = val;
-  fetchList();
-};
+  page.value.size = val
+  fetchList()
+}
 </script>
 
 <style lang="scss" scoped>

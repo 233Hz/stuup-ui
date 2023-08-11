@@ -3,43 +3,64 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import * as echarts from 'echarts';
+import { ref, onMounted, watch } from 'vue'
+import * as echarts from 'echarts'
+import { reqRankingCurve } from '@/api/portrait/index'
+import { PortraitRankingCurveVOList } from '@/api/portrait/type'
 
-const xData = ['2020上学期', '2020下学期', '2021上学期', '2021下学期', '2022上学期', '2022下学期'];
 const data = Array.from({ length: 7 }, (_, index) => {
-  return Math.floor(Math.random() * 1000 + 200);
-});
+  return Math.floor(Math.random() * 1000 + 200)
+})
 
-const chartRef = ref();
-const option = ref({
-  xAxis: {
-    type: 'category',
-    data: xData,
-  },
-  yAxis: {
-    type: 'value',
-    inverse: true,
-  },
-  series: [
-    {
-      label: {
-        show: true,
-        formatter: ({ value }: { value: number }) => {
-          return `${value} 名(${Math.floor(Math.random() * 1000 + 500)}分)`;
-        },
-        fontSize: 18,
-        color: '#03aa8c',
-      },
-      data: data,
-      type: 'line',
-      smooth: true,
+const chartRef = ref()
+let option = {}
+const list = ref()
+
+interface DataType {
+  value: number | undefined
+  score: number | undefined
+}
+watch(list, (newVal: PortraitRankingCurveVOList) => {
+  let xData: string[] = []
+  let values: DataType[] = []
+  newVal.forEach((item) => {
+    xData.push(item.semesterName)
+    values.push({
+      value: item.rank,
+      score: item.score,
+    })
+  })
+  option = {
+    xAxis: {
+      type: 'category',
+      data: xData,
     },
-  ],
-});
+    yAxis: {
+      type: 'value',
+      inverse: true,
+    },
+    series: [
+      {
+        label: {
+          show: true,
+          formatter: ({ data }: { data: DataType }) => {
+            return `${data.value} 名(${data.score}分)`
+          },
+          fontSize: 18,
+          color: '#03aa8c',
+        },
+        data: values,
+        type: 'line',
+        smooth: true,
+      },
+    ],
+  }
+  const chart = echarts.init(chartRef.value)
+  option && chart.setOption(option, true)
+})
 
-onMounted(() => {
-  const chart = echarts.init(chartRef.value);
-  option.value && chart.setOption(option.value);
-});
+onMounted(async () => {
+  const { data } = await reqRankingCurve()
+  list.value = data
+})
 </script>

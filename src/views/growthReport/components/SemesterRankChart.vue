@@ -3,10 +3,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import * as echarts from 'echarts';
+import { ref, onMounted } from 'vue'
+import * as echarts from 'echarts'
 
-const chartRef = ref();
+const chartRef = ref()
 const option = {
   tooltip: {
     trigger: 'item',
@@ -30,10 +30,10 @@ const option = {
       },
     },
   ],
-};
+}
 
 onMounted(() => {
-  const chart = echarts.init(chartRef.value);
-  option && chart.setOption(option);
-});
+  const chart = echarts.init(chartRef.value)
+  option && chart.setOption(option)
+})
 </script>

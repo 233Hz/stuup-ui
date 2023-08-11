@@ -3,7 +3,12 @@
     <div style="height: 600px">
       <el-auto-resizer v-loading="loading">
         <template #default="{ width, height }">
-          <el-table-v2 :columns="columns" :data="tableData" :width="width" :height="height" />
+          <el-table-v2
+            :columns="columns"
+            :data="tableData"
+            :width="width"
+            :height="height"
+          />
         </template>
       </el-auto-resizer>
     </div>
@@ -11,8 +16,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { RecDefaultVO, growthRecordDetails } from '@/api/collect/index';
+import { ref } from 'vue'
+import { RecDefaultVO, growthRecordDetails } from '@/api/collect/index'
 
 const columns = [
   {
@@ -51,30 +56,30 @@ const columns = [
     title: '备注',
     width: 150,
   },
-];
-const batchCode = ref<number>();
-const active = ref<boolean>(false);
-const loading = ref<boolean>(false);
-const tableData = ref<RecDefaultVO[]>([]);
+]
+const batchCode = ref<number>()
+const active = ref<boolean>(false)
+const loading = ref<boolean>(false)
+const tableData = ref<RecDefaultVO[]>([])
 
 const open = async (code: number) => {
-  batchCode.value = code;
-  fetchData();
-  active.value = true;
-};
+  batchCode.value = code
+  fetchData()
+  active.value = true
+}
 
 const fetchData = async () => {
-  if (!batchCode.value) return;
-  loading.value = true;
+  if (!batchCode.value) return
+  loading.value = true
   try {
-    const { data } = await growthRecordDetails(batchCode.value);
-    tableData.value = Object.freeze(data) as RecDefaultVO[];
+    const { data } = await growthRecordDetails(batchCode.value)
+    tableData.value = Object.freeze(data) as RecDefaultVO[]
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
-defineExpose({ open });
+defineExpose({ open })
 </script>
 
 <style scoped lang="scss"></style>

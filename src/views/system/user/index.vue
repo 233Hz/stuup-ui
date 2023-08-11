@@ -4,21 +4,33 @@
       <template #header>
         <el-row>
           <el-col :span="24">
-            <el-form ref="searchFormRef" :model="searchForm" label-width="120px">
+            <el-form
+              ref="searchFormRef"
+              :model="searchForm"
+              label-width="120px"
+            >
               <el-row>
                 <el-col :sm="24" :md="12" :xl="8">
                   <el-form-item label="用户名/手机号" prop="key">
-                    <el-input v-model="searchForm.key" placeholder="请输入用户名/手机号" />
+                    <el-input
+                      v-model="searchForm.key"
+                      placeholder="请输入用户名/手机号"
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :sm="24" :md="12" :xl="8">
                   <el-form-item label="状态" prop="state">
-                    <el-select v-model="searchForm.state" placeholder="请选择状态" style="width: 100%">
+                    <el-select
+                      v-model="searchForm.state"
+                      placeholder="请选择状态"
+                      style="width: 100%"
+                    >
                       <el-option
                         v-for="item in USER_STATE.getDict()"
                         :key="item.value"
                         :label="item.label"
-                        :value="item.value" />
+                        :value="item.value"
+                      />
                     </el-select>
                   </el-form-item>
                 </el-col>
@@ -29,7 +41,9 @@
       </template>
       <div style="text-align: center">
         <el-space>
-          <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
+          <el-button type="primary" @click="fetchList" :loading="loading">
+            查询
+          </el-button>
           <el-button @click="searchFormRef?.resetFields()">清空</el-button>
         </el-space>
       </div>
@@ -48,30 +62,92 @@
         </el-space>
       </template>
 
-      <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
-        <el-table-column prop="loginName" label="登入账号" show-overflow-tooltip align="center" />
-        <el-table-column prop="userName" label="用户姓名" show-overflow-tooltip align="center" />
-        <el-table-column prop="sex" label="性别" show-overflow-tooltip align="center">
+      <el-table
+        :data="tableData"
+        border
+        stripe
+        v-loading="loading"
+        empty-text="空空如也~~"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="loginName"
+          label="登入账号"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="userName"
+          label="用户姓名"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="sex"
+          label="性别"
+          show-overflow-tooltip
+          align="center"
+        >
           <template #default="{ row }">
             {{ SEX.getKeyForValue(row.sex) }}
           </template>
         </el-table-column>
-        <el-table-column prop="mobile" label="手机号" show-overflow-tooltip align="center" />
-        <el-table-column prop="degree" label="文化程度" show-overflow-tooltip align="center" />
-        <el-table-column prop="teacherType" label="教师类型" show-overflow-tooltip align="center">
+        <el-table-column
+          prop="mobile"
+          label="手机号"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="degree"
+          label="文化程度"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="teacherType"
+          label="教师类型"
+          show-overflow-tooltip
+          align="center"
+        >
           <template #default="{ row }">
             {{ TESCHER_TYPE.getKeyForValue(row.teacherType) }}
           </template>
         </el-table-column>
-        <el-table-column prop="userType" label="用户类型" show-overflow-tooltip align="center">
+        <el-table-column
+          prop="userType"
+          label="用户类型"
+          show-overflow-tooltip
+          align="center"
+        >
           <template #default="{ row }">
             {{ USER_TYPE.getKeyForValue(row.userType) }}
           </template>
         </el-table-column>
-        <el-table-column prop="deptName" label="所属部门" show-overflow-tooltip align="center" />
-        <el-table-column prop="idCard" label="身份证号" show-overflow-tooltip align="center" />
-        <el-table-column prop="birthday" label="出生年月" show-overflow-tooltip align="center" />
-        <el-table-column prop="state" label="状态" show-overflow-tooltip align="center">
+        <el-table-column
+          prop="deptName"
+          label="所属部门"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="idCard"
+          label="身份证号"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="birthday"
+          label="出生年月"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="state"
+          label="状态"
+          show-overflow-tooltip
+          align="center"
+        >
           <template #default="{ row }">
             {{ USER_STATE.getKeyForValue(row.state) }}
           </template>
@@ -92,12 +168,25 @@
           :page-sizes="[10, 20, 30, 50, 100]"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next" />
+          layout="total, sizes, prev, pager, next"
+        />
       </div>
     </el-card>
   </div>
-  <el-dialog v-model="dialog_active" :title="dialog_title" width="500" draggable @close="resetForm">
-    <el-form ref="formRef" :model="form" :rules="rules" :disabled="loading" label-position="top">
+  <el-dialog
+    v-model="dialog_active"
+    :title="dialog_title"
+    width="500"
+    draggable
+    @close="resetForm"
+  >
+    <el-form
+      ref="formRef"
+      :model="form"
+      :rules="rules"
+      :disabled="loading"
+      label-position="top"
+    >
       <el-form-item label="用户账号" prop="loginName">
         <el-input v-model="form.loginName" placeholder="请输入用户账号" />
       </el-form-item>
@@ -106,7 +195,12 @@
       </el-form-item>
       <el-form-item label="性别" prop="sex">
         <el-radio-group v-model="form.sex">
-          <el-radio v-for="item in SEX.getDict()" :key="item.value" :label="item.value" border>
+          <el-radio
+            v-for="item in SEX.getDict()"
+            :key="item.value"
+            :label="item.value"
+            border
+          >
             {{ item.label }}
           </el-radio>
         </el-radio-group>
@@ -118,34 +212,84 @@
         <el-input v-model="form.degree" placeholder="请选择文化程度" />
       </el-form-item>
       <el-form-item label="教师类型" prop="teacherType">
-        <el-select v-model="form.teacherType" placeholder="请选择教师类型" style="width: 100%">
-          <el-option v-for="item in TESCHER_TYPE.getDict()" :key="item.value" :label="item.label" :value="item.value" />
+        <el-select
+          v-model="form.teacherType"
+          placeholder="请选择教师类型"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="item in TESCHER_TYPE.getDict()"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="用户类型" prop="userType">
-        <el-select v-model="form.userType" placeholder="请选择用户类型" style="width: 100%">
-          <el-option v-for="item in USER_TYPE.getDict()" :key="item.value" :label="item.label" :value="item.value" />
+        <el-select
+          v-model="form.userType"
+          placeholder="请选择用户类型"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="item in USER_TYPE.getDict()"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="所属部门" prop="deptId">
-        <el-select v-model="form.deptId" placeholder="请选择所属部门" style="width: 100%">
-          <el-option v-for="item in dept_list" :key="item.oid" :label="item.value" :value="item.oid" />
+        <el-select
+          v-model="form.deptId"
+          placeholder="请选择所属部门"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="item in dept_list"
+            :key="item.oid"
+            :label="item.value"
+            :value="item.oid"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="身份证号" prop="idCard">
         <el-input v-model="form.idCard" placeholder="请输入身份证号" />
       </el-form-item>
       <el-form-item label="出生年月" prop="birthday">
-        <el-date-picker v-model="form.birthday" type="date" placeholder="请选择出生年月" style="width: 100%" />
+        <el-date-picker
+          v-model="form.birthday"
+          type="date"
+          placeholder="请选择出生年月"
+          style="width: 100%"
+        />
       </el-form-item>
       <el-form-item label="用户角色" prop="roles">
-        <el-select v-model="form.roles" placeholder="请选择用户角色" multiple style="width: 100%">
-          <el-option v-for="item in role_list" :label="item.value" :value="item.oid" />
+        <el-select
+          v-model="form.roles"
+          placeholder="请选择用户角色"
+          multiple
+          style="width: 100%"
+        >
+          <el-option
+            v-for="item in role_list"
+            :label="item.value"
+            :value="item.oid"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="state">
-        <el-select v-model="form.state" placeholder="请选择状态" style="width: 100%">
-          <el-option v-for="item in USER_STATE.getDict()" :key="item.value" :label="item.label" :value="item.value" />
+        <el-select
+          v-model="form.state"
+          placeholder="请选择状态"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="item in USER_STATE.getDict()"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
     </el-form>
@@ -163,35 +307,40 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue';
-import type { FormInstance, FormRules } from 'element-plus';
-import { UserVO, getUserPage, saveOrUpdateUser, delUser } from '@/api/system/user/index';
-import { DeptDictVO, getDeptList } from '@/api/basic/dept';
-import { RoleDictVO, getRoleList } from '@/api/system/role/index';
-import { ElMessage, ElMessageBox } from 'element-plus';
-import { SEX, TESCHER_TYPE, USER_TYPE, USER_STATE } from '@/utils/dict';
+import { ref, onMounted, reactive } from 'vue'
+import type { FormInstance, FormRules } from 'element-plus'
+import {
+  UserVO,
+  getUserPage,
+  saveOrUpdateUser,
+  delUser,
+} from '@/api/system/user/index'
+import { DeptDictVO, getDeptList } from '@/api/basic/dept'
+import { RoleDictVO, getRoleList } from '@/api/system/role/index'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { SEX, TESCHER_TYPE, USER_TYPE, USER_STATE } from '@/utils/dict'
 
 onMounted(() => {
-  initDeptList();
-  initRoleList();
-  fetchList();
-});
+  initDeptList()
+  initRoleList()
+  fetchList()
+})
 
 //字典
-const dept_list = ref<DeptDictVO[]>();
-const role_list = ref<RoleDictVO[]>();
+const dept_list = ref<DeptDictVO[]>()
+const role_list = ref<RoleDictVO[]>()
 
-const loading = ref<boolean>(false);
-const dialog_active = ref<boolean>(false);
-const dialog_title = ref<string>('');
-const tableData = ref<UserVO[]>();
-const total = ref<number>(0);
+const loading = ref<boolean>(false)
+const dialog_active = ref<boolean>(false)
+const dialog_title = ref<string>('')
+const tableData = ref<UserVO[]>()
+const total = ref<number>(0)
 const searchForm = ref({
   current: 1,
   size: 10,
   key: void 0,
   state: undefined,
-});
+})
 const form = ref<UserVO>({
   oid: undefined,
   loginName: '',
@@ -206,66 +355,66 @@ const form = ref<UserVO>({
   birthday: undefined,
   roles: [],
   state: undefined,
-});
+})
 const rules = reactive<FormRules>({
   loginName: [{ required: true, message: '请输入用户账号', trigger: 'blur' }],
   userName: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
   roles: [{ required: true, message: '请选择用户角色', trigger: 'blur' }],
-});
-const searchFormRef = ref<FormInstance>();
-const formRef = ref<FormInstance>();
+})
+const searchFormRef = ref<FormInstance>()
+const formRef = ref<FormInstance>()
 
 const initDeptList = async () => {
-  const { data: res } = await getDeptList();
-  dept_list.value = res;
-};
+  const { data: res } = await getDeptList()
+  dept_list.value = res
+}
 
 const initRoleList = async () => {
-  const { data: res } = await getRoleList();
-  role_list.value = res;
-};
+  const { data: res } = await getRoleList()
+  role_list.value = res
+}
 
 const fetchList = async () => {
-  loading.value = true;
+  loading.value = true
   try {
-    const { data: res } = await getUserPage(Object.assign(searchForm.value));
-    total.value = res.total;
-    tableData.value = res.records;
+    const { data: res } = await getUserPage(Object.assign(searchForm.value))
+    total.value = res.total
+    tableData.value = res.records
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const handleCurrentChange = (val: number) => {
-  searchForm.value.current = val;
-  fetchList();
-};
+  searchForm.value.current = val
+  fetchList()
+}
 const handleSizeChange = (val: number) => {
-  searchForm.value.size = val;
-  fetchList();
-};
+  searchForm.value.size = val
+  fetchList()
+}
 
 const addRow = () => {
-  dialog_title.value = '添加';
-  dialog_active.value = true;
-};
+  dialog_title.value = '添加'
+  dialog_active.value = true
+}
 const updateRow = (row: UserVO) => {
-  dialog_title.value = '修改';
-  dialog_active.value = true;
-  form.value.oid = row.oid;
-  form.value.loginName = row.loginName;
-  form.value.userName = row.userName;
-  form.value.sex = row.sex;
-  form.value.mobile = row.mobile;
-  form.value.degree = row.degree;
-  form.value.teacherType = row.teacherType;
-  form.value.userType = row.userType;
-  form.value.deptId = row.deptId;
-  form.value.idCard = row.idCard;
-  form.value.birthday = row.birthday;
-  form.value.roles = row.roles;
-  form.value.state = row.state;
-};
+  dialog_title.value = '修改'
+  dialog_active.value = true
+  form.value.oid = row.oid
+  form.value.loginName = row.loginName
+  form.value.userName = row.userName
+  form.value.sex = row.sex
+  form.value.mobile = row.mobile
+  form.value.degree = row.degree
+  form.value.teacherType = row.teacherType
+  form.value.userType = row.userType
+  form.value.deptId = row.deptId
+  form.value.idCard = row.idCard
+  form.value.birthday = row.birthday
+  form.value.roles = row.roles
+  form.value.state = row.state
+}
 const delRow = (oid: number) => {
   ElMessageBox.confirm('确认删除？', '删除学年', {
     confirmButtonText: '确认',
@@ -273,33 +422,33 @@ const delRow = (oid: number) => {
     type: 'warning',
   })
     .then(async () => {
-      loading.value = true;
+      loading.value = true
       try {
-        const res = await delUser(oid.toString());
-        ElMessage.success(res.message);
-        fetchList();
+        const res = await delUser(oid.toString())
+        ElMessage.success(res.message)
+        fetchList()
       } finally {
-        loading.value = false;
+        loading.value = false
       }
     })
-    .catch(() => {});
-};
+    .catch(() => {})
+}
 
 const submitForm = async () => {
-  if (!formRef) return;
-  const valid = await formRef.value?.validate();
-  if (!valid) return;
-  loading.value = true;
+  if (!formRef) return
+  const valid = await formRef.value?.validate()
+  if (!valid) return
+  loading.value = true
   try {
-    const data = form.value as unknown as UserVO;
-    const res = await saveOrUpdateUser(data);
-    ElMessage.success(res.message);
-    dialog_active.value = false;
-    fetchList();
+    const data = form.value as unknown as UserVO
+    const res = await saveOrUpdateUser(data)
+    ElMessage.success(res.message)
+    dialog_active.value = false
+    fetchList()
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const resetForm = () => {
   form.value = {
@@ -316,7 +465,7 @@ const resetForm = () => {
     birthday: undefined,
     roles: [],
     state: undefined,
-  };
-  formRef.value?.resetFields();
-};
+  }
+  formRef.value?.resetFields()
+}
 </script>

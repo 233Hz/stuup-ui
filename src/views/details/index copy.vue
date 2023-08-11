@@ -5,26 +5,56 @@
         <template #header>
           <el-row>
             <el-col :span="24">
-              <el-form ref="searchFormRef" :model="searchForm" label-width="120px">
+              <el-form
+                ref="searchFormRef"
+                :model="searchForm"
+                label-width="120px"
+              >
                 <el-row>
                   <el-col :sm="24" :md="12" :xl="8">
                     <el-form-item label="一级项目" prop="firstLevelId">
-                      <el-select v-model="searchForm.firstLevelId" @change="firstLevelChange" style="width: 100%">
-                        <el-option v-for="item in FIRST_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
+                      <el-select
+                        v-model="searchForm.firstLevelId"
+                        @change="firstLevelChange"
+                        style="width: 100%"
+                      >
+                        <el-option
+                          v-for="item in FIRST_LEVEL"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id"
+                        />
                       </el-select>
                     </el-form-item>
                   </el-col>
                   <el-col :sm="24" :md="12" :xl="8">
                     <el-form-item label="二级项目" prop="secondLevelId">
-                      <el-select v-model="searchForm.secondLevelId" @change="secondLevelChange" style="width: 100%">
-                        <el-option v-for="item in SECOND_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
+                      <el-select
+                        v-model="searchForm.secondLevelId"
+                        @change="secondLevelChange"
+                        style="width: 100%"
+                      >
+                        <el-option
+                          v-for="item in SECOND_LEVEL"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id"
+                        />
                       </el-select>
                     </el-form-item>
                   </el-col>
                   <el-col :sm="24" :md="12" :xl="8">
                     <el-form-item label="三级项目" prop="threeLevelId">
-                      <el-select v-model="searchForm.threeLevelId" style="width: 100%">
-                        <el-option v-for="item in THREE_LEVEL" :key="item.id" :label="item.name" :value="item.id" />
+                      <el-select
+                        v-model="searchForm.threeLevelId"
+                        style="width: 100%"
+                      >
+                        <el-option
+                          v-for="item in THREE_LEVEL"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id"
+                        />
                       </el-select>
                     </el-form-item>
                   </el-col>
@@ -35,8 +65,16 @@
                   </el-col>
                   <el-col :sm="24" :md="12" :xl="8">
                     <el-form-item label="学年" prop="yearId">
-                      <el-select v-model="searchForm.yearId" style="width: 100%">
-                        <el-option v-for="item in YEAR" :key="item.oid" :label="item.value" :value="item.oid" />
+                      <el-select
+                        v-model="searchForm.yearId"
+                        style="width: 100%"
+                      >
+                        <el-option
+                          v-for="item in YEAR"
+                          :key="item.oid"
+                          :label="item.value"
+                          :value="item.oid"
+                        />
                       </el-select>
                     </el-form-item>
                   </el-col>
@@ -48,7 +86,8 @@
                         range-separator="至"
                         start-placeholder="开始时间"
                         end-placeholder="结束时间"
-                        value-format="YYYY-MM-DD HH:mm:ss" />
+                        value-format="YYYY-MM-DD HH:mm:ss"
+                      />
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -58,7 +97,9 @@
         </template>
         <div style="text-align: center">
           <el-space>
-            <el-button type="primary" @click="handleSearch" :loading="loading">查询</el-button>
+            <el-button type="primary" @click="handleSearch" :loading="loading">
+              查询
+            </el-button>
             <el-button @click="searchFormReset">清空</el-button>
           </el-space>
         </div>
@@ -75,15 +116,62 @@
           </el-space>
         </template>
 
-        <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
-          <el-table-column prop="firstLevelName" label="一级栏目" show-overflow-tooltip align="center" />
-          <el-table-column prop="secondLevelName" label="二级栏目" show-overflow-tooltip align="center" />
-          <el-table-column prop="threeLevelName" label="三级栏目" show-overflow-tooltip align="center" />
-          <el-table-column prop="growName" label="成长项目" show-overflow-tooltip align="center" />
-          <el-table-column prop="yearName" label="获取学年" show-overflow-tooltip align="center" />
-          <el-table-column prop="score" label="获得积分" show-overflow-tooltip align="center" />
-          <el-table-column prop="createTime" label="获取时间" show-overflow-tooltip align="center" />
-          <el-table-column prop="description" label="说明" show-overflow-tooltip align="center" />
+        <el-table
+          :data="tableData"
+          border
+          stripe
+          v-loading="loading"
+          empty-text="空空如也~~"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="firstLevelName"
+            label="一级栏目"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="secondLevelName"
+            label="二级栏目"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="threeLevelName"
+            label="三级栏目"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="growName"
+            label="成长项目"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="yearName"
+            label="获取学年"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="score"
+            label="获得积分"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="createTime"
+            label="获取时间"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="description"
+            label="说明"
+            show-overflow-tooltip
+            align="center"
+          />
         </el-table>
         <div class="page-r">
           <el-pagination
@@ -94,7 +182,8 @@
             :page-sizes="[10, 20, 30, 50, 100]"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            layout="total, sizes, prev, pager, next" />
+            layout="total, sizes, prev, pager, next"
+          />
         </div>
       </el-card>
     </el-col>
@@ -102,31 +191,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import type { FormInstance } from 'element-plus';
-import { StudentRecScoreVO, pageStudentRecScore } from '@/api/details';
-import { GrowthTreeVO, getGrowthTree } from '@/api/grow/config';
-import { getGraderList } from '@/api/basic/grade/index';
-import { getYearList } from '@/api/basic/year/index';
+import { ref, onMounted } from 'vue'
+import type { FormInstance } from 'element-plus'
+import { StudentRecScoreVO, pageStudentRecScore } from '@/api/details'
+import { GrowthTreeVO, getGrowthTree } from '@/api/grow/config'
+import { getGraderList } from '@/api/basic/grade/index'
+import { getYearList } from '@/api/basic/year/index'
 
 onMounted(() => {
-  initYear();
-  initGrade();
-  initGrowth();
-  fetchList();
-});
+  initYear()
+  initGrade()
+  initGrowth()
+  fetchList()
+})
 
 // 字典
-const GROWTH_TREE = ref<GrowthTreeVO[]>([]);
-const YEAR = ref();
-const GRADE = ref();
-const FIRST_LEVEL = ref();
-const SECOND_LEVEL = ref();
-const THREE_LEVEL = ref();
+const GROWTH_TREE = ref<GrowthTreeVO[]>([])
+const YEAR = ref()
+const GRADE = ref()
+const FIRST_LEVEL = ref()
+const SECOND_LEVEL = ref()
+const THREE_LEVEL = ref()
 
-const loading = ref<boolean>(false);
-const tableData = ref<StudentRecScoreVO[]>();
-const total = ref<number>(0);
+const loading = ref<boolean>(false)
+const tableData = ref<StudentRecScoreVO[]>()
+const total = ref<number>(0)
 const searchForm = ref({
   current: 1,
   size: 10,
@@ -138,76 +227,79 @@ const searchForm = ref({
   datatimeRange: [],
   startTime: undefined,
   endTime: undefined,
-});
-const searchFormRef = ref<FormInstance>();
+})
+const searchFormRef = ref<FormInstance>()
 
 const initYear = async () => {
-  const { data: res } = await getYearList();
-  YEAR.value = res;
-};
+  const { data: res } = await getYearList()
+  YEAR.value = res
+}
 
 const initGrade = async () => {
-  const { data: res } = await getGraderList();
-  GRADE.value = res;
-};
+  const { data: res } = await getGraderList()
+  GRADE.value = res
+}
 
 const initGrowth = async () => {
-  const { data: res } = await getGrowthTree();
-  GROWTH_TREE.value = res;
-  FIRST_LEVEL.value = res;
-};
+  const { data: res } = await getGrowthTree()
+  GROWTH_TREE.value = res
+  FIRST_LEVEL.value = res
+}
 
 const handleSearch = () => {
-  const timeRange = searchForm.value.datatimeRange;
+  const timeRange = searchForm.value.datatimeRange
   if (timeRange && timeRange.length) {
-    searchForm.value.startTime = timeRange[0];
-    searchForm.value.endTime = timeRange[1];
+    searchForm.value.startTime = timeRange[0]
+    searchForm.value.endTime = timeRange[1]
   }
-  fetchList();
-};
+  fetchList()
+}
 
 const fetchList = async () => {
-  loading.value = true;
+  loading.value = true
   try {
-    const { data: res } = await pageStudentRecScore(searchForm.value);
-    total.value = res.total;
-    tableData.value = res.records;
+    const { data: res } = await pageStudentRecScore(searchForm.value)
+    total.value = res.total
+    tableData.value = res.records
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
-const findChildrenById = (list: GrowthTreeVO[], id: number): GrowthTreeVO[] | [] => {
+const findChildrenById = (
+  list: GrowthTreeVO[],
+  id: number,
+): GrowthTreeVO[] | [] => {
   for (const item of list) {
     if (item.id === id) {
-      return item.children || [];
+      return item.children || []
     }
     if (item.children) {
-      return findChildrenById(item.children, id);
+      return findChildrenById(item.children, id)
     }
   }
-  return [];
-};
+  return []
+}
 
 const firstLevelChange = (val: number) => {
-  searchForm.value.secondLevelId = undefined;
-  searchForm.value.threeLevelId = undefined;
-  SECOND_LEVEL.value = findChildrenById(GROWTH_TREE.value, val);
-};
+  searchForm.value.secondLevelId = undefined
+  searchForm.value.threeLevelId = undefined
+  SECOND_LEVEL.value = findChildrenById(GROWTH_TREE.value, val)
+}
 
 const secondLevelChange = (val: number) => {
-  searchForm.value.threeLevelId = undefined;
-  THREE_LEVEL.value = findChildrenById(GROWTH_TREE.value, val);
-};
+  searchForm.value.threeLevelId = undefined
+  THREE_LEVEL.value = findChildrenById(GROWTH_TREE.value, val)
+}
 
 const handleCurrentChange = (val: number) => {
-  searchForm.value.current = val;
-  fetchList();
-};
+  searchForm.value.current = val
+  fetchList()
+}
 const handleSizeChange = (val: number) => {
-  searchForm.value.size = val;
-  fetchList();
-};
+  searchForm.value.size = val
+  fetchList()
+}
 
 const searchFormReset = () => {
   searchForm.value = {
@@ -221,6 +313,6 @@ const searchFormReset = () => {
     datatimeRange: [],
     startTime: undefined,
     endTime: undefined,
-  };
-};
+  }
+}
 </script>

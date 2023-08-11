@@ -3,21 +3,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import * as echarts from 'echarts';
+import { ref, onMounted } from 'vue'
+import * as echarts from 'echarts'
 
 const getVirtualData = (year: string) => {
-  const date = +echarts.time.parse(year + '-01-01');
-  const end = +echarts.time.parse(+year + 1 + '-01-01');
-  const dayTime = 3600 * 24 * 1000;
-  const data = [];
+  const date = +echarts.time.parse(year + '-01-01')
+  const end = +echarts.time.parse(+year + 1 + '-01-01')
+  const dayTime = 3600 * 24 * 1000
+  const data = []
   for (let time = date; time < end; time += dayTime) {
-    data.push([echarts.time.format(time, '{yyyy}-{MM}-{dd}', false), Math.floor(Math.random() * 10)]);
+    data.push([
+      echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+      Math.floor(Math.random() * 10),
+    ])
   }
-  return data;
-};
+  return data
+}
 
-const chartRef = ref();
+const chartRef = ref()
 const option = ref({
   tooltip: {},
   visualMap: {
@@ -46,10 +49,10 @@ const option = ref({
     coordinateSystem: 'calendar',
     data: getVirtualData('2023'),
   },
-});
+})
 
 onMounted(() => {
-  const chart = echarts.init(chartRef.value);
-  option.value && chart.setOption(option.value);
-});
+  const chart = echarts.init(chartRef.value)
+  option.value && chart.setOption(option.value)
+})
 </script>

@@ -10,7 +10,8 @@
       :auto-upload="autoUpload"
       :limit="limit"
       :disabled="disabled"
-      :on-success="handleSuccess">
+      :on-success="handleSuccess"
+    >
       <el-icon class="el-icon--upload"><upload-filled /></el-icon>
       <div class="el-upload__text">
         将文件拖到此处，或
@@ -27,23 +28,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { getToken } from '@/utils/auth';
-import type { UploadProps } from 'element-plus';
-import { ElMessage } from 'element-plus';
+import { ref, computed } from 'vue'
+import { getToken } from '@/utils/auth'
+import type { UploadProps } from 'element-plus'
+import { ElMessage } from 'element-plus'
 
 type Props = {
-  url?: string;
-  data?: any;
-  accept?: string;
-  disabled?: boolean;
-  limit?: number;
-  autoUpload?: boolean;
-};
+  url?: string
+  data?: any
+  accept?: string
+  disabled?: boolean
+  limit?: number
+  autoUpload?: boolean
+}
 
 interface ExcelError {
-  lineNum?: number;
-  errors?: string;
+  lineNum?: number
+  errors?: string
 }
 
 withDefaults(defineProps<Props>(), {
@@ -53,43 +54,43 @@ withDefaults(defineProps<Props>(), {
   disabled: false,
   limit: 1,
   autoUpload: false,
-});
+})
 
 const headers = computed(() => {
   return {
     Authorization: getToken(),
-  };
-});
+  }
+})
 
-const errors = ref<ExcelError[]>([]);
+const errors = ref<ExcelError[]>([])
 
-const uploadRef = ref();
+const uploadRef = ref()
 
-const active = ref<boolean>(false);
+const active = ref<boolean>(false)
 
 const submit = () => {
-  uploadRef.value.submit();
-};
+  uploadRef.value.submit()
+}
 
-const handleSuccess: UploadProps['onSuccess'] = response => {
-  uploadRef.value.clearFiles();
-  if (response.code !== 0) return ElMessage.error(response.message);
-  ElMessage.success(response.message);
+const handleSuccess: UploadProps['onSuccess'] = (response) => {
+  uploadRef.value.clearFiles()
+  if (response.code !== 0) return ElMessage.error(response.message)
+  ElMessage.success(response.message)
   if (response.data && response.data.length) {
-    errors.value = response.data;
-    active.value = true;
+    errors.value = response.data
+    active.value = true
   } else {
-    emit('success');
+    emit('success')
   }
-};
+}
 
 const reset = () => {
-  active.value = false;
-  uploadRef.value.clearFiles();
-};
+  active.value = false
+  uploadRef.value.clearFiles()
+}
 
-const emit = defineEmits(['success']);
-defineExpose({ submit, reset });
+const emit = defineEmits(['success'])
+defineExpose({ submit, reset })
 </script>
 
 <style scoped lang="scss"></style>

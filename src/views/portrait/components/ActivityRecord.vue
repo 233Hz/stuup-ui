@@ -1,57 +1,34 @@
 <template>
   <div class="w-full h-400">
-    <el-table :data="tableData" style="width: 100%" height="400">
-      <el-table-column prop="activeName" label="活动名称" header-align="center" align="center" />
-      <el-table-column prop="activeTime" label="参加时间" header-align="center" align="center" />
+    <el-table :data="listData" style="width: 100%" height="400">
+      <el-table-column
+        prop="activityName"
+        label="活动名称"
+        header-align="center"
+        align="center"
+      />
+      <el-table-column
+        prop="activityTime"
+        label="参加时间"
+        header-align="center"
+        align="center"
+      />
     </el-table>
   </div>
 </template>
 
 <script setup lang="ts">
-const tableData = [
-  {
-    activeName: 'XX活动',
-    activeTime: '2023-01-01',
-  },
-  {
-    activeName: 'XX活动',
-    activeTime: '2023-01-01',
-  },
-  {
-    activeName: 'XX活动',
-    activeTime: '2023-01-01',
-  },
-  {
-    activeName: 'XX活动',
-    activeTime: '2023-01-01',
-  },
-  {
-    activeName: 'XX活动',
-    activeTime: '2023-01-01',
-  },
-  {
-    activeName: 'XX活动',
-    activeTime: '2023-01-01',
-  },
-  {
-    activeName: 'XX活动',
-    activeTime: '2023-01-01',
-  },
-  {
-    activeName: 'XX活动',
-    activeTime: '2023-01-01',
-  },
-  {
-    activeName: 'XX活动',
-    activeTime: '2023-01-01',
-  },
-  {
-    activeName: 'XX活动',
-    activeTime: '2023-01-01',
-  },
-  {
-    activeName: 'XX活动',
-    activeTime: '2023-01-01',
-  },
-];
+import { ref, onMounted } from 'vue'
+import { reqActivityRecord } from '@/api/portrait/index'
+
+const listData = ref()
+
+onMounted(() => {
+  getData()
+})
+
+const getData = async () => {
+  const { data } = await reqActivityRecord()
+  listData.value = data
+}
 </script>

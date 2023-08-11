@@ -3,60 +3,64 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import * as echarts from 'echarts';
+import { ref, watch } from 'vue'
+import * as echarts from 'echarts'
+import { reqStudyCourse } from '@/api/portrait'
 
-const chartRef = ref();
-
-const indicator = ['课程1', '课程2', '课程3', '课程4', '课程5', '课程6', '课程7'];
-const data = indicator.map(item => {
-  const value = Math.floor(Math.random() * 80 + 20);
-  return {
-    name: `${item}(${value}分)`,
-    max: 100,
-    value,
-  };
-});
-
-const indicatorData = data.map(({ name, max }) => {
-  return { name, max };
-});
-
-const values = data.map(({ value }) => value);
-
-let option: echarts.EChartOption = {
-  tooltip: {
-    trigger: 'item',
+const props = defineProps({
+  semesterId: {
+    type: Number,
   },
-  legend: {
-    data: ['Allocated Budget', 'Actual Spending'],
-  },
-  radar: {
-    shape: 'circle',
-    indicator: indicatorData,
-    axisName: {
-      fontSize: 18,
-      color: '#03aa8c',
-    },
-  },
-  series: [
-    {
-      name: '课程成绩',
-      type: 'radar',
-      data: [
+})
+
+const chartRef = ref()
+
+let option = {}
+
+watch(
+  () => props.semesterId,
+  async (newVal) => {
+    if (!newVal) return
+    const { data } = await reqStudyCourse(newVal)
+    const indicatorData = data?.map((item) => {
+      return {
+        name: `${item.courseName}（${item.score}分）`,
+        max: 100,
+      }
+    })
+    const values = data?.map((item) => item.score)
+    option = {
+      tooltip: {
+        trigger: 'item',
+      },
+      radar: {
+        shape: 'circle',
+        indicator: indicatorData,
+        axisName: {
+          fontSize: 18,
+          color: '#03aa8c',
+        },
+      },
+      series: [
         {
-          value: values,
           name: '课程成绩',
+          type: 'radar',
+          data: [
+            {
+              value: values,
+              name: '课程成绩',
+            },
+          ],
         },
       ],
-    },
-  ],
-};
+    }
+    const chart = echarts.init(chartRef.value)
+    option && chart.setOption(option)
+    emit('change', data)
+  },
+)
 
-onMounted(() => {
-  const chart = echarts.init(chartRef.value);
-  option && chart.setOption(option);
-});
+const emit = defineEmits(['change'])
 </script>
 
 <style scoped lang="scss"></style>

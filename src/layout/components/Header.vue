@@ -7,16 +7,22 @@
       <el-space>
         <el-dropdown>
           <span class="el-dropdown-link">
-            {{ userStore.getUserName }}
+            {{ userStore.userInfo.userName }}
             <el-icon class="el-icon--right">
               <arrow-down />
             </el-icon>
           </span>
           <template #dropdown>
             <el-dropdown-menu class="cu">
-              <el-dropdown-item @click="router.push('/self/center')">个人中心</el-dropdown-item>
-              <el-dropdown-item @click="router.push('/self/notify')">我的消息</el-dropdown-item>
-              <el-dropdown-item @click="handleLoginout">退出登入</el-dropdown-item>
+              <el-dropdown-item @click="$router.push('/self/center')">
+                个人中心
+              </el-dropdown-item>
+              <el-dropdown-item @click="$router.push('/self/notify')">
+                我的消息
+              </el-dropdown-item>
+              <el-dropdown-item @click="handleuserLogout">
+                退出登入
+              </el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -26,27 +32,27 @@
 </template>
 
 <script setup lang="ts">
-import logo from '@/assets/logo.png';
-import { useUserStore } from '@/store/modules/user';
-import { ElMessageBox } from 'element-plus';
-import { useRouter } from 'vue-router';
+import logo from '@/assets/image/logo.png'
+import useUserStore from '@/store/modules/user'
+import { ElMessageBox } from 'element-plus'
+import { useRouter, useRoute } from 'vue-router'
 
-const router = useRouter();
-const userStore = useUserStore();
+let $router = useRouter()
+let $route = useRoute()
+const userStore = useUserStore()
 
-const handleLoginout = () => {
+const handleuserLogout = () => {
   ElMessageBox.confirm('确认退出？', '退出登入', {
     confirmButtonText: '确认',
     cancelButtonText: '取消',
     type: 'warning',
   })
-    .then(() => {
-      userStore.loginOut().then(() => {
-        router.push('/login');
-      });
+    .then(async () => {
+      await userStore.userLogout()
+      $router.push({ path: '/login', query: { redirect: $route.path } })
     })
-    .catch(() => {});
-};
+    .catch(() => {})
+}
 </script>
 
 <style scoped lang="scss">

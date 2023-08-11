@@ -1,25 +1,9 @@
-import { ApiResult, post } from '@/api/api';
+import { post } from '@/api/api'
+import type { LoginForm, LoginUserVO } from './type'
 
-export interface LoginForm {
-  loginName: string;
-  password: string;
+enum API {
+  USER_LOGIN_URL = '/login',
 }
 
-export interface LoginUserVO {
-  userId: number;
-  loginName: string;
-  userName: string;
-  mobile: string;
-  deptId: number;
-  userType: number;
-  roleIds: string;
-  yearId: number;
-}
-
-export const login = async (data: LoginForm): Promise<ApiResult<LoginUserVO>> => {
-  return post('/login', data);
-};
-
-export const loginOut = async (data: LoginForm) => {
-  return post('/user/signOut', data);
-};
+export const reqLogin = async (data: LoginForm) =>
+  post<LoginUserVO>(API.USER_LOGIN_URL, data)

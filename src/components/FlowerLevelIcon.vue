@@ -3,14 +3,16 @@
     <div
       class="flower-icon__item"
       v-for="(item, index) in conversionFlower.calculateConversionFlower(score)"
-      :key="index">
+      :key="index"
+    >
       <div
         :style="{
           width: width / 2 + 'px',
           height: height / 2 + 'px',
           lineHeight: height / 2 + 'px',
           fontSize: (width / 2) * 0.6 + 'px',
-        }">
+        }"
+      >
         {{ item.value }}
       </div>
       <img :width="width" :height="height" :src="item.imageSrc" />
@@ -19,19 +21,19 @@
 </template>
 
 <script setup lang="ts">
-import { useConversionFlower } from '@/utils/conversionFlower';
-const conversionFlower = useConversionFlower();
+import { useConversionFlower } from '@/utils/conversionFlower'
+const conversionFlower = useConversionFlower()
 
 interface Props {
-  score: number;
-  width?: number;
-  height?: number;
+  score: number
+  width?: number
+  height?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
   width: 40,
   height: 40,
-});
+})
 </script>
 
 <style scoped lang="scss">

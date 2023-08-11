@@ -6,11 +6,17 @@
     </section>
     <section class="login-content">
       <div class="login-image">
-        <img :src="bgSrc" />
+        <svg-icon name="login-icon" width="600px" height="300px" />
       </div>
       <div class="login-wrapper">
         <div class="login-form">
-          <el-form :model="form" :rules="rules" label-position="top" size="large">
+          <el-form
+            ref="formRef"
+            :model="form"
+            :rules="rules"
+            label-position="top"
+            size="large"
+          >
             <el-form-item label="用户名" prop="loginName">
               <el-input v-model="form.loginName" />
             </el-form-item>
@@ -18,35 +24,45 @@
               <el-input v-model="form.password" type="password" show-password />
             </el-form-item>
             <el-form-item action>
-              <el-button type="success" style="width: 100%" :loading="loading" @click="handleLogin">登录</el-button>
+              <el-button
+                type="success"
+                style="width: 100%"
+                :loading="loading"
+                @click="handleLogin"
+              >
+                登录
+              </el-button>
             </el-form-item>
           </el-form>
         </div>
       </div>
     </section>
-    <section class="login-footer">Copyright &copy;2017 泼猴信息技术(上海)有限公司AIl Rights Reserved</section>
+    <section class="login-footer">
+      Copyright &copy;2017 泼猴信息技术(上海)有限公司AIl Rights Reserved
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
-import { useUserStore } from '@/store/modules/user';
-import { LoginForm, login } from '@/api/login/index';
-import { useRouter } from 'vue-router';
-import { setToken } from '@/utils/auth';
-import { ElMessage } from 'element-plus';
-import bgSrc from '@/assets/svg/login_background.svg';
-import logo from '@/assets/logo.png';
+import { ref } from 'vue'
+import useUserStore from '@/store/modules/user'
+import useFlowersStore from '@/store/modules/flowers'
+import { useRouter, useRoute } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import logo from '@/assets/image/logo.png'
 
-const userStore = useUserStore();
-const router = useRouter();
+const userStore = useUserStore()
+const flowersStore = useFlowersStore()
+const $route = useRoute()
+const $router = useRouter()
 
-const loading = ref<boolean>(false);
+const formRef = ref()
+const loading = ref<boolean>(false)
 
-const form = reactive<LoginForm>({
+const form = ref({
   loginName: '',
   password: '',
-});
+})
 
 const rules = {
   username: {
@@ -57,23 +73,25 @@ const rules = {
     required: true,
     message: '请输入密码',
   },
-};
+}
 
 const handleLogin = async () => {
+  await formRef.value.validate()
   try {
-    loading.value = true;
-    const res = await login(form);
-    setToken(res.token as string);
-    userStore.setUserInfo(res.data);
-    localStorage.setItem('user_info', JSON.stringify(res.data));
-    router.push('/');
-    ElMessage.success('登录成功');
-  } catch {
-    form.password = '';
+    loading.value = true
+    await userStore.userLogin(form.value)
+    // 初始化花朵兑换信息
+    await flowersStore.getFlowers()
+    //判断登录的时候,路由路径当中是否有query参数，如果有就往query参数挑战，没有跳转到首页
+    let redirect: any = $route.query.redirect
+    $router.push({ path: redirect || '/' })
+    ElMessage.success('登录成功')
+  } catch (error) {
+    console.error(error)
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 </script>
 
 <style scoped lang="scss">

@@ -14,7 +14,11 @@
                 <el-col :sm="24" :md="12" :xl="8">
                   <el-form-item label="消息类型" prop="type">
                     <el-select v-model="searchForm.type" class="w-full">
-                      <el-option v-for="item in ANNOUNCEMENT_TYPE.getDict()" :label="item.label" :value="item.value" />
+                      <el-option
+                        v-for="item in ANNOUNCEMENT_TYPE.getDict()"
+                        :label="item.label"
+                        :value="item.value"
+                      />
                     </el-select>
                   </el-form-item>
                 </el-col>
@@ -25,7 +29,9 @@
       </template>
       <div style="text-align: center">
         <el-space>
-          <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
+          <el-button type="primary" @click="fetchList" :loading="loading">
+            查询
+          </el-button>
           <el-button @click="searchFormRef?.resetFields()">清空</el-button>
         </el-space>
       </div>
@@ -43,17 +49,41 @@
           </el-button>
         </el-space>
       </template>
-      <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
-        <el-table-column prop="title" label="公告标题" show-overflow-tooltip align="center" />
-        <el-table-column prop="createTime" label="发布时间" show-overflow-tooltip align="center" />
-        <el-table-column prop="type" label="消息类型" show-overflow-tooltip align="center">
+      <el-table
+        :data="tableData"
+        border
+        stripe
+        v-loading="loading"
+        empty-text="空空如也~~"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="title"
+          label="公告标题"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="createTime"
+          label="发布时间"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="type"
+          label="消息类型"
+          show-overflow-tooltip
+          align="center"
+        >
           <template #default="{ row }">
             {{ ANNOUNCEMENT_TYPE.getKeyForValue(row.type) }}
           </template>
         </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template #default="{ row }">
-            <el-button @click="router.push('/article/' + row.id)">查看</el-button>
+            <el-button @click="router.push('/article/' + row.id)">
+              查看
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -66,60 +96,61 @@
           :page-sizes="[10, 20, 30, 50, 100]"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next" />
+          layout="total, sizes, prev, pager, next"
+        />
       </div>
     </el-card>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { ANNOUNCEMENT_TYPE } from '@/utils/dict';
-import { getAnnouncementMyPage } from '@/api/system/announcement';
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { ANNOUNCEMENT_TYPE } from '@/utils/dict'
+import { getAnnouncementMyPage } from '@/api/system/announcement'
 
-const router = useRouter();
+const router = useRouter()
 
 // REF
-const searchFormRef = ref();
-const formRef = ref();
+const searchFormRef = ref()
+const formRef = ref()
 
 // DATA
-const loading = ref(false);
-const total = ref(0);
+const loading = ref(false)
+const total = ref(0)
 const searchForm = ref({
   current: 1,
   size: 10,
   title: void 0,
   type: void 0,
-});
-const tableData = ref();
+})
+const tableData = ref()
 
 //ONMOUNTED
 onMounted(() => {
-  fetchList();
-});
+  fetchList()
+})
 
 // METHODS
 const fetchList = async () => {
-  loading.value = true;
+  loading.value = true
   try {
-    const { data } = await getAnnouncementMyPage(searchForm.value);
-    total.value = data.total;
-    tableData.value = data.records;
+    const { data } = await getAnnouncementMyPage(searchForm.value)
+    total.value = data.total
+    tableData.value = data.records
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const handleCurrentChange = (val: number) => {
-  searchForm.value.current = val;
-  fetchList();
-};
+  searchForm.value.current = val
+  fetchList()
+}
 const handleSizeChange = (val: number) => {
-  searchForm.value.size = val;
-  fetchList();
-};
+  searchForm.value.size = val
+  fetchList()
+}
 </script>
 
 <style scoped lang="scss"></style>

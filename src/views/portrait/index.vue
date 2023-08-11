@@ -32,15 +32,15 @@
 </template>
 
 <script setup lang="ts">
-import PortraitCard from './components/PortraitCard.vue';
-import UserInfo from './components/UserInfo.vue';
-import GrowthEvaluationChart from './components/GrowthEvaluationChart.vue';
-import AwardRecord from './components/AwardRecord.vue';
-import GrowthStatus from './components/GrowthStatus.vue';
-import ActivityRecord from './components/ActivityRecord.vue';
-import GrowthRecord from './components/GrowthRecord/index.vue';
-import FinalGradeChart from './components/FinalGradeChart.vue';
-import GradeScoreChart from './components/GradeScoreChart.vue';
+import PortraitCard from './components/PortraitCard.vue'
+import UserInfo from './components/UserInfo.vue'
+import GrowthEvaluationChart from './components/GrowthEvaluationChart.vue'
+import AwardRecord from './components/AwardRecord.vue'
+import GrowthStatus from './components/GrowthStatus.vue'
+import ActivityRecord from './components/ActivityRecord.vue'
+import GrowthRecord from './components/GrowthRecord/index.vue'
+import FinalGradeChart from './components/FinalGradeChart.vue'
+import GradeScoreChart from './components/GradeScoreChart.vue'
 </script>
 
 <style scoped lang="scss">

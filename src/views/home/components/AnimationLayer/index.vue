@@ -22,12 +22,12 @@
 </template>
 
 <script setup lang="ts">
-import bmh_bloom from '@/assets/image/HomeAnimation/bmh_bloom.png';
-import butterfly from '@/assets/image/HomeAnimation/butterfly_anim.png';
-import squirrel from '@/assets/image/HomeAnimation/squirrel_anim.png';
-import bird_1 from '@/assets/image/HomeAnimation/bird_1_anim.png';
-import bird_2 from '@/assets/image/HomeAnimation/bird_2_anim.png';
-import chicken from '@/assets/image/HomeAnimation/chicken_anim.png';
+import bmh_bloom from '@/assets/image/HomeAnimation/bmh_bloom.png'
+import butterfly from '@/assets/image/HomeAnimation/butterfly_anim.png'
+import squirrel from '@/assets/image/HomeAnimation/squirrel_anim.png'
+import bird_1 from '@/assets/image/HomeAnimation/bird_1_anim.png'
+import bird_2 from '@/assets/image/HomeAnimation/bird_2_anim.png'
+import chicken from '@/assets/image/HomeAnimation/chicken_anim.png'
 </script>
 
 <style>

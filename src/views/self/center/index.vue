@@ -9,7 +9,8 @@
           :disabled="loading"
           :show-file-list="false"
           :on-remove="handleUploadRemove"
-          :on-success="handleUploadSuccess">
+          :on-success="handleUploadSuccess"
+        >
           <div v-if="form.imageUrl" class="avatar">
             <img :src="form.imageUrl" />
           </div>
@@ -33,37 +34,42 @@
   </el-card>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue';
-import { getToken } from '@/utils/auth';
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { getToken } from '@/utils/auth'
+import type { UploadProps, UploadUserFile } from 'element-plus'
 
 // REF
-const formRef = ref();
+const formRef = ref()
 
 // DATA
-const loading = ref(false);
+const loading = ref(false)
 const form = ref({
   imageUrl: void 0,
   opassword: void 0,
   npassword: void 0,
   rpassword: void 0,
-});
+})
 
 //COMPUTED
 const headers = computed(() => {
   return {
     Authorization: getToken(),
-  };
-});
+  }
+})
 
 //METHODS
-const submitForm = () => {};
-const handleUploadRemove = (uploadFile, uploadFiles) => {
-  console.log(uploadFile, uploadFiles);
-};
-const handleUploadSuccess = (response, uploadFile, uploadFiles) => {
-  form.value.imageUrl = response.data.url;
-};
+const submitForm = () => {}
+const handleUploadRemove: UploadProps['onRemove'] = (file, uploadFiles) => {
+  console.log(file, uploadFiles)
+}
+const handleUploadSuccess: UploadProps['onSuccess'] = (
+  response,
+  uploadFile,
+  uploadFiles,
+) => {
+  form.value.imageUrl = response.data.url
+}
 </script>
 
 <style scoped lang="scss">

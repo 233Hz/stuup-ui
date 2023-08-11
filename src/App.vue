@@ -5,10 +5,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import zhCn from 'element-plus/dist/locale/zh-cn.mjs';
+import { computed } from 'vue'
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 
-const locale = computed(() => zhCn);
+const locale = computed(() => zhCn)
 </script>
 
 <style>

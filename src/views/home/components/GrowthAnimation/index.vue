@@ -1,13 +1,16 @@
 <template>
-  <div class="absolute top-0 left-0 w-full h-full" style="background-color: rgba(0, 0, 0, 0.4)">
-    <button @click="wateringAnimation()">测试</button>
+  <div
+    v-show="show"
+    class="absolute top-0 left-0 w-full h-full"
+    style="background-color: rgba(0, 0, 0, 0.4)"
+  >
     <div class="relative w-full h-full">
       <div ref="containerRef" class="container">
         <div ref="wrapperRef" class="container-wrapper">
           <div class="board">
             <div class="board-text">
               <p>成长阶段</p>
-              <p>开花</p>
+              <p class="fs-36">{{ currentLevel?.name }}</p>
             </div>
           </div>
           <div ref="landRef" class="land"></div>
@@ -16,160 +19,207 @@
           <div class="progress">
             <div class="progress-bar">
               <div ref="progressBarRef" class="progress-bar__content"></div>
-              <div ref="progressTextRef" class="progress-bar__text">{{ progress }}%</div>
+              <div ref="progressTextRef" class="progress-bar__text">
+                {{ progressRatio * 100 }}%
+              </div>
             </div>
-            <div class="progress-tip">距离升级还有12分</div>
+            <div class="progress-tip">距离下一级还有{{ upgradeScore }}分</div>
           </div>
         </div>
       </div>
+      <p
+        class="absolute b-20 text-center text-slate-300 fs-18 cursor-pointer left-1/2 -translate-x-1/2 hover:text-white"
+        @click="show = false"
+      >
+        点击关闭动画
+      </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import gsap from 'gsap';
-import plantSrc from '@/assets/image/bmh-seed.png';
-import wateringAnimSrc from '@/assets/image/GrowthAnimation/flowing-water-anim.png';
-import upgradeAnimSrc from '@/assets/image/GrowthAnimation/upgrade-anim.png';
+import { nextTick, ref, watch } from 'vue'
+import gsap from 'gsap'
+import plantSrc from '@/assets/image/FlowerLevel/xhh4.png'
+import wateringAnimSrc from '@/assets/image/GrowthAnimation/flowing-water-anim.png'
+import upgradeAnimSrc from '@/assets/image/GrowthAnimation/upgrade-anim.png'
+import { useConversionFlower, Flowers } from '@/utils/conversionFlower'
+import bus from '@/utils/bus'
 
-const wateringAnimFrame = 15;
-const upgradeAnimFrame = 12;
-const wrapperRef = ref();
-const spoonRef = ref();
-const landRef = ref();
-const progressBarRef = ref();
-const progressTextRef = ref();
-let animationend = false;
+bus.on('collect-drop', (_score: number) => (score.value = _score))
 
-const progress = ref<number>(10);
+const conversionFlower = useConversionFlower()
+
+const wateringAnimFrame = 15
+const upgradeAnimFrame = 11
+const wrapperRef = ref()
+const spoonRef = ref()
+const landRef = ref()
+const progressBarRef = ref()
+let animationend = false
+
+const show = ref<boolean>(false)
+const score = ref<number>(0)
+const currentLevel = ref<Flowers>()
+const progressRatio = ref<number>(0)
+const upgradeScore = ref<number>(0)
+
+watch(score, (newVal) => {
+  show.value = true
+  nextTick(() => {
+    console.log(landRef.value.offsetLeft, landRef.value.offsetTop)
+    wateringAnimation()
+  })
+})
 
 // 浇水动画
 const wateringAnimation = () => {
   if (!animationend) {
-    animationend = true;
-    const wateringX = landRef.value.offsetLeft + landRef.value.clientWidth / 2;
-    const wateringY = landRef.value.offsetTop - spoonRef.value.clientHeight;
+    // animationend = true
+    const wateringX = landRef.value.offsetLeft + landRef.value.clientWidth / 2
+    const wateringY = landRef.value.offsetTop - spoonRef.value.clientHeight
+    console.log(landRef.value.offsetLeft, landRef.value.offsetTop)
+
     // 记录木勺的left和top
-    const spoonX = spoonRef.value.offsetLeft;
-    const spoonY = spoonRef.value.offsetTop;
+    const spoonX = spoonRef.value.offsetLeft
+    const spoonY = spoonRef.value.offsetTop
+    console.log(spoonX, spoonY)
+
     gsap.to(spoonRef.value!, {
       left: wateringX,
       top: wateringY,
       duration: 1,
       onComplete: () => {
         // 获取当前木勺中心点的坐标
-        const spoonCenterX = wateringX + spoonRef.value.clientWidth / 2;
-        const spoonCenterY = wateringY + spoonRef.value.clientHeight / 2;
+        const spoonCenterX = wateringX + spoonRef.value.clientWidth / 2
+        const spoonCenterY = wateringY + spoonRef.value.clientHeight / 2
         // 创建外层div
-        const imageContainer = document.createElement('div') as HTMLDivElement;
-        const width = 192;
-        const height = 120;
-        imageContainer.style.width = width + 'px';
-        imageContainer.style.height = height + 'px';
-        imageContainer.style.position = 'absolute';
-        imageContainer.style.left = spoonCenterX - width / 2 + 'px';
-        imageContainer.style.top = spoonCenterY - spoonRef.value.clientHeight / 2 + 'px';
-        imageContainer.style.overflow = 'hidden';
-        imageContainer.style.zIndex = '999';
+        const imageContainer = document.createElement('div') as HTMLDivElement
+        const width = 192
+        const height = 120
+        imageContainer.style.width = width + 'px'
+        imageContainer.style.height = height + 'px'
+        imageContainer.style.position = 'absolute'
+        imageContainer.style.left = spoonCenterX - width / 2 + 'px'
+        imageContainer.style.top =
+          spoonCenterY - spoonRef.value.clientHeight / 2 + 'px'
+        imageContainer.style.overflow = 'hidden'
+        imageContainer.style.zIndex = '999'
         // 创建内层img
-        const image = document.createElement('img') as HTMLImageElement;
-        image.src = wateringAnimSrc;
-        image.style.width = width * wateringAnimFrame + 'px';
-        image.style.height = '100%';
-        image.style.objectFit = 'cover';
-        imageContainer.appendChild(image);
-        wrapperRef.value.appendChild(imageContainer);
+        const image = document.createElement('img') as HTMLImageElement
+        image.src = wateringAnimSrc
+        image.style.width = width * wateringAnimFrame + 'px'
+        image.style.height = '100%'
+        image.style.objectFit = 'cover'
+        imageContainer.appendChild(image)
+        wrapperRef.value.appendChild(imageContainer)
         // 添加动画结束事件监听器
         image.addEventListener('animationend', () => {
           // 动画结束后销毁动画元素
-          imageContainer.removeChild(image);
-          wrapperRef.value.removeChild(imageContainer);
+          imageContainer.removeChild(image)
+          wrapperRef.value.removeChild(imageContainer)
           // 木勺回到原位
           gsap.to(spoonRef.value!, {
             left: spoonX,
             top: spoonY,
             duration: 1,
             onComplete: () => {
-              upgradeAnimation();
+              const { current, next } = conversionFlower.calculateMaxLevel(
+                score.value,
+              )
+              // 计算进度
+              const totalProgress = next.value - current.value
+              const currentProgress = score.value - current.value
+              const needScore =
+                totalProgress - currentProgress < 0
+                  ? 0
+                  : totalProgress - currentProgress
+              const ratio =
+                totalProgress === 0
+                  ? 1
+                  : (currentProgress / totalProgress).toFixed(4)
+              upgradeScore.value = needScore
+              progressRatio.value = Number(ratio)
+              increaseProgress(progressRatio.value)
+              if (
+                current.key === currentLevel.value?.key &&
+                current.value === currentLevel.value?.value &&
+                current.imageSrc === currentLevel.value?.imageSrc
+              )
+                return
+              currentLevel.value = current
+              // 等级有变化播放升级动画
+              upgradeAnimation()
             },
-          });
-        });
+          })
+        })
         // 添加动画效果
-        image.style.animation = `translateXAnimation 1s steps(${wateringAnimFrame})`;
+        image.style.animation = `translateXAnimation 1s steps(${wateringAnimFrame})`
       },
-    });
+    })
   }
-};
+}
 
 // 升级动画
 const upgradeAnimation = () => {
   // 获取土地中心坐标
-  const landCenterX = landRef.value.offsetLeft + landRef.value.clientWidth / 2;
-  const landCenterY = landRef.value.offsetTop + landRef.value.clientHeight / 2;
+  const landCenterX = landRef.value.offsetLeft + landRef.value.clientWidth / 2
+  const landCenterY = landRef.value.offsetTop + landRef.value.clientHeight / 2
 
   // 创建外层div
-  const imageContainer = document.createElement('div') as HTMLDivElement;
-  const width = 384;
-  const height = 240;
-  imageContainer.style.width = width + 'px';
-  imageContainer.style.height = height + 'px';
-  imageContainer.style.position = 'absolute';
-  imageContainer.style.left = landCenterX - width / 2 + 'px';
-  imageContainer.style.top = landCenterY - height / 2 + 'px';
-  imageContainer.style.overflow = 'hidden';
-  imageContainer.style.zIndex = '999';
+  const imageContainer = document.createElement('div') as HTMLDivElement
+  const width = 120
+  const height = 150
+  imageContainer.style.width = width + 'px'
+  imageContainer.style.height = height + 'px'
+  imageContainer.style.position = 'absolute'
+  imageContainer.style.left = landCenterX - width / 2 + 'px'
+  imageContainer.style.top = landCenterY - height / 2 - 20 + 'px'
+  imageContainer.style.overflow = 'hidden'
+  imageContainer.style.zIndex = '999'
 
   // 创建内层img
-  const imageEl = document.createElement('img') as HTMLImageElement;
-  imageEl.src = upgradeAnimSrc;
-  imageEl.style.width = width * upgradeAnimFrame + 'px';
-  imageEl.style.height = '100%';
-  imageEl.style.objectFit = 'cover';
-  imageContainer.appendChild(imageEl);
-  wrapperRef.value.appendChild(imageContainer);
+  const imageEl = document.createElement('img') as HTMLImageElement
+  imageEl.src = upgradeAnimSrc
+  imageEl.style.width = width * upgradeAnimFrame + 'px'
+  imageEl.style.height = '100%'
+  imageEl.style.objectFit = 'cover'
+  imageContainer.appendChild(imageEl)
+  wrapperRef.value.appendChild(imageContainer)
   // 添加动画结束事件监听器
   imageEl.addEventListener('animationend', () => {
     // 动画结束后销毁动画元素
-    imageContainer.removeChild(imageEl);
-    wrapperRef.value.removeChild(imageContainer);
-    const plantImage = document.createElement('img') as HTMLImageElement;
-    const image = new Image();
-    image.src = plantSrc;
+    imageContainer.removeChild(imageEl)
+    wrapperRef.value.removeChild(imageContainer)
+    const plantImage = document.createElement('img') as HTMLImageElement
+    const image = new Image()
+    image.src = plantSrc
     image.onload = () => {
-      plantImage.src = plantSrc;
-      plantImage.style.width = image.width / 5 + 'px';
-      plantImage.style.height = image.height / 5 + 'px';
-      plantImage.style.position = 'absolute';
-      plantImage.style.left = landCenterX - image.width / 10 + 'px';
-      plantImage.style.top = landCenterY - image.height / 10 + 'px';
-      wrapperRef.value.appendChild(plantImage);
-      increaseProgress(0.2);
-      animationend = false;
-    };
-  });
+      plantImage.src = currentLevel.value!.imageSrc
+      plantImage.style.width = image.width / 5 + 'px'
+      plantImage.style.height = image.height / 5 + 'px'
+      plantImage.style.position = 'absolute'
+      plantImage.style.left = landCenterX - image.width / 10 + 'px'
+      plantImage.style.top = landCenterY - image.height / 10 + 'px'
+      const imgElements = wrapperRef.value.querySelectorAll('img')
+      imgElements.forEach(
+        (imgElement: HTMLImageElement) =>
+          imgElement.parentNode?.removeChild(imgElement),
+      )
+      wrapperRef.value.appendChild(plantImage)
+      animationend = false
+    }
+  })
   // 添加动画效果
-  imageEl.style.animation = `translateXAnimation 1s steps(${upgradeAnimFrame})`;
-};
+  imageEl.style.animation = `translateXAnimation 1s steps(${upgradeAnimFrame})`
+}
 
 const increaseProgress = (ratio: number) => {
   gsap.to(progressBarRef.value, {
     width: ratio * 100 + '%',
     duration: 1,
-    onComplete: () => (progress.value = ratio * 100),
-  });
-  // gsap.fromTo(
-  //   progressBarRef.value,
-  //   {
-  //     width: width,
-  //     duration: 1,
-  //   },
-  //   {
-  //     width: width,
-  //     duration: 1,
-  //   }
-  // );
-};
+  })
+}
 </script>
 
 <style>
@@ -198,7 +248,8 @@ $height: math.div(1122px, 2);
   top: 50%;
   margin-left: math.div(-$background-width, 2);
   margin-top: math.div(-$background-height, 2);
-  background: url(src/assets/image/GrowthAnimation/background.png) no-repeat center center;
+  background: url(src/assets/image/GrowthAnimation/background.png) no-repeat
+    center center;
   background-size: 100% 100%;
 
   &-wrapper {
@@ -216,7 +267,8 @@ $height: math.div(1122px, 2);
       top: 80px;
       width: $board-width;
       height: $board-height;
-      background: url(src/assets/image/GrowthAnimation/board.png) no-repeat center center;
+      background: url(src/assets/image/GrowthAnimation/board.png) no-repeat
+        center center;
       background-size: 100% 100%;
 
       &-text {
@@ -253,7 +305,8 @@ $height: math.div(1122px, 2);
       bottom: 80px;
       width: $barrel-width;
       height: $barrel-height;
-      background: url(src/assets/image/GrowthAnimation/barrel.png) no-repeat center center;
+      background: url(src/assets/image/GrowthAnimation/barrel.png) no-repeat
+        center center;
       background-size: 100% 100%;
     }
 
@@ -266,8 +319,10 @@ $height: math.div(1122px, 2);
       bottom: 165px;
       width: $spoon-width;
       height: $spoon-height;
-      background: url(src/assets/image/GrowthAnimation/spoon.png) no-repeat center center;
+      background: url(src/assets/image/GrowthAnimation/spoon.png) no-repeat
+        center center;
       background-size: 100% 100%;
+      cursor: pointer;
     }
 
     .progress {
@@ -290,7 +345,7 @@ $height: math.div(1122px, 2);
         overflow: hidden;
 
         &__content {
-          width: 10%;
+          width: 0%;
           height: 100%;
           border-radius: $bar-radius;
           background-color: #127848;

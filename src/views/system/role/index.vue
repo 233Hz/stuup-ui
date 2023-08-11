@@ -8,7 +8,10 @@
               <el-row>
                 <el-col :sm="24" :md="12" :xl="8">
                   <el-form-item label="角色名称" prop="roleName">
-                    <el-input v-model="searchForm.roleName" placeholder="请输入角色名称" />
+                    <el-input
+                      v-model="searchForm.roleName"
+                      placeholder="请输入角色名称"
+                    />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -18,7 +21,9 @@
       </template>
       <div style="text-align: center">
         <el-space>
-          <el-button type="primary" @click="fetchList" :loading="loading">查询</el-button>
+          <el-button type="primary" @click="fetchList" :loading="loading">
+            查询
+          </el-button>
           <el-button @click="searchFormRef?.resetFields()">清空</el-button>
         </el-space>
       </div>
@@ -37,10 +42,32 @@
         </el-space>
       </template>
 
-      <el-table :data="tableData" border stripe v-loading="loading" empty-text="空空如也~~" style="width: 100%">
-        <el-table-column prop="roleName" label="角色名称" show-overflow-tooltip align="center" />
-        <el-table-column prop="roleDesc" label="角色描述" show-overflow-tooltip align="center" />
-        <el-table-column prop="createTime" label="创建时间" show-overflow-tooltip align="center" />
+      <el-table
+        :data="tableData"
+        border
+        stripe
+        v-loading="loading"
+        empty-text="空空如也~~"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="roleName"
+          label="角色名称"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="roleDesc"
+          label="角色描述"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="createTime"
+          label="创建时间"
+          show-overflow-tooltip
+          align="center"
+        />
         <el-table-column label="操作" width="400" align="center">
           <template #default="{ row }">
             <el-button @click="updateRow(row)">修改</el-button>
@@ -59,11 +86,24 @@
           :page-sizes="[10, 20, 30, 50, 100]"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next" />
+          layout="total, sizes, prev, pager, next"
+        />
       </div>
     </el-card>
-    <el-dialog v-model="dialog_active" :title="dialog_title" width="500" draggable @close="resetForm">
-      <el-form ref="formRef" :model="form" :rules="rules" :disabled="loading" label-position="top">
+    <el-dialog
+      v-model="dialog_active"
+      :title="dialog_title"
+      width="500"
+      draggable
+      @close="resetForm"
+    >
+      <el-form
+        ref="formRef"
+        :model="form"
+        :rules="rules"
+        :disabled="loading"
+        label-position="top"
+      >
         <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="form.roleName" placeholder="请输入角色名称" />
         </el-form-item>
@@ -73,7 +113,8 @@
             type="textarea"
             maxlength="500"
             placeholder="请输入角色描述"
-            show-word-limit />
+            show-word-limit
+          />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -92,71 +133,73 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue';
-import type { FormInstance, FormRules } from 'element-plus';
-import { getRolePage, saveRole, delRole, RoleVO } from '@/api/system/role/index';
-import { ElMessage, ElMessageBox } from 'element-plus';
-import MenuTree from './MenuTree.vue';
+import { ref, onMounted, reactive } from 'vue'
+import type { FormInstance, FormRules } from 'element-plus'
+import { getRolePage, saveRole, delRole, RoleVO } from '@/api/system/role/index'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import MenuTree from './MenuTree.vue'
 
 onMounted(() => {
-  fetchList();
-});
+  fetchList()
+})
 
-const loading = ref<boolean>(false);
-const dialog_active = ref<boolean>(false);
-const dialog_title = ref<string>('');
-const tableData = ref<RoleVO[]>();
+const loading = ref<boolean>(false)
+const dialog_active = ref<boolean>(false)
+const dialog_title = ref<string>('')
+const tableData = ref<RoleVO[]>()
 const page = ref({
   current: 1,
   size: 10,
   total: 10,
-});
+})
 const searchForm = ref({
   roleName: '',
-});
+})
 const form = ref<RoleVO>({
   oid: undefined,
   roleName: '',
   roleDesc: '',
-});
+})
 const rules = reactive<FormRules>({
   roleName: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
-});
-const searchFormRef = ref<FormInstance>();
-const formRef = ref<FormInstance>();
-const menuTreeRef = ref();
+})
+const searchFormRef = ref<FormInstance>()
+const formRef = ref<FormInstance>()
+const menuTreeRef = ref()
 
 const fetchList = async () => {
-  loading.value = true;
+  loading.value = true
   try {
-    const { data: res } = await getRolePage(Object.assign(page.value, searchForm.value));
-    page.value.total = res.total;
-    tableData.value = res.records;
+    const { data: res } = await getRolePage(
+      Object.assign(page.value, searchForm.value),
+    )
+    page.value.total = res.total
+    tableData.value = res.records
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const handleCurrentChange = (val: number) => {
-  page.value.current = val;
-  fetchList();
-};
+  page.value.current = val
+  fetchList()
+}
 const handleSizeChange = (val: number) => {
-  page.value.size = val;
-  fetchList();
-};
+  page.value.size = val
+  fetchList()
+}
 
 const addRow = () => {
-  dialog_title.value = '添加';
-  dialog_active.value = true;
-};
+  dialog_title.value = '添加'
+  dialog_active.value = true
+}
 const updateRow = (row: RoleVO) => {
-  dialog_title.value = '修改';
-  dialog_active.value = true;
-  form.value.oid = row.oid;
-  form.value.roleName = row.roleName;
-  form.value.roleDesc = row.roleDesc;
-};
+  dialog_title.value = '修改'
+  dialog_active.value = true
+  form.value.oid = row.oid
+  form.value.roleName = row.roleName
+  form.value.roleDesc = row.roleDesc
+}
 const delRow = (oid: number) => {
   ElMessageBox.confirm('确认删除？', '删除角色', {
     confirmButtonText: '确认',
@@ -164,44 +207,44 @@ const delRow = (oid: number) => {
     type: 'warning',
   })
     .then(async () => {
-      loading.value = true;
+      loading.value = true
       try {
-        const res = await delRole(oid);
-        ElMessage.success(res.message);
-        fetchList();
+        const res = await delRole(oid)
+        ElMessage.success(res.message)
+        fetchList()
       } finally {
-        loading.value = false;
+        loading.value = false
       }
     })
-    .catch(() => {});
-};
+    .catch(() => {})
+}
 
 const submitForm = async () => {
-  if (!formRef) return;
-  const valid = await formRef.value?.validate();
-  if (!valid) return;
-  loading.value = true;
+  if (!formRef) return
+  const valid = await formRef.value?.validate()
+  if (!valid) return
+  loading.value = true
   try {
-    const data = form.value as unknown as RoleVO;
-    const res = await saveRole(data);
-    ElMessage.success(res.message);
-    dialog_active.value = false;
-    fetchList();
+    const data = form.value as unknown as RoleVO
+    const res = await saveRole(data)
+    ElMessage.success(res.message)
+    dialog_active.value = false
+    fetchList()
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const openRoleMenuTree = async (roleId: number) => {
-  menuTreeRef.value?.open(roleId);
-};
+  menuTreeRef.value?.open(roleId)
+}
 
 const resetForm = () => {
   form.value = {
     oid: undefined,
     roleName: '',
     roleDesc: '',
-  };
-  formRef.value?.resetFields();
-};
+  }
+  formRef.value?.resetFields()
+}
 </script>
