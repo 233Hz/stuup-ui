@@ -36,6 +36,7 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     server: {
+      host: '0.0.0.0',
       port: 1111,
       proxy: {
         [env.VITE_APP_BASE_API]: {
