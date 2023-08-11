@@ -13,14 +13,28 @@ import { ref, onMounted, watch } from 'vue'
 import * as echarts from 'echarts'
 import { BorderBox10 as DvBorderBox10 } from '@kjgl77/datav-vue3'
 import CustomTheme from '@/config/echarts/CustomTheme.json'
+import { reqStudentGrowthMonitor } from '@/api/screen'
+import type { StudentGrowthMonitorList } from '@/api/screen/type'
 
 const chartRef = ref()
 let chart: echarts.ECharts
-const dataArr = ref()
+const dataArr = ref<StudentGrowthMonitorList>()
 
-watch(dataArr, (newVal) => chart.setOption(update(newVal)), { deep: true })
+watch(
+  dataArr,
+  (newVal) => {
+    if (dataArr && newVal?.length) chart.setOption(update(newVal))
+  },
+  { deep: true },
+)
 
-const update = (data: number[]): echarts.EChartOption => {
+const update = (data: StudentGrowthMonitorList): echarts.EChartOption => {
+  let xArr: string[] = []
+  let yArr: number[] = []
+  data.forEach((item) => {
+    xArr.push(item.growItemName)
+    yArr.push(item.personNum)
+  })
   return {
     title: {
       text: '学生成长监控',
@@ -40,29 +54,40 @@ const update = (data: number[]): echarts.EChartOption => {
     },
     yAxis: {
       type: 'category',
-      data: ['Brazil', 'Indonesia', 'USA', 'India', 'China', 'World'],
+      data: xArr,
+      axisLabel: {
+        show: false,
+      },
     },
     series: [
       {
-        name: '2011',
+        name: '违规人次',
         type: 'bar',
-        data: [18203, 23489, 29034, 104970, 131744, 630230],
-      },
-      {
-        name: '2012',
-        type: 'bar',
-        data: [19325, 23438, 31000, 121594, 134141, 681807],
+        data: yArr,
+        label: {
+          show: true,
+          formatter: '{b} {c}人',
+        },
       },
     ],
+  }
+}
+
+const fetch = async () => {
+  try {
+    chart.showLoading()
+    const { data } = await reqStudentGrowthMonitor()
+    dataArr.value = data
+  } catch (error) {
+    console.log(error)
+  } finally {
+    chart.hideLoading()
   }
 }
 
 onMounted(() => {
   echarts.registerTheme('CustomTheme', CustomTheme)
   chart = echarts.init(chartRef.value, 'CustomTheme')
-  chart.resize()
-  dataArr.value = Array.from({ length: 7 }).map((_) => {
-    return Math.round(Math.random() * 100)
-  })
+  fetch()
 })
 </script>

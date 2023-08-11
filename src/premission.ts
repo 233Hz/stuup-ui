@@ -13,7 +13,7 @@ const userStore = useUserStore(pinia)
 const flowersStore = useFlowersStore(pinia)
 const premissionStore = usePermissionStore(pinia)
 
-const whiteList: string[] = ['/login', '/404', '/test', '/portrait']
+const whiteList: string[] = ['/login', '/404', '/screen', '/portrait']
 
 // ↓全局后置钩子
 router.beforeEach(async (to, from, next) => {

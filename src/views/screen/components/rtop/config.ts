@@ -1,5 +1,10 @@
-export const option1 = {
-  atSChoolNum: {
+interface Option {
+  name: string
+  icon: string
+}
+
+export const option1: Record<string, Option> = {
+  atSchoolNum: {
     name: '在校生人数',
     icon: 'data-screen-student',
   },
@@ -20,7 +25,7 @@ export const option1 = {
     icon: 'data-screen-major',
   },
 }
-export const option2 = {
+export const option2: Record<string, Option> = {
   growthNum: {
     name: '成长项目总数',
     icon: 'data-screen-growth',

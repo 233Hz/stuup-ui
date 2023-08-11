@@ -13,20 +13,25 @@ import { ref, onMounted, watch } from 'vue'
 import * as echarts from 'echarts'
 import { BorderBox10 as DvBorderBox10 } from '@kjgl77/datav-vue3'
 import CustomTheme from '@/config/echarts/CustomTheme.json'
+import { reqAwardsByCompetition } from '@/api/screen'
+import type { AwardsByCompetitionList } from '@/api/screen/type'
 
 const chartRef = ref()
 let chart: echarts.ECharts
-const dataArr = ref()
+const dataArr = ref<AwardsByCompetitionList>()
 
-watch(dataArr, (newVal) => chart.setOption(update(newVal)), { deep: true })
+watch(
+  dataArr,
+  (newVal) => {
+    if (newVal && newVal?.length) chart.setOption(update(newVal))
+  },
+  { deep: true },
+)
 
-const update = (data: number[]): echarts.EChartOption => {
+const update = (data: AwardsByCompetitionList): echarts.EChartOption => {
   return {
     title: {
       text: '各类竞赛获奖人数',
-    },
-    tooltip: {
-      trigger: 'item',
     },
     legend: {
       bottom: 0,
@@ -36,13 +41,12 @@ const update = (data: number[]): echarts.EChartOption => {
         name: 'Access From',
         type: 'pie',
         radius: '50%',
-        data: [
-          { value: 1048, name: 'Search Engine' },
-          { value: 735, name: 'Direct' },
-          { value: 580, name: 'Email' },
-          { value: 484, name: 'Union Ads' },
-          { value: 300, name: 'Video Ads' },
-        ],
+        data: data.map((item) => {
+          return {
+            value: item.awardNum,
+            name: item.awardType,
+          }
+        }),
         emphasis: {
           itemStyle: {
             shadowBlur: 10,
@@ -50,16 +54,30 @@ const update = (data: number[]): echarts.EChartOption => {
             shadowColor: 'rgba(0, 0, 0, 0.5)',
           },
         },
+        label: {
+          show: true,
+          formatter: '{b}-{c}人',
+        },
       },
     ],
+  }
+}
+
+const fetch = async () => {
+  try {
+    chart.showLoading()
+    const { data } = await reqAwardsByCompetition()
+    dataArr.value = data
+  } catch (error) {
+    console.log(error)
+  } finally {
+    chart.hideLoading()
   }
 }
 
 onMounted(() => {
   echarts.registerTheme('CustomTheme', CustomTheme)
   chart = echarts.init(chartRef.value, 'CustomTheme')
-  dataArr.value = Array.from({ length: 7 }).map((_) => {
-    return Math.round(Math.random() * 100)
-  })
+  fetch()
 })
 </script>

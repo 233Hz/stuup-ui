@@ -1,7 +1,7 @@
 <template>
   <div class="h-full">
     <dv-border-box10>
-      <div class="h-full p-10">
+      <div class="h-full p-10 relative">
         <div ref="chartRef" class="w-full h-full" />
       </div>
     </dv-border-box10>
@@ -13,44 +13,78 @@ import { ref, onMounted, watch } from 'vue'
 import * as echarts from 'echarts'
 import { BorderBox10 as DvBorderBox10 } from '@kjgl77/datav-vue3'
 import CustomTheme from '@/config/echarts/CustomTheme.json'
+import { reqCountMajorPopulations } from '@/api/screen'
+import type { MajorPopulationsList } from '@/api/screen/type'
 
 const chartRef = ref()
 let chart: echarts.ECharts
-const dataArr = ref()
+const dataArr = ref<MajorPopulationsList>()
 
-watch(dataArr, (newVal) => chart.setOption(update(newVal)), { deep: true })
+watch(
+  dataArr,
+  (newVal) => {
+    if (newVal && newVal?.length) chart.setOption(update(newVal))
+  },
+  { deep: true },
+)
 
-const update = (data: number[]): echarts.EChartOption => {
+const update = (data: MajorPopulationsList): echarts.EChartOption => {
+  let xArr: string[] = []
+  let yArr: number[] = []
+  data.forEach((item) => {
+    xArr.push(item.majorName)
+    yArr.push(item.count)
+  })
   return {
     title: {
       text: '各专业人数',
     },
+    tooltip: {
+      formatter: '{b}',
+    },
     xAxis: {
       type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      data: xArr,
     },
     yAxis: {
       type: 'value',
     },
     series: [
       {
-        data: [120, 200, 150, 80, 70, 110, 130],
+        data: yArr,
         type: 'bar',
         // @ts-ignore
         showBackground: true,
         backgroundStyle: {
           color: 'rgba(180, 180, 180, 0.2)',
         },
+        label: {
+          show: true,
+          position: 'top',
+          color: '#29fcff',
+          // @ts-ignore
+          formatter: '{c}人',
+        },
       },
     ],
+  }
+}
+
+const fetch = async () => {
+  try {
+    chart.showLoading()
+    const { data } = await reqCountMajorPopulations()
+    dataArr.value = data
+  } catch (error) {
+    console.log(error)
+  } finally {
+    chart.hideLoading()
   }
 }
 
 onMounted(() => {
   echarts.registerTheme('CustomTheme', CustomTheme)
   chart = echarts.init(chartRef.value, 'CustomTheme')
-  dataArr.value = Array.from({ length: 7 }).map((_) => {
-    return Math.round(Math.random() * 100)
-  })
+  fetch()
 })
 </script>

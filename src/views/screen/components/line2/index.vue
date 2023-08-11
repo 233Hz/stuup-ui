@@ -13,14 +13,28 @@ import { ref, onMounted, watch } from 'vue'
 import * as echarts from 'echarts'
 import { BorderBox10 as DvBorderBox10 } from '@kjgl77/datav-vue3'
 import CustomTheme from '@/config/echarts/CustomTheme.json'
+import { reqNear3YearsAtSchoolNum } from '@/api/screen'
+import type { Near3YearsAtSchoolNumList } from '@/api/screen/type'
 
 const chartRef = ref()
 let chart: echarts.ECharts
-const dataArr = ref()
+const dataArr = ref<Near3YearsAtSchoolNumList>()
 
-watch(dataArr, (newVal) => chart.setOption(update(newVal)), { deep: true })
+watch(
+  dataArr,
+  (newVal) => {
+    if (newVal && newVal?.length) chart.setOption(update(newVal))
+  },
+  { deep: true },
+)
 
-const update = (data: number[]): echarts.EChartOption => {
+const update = (data: Near3YearsAtSchoolNumList): echarts.EChartOption => {
+  let xArr: string[] = []
+  let yArr: number[] = []
+  data.forEach((item) => {
+    xArr.push(item.year)
+    yArr.push(item.personNum)
+  })
   return {
     title: {
       text: '近三年在校生人数',
@@ -28,14 +42,14 @@ const update = (data: number[]): echarts.EChartOption => {
     xAxis: {
       type: 'category',
       boundaryGap: false,
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      data: xArr,
     },
     yAxis: {
       type: 'value',
     },
     series: [
       {
-        data: data,
+        data: yArr,
         type: 'line',
         areaStyle: {},
       },
@@ -43,11 +57,21 @@ const update = (data: number[]): echarts.EChartOption => {
   }
 }
 
+const fetch = async () => {
+  try {
+    chart.showLoading()
+    const { data } = await reqNear3YearsAtSchoolNum()
+    dataArr.value = data
+  } catch (error) {
+    console.log(error)
+  } finally {
+    chart.hideLoading()
+  }
+}
+
 onMounted(() => {
   echarts.registerTheme('CustomTheme', CustomTheme)
   chart = echarts.init(chartRef.value, 'CustomTheme')
-  dataArr.value = Array.from({ length: 7 }).map((_) => {
-    return Math.round(Math.random() * 100)
-  })
+  fetch()
 })
 </script>
