@@ -1,9 +1,7 @@
 <template>
-  <div class="bunga-header">
-    <div class="bunga-header__logo">
-      <img :src="logo" width="200" />
-    </div>
-    <div class="bunga-header__navbar">
+  <div class="header">
+    <div class="logo"><Logo /></div>
+    <div class="navbar">
       <el-space>
         <el-dropdown>
           <span class="el-dropdown-link">
@@ -13,7 +11,7 @@
             </el-icon>
           </span>
           <template #dropdown>
-            <el-dropdown-menu class="cu">
+            <el-dropdown-menu>
               <el-dropdown-item @click="$router.push('/self/center')">
                 个人中心
               </el-dropdown-item>
@@ -32,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import logo from '@/assets/image/logo.png'
+import Logo from '../logo/index.vue'
 import useUserStore from '@/store/modules/user'
 import { ElMessageBox } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
@@ -56,25 +54,18 @@ const handleuserLogout = () => {
 </script>
 
 <style scoped lang="scss">
-@include b(header) {
-  height: var(--header-height);
-  display: flex;
+.header {
+  height: 100%;
   background-color: var(--aside-menu-background);
-  @include e(logo) {
-    width: var(--aside-width);
-    display: flex;
-    > img {
-      width: 90%;
-      margin: auto;
-    }
-  }
-  @include e(menu) {
-    flex: 1;
+
+  .logo {
     height: 100%;
+    float: left;
   }
-  @include e(navbar) {
-    flex: 1;
+
+  .navbar {
     height: 100%;
+    float: right;
     display: flex;
     justify-content: end;
   }
