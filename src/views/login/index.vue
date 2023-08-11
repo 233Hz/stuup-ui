@@ -1,9 +1,11 @@
 <template>
   <div class="login-container">
-    <section class="login-header">
-      <img :src="logo" />
-      <span>学生成长百草园</span>
-    </section>
+    <div class="logo" v-if="setting.showLogo">
+      <div class="picture">
+        <img :src="setting.logo" alt="logo" />
+      </div>
+      <div class="title">{{ setting.title }}</div>
+    </div>
     <section class="login-content">
       <div class="login-image">
         <svg-icon name="login-icon" width="600px" height="300px" />
@@ -49,7 +51,7 @@ import useUserStore from '@/store/modules/user'
 import useFlowersStore from '@/store/modules/flowers'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import logo from '@/assets/image/logo.png'
+import setting from '@/setting'
 
 const userStore = useUserStore()
 const flowersStore = useFlowersStore()
@@ -95,6 +97,9 @@ const handleLogin = async () => {
 </script>
 
 <style scoped lang="scss">
+$logo-picture-weith: 161px;
+$logo-picture-height: 99px;
+
 .login-container {
   width: 100%;
   height: 100%;
@@ -103,20 +108,28 @@ const handleLogin = async () => {
   justify-content: center;
   align-items: center;
 
-  .login-header {
-    width: 100%;
-    height: 60px;
-    line-height: 60px;
+  .logo {
+    height: var(--header-height);
     display: flex;
-    align-items: center;
-    font-size: 32px;
-    font-weight: bold;
 
-    > img {
-      width: 200px;
+    .picture {
+      width: 80px;
       height: 100%;
-      margin-left: 20%;
-      margin-right: 20px;
+      display: flex;
+
+      > img {
+        width: math.div($logo-picture-weith, 3);
+        height: math.div($logo-picture-height, 3);
+        margin: auto;
+        object-fit: cover;
+      }
+    }
+    .title {
+      flex: 1;
+      height: 100%;
+      font-size: 24px;
+      font-weight: 600;
+      line-height: var(--header-height);
     }
   }
 
