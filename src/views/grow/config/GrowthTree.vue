@@ -140,7 +140,7 @@ const fetchGetGrowthTree = async () => {
   try {
     const { data: res } = await getGrowthTree()
     treeData.value = res
-    Bus.emit('get-tree', res)
+    bus.emit('get-tree', res)
   } finally {
     loading.value = false
   }

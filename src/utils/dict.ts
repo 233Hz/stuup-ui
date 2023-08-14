@@ -17,7 +17,7 @@ export const MILITARY_LEVEL = new Enum({
 })
 
 /**
- * 菜单类型
+ * 综评类型
  */
 export const REC_CODE = new Enum({
   REC_CAUCUS: ['参加党团学习项目记录填报', 'CZ_005'],
@@ -33,9 +33,15 @@ export const REC_CODE = new Enum({
 /**
  * 菜单类型
  */
-export const MENU_TYPE = new Enum({
+export const MENU_FLAG = new Enum({
   FRONT: ['前端菜单', 1],
   BACK: ['后端菜单', 2],
+})
+
+export const MENU_TYPE = new Enum({
+  CATALOG: ['目录', 1],
+  MENU: ['菜单', 2],
+  BUTTON: ['按钮', 2],
 })
 
 /**

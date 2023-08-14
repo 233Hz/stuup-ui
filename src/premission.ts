@@ -8,7 +8,6 @@ import useFlowersStore from './store/modules/flowers'
 import _ from 'lodash'
 import setting from '@/setting'
 
-const userStore = useUserStore(pinia)
 const flowersStore = useFlowersStore(pinia)
 const premissionStore = usePermissionStore(pinia)
 
@@ -17,9 +16,9 @@ router.beforeEach(async (to, from, next) => {
   NProgress.start()
   if (existToken()) {
     if (to.path === '/login') {
-      next({ path: '/' })
+      next({ path: '/home' })
     } else if (to.path === '/404') {
-      next({ path: '/' })
+      next({ path: '/home' })
     } else {
       if (!flowersStore.isExist) {
         await flowersStore.getFlowers()

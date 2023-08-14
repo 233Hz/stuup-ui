@@ -3,4 +3,5 @@ export default {
   logo: '/logo.png', //logo图片地址
   showLogo: true, //是否显示logo
   whiteRouter: ['/login', '/404'], //路由白名单
+  whiteRouterName: ['Login', '404'], //路由白名单
 }

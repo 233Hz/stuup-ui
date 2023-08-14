@@ -7,8 +7,8 @@ import { constantRoute } from './routes'
 import setting from '@/setting'
 
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.VITE_PUBLIC_PATH),
-  // history: createWebHistory('/h5/'),
+  // history: createWebHashHistory(import.meta.env.VITE_PUBLIC_PATH),
+  history: createWebHistory(import.meta.env.VITE_PUBLIC_PATH),
   routes: constantRoute,
   scrollBehavior: () => ({ left: 0, top: 0 }),
 })
@@ -16,7 +16,7 @@ const router = createRouter({
 export const resetRouter = () => {
   router.getRoutes().forEach((route) => {
     const { name } = route
-    if (name && !setting?.whiteRouter.includes(name as string)) {
+    if (name && !setting?.whiteRouterName.includes(name as string)) {
       router.hasRoute(name) && router.removeRoute(name)
     }
   })

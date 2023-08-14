@@ -26,7 +26,6 @@ import Aside from './components/aside/index.vue'
 
   .top {
     height: var(--header-height);
-    border-bottom: 1px solid white;
     box-sizing: border-box;
   }
 
@@ -35,13 +34,14 @@ import Aside from './components/aside/index.vue'
     display: flex;
 
     .left {
-      width: var(--aside-width);
+      max-width: var(--aside-width);
       height: 100%;
     }
 
     .right {
       flex: 1;
       height: 100%;
+      overflow: auto;
     }
   }
 }

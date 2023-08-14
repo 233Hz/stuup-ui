@@ -86,7 +86,7 @@ const handleLogin = async () => {
     await flowersStore.getFlowers()
     //判断登录的时候,路由路径当中是否有query参数，如果有就往query参数挑战，没有跳转到首页
     let redirect: any = $route.query.redirect
-    $router.push({ path: redirect || '/' })
+    $router.push({ path: redirect || '/home' })
     ElMessage.success('登录成功')
   } catch (error) {
     console.error(error)

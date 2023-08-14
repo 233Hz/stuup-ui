@@ -3,6 +3,13 @@
     <div class="logo"><Logo /></div>
     <div class="navbar">
       <el-space>
+        <el-button
+          icon="ArrowLeft"
+          color="#03aa8c"
+          @click="router.push('/home')"
+        >
+          回到前台
+        </el-button>
         <el-dropdown>
           <span class="el-dropdown-link">
             {{ userStore.userInfo.userName }}
@@ -12,10 +19,10 @@
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="$router.push('/self/center')">
+              <el-dropdown-item @click="router.push('/self/center')">
                 个人中心
               </el-dropdown-item>
-              <el-dropdown-item @click="$router.push('/self/notify')">
+              <el-dropdown-item @click="router.push('/self/notify')">
                 我的消息
               </el-dropdown-item>
               <el-dropdown-item @click="handleuserLogout">
@@ -35,8 +42,8 @@ import useUserStore from '@/store/modules/user'
 import { ElMessageBox } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
 
-let $router = useRouter()
-let $route = useRoute()
+let router = useRouter()
+let route = useRoute()
 const userStore = useUserStore()
 
 const handleuserLogout = () => {
@@ -47,7 +54,7 @@ const handleuserLogout = () => {
   })
     .then(async () => {
       await userStore.userLogout()
-      $router.push({ path: '/login', query: { redirect: $route.path } })
+      router.push({ path: '/login', query: { redirect: route.path } })
     })
     .catch(() => {})
 }
@@ -56,7 +63,7 @@ const handleuserLogout = () => {
 <style scoped lang="scss">
 .header {
   height: 100%;
-  background-color: var(--aside-menu-background);
+  background-color: var(--header-background);
 
   .logo {
     height: 100%;
@@ -68,6 +75,12 @@ const handleuserLogout = () => {
     float: right;
     display: flex;
     justify-content: end;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .logo {
+    display: none;
   }
 }
 </style>

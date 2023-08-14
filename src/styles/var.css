@@ -2,9 +2,10 @@
   --text-color: #303133;
   --base-color: #03aa8c;
   --header-height: 60px;
+  --header-background: #38d4ba;
   --aside-width: 240px;
   --aside-menu-text: #fff;
   --aside-menu-background: #03aa8c;
-  --aside-menu-active-background: #058f6e;
+  --aside-menu-active-background: #228070;
   --border: 1px solid #eee;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="logo" v-if="setting.showLogo">
+  <div class="logo" v-if="setting.showLogo" @click="router.push('/dashboard')">
     <div class="picture">
       <img :src="setting.logo" alt="logo" />
     </div>
@@ -9,6 +9,9 @@
 
 <script setup lang="ts">
 import setting from '@/setting'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 </script>
 
 <style scoped lang="scss">
@@ -18,6 +21,7 @@ $logo-picture-height: 99px;
 .logo {
   height: 100%;
   display: flex;
+  cursor: pointer;
 
   .picture {
     width: 80px;
@@ -37,6 +41,10 @@ $logo-picture-height: 99px;
     font-size: 24px;
     font-weight: 600;
     line-height: var(--header-height);
+
+    &:hover {
+      opacity: 0.7;
+    }
   }
 }
 </style>

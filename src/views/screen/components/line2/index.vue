@@ -52,6 +52,10 @@ const update = (data: Near3YearsAtSchoolNumList): echarts.EChartOption => {
         data: yArr,
         type: 'line',
         areaStyle: {},
+        label: {
+          show: true,
+          formatter: '{c}人',
+        },
       },
     ],
   }

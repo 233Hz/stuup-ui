@@ -1,7 +1,12 @@
 import { get, post } from '@/api/api'
 import type { Page, PageResult } from '@/types/global'
-import type { Menu } from '@/api/system/menu/type'
-import type { UserVO, SimpleUserVO, UserDictVO, CusUser } from './type'
+import type {
+  UserVO,
+  SimpleUserVO,
+  UserDictVO,
+  CusUser,
+  UserMenu,
+} from './type'
 
 enum API {
   QUERY_USER_AUTHORITY = '/user/queryUserAuthority',
@@ -30,7 +35,7 @@ export const delUser = async (ids: string) => {
 /**
  * 查询用户菜单权限
  */
-export const reqUserAuthority = () => post<Menu[]>(API.QUERY_USER_AUTHORITY)
+export const reqUserAuthority = () => post<UserMenu[]>(API.QUERY_USER_AUTHORITY)
 
 export const getUserInfo = async () => {
   return get<CusUser>('/user/info')

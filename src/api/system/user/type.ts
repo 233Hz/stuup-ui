@@ -43,3 +43,19 @@ export interface CusUser {
   roleIds: number[]
   yearId: number
 }
+
+export interface UserMenu {
+  oid: number
+  pid: number
+  name: string
+  code: string
+  path: string
+  flag: number
+  icon?: string
+  type: number
+  sort: number
+  useLayout: number
+  keepAlive: number
+  hidden: boolean
+  redirect?: string
+}

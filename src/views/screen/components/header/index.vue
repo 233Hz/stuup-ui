@@ -2,7 +2,7 @@
   <div class="header">
     <div class="left">
       <ul class="lbtns">
-        <li class="lbtn" @click="$router.push('/')">首页</li>
+        <li class="lbtn" @click="$router.push('/dashboard')">首页</li>
         <li class="lbtn" @click="$router.back()">返回</li>
       </ul>
     </div>
