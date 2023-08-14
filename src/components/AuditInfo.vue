@@ -102,18 +102,19 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { AUDIT_LOG_STATUS } from '@/utils/dict'
-import { GrowApplyRecordVO, getAuditLog, AuditLogVO } from '@/api/apply'
-import { getFileListForIds, downFile, FileVO } from '@/api/file'
+import { getAuditLog } from '@/api/apply'
+import { GrowApplyRecord } from '@/api/apply/type'
+import { getFileListForIds, downFile } from '@/api/file'
 
 // DATA
 const active = ref<boolean>(false)
 const loading = ref<boolean>(false)
-const applyRecord = ref<GrowApplyRecordVO>()
-const auditLog = ref<AuditLogVO[]>([])
-const fileData = ref<FileVO[]>([])
+const applyRecord = ref()
+const auditLog = ref()
+const fileData = ref()
 
 //METHODS
-const open = async (info: GrowApplyRecordVO) => {
+const open = async (info: GrowApplyRecord) => {
   loading.value = true
   try {
     applyRecord.value = info

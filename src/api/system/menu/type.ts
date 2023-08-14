@@ -6,8 +6,10 @@ export interface Menu {
   path: string
   flag: number
   icon: string
-  redirect: string
   hidden: boolean
-  children: Menu[] | []
+  redirect?: string
 }
-export type MenuList = Menu[]
+
+export interface MenuTree extends Menu {
+  children?: MenuTree[]
+}

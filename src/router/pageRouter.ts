@@ -37,8 +37,4 @@ export default [
       },
     ],
   },
-  {
-    path: '/portrait',
-    component: () => import('@/views/portrait/index.vue'),
-  },
 ]

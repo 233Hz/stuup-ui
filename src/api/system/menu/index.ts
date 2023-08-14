@@ -1,27 +1,14 @@
 import { get, post } from '@/api/api'
 import { Tree } from '@/types/global'
-import { MenuList } from './type'
-
-export interface MenuVO {
-  oid?: number
-  pid?: number
-  name: string
-  code?: string
-  path: string
-  flag?: number
-  icon?: string
-  redirect?: string
-  hidden?: boolean
-  children?: MenuVO[] | []
-}
+import { Menu } from './type'
 
 export const getMenuTree = async (params: { name?: string; code?: string }) =>
-  get<MenuList>('/user/list', params)
+  get<Menu[]>('/user/list', params)
 
-export const saveMenu = async (data: MenuVO): Promise<ApiResult<number>> => {
-  return await post('/user/save', data)
+export const saveMenu = async (data: Menu) => {
+  return await post<number>('/user/save', data)
 }
 
-export const menuTree = async (): Promise<ApiResult<Tree[]>> => {
-  return await get('/menu/tree')
+export const menuTree = async () => {
+  return await get<Tree[]>('/menu/tree')
 }

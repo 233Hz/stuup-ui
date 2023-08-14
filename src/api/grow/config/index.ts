@@ -1,74 +1,33 @@
-import { ApiResult, get, post, del, download } from '@/api/api'
+import { get, post, del, download } from '@/api/api'
 import { Page, PageResult } from '@/types/global'
+import type { GrowthTreeVO, GrowthVO, GrowthItemVO } from './type'
 
-export interface GrowthTreeVO {
-  id?: number
-  pid?: number
-  name: string
-  description?: string
-  sort: number
-  children?: GrowthTreeVO[] | []
+export const getGrowthTree = async () => {
+  return await get<GrowthTreeVO[]>('/growth/tree')
 }
 
-export interface GrowthVO {
-  id?: number
-  pid?: number
-  name: string
-  description?: string
-  sort?: number
-}
-
-export interface GrowthItemVO {
-  id: number
-  name: string
-  code: string
-  description?: string
-  scorePeriod?: number
-  scoreUpperLimit: number
-  collectLimit: number
-  calculateType?: number
-  score?: number
-  gatherer?: number
-  growthItems: number[]
-  firstLevelId: number
-  secondLevelId?: number
-  threeLevelId?: number
-}
-
-export const getGrowthTree = async (): Promise<ApiResult<GrowthTreeVO[]>> => {
-  return await get('/growth/tree')
-}
-
-export const saveOrUpdateGrowth = async (
-  data: GrowthVO,
-): Promise<ApiResult<number>> => {
-  return await post('/growth/saveOrUpdate', data)
+export const saveOrUpdateGrowth = async (data: GrowthVO) => {
+  return await post<number>('/growth/saveOrUpdate', data)
 }
 
 export const delGrowth = async (id: number) => {
   return await post('/growth/del/' + id)
 }
 
-export const getGrowthItemPage = async (
-  params: Page,
-): Promise<ApiResult<PageResult<GrowthItemVO[]>>> => {
-  return await get('/growthItem/page', params)
+export const getGrowthItemPage = async (params: Page) => {
+  return await get<PageResult<GrowthItemVO[]>>('/growthItem/page', params)
 }
 
-export const saveOrUpdateGrowthItem = async (
-  data: GrowthItemVO,
-): Promise<ApiResult<number>> => {
-  return await post('/growthItem/saveOrUpdate', data)
+export const saveOrUpdateGrowthItem = async (data: GrowthItemVO) => {
+  return await post<number>('/growthItem/saveOrUpdate', data)
 }
 
 export const delGrowthItem = async (id: number) => {
   return await del('/growthItem/del/' + id)
 }
 
-export const getUserGrowthItems = async (): Promise<
-  ApiResult<GrowthItemVO[]>
-> => {
-  return await get('/growthItem/myGrowthItems')
+export const getUserGrowthItems = async () => {
+  return await get<GrowthItemVO[]>('/growthItem/myGrowthItems')
 }
 
 export const manualTask = async (num: number) => {

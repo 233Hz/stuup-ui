@@ -1,20 +1,7 @@
-import { ApiResult, get } from '@/api/api'
+import { get } from '@/api/api'
 import { Page } from '@/types/global'
+import type { StudentScoreDetailsVO } from './type'
 
-export interface StudentRecScoreVO {
-  id: number
-  name: string
-  score: string
-  createTime: Date
-}
-
-export interface StudentScoreDetailsVO {
-  totalScore: number
-  records: StudentRecScoreVO[]
-}
-
-export const pageStudentRecScore = async (
-  params: Page,
-): Promise<ApiResult<StudentScoreDetailsVO>> => {
-  return get('/stuScoreLog/page', params)
+export const pageStudentRecScore = async (params: Page) => {
+  return get<StudentScoreDetailsVO>('/stuScoreLog/page', params)
 }

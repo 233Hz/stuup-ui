@@ -1,80 +1,35 @@
-import { ApiResult, get, post, del } from '@/api/api'
+import { get, post, del } from '@/api/api'
 import { Page, PageResult } from '@/types/global'
+import type {
+  GrowthItemSelect,
+  AudGrow,
+  GrowApplyRecord,
+  AuditLog,
+} from './type'
 
-export interface GrowthItemSelectVO {
-  id: number
-  name: string
-  firstLevelName: string
-  secondLevelName: string
-  thirdLevelName: string
+export const getStudentGrowthItems = async () => {
+  return get<GrowthItemSelect>('/growthItem/studentGrowthItems')
+}
+export const pageGrowApplyRecord = async (params: Page) => {
+  return get<PageResult<GrowApplyRecord[]>>('/audGrow/page/apply', params)
 }
 
-export interface AudGrow {
-  id?: number
-  growId: number
-  reason: string
-  fileIds?: string
+export const applyGrowItem = async (data: AudGrow) => {
+  return post<boolean>('/audGrow/apply', data)
 }
 
-export interface GrowApplyRecordVO {
-  id: number
-  growId: number
-  firstLevelName: string
-  secondLevelName: string
-  thirdLevelName: string
-  auditor: string
-  growName: string
-  reason: string
-  fileIds: string
-  state: number
-  createTime: Date
+export const updateAudGrow = async (data: AudGrow) => {
+  return post<boolean>('/audGrow/update', data)
 }
 
-export interface AuditLogVO {
-  id: number
-  username: number
-  state: number
-  reason: string
-  createTime: Date
+export const deleteAudGrow = async (id: number) => {
+  return del<boolean>('/audGrow/delete/' + id)
 }
 
-export const getStudentGrowthItems = async (): Promise<
-  ApiResult<GrowthItemSelectVO[]>
-> => {
-  return get('/growthItem/studentGrowthItems')
-}
-export const pageGrowApplyRecord = async (
-  params: Page,
-): Promise<ApiResult<PageResult<GrowApplyRecordVO[]>>> => {
-  return get('/audGrow/page/apply', params)
+export const submitGrowItem = async (id: number) => {
+  return get<boolean>('/audGrow/submit/' + id)
 }
 
-export const applyGrowItem = async (
-  data: AudGrow,
-): Promise<ApiResult<boolean>> => {
-  return post('/audGrow/apply', data)
-}
-
-export const updateAudGrow = async (
-  data: AudGrow,
-): Promise<ApiResult<boolean>> => {
-  return post('/audGrow/update', data)
-}
-
-export const deleteAudGrow = async (
-  id: number,
-): Promise<ApiResult<boolean>> => {
-  return del('/audGrow/delete/' + id)
-}
-
-export const submitGrowItem = async (
-  id: number,
-): Promise<ApiResult<boolean>> => {
-  return get('/audGrow/submit/' + id)
-}
-
-export const getAuditLog = async (
-  id: number,
-): Promise<ApiResult<AuditLogVO[]>> => {
-  return get('/audLog/audit/log/' + id)
+export const getAuditLog = async (id: number) => {
+  return get<AuditLog[]>('/audLog/audit/log/' + id)
 }

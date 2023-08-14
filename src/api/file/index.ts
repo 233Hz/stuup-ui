@@ -1,21 +1,10 @@
-import { ApiResult, get, download } from '@/api/api'
-
-export interface FileVO {
-  id: number
-  storageName: string
-  originalName: string
-  bucket: string
-  suffix: string
-  createUser: string
-  createTime: string
-}
+import { get, download } from '@/api/api'
+import type { FileVO } from './type'
 
 export const downFile = (storageName: string, originalName?: string) => {
   download('/file/download', { fileName: storageName }, originalName)
 }
 
-export const getFileListForIds = async (
-  ids: string,
-): Promise<ApiResult<FileVO[]>> => {
-  return get('/file/files/' + ids)
+export const getFileListForIds = async (ids: string) => {
+  return get<FileVO[]>('/file/files/' + ids)
 }

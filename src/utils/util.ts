@@ -1,3 +1,5 @@
+import type { RouteRecordRaw } from 'vue-router'
+
 export const formatDate = (
   time: string,
   format: string = 'YYYY-MM-DD hh:mm:ss',
@@ -20,4 +22,24 @@ export const formatDate = (
     .replace(/hh/g, preArr[hour] || String(hour))
     .replace(/mm/g, preArr[minute] || String(minute))
     .replace(/ss/g, preArr[second] || String(second))
+}
+
+/**
+ * 过滤路由
+ * @param routes
+ * @param type
+ * @returns
+ */
+export const filterRouter = (
+  routes: RouteRecordRaw[],
+  type: 1 | 2,
+): RouteRecordRaw[] => {
+  return routes.filter((route) => {
+    if (route.meta?.flag === type) {
+      if (route.children && route.children.length) {
+        route.children = filterRouter(route.children, type)
+      }
+      return true
+    }
+  })
 }

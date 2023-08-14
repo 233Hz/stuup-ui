@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig, ConfigEnv, loadEnv } from 'vite'
 import path from 'path'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import { viteMockServe } from 'vite-plugin-mock'
@@ -10,7 +10,7 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd())
   return {
-    base: mode === 'production' ? '/stuup' : '/',
+    base: env.VITE_PUBLIC_PATH,
     plugins: [
       vue(),
       vueJsx(),
@@ -37,7 +37,7 @@ export default defineConfig(({ command, mode }) => {
     },
     server: {
       host: '0.0.0.0',
-      port: 1111,
+      port: env.VITE_PROP,
       proxy: {
         [env.VITE_APP_BASE_API]: {
           //获取数据的服务器地址设置

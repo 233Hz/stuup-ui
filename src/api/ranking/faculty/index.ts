@@ -1,12 +1,6 @@
-import { ApiResult, get } from '@/api/api'
+import { get } from '@/api/api'
+import type { FacultyRankVO } from './type'
 
-export interface FacultyRankVO {
-  facultyId: number
-  rank: number
-  facultyName: string
-  score: number
-}
-
-export const getFacultyRank = async (): Promise<ApiResult<FacultyRankVO[]>> => {
-  return await get('/rank/realTime/faculty')
+export const getFacultyRank = async () => {
+  return await get<FacultyRankVO[]>('/rank/realTime/faculty')
 }

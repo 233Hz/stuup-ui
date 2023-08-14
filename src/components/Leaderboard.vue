@@ -72,7 +72,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { getSchoolRank } from '@/api/ranking/school'
-import { useUserStore } from '@/store/modules/user'
+import useUserStore from '@/store/modules/user'
 import FlowerLevelIcon from '@/components/FlowerLevelIcon.vue'
 
 const userStore = useUserStore()

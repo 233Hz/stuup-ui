@@ -314,7 +314,8 @@ import {
   deleteAudGrow,
   submitGrowItem,
 } from '@/api/apply'
-import { GrowthTreeVO, getGrowthTree } from '@/api/grow/config'
+import { getGrowthTree } from '@/api/grow/config'
+import { GrowthTreeVO } from '@/api/grow/config/type'
 import { requiredRule } from '@/utils/rules'
 import { getToken } from '@/utils/auth'
 import { AUDIT_STATUS } from '@/utils/dict'

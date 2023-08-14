@@ -7,6 +7,7 @@ import { getToken, setToken } from '@/utils/auth'
 import { ElMessage } from 'element-plus'
 import useUserStore from '@/store/modules/user'
 import pinia from '@/store'
+
 let request: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 30000,
@@ -44,6 +45,7 @@ request.interceptors.response.use(
       ElMessage.error('登录超时,请重新登录')
       const userStore = useUserStore(pinia)
       userStore.userLogout()
+      window.location.reload()
     } else if (code === 1004) {
       const refreshToken = data.token
       // 获取当前失败的请求

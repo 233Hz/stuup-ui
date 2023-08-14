@@ -196,6 +196,9 @@ export const AUDIT_STATUS = new Enum({
   RETURN: ['退回', 5],
 })
 
+/**
+ * 审核日志状态
+ */
 export const AUDIT_LOG_STATUS = new Enum({
   SUBMIT: ['提交', 2],
   PASS: ['通过', 3],

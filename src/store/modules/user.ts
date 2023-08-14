@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { setToken, removeToken } from '@/utils/auth'
 import type { UserInfoState } from './types/type'
 import { reqLogin } from '@/api/login'
 import { LoginForm } from '@/api/login/type'

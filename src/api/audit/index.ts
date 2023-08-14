@@ -1,40 +1,19 @@
-import { ApiResult, get } from '@/api/api'
+import { get } from '@/api/api'
 import { Page, PageResult } from '@/types/global'
+import type { GrowAuditRecord } from './type'
 
-export interface GrowAuditRecordVO {
-  id: number
-  growId: number
-  firstLevelName: string
-  secondLevelName: string
-  thirdLevelName: string
-  applicant: string
-  growName: string
-  reason: string
-  fileIds: string
-  state: number
-  createTime: Date
+export const pageGrowAuditRecord = async (params: Page) => {
+  return get<PageResult<GrowAuditRecord[]>>('/audGrow/page/audit', params)
 }
 
-export const pageGrowAuditRecord = async (
-  params: Page,
-): Promise<ApiResult<PageResult<GrowAuditRecordVO[]>>> => {
-  return get('/audGrow/page/audit', params)
+export const passGrowItem = async (id: number) => {
+  return get<boolean>('/audGrow/pass/' + id)
 }
 
-export const passGrowItem = async (id: number): Promise<ApiResult<boolean>> => {
-  return get('/audGrow/pass/' + id)
+export const refuseGrowItem = async (id: number, reason: string) => {
+  return get<boolean>('/audGrow/refuse/' + id, { reason })
 }
 
-export const refuseGrowItem = async (
-  id: number,
-  reason: string,
-): Promise<ApiResult<boolean>> => {
-  return get('/audGrow/refuse/' + id, { reason })
-}
-
-export const returnGrowItem = async (
-  id: number,
-  reason: string,
-): Promise<ApiResult<boolean>> => {
-  return get('/audGrow/return/' + id, { reason })
+export const returnGrowItem = async (id: number, reason: string) => {
+  return get<boolean>('/audGrow/return/' + id, { reason })
 }

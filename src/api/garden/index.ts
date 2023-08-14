@@ -1,17 +1,7 @@
-import { ApiResult, get } from '@/api/api'
+import { get } from '@/api/api'
 import { PageResult, Page } from '@/types/global'
+import type { GrowGardenVO } from './type'
 
-export interface GrowGardenVO {
-  studentId: number
-  studentName: string
-  gradeName: string
-  className: string
-  classTeacher: string
-  score: number
-}
-
-export const getGrowGarden = async (
-  params: Page,
-): Promise<ApiResult<PageResult<GrowGardenVO[]>>> => {
-  return get('/garden/page', params)
+export const getGrowGarden = async (params: Page) => {
+  return get<PageResult<GrowGardenVO[]>>('/garden/page', params)
 }

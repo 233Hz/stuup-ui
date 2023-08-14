@@ -1,4 +1,4 @@
-import request from './axiosInstance'
+import request from './request'
 import { ElLoading } from 'element-plus'
 import type { ResponseData } from '@/types/global'
 

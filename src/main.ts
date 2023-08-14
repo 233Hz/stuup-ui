@@ -34,8 +34,17 @@ import pinia from '@/store'
 //引入unocss
 import 'uno.css'
 
+//引入路由鉴权文件
+import '@/premission'
+
 //获取应用实例对象
 const app = createApp(App)
+
+//注册模板路由
+app.use(router)
+
+//安装仓库
+app.use(pinia)
 
 //安装element-plus插件
 app.use(ElementPlus, {
@@ -47,15 +56,6 @@ app.use(gloalComponent)
 
 //安装全局指令
 app.use(globalDirective)
-
-//安装仓库
-app.use(pinia)
-
-//注册模板路由
-app.use(router)
-
-//引入路由鉴权文件
-import '@/premission'
 
 //将应用挂载到挂载点上
 app.mount('#app')
