@@ -157,7 +157,7 @@
   </el-dialog>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Menu">
 import { ref, onMounted, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { getMenuTree, saveMenu, MenuVO } from '@/api/system/menu/index'

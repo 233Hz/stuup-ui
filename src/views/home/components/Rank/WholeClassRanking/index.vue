@@ -50,7 +50,7 @@ onMounted(async () => {
     line-height: 60px;
     font-family: 华文行楷;
     color: white;
-    background: url(src/assets/image/ranking-title-bg.png) no-repeat center
+    background: url(src/assets/image/home-ranking-title-bg.png) no-repeat center
       center;
     background-size: 100% 100%;
     > span {

@@ -156,7 +156,7 @@
   </el-row>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Labor">
 import { ref, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { RecLaborTimeVO, getRecLaborTimePage } from '@/api/record/labor/index'

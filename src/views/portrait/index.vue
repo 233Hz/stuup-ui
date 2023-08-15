@@ -31,7 +31,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Portrait">
 import PortraitCard from './components/PortraitCard.vue'
 import UserInfo from './components/UserInfo.vue'
 import GrowthEvaluationChart from './components/GrowthEvaluationChart.vue'

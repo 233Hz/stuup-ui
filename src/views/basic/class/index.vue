@@ -26,7 +26,7 @@
                       style="width: 100%"
                     >
                       <el-option
-                        v-for="item in faculty_list"
+                        v-for="item in basicInfoStore.faculty"
                         :key="item.oid"
                         :label="item.facultyName"
                         :value="item.oid"
@@ -42,7 +42,7 @@
                       style="width: 100%"
                     >
                       <el-option
-                        v-for="item in grade_list"
+                        v-for="item in basicInfoStore.grade"
                         :key="item.oid"
                         :label="item.gradeName"
                         :value="item.oid"
@@ -177,7 +177,7 @@
           style="width: 100%"
         >
           <el-option
-            v-for="item in faculty_list"
+            v-for="item in basicInfoStore.faculty"
             :key="item.oid"
             :label="item.facultyName"
             :value="item.oid"
@@ -191,7 +191,7 @@
           style="width: 100%"
         >
           <el-option
-            v-for="item in grade_list"
+            v-for="item in basicInfoStore.grade"
             :key="item.oid"
             :label="item.gradeName"
             :value="item.oid"
@@ -205,7 +205,7 @@
           style="width: 100%"
         >
           <el-option
-            v-for="item in major_list"
+            v-for="item in basicInfoStore.major"
             :key="item.oid"
             :label="item.majorName"
             :value="item.oid"
@@ -219,7 +219,7 @@
           style="width: 100%"
         >
           <el-option
-            v-for="item in user_list"
+            v-for="item in basicInfoStore.user"
             :key="item.oid"
             :label="item.value"
             :value="item.oid"
@@ -233,7 +233,7 @@
           style="width: 100%"
         >
           <el-option
-            v-for="item in user_list"
+            v-for="item in basicInfoStore.user"
             :key="item.oid"
             :label="item.value"
             :value="item.oid"
@@ -263,39 +263,39 @@
   </el-dialog>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Class">
 import { ref, onMounted, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import {
-  ClassVO,
   getClassPage,
   saveOrUpdateClass,
   delClass,
 } from '@/api/basic/class/index'
-import { FacultyDictVO, getFacultyList } from '@/api/basic/faculty/index'
-import { GradeDictVO, getGraderList } from '@/api/basic/grade/index'
-import { MajorDictVO, getMajorList } from '@/api/basic/major/index'
-import { UserDictVO, getUserList } from '@/api/system/user'
+import type { Class } from '@/api/basic/class/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import useBasicInfoStore from '@/store/modules/basicInfo'
+import { BasicInfoType } from '@/store/modules/basicInfo'
 
-onMounted(() => {
-  initFacultyList()
-  initGradeList()
-  initMajorList()
-  initUser()
+const basicInfoStore = useBasicInfoStore()
+
+onMounted(async () => {
+  // initFacultyList()
+  // initGradeList()
+  // initMajorList()
+  // initUser()
   fetchList()
+  await basicInfoStore.init(
+    BasicInfoType.USER_INFO,
+    BasicInfoType.GRADE_INFO,
+    BasicInfoType.FACULTY_INFO,
+    BasicInfoType.MAJOR_INFO,
+  )
 })
-
-// 字典
-const faculty_list = ref<FacultyDictVO[]>()
-const grade_list = ref<GradeDictVO[]>()
-const major_list = ref<MajorDictVO[]>()
-const user_list = ref<UserDictVO[]>()
 
 const loading = ref<boolean>(false)
 const dialog_active = ref<boolean>(false)
 const dialog_title = ref<string>('')
-const tableData = ref<ClassVO[]>()
+const tableData = ref<Class[]>()
 const page = ref({
   current: 1,
   size: 10,
@@ -306,7 +306,7 @@ const searchForm = ref({
   facultyId: undefined,
   gradeId: undefined,
 })
-const form = ref<ClassVO>({
+const form = ref<Class>({
   id: undefined,
   code: '',
   name: '',
@@ -329,23 +329,6 @@ const rules = reactive<FormRules>({
 })
 const searchFormRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
-
-const initFacultyList = async () => {
-  const { data: res } = await getFacultyList()
-  faculty_list.value = res
-}
-const initGradeList = async () => {
-  const { data: res } = await getGraderList()
-  grade_list.value = res
-}
-const initMajorList = async () => {
-  const { data: res } = await getMajorList()
-  major_list.value = res
-}
-const initUser = async () => {
-  const { data: res } = await getUserList()
-  user_list.value = res
-}
 
 const fetchList = async () => {
   loading.value = true
@@ -373,18 +356,10 @@ const addRow = () => {
   dialog_title.value = '添加'
   dialog_active.value = true
 }
-const updateRow = (row: ClassVO) => {
+const updateRow = (row: Class) => {
   dialog_title.value = '修改'
   dialog_active.value = true
-  form.value.id = row.id
-  form.value.code = row.code
-  form.value.name = row.name
-  form.value.facultyId = row.facultyId
-  form.value.gradeId = row.gradeId
-  form.value.majorId = row.majorId
-  form.value.teacherId = row.teacherId
-  form.value.adminId = row.adminId
-  form.value.count = row.count
+  Object.assign(form.value, row)
 }
 const delRow = (id: number) => {
   ElMessageBox.confirm('确认删除？', '删除学年', {
@@ -411,7 +386,7 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
-    const data = form.value as unknown as ClassVO
+    const data = form.value as unknown as Class
     const res = await saveOrUpdateClass(data)
     ElMessage.success(res.message)
     dialog_active.value = false

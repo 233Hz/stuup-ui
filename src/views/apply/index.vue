@@ -14,11 +14,17 @@
                   <el-form-item label="一级项目" prop="firstLevelId">
                     <el-select
                       v-model="searchForm.firstLevelId"
-                      @change="firstLevelChange"
-                      class="w-full"
+                      @change="
+                        (id: number) => {
+                          growthStore.handleLevel1Change(id)
+                          searchForm.secondLevelId = void 0
+                          searchForm.thirdLevelId = void 0
+                        }
+                      "
+                      style="width: 100%"
                     >
                       <el-option
-                        v-for="item in FIRST_LEVEL"
+                        v-for="item in growthStore.level1"
                         :key="item.id"
                         :label="item.name"
                         :value="item.id"
@@ -30,11 +36,16 @@
                   <el-form-item label="二级项目" prop="secondLevelId">
                     <el-select
                       v-model="searchForm.secondLevelId"
-                      @change="secondLevelChange"
-                      class="w-full"
+                      @change="
+                        (id: number) => {
+                          growthStore.handleLevel2Change(id)
+                          searchForm.thirdLevelId = void 0
+                        }
+                      "
+                      style="width: 100%"
                     >
                       <el-option
-                        v-for="item in SECOND_LEVEL"
+                        v-for="item in growthStore.level2"
                         :key="item.id"
                         :label="item.name"
                         :value="item.id"
@@ -44,9 +55,12 @@
                 </el-col>
                 <el-col :sm="24" :md="12" :xl="8">
                   <el-form-item label="三级项目" prop="thirdLevelId">
-                    <el-select v-model="searchForm.thirdLevelId" class="w-full">
+                    <el-select
+                      v-model="searchForm.thirdLevelId"
+                      style="width: 100%"
+                    >
                       <el-option
-                        v-for="item in THIRD_LEVEL"
+                        v-for="item in growthStore.level3"
                         :key="item.id"
                         :label="item.name"
                         :value="item.id"
@@ -302,7 +316,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Apply">
 import { ref, onMounted, reactive, computed } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -314,19 +328,19 @@ import {
   deleteAudGrow,
   submitGrowItem,
 } from '@/api/apply'
-import { getGrowthTree } from '@/api/grow/config'
-import { GrowthTreeVO } from '@/api/grow/config/type'
-import { requiredRule } from '@/utils/rules'
+import type { AudGrow } from '@/api/apply/type'
+import type { UploadProps } from 'element-plus'
+import type { ResponseData } from '@/types/global'
+import type { FileVO } from '@/api/file/type'
 import { getToken } from '@/utils/auth'
 import { AUDIT_STATUS } from '@/utils/dict'
-import type { UploadProps } from 'element-plus'
-import AuditInfo from '@/components/AuditInfo.vue'
+import { requiredRule } from '@/utils/rules'
+import AuditInfo from '@/components/AuditInfo/index.vue'
+import useGrowthStore from '@/store/modules/growth'
+
+const growthStore = useGrowthStore()
 
 //DICT
-const GROWTH_TREE = ref<GrowthTreeVO[]>([])
-const FIRST_LEVEL = ref()
-const SECOND_LEVEL = ref()
-const THIRD_LEVEL = ref()
 const GROW_ITEM = ref()
 
 //REF
@@ -343,17 +357,17 @@ const total = ref<number>(0)
 const searchForm = ref({
   current: 1,
   size: 10,
-  firstLevelId: undefined,
-  secondLevelId: undefined,
-  thirdLevelId: undefined,
+  firstLevelId: void 0,
+  secondLevelId: void 0,
+  thirdLevelId: void 0,
   growName: void 0,
   state: void 0,
 })
 const form = ref({
   id: void 0,
   growId: void 0,
-  reason: void 0,
-  fileIds: void 0,
+  reason: '',
+  fileIds: '',
 })
 const rules = reactive<FormRules>({
   growId: [requiredRule('申请项目')],
@@ -361,10 +375,11 @@ const rules = reactive<FormRules>({
 })
 
 //INIT
-onMounted(() => {
-  initGrowth()
-  initGrowthItem()
+onMounted(async () => {
   fetchList()
+  initGrowthItem()
+  // 初始化成长项目仓库数据
+  await growthStore.init()
 })
 
 //COMPUTED
@@ -377,20 +392,15 @@ const headers = computed(() => {
 //WATCH
 
 //METHODS
-
-const initGrowth = async () => {
-  const { data: res } = await getGrowthTree()
-  GROWTH_TREE.value = res
-  FIRST_LEVEL.value = res
-}
-
 const initGrowthItem = async () => {
   const { data } = await getStudentGrowthItems()
   GROW_ITEM.value = data.map((item) => {
     return {
       id: item.id,
       name: item.name,
-      desc: `${item.firstLevelName}-${item.secondLevelName}-${item.thirdLevelName}`,
+      desc: `${item.firstLevelName ? item.firstLevelName : '无'} | ${
+        item.secondLevelName ? item.secondLevelName : '无'
+      } | ${item.thirdLevelName ? item.thirdLevelName : '无'}`,
     }
   })
 }
@@ -406,40 +416,14 @@ const fetchList = async () => {
   }
 }
 
-const findChildrenById = (
-  list: GrowthTreeVO[],
-  id: number,
-): GrowthTreeVO[] | [] => {
-  for (const item of list) {
-    if (item.id === id) {
-      return item.children || []
-    }
-  }
-  return []
-}
-
-const firstLevelChange = (val: number) => {
-  searchForm.value.secondLevelId = undefined
-  searchForm.value.thirdLevelId = undefined
-  SECOND_LEVEL.value = findChildrenById(FIRST_LEVEL.value, val)
-}
-
-const secondLevelChange = (val: number) => {
-  searchForm.value.thirdLevelId = undefined
-  THIRD_LEVEL.value = findChildrenById(SECOND_LEVEL.value, val)
-}
-
 const addRow = () => {
   title.value = '申请成长积分'
   active.value = true
 }
-const updateRow = (row) => {
+const updateRow = (row: AudGrow) => {
   title.value = '修改申请'
   active.value = true
-  form.value.id = row.id
-  form.value.growId = row.growId
-  form.value.reason = row.reason
-  // form.value.fileIds = row.fileIds;
+  Object.assign(form.value, row)
 }
 const delRow = (id: number) => {
   ElMessageBox.confirm('确认删除？', '删除该申请记录', {
@@ -485,12 +469,13 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
+    const formData = form.value as unknown as AudGrow
     if (title.value === '申请成长积分') {
-      const data = await applyGrowItem(form.value)
+      const data = await applyGrowItem(formData)
       ElMessage.success(data.message)
     }
     if (title.value === '修改申请') {
-      const data = await updateAudGrow(form.value)
+      const data = await updateAudGrow(formData)
       ElMessage.success(data.message)
     }
     fetchList()
@@ -504,7 +489,9 @@ const handleUploadRemove: UploadProps['onRemove'] = (
   uploadFile,
   uploadFiles,
 ) => {
-  const ids = uploadFiles.map((item) => item.response.data.id).join(',')
+  const ids = uploadFiles
+    .map((item) => (item.response as ResponseData<FileVO>).data.id)
+    .join(',')
   form.value.fileIds = ids
 }
 const handleUploadSuccess: UploadProps['onSuccess'] = (
@@ -512,7 +499,9 @@ const handleUploadSuccess: UploadProps['onSuccess'] = (
   uploadFile,
   uploadFiles,
 ) => {
-  const ids = uploadFiles.map((item) => item.response.data.id).join(',')
+  const ids = uploadFiles
+    .map((item) => (item.response as ResponseData<FileVO>).data.id)
+    .join(',')
   form.value.fileIds = ids
 }
 
@@ -520,8 +509,8 @@ const resetForm = () => {
   form.value = {
     id: void 0,
     growId: void 0,
-    reason: void 0,
-    fileIds: void 0,
+    reason: '',
+    fileIds: '',
   }
   formRef.value?.resetFields()
 }

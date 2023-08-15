@@ -24,12 +24,22 @@ export const constantRoute: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/:pathMatch(.*)',
+    component: () => import('@/views/error/404.vue'),
+    meta: {
+      title: 'NotFound',
+      icon: '',
+      hidden: true,
+      flag: 3,
+    },
+  },
+  {
     path: '/home',
     name: 'Home',
     component: () => import('@/views/home/index.vue'),
     meta: {
       title: '首页',
-      hidden: false,
+      hidden: true,
       icon: 'House',
       flag: 1,
     },
@@ -38,11 +48,12 @@ export const constantRoute: RouteRecordRaw[] = [
     path: '/',
     name: 'Layout',
     component: () => import('@/layout/index.vue'),
+    redirect: '/home',
     meta: {
       title: '布局',
-      hidden: false,
+      hidden: true,
       icon: '',
-      flag: 1,
+      flag: 3,
     },
     children: [
       {
@@ -71,14 +82,14 @@ export const constantRoute: RouteRecordRaw[] = [
   },
   {
     path: '/self',
-    redirect: '/center/center',
+    redirect: '/self/center',
     name: 'Self',
     component: () => import('@/layout/index.vue'),
     meta: {
       title: '我的',
-      hidden: false,
+      hidden: true,
       icon: '',
-      flag: 1,
+      flag: 3,
     },
     children: [
       {
@@ -87,9 +98,9 @@ export const constantRoute: RouteRecordRaw[] = [
         component: () => import('@/views/self/center/index.vue'),
         meta: {
           title: '个人中心',
-          hidden: false,
+          hidden: true,
           icon: '',
-          flag: 1,
+          flag: 3,
         },
       },
       {
@@ -98,9 +109,9 @@ export const constantRoute: RouteRecordRaw[] = [
         component: () => import('@/views/self/notify/index.vue'),
         meta: {
           title: '我的通知',
-          hidden: false,
+          hidden: true,
           icon: '',
-          flag: 1,
+          flag: 3,
         },
       },
     ],

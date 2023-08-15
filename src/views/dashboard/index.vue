@@ -94,7 +94,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Dashboard">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { getAnnouncementMyPage } from '@/api/system/announcement'

@@ -19,7 +19,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Home">
 import AnimationLayer from './components/AnimationLayer/index.vue'
 import OperationLayer from './components/OperationLayer/index.vue'
 import GrowthAnimation from './components/GrowthAnimation/index.vue'

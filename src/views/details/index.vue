@@ -30,7 +30,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Details">
 import { ref, onMounted } from 'vue'
 import { pageStudentRecScore, StudentRecScoreVO } from '@/api/details'
 import { ArrowLeft, Loading, ArrowRight } from '@element-plus/icons-vue'

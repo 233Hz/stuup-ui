@@ -45,7 +45,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Login">
 import { ref } from 'vue'
 import useUserStore from '@/store/modules/user'
 import useFlowersStore from '@/store/modules/flowers'

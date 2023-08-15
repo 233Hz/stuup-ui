@@ -220,7 +220,7 @@
   </el-row>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Collect">
 import { ref, onMounted } from 'vue'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { getRecLogPage } from '@/api/collect/index'

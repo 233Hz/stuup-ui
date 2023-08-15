@@ -244,7 +244,7 @@
   </el-row>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="GrowScore">
 import { ref, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { RecScoreVO, getRecScorePage } from '@/api/growScore/index'

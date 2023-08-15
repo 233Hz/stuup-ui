@@ -25,7 +25,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Screen">
 import Header from './components/header/index.vue'
 import Line1 from './components/line1/index.vue'
 import Line2 from './components/line2/index.vue'

@@ -182,7 +182,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Semester">
 import { ref, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import {

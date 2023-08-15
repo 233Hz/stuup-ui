@@ -188,7 +188,7 @@
   </el-row>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Honor">
 import { ref, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { RecHonorVO, getRecHonorPage } from '@/api/record/honor/index'

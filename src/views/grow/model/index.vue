@@ -20,7 +20,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Model">
 import { ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { setFlowerConfig } from '@/api/grow/model'

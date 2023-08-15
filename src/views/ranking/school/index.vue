@@ -17,7 +17,7 @@
   </div>
 </template>
 
-<script setup lang="tsx">
+<script setup lang="tsx" name="RankingSchool">
 import { ref, onMounted } from 'vue'
 import type { Column } from 'element-plus'
 import { getSchoolRank, SchoolRankVO } from '@/api/ranking/school/index'

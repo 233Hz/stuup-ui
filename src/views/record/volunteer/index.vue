@@ -206,7 +206,7 @@
   </el-row>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Volunteer">
 import { ref, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { RecVolunteerVO, getVolunteerPage } from '@/api/record/volunteer/index'

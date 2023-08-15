@@ -192,7 +192,7 @@
   </el-dialog>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Announcement">
 import {
   ref,
   onMounted,

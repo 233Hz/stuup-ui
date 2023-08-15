@@ -8,7 +8,7 @@ import type {
 } from './type'
 
 export const getStudentGrowthItems = async () => {
-  return get<GrowthItemSelect>('/growthItem/studentGrowthItems')
+  return get<GrowthItemSelect[]>('/growthItem/studentGrowthItems')
 }
 export const pageGrowApplyRecord = async (params: Page) => {
   return get<PageResult<GrowApplyRecord[]>>('/audGrow/page/apply', params)

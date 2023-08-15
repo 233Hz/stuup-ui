@@ -2,9 +2,10 @@ import { defineConfig, ConfigEnv, loadEnv } from 'vite'
 import path from 'path'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import { viteMockServe } from 'vite-plugin-mock'
+import vue from '@vitejs/plugin-vue'
 import unocss from 'unocss/vite'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import vue from '@vitejs/plugin-vue'
+import vueSetupExtend from 'vite-plugin-vue-setup-extend'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -22,6 +23,7 @@ export default defineConfig(({ command, mode }) => {
         localEnabled: command === 'serve',
       }),
       unocss(),
+      vueSetupExtend(),
     ],
     resolve: {
       alias: {

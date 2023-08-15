@@ -8,15 +8,28 @@
         <Aside />
       </div>
       <div class="right">
-        <RouterView />
+        <div class="breadcrumb">
+          <Breadcrumb />
+        </div>
+        <div class="main">
+          <router-view v-slot="{ Component, route }">
+            <keep-alive :include="permissionStore.getCachedView">
+              <component :is="Component" :key="route.fullPath" />
+            </keep-alive>
+          </router-view>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Layout">
 import Header from './components/header/index.vue'
 import Aside from './components/aside/index.vue'
+import Breadcrumb from './components/breadcrumb/index.vue'
+import usePermissionStore from '@/store/modules/premission'
+
+const permissionStore = usePermissionStore()
 </script>
 
 <style lang="scss" scoped>
@@ -41,7 +54,18 @@ import Aside from './components/aside/index.vue'
     .right {
       flex: 1;
       height: 100%;
-      overflow: auto;
+      display: flex;
+      flex-direction: column;
+
+      .breadcrumb {
+        height: 30px;
+        padding: 0 10px;
+      }
+
+      .main {
+        flex: 1;
+        overflow: auto;
+      }
     }
   }
 }

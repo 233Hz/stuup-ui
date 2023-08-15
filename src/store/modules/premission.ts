@@ -17,9 +17,14 @@ let usePermissionStore = defineStore('Permission', {
   state: (): PermissionState => {
     return {
       routes: [],
+      cachedView: new Set(),
     }
   },
-  getters: {},
+  getters: {
+    getCachedView(): string[] {
+      return Array.from(this.cachedView)
+    },
+  },
   actions: {
     /**
      * 生成路由
@@ -27,19 +32,19 @@ let usePermissionStore = defineStore('Permission', {
     async generateRoutes(): Promise<void> {
       return new Promise((resolve) => {
         reqUserAuthority().then(({ data }) => {
+          // 过滤出缓存路由名
+          this.cachedView = new Set(
+            data
+              .filter((menu) => menu.keepAlive === WHETHER.YES)
+              .map((menu) => menu.code),
+          )
+          console.log(this.cachedView)
+
+          // 生成路由
           const asyncRouter = formatRouter(data)
-          asyncRouter.push({
-            path: '/:pathMatch(.*)',
-            redirect: '/404',
-            name: 'NotFound',
-            meta: {
-              title: 'NotFound',
-              icon: '',
-              hidden: true,
-              flag: 3,
-            },
-          })
           this.routes = constantRoute.concat(asyncRouter)
+          console.log(this.routes)
+
           resolve()
         })
       })
@@ -120,6 +125,8 @@ const formatRouter = (menus: UserMenu[]): RouteRecordRaw[] => {
         flag: menu.flag,
         icon: menu.icon || '',
         hidden: false,
+        useLayout: menu.useLayout,
+        keepAlive: menu.keepAlive,
       }
       if (onlyFirstLevelMenu(menu) && menu.useLayout === WHETHER.YES) {
         return {
@@ -136,7 +143,11 @@ const formatRouter = (menus: UserMenu[]): RouteRecordRaw[] => {
             },
           ],
         }
-      } else if (menu.type === MENU_TYPE.CATALOG) {
+      } else if (
+        isFirstLevelMenu(menu) &&
+        menu.type === MENU_TYPE.CATALOG &&
+        menu.useLayout === WHETHER.YES
+      ) {
         return {
           path,
           name: menu.code,
@@ -158,10 +169,8 @@ const formatRouter = (menus: UserMenu[]): RouteRecordRaw[] => {
     })
   }
 
-  console.log(routerTree)
   // 排序
   sortTree(routerTree)
-  console.log(routerTree)
   // 生成路由
   const router = format(routerTree)
 

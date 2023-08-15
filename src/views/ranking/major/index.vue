@@ -17,7 +17,7 @@
   </div>
 </template>
 
-<script setup lang="tsx">
+<script setup lang="tsx" name="RankingMajor">
 import { ref, onMounted } from 'vue'
 import type { Column } from 'element-plus'
 import { getMajorRank, MajorRankVO } from '@/api/ranking/major/index'

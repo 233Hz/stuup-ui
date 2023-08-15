@@ -9,7 +9,7 @@
   </el-row>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="GrowConfig">
 import GrowthTree from './GrowthTree.vue'
 import GrowthItem from './GrowthItem.vue'
 </script>

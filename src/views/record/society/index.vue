@@ -179,7 +179,7 @@
   </el-row>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Society">
 import { ref, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { RecSocietyVO, getRecSocietyPage } from '@/api/record/society/index'

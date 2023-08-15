@@ -2,7 +2,6 @@ import router from '@/router'
 import pinia from './store'
 import NProgress from '@/utils/progress'
 import { existToken } from '@/utils/auth'
-import useUserStore from '@/store/modules/user'
 import usePermissionStore from '@/store/modules/premission'
 import useFlowersStore from './store/modules/flowers'
 import _ from 'lodash'
@@ -13,6 +12,7 @@ const premissionStore = usePermissionStore(pinia)
 
 // ↓全局后置钩子
 router.beforeEach(async (to, from, next) => {
+  console.log(to)
   NProgress.start()
   if (existToken()) {
     if (to.path === '/login') {

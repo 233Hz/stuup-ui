@@ -193,7 +193,7 @@
   </el-row>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Caucus">
 import { ref, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { RecCaucusVO, getRecCaucusPage } from '@/api/record/caucus/index'

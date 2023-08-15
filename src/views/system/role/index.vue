@@ -132,7 +132,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Role">
 import { ref, onMounted, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { getRolePage, saveRole, delRole, RoleVO } from '@/api/system/role/index'

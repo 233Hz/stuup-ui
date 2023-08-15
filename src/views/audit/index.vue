@@ -14,11 +14,17 @@
                   <el-form-item label="一级项目" prop="firstLevelId">
                     <el-select
                       v-model="searchForm.firstLevelId"
-                      @change="firstLevelChange"
+                      @change="
+                        (id: number) => {
+                          growthStore.handleLevel1Change(id)
+                          searchForm.secondLevelId = void 0
+                          searchForm.thirdLevelId = void 0
+                        }
+                      "
                       style="width: 100%"
                     >
                       <el-option
-                        v-for="item in FIRST_LEVEL"
+                        v-for="item in growthStore.level1"
                         :key="item.id"
                         :label="item.name"
                         :value="item.id"
@@ -30,11 +36,16 @@
                   <el-form-item label="二级项目" prop="secondLevelId">
                     <el-select
                       v-model="searchForm.secondLevelId"
-                      @change="secondLevelChange"
+                      @change="
+                        (id: number) => {
+                          growthStore.handleLevel2Change(id)
+                          searchForm.thirdLevelId = void 0
+                        }
+                      "
                       style="width: 100%"
                     >
                       <el-option
-                        v-for="item in SECOND_LEVEL"
+                        v-for="item in growthStore.level2"
                         :key="item.id"
                         :label="item.name"
                         :value="item.id"
@@ -49,7 +60,7 @@
                       style="width: 100%"
                     >
                       <el-option
-                        v-for="item in THIRD_LEVEL"
+                        v-for="item in growthStore.level3"
                         :key="item.id"
                         :label="item.name"
                         :value="item.id"
@@ -213,7 +224,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Audit">
 import { ref, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -223,15 +234,11 @@ import {
   refuseGrowItem,
   returnGrowItem,
 } from '@/api/audit'
-import { GrowthTreeVO, getGrowthTree } from '@/api/grow/config'
 import { AUDIT_STATUS } from '@/utils/dict'
-import AuditInfo from '@/components/AuditInfo.vue'
+import AuditInfo from '@/components/AuditInfo/index.vue'
+import useGrowthStore from '@/store/modules/growth'
 
-//DICT
-const GROWTH_TREE = ref<GrowthTreeVO[]>([])
-const FIRST_LEVEL = ref()
-const SECOND_LEVEL = ref()
-const THIRD_LEVEL = ref()
+const growthStore = useGrowthStore()
 
 //REF
 const searchFormRef = ref<FormInstance>()
@@ -251,18 +258,13 @@ const searchForm = ref({
   state: void 0,
 })
 
-onMounted(() => {
-  initGrowth()
+onMounted(async () => {
   fetchList()
+  // 初始化成长项目仓库数据
+  await growthStore.init()
 })
 
 //METHODS
-
-const initGrowth = async () => {
-  const { data: res } = await getGrowthTree()
-  GROWTH_TREE.value = res
-  FIRST_LEVEL.value = res
-}
 
 const fetchList = async () => {
   loading.value = true
@@ -330,29 +332,6 @@ const returnRow = (id: number) => {
       }
     })
     .catch(() => {})
-}
-
-const findChildrenById = (
-  list: GrowthTreeVO[],
-  id: number,
-): GrowthTreeVO[] | [] => {
-  for (const item of list) {
-    if (item.id === id) {
-      return item.children || []
-    }
-  }
-  return []
-}
-
-const firstLevelChange = (val: number) => {
-  searchForm.value.secondLevelId = undefined
-  searchForm.value.thirdLevelId = undefined
-  SECOND_LEVEL.value = findChildrenById(FIRST_LEVEL.value, val)
-}
-
-const secondLevelChange = (val: number) => {
-  searchForm.value.thirdLevelId = undefined
-  THIRD_LEVEL.value = findChildrenById(SECOND_LEVEL.value, val)
 }
 
 const handleCurrentChange = (val: number) => {

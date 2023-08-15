@@ -59,20 +59,20 @@
             </div>
           </div>
         </div>
-        <div class="flex justify-center">
-          <div
-            class="w-120 h-120 rounded-full overflow-hidden p-10 level-item"
-            v-for="(item, index) in conversionFlower.calculateConversionFlower(
-              growthInfo?.ranking!,
-            )"
-            :key="index"
-          >
-            <img
-              :src="item.imageSrc"
-              class="w-full h-full object-cover rounded-full"
-              style="-webkit-user-drag: none"
-            />
-          </div>
+      </div>
+      <div class="growth-level">
+        <div
+          class="level-item"
+          v-for="(item, index) in conversionFlower.calculateConversionFlower(
+            growthInfo?.totalScore!,
+          )"
+          :key="index"
+        >
+          <img :src="item.imageSrc" />
+          <p>
+            x
+            <span>{{ item.value }}</span>
+          </p>
         </div>
       </div>
       <!-- 菜单 -->
@@ -159,12 +159,12 @@ const menus = [
   {
     name: '我的积分申请',
     icon: applaySvg,
-    path: null,
+    path: '/apply',
   },
   {
     name: '我的积分明细',
     icon: detailsSvg,
-    path: null,
+    path: '/details',
   },
   {
     name: '我的成长画像',
@@ -293,7 +293,7 @@ const generateBlisters = (key: number | string, score: number): void => {
 .user-info-border {
   border-width: 50px;
   border-style: solid;
-  border-image: url(src/assets/image/user-self-border.png);
+  border-image: url(src/assets/image/home-student-info-border.png);
   border-image-slice: 200 400;
   border-image-repeat: no-repeat;
 }
@@ -316,30 +316,57 @@ const generateBlisters = (key: number | string, score: number): void => {
   -webkit-text-fill-color: transparent;
 }
 
-.level-item {
-  background: linear-gradient(
-    60deg,
-    #16a085,
-    #f4d03f,
-    #16a085,
-    #f4d03f,
-    #5073b8,
-    #1098ad,
-    #07b39b,
-    #6fba82
-  );
-  background-size: 300% 300%;
-  animation: animatedgradient 3s ease alternate infinite;
+.growth-level {
+  width: 312px;
+  height: 250px;
+  background: url(src/assets/image/home-growth-level-bg2.png);
+  background-size: 100% 100%;
+  position: absolute;
+  bottom: 140px;
+  left: 460px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 
-  @keyframes animatedgradient {
-    0% {
-      background-position: 0% 50%;
+  &::after {
+    content: '当前等级';
+    width: 100%;
+    font-size: 24px;
+    font-family: 华文行楷;
+    text-align: center;
+    color: #fff;
+    position: absolute;
+    left: 0;
+    top: -10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .level-item {
+    position: relative;
+    width: 100px;
+    height: 100px;
+
+    > img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      -webkit-user-drag: none;
     }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
+
+    > p {
+      width: 100%;
+      position: absolute;
+      bottom: -20px;
+      text-align: center;
+      color: #16a085;
+      font-style: 14px;
+
+      > span {
+        font-style: 16px;
+      }
     }
   }
 }
@@ -347,18 +374,6 @@ const generateBlisters = (key: number | string, score: number): void => {
 .drop {
   &:hover {
     transform: scale(1.05);
-  }
-}
-/* 注释为水滴动态效果，感兴趣的朋友可以自行设计水滴形状变化border-radius的值，使其变化更逼真 */
-@keyframes move {
-  25% {
-    transform: translateY(-1%);
-  }
-  50% {
-    transform: translateY(0);
-  }
-  75% {
-    transform: translateY(1%);
   }
 }
 </style>

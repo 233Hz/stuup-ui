@@ -200,7 +200,7 @@
   </el-row>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Nation">
 import { ref, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { RecNationVO, getRecNationPage } from '@/api/record/nation/index'

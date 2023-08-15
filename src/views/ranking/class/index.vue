@@ -17,7 +17,7 @@
   </div>
 </template>
 
-<script setup lang="tsx">
+<script setup lang="tsx" name="RankingClass">
 import { ref, onMounted } from 'vue'
 import type { Column } from 'element-plus'
 import { getClassRank, ClassRankVO } from '@/api/ranking/class/index'
