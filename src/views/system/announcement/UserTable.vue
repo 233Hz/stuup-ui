@@ -56,10 +56,8 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import {
-  AnnouncementPremUserVO,
-  getAnnouncementPremUser,
-} from '@/api/system/announcement'
+import { getAnnouncementPremUser } from '@/api/system/announcement'
+import type { AnnouncementPremUserVO } from '@/api/system/announcement/type'
 import { USER_TYPE } from '@/utils/dict'
 
 const emit = defineEmits(['select'])

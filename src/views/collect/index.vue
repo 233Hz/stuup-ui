@@ -18,7 +18,7 @@
                         style="width: 100%"
                       >
                         <el-option
-                          v-for="item in YEAR"
+                          v-for="item in dictionaryStore.year"
                           :key="item.oid"
                           :label="item.value"
                           :value="item.oid"
@@ -30,11 +30,17 @@
                     <el-form-item label="一级项目" prop="firstLevelId">
                       <el-select
                         v-model="searchForm.firstLevelId"
-                        @change="firstLevelChange"
+                        @change="
+                          (id: number) => {
+                            growthStore.handleLevel1Change(id)
+                            searchForm.secondLevelId = void 0
+                            searchForm.threeLevelId = void 0
+                          }
+                        "
                         style="width: 100%"
                       >
                         <el-option
-                          v-for="item in FIRST_LEVEL"
+                          v-for="item in growthStore.level1"
                           :key="item.id"
                           :label="item.name"
                           :value="item.id"
@@ -46,11 +52,16 @@
                     <el-form-item label="二级项目" prop="secondLevelId">
                       <el-select
                         v-model="searchForm.secondLevelId"
-                        @change="secondLevelChange"
+                        @change="
+                          (id: number) => {
+                            growthStore.handleLevel2Change(id)
+                            searchForm.threeLevelId = void 0
+                          }
+                        "
                         style="width: 100%"
                       >
                         <el-option
-                          v-for="item in SECOND_LEVEL"
+                          v-for="item in growthStore.level2"
                           :key="item.id"
                           :label="item.name"
                           :value="item.id"
@@ -65,7 +76,7 @@
                         style="width: 100%"
                       >
                         <el-option
-                          v-for="item in THREE_LEVEL"
+                          v-for="item in growthStore.level3"
                           :key="item.id"
                           :label="item.name"
                           :value="item.id"
@@ -224,28 +235,27 @@
 import { ref, onMounted } from 'vue'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { getRecLogPage } from '@/api/collect/index'
-import { GrowthTreeVO, getGrowthTree, manualTask } from '@/api/grow/config'
-import { getYearList } from '@/api/basic/year/index'
+import { manualTask } from '@/api/grow/config'
+import type { GrowthTreeVO } from '@/api/grow/config/type'
 import CollectForm from './CollectForm.vue'
 import CollectDetails from './CollectDetails.vue'
 import bus from '@/utils/bus'
+import useGrowthStore from '@/store/modules/growth'
+import useDictionaryStore from '@/store/modules/dictionary'
+import { DictionaryType } from '@/store/modules/dictionary'
+
+const growthStore = useGrowthStore()
+const dictionaryStore = useDictionaryStore()
 
 bus.on('upload-success', () => {
   fetchList()
 })
 
-onMounted(() => {
-  initYear()
-  initGrowth()
+onMounted(async () => {
+  await growthStore.init()
+  await dictionaryStore.init(DictionaryType.YEAR, DictionaryType.GRADE)
   fetchList()
 })
-
-// 字典
-const GROWTH_TREE = ref<GrowthTreeVO[]>([])
-const FIRST_LEVEL = ref()
-const SECOND_LEVEL = ref()
-const THREE_LEVEL = ref()
-const YEAR = ref()
 
 // Ref
 const collectFormRef = ref()
@@ -266,17 +276,6 @@ const searchForm = ref({
   growName: void 0,
 })
 const searchFormRef = ref<FormInstance>()
-
-const initYear = async () => {
-  const { data: res } = await getYearList()
-  YEAR.value = res
-}
-
-const initGrowth = async () => {
-  const { data: res } = await getGrowthTree()
-  GROWTH_TREE.value = res
-  FIRST_LEVEL.value = res
-}
 
 const fetchList = async () => {
   loading.value = true
@@ -304,17 +303,6 @@ const findChildrenById = (
     }
   }
   return []
-}
-
-const firstLevelChange = (val: number) => {
-  searchForm.value.secondLevelId = void 0
-  searchForm.value.threeLevelId = void 0
-  SECOND_LEVEL.value = findChildrenById(GROWTH_TREE.value, val)
-}
-
-const secondLevelChange = (val: number) => {
-  searchForm.value.threeLevelId = void 0
-  THREE_LEVEL.value = findChildrenById(GROWTH_TREE.value, val)
 }
 
 const handleCurrentChange = (val: number) => {

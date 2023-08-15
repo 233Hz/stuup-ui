@@ -149,12 +149,12 @@
 import { ref, onMounted, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import {
-  YearVO,
   getYearPage,
   saveOrUpdateYear,
   delYear,
   setCurrentYear,
 } from '@/api/basic/year/index'
+import type { YearVO } from '@/api/basic/year/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { WHETHER } from '@/utils/dict'
 
@@ -175,7 +175,7 @@ const searchForm = ref({
   yearName: '',
 })
 const form = ref<YearVO>({
-  oid: undefined,
+  oid: void 0,
   yearName: '',
   yearRange: [],
   yearStart: '',
@@ -285,6 +285,7 @@ const submitForm = async () => {
 
 const resetForm = () => {
   form.value = {
+    oid: void 0,
     yearName: '',
     yearRange: [],
     yearStart: '',

@@ -123,7 +123,7 @@
           style="width: 100%"
         >
           <el-option
-            v-for="item in user_list"
+            v-for="item in dictionaryStore.user"
             :key="item.oid"
             :label="item.value"
             :value="item.oid"
@@ -148,26 +148,24 @@
 import { ref, onMounted, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import {
-  FacultyVO,
   getFacultyPage,
   saveOrUpdateFaculty,
   delFaculty,
 } from '@/api/basic/faculty'
-import { UserDictVO, getUserList } from '@/api/system/user'
+import type { Faculty } from '@/api/basic/faculty/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import useDictionaryStore from '@/store/modules/dictionary'
+
+const dictionaryStore = useDictionaryStore()
 
 onMounted(() => {
-  fetchUser()
   fetchList()
 })
-
-// 字典值
-const user_list = ref<UserDictVO[]>()
 
 const loading = ref<boolean>(false)
 const dialog_active = ref<boolean>(false)
 const dialog_title = ref<string>('')
-const tableData = ref<FacultyVO[]>()
+const tableData = ref<Faculty[]>()
 const page = ref({
   current: 1,
   size: 10,
@@ -176,10 +174,10 @@ const page = ref({
 const searchForm = ref({
   key: '',
 })
-const form = ref<FacultyVO>({
+const form = ref<Faculty>({
   facultyCode: '',
   facultyName: '',
-  facultyAdmin: undefined,
+  facultyAdmin: void 0,
 })
 const rules = reactive<FormRules>({
   facultyCode: [{ required: true, message: '请填写系部编号', trigger: 'blur' }],
@@ -190,11 +188,6 @@ const rules = reactive<FormRules>({
 })
 const searchFormRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
-
-const fetchUser = async () => {
-  const { data: res } = await getUserList()
-  user_list.value = res
-}
 
 const fetchList = async () => {
   loading.value = true
@@ -222,13 +215,10 @@ const addRow = () => {
   dialog_title.value = '添加'
   dialog_active.value = true
 }
-const updateRow = (row: FacultyVO) => {
+const updateRow = (row: Faculty) => {
   dialog_title.value = '修改'
   dialog_active.value = true
-  form.value.oid = row.oid
-  form.value.facultyCode = row.facultyCode
-  form.value.facultyName = row.facultyName
-  form.value.facultyAdmin = row.facultyAdmin
+  Object.assign(form.value, row)
 }
 const delRow = (oid: number) => {
   ElMessageBox.confirm('确认删除？', '删除学年', {
@@ -255,7 +245,7 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
-    const data = form.value as unknown as FacultyVO
+    const data = form.value as unknown as Faculty
     const res = await saveOrUpdateFaculty(data)
     ElMessage.success(res.message)
     dialog_active.value = false

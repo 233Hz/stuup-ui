@@ -15,11 +15,17 @@
                     <el-form-item label="一级项目" prop="firstLevelId">
                       <el-select
                         v-model="searchForm.firstLevelId"
-                        @change="firstLevelChange"
+                        @change="
+                          (id: number) => {
+                            growthStore.handleLevel1Change(id)
+                            searchForm.secondLevelId = void 0
+                            searchForm.threeLevelId = void 0
+                          }
+                        "
                         style="width: 100%"
                       >
                         <el-option
-                          v-for="item in FIRST_LEVEL"
+                          v-for="item in growthStore.level1"
                           :key="item.id"
                           :label="item.name"
                           :value="item.id"
@@ -31,11 +37,16 @@
                     <el-form-item label="二级项目" prop="secondLevelId">
                       <el-select
                         v-model="searchForm.secondLevelId"
-                        @change="secondLevelChange"
+                        @change="
+                          (id: number) => {
+                            growthStore.handleLevel2Change(id)
+                            searchForm.threeLevelId = void 0
+                          }
+                        "
                         style="width: 100%"
                       >
                         <el-option
-                          v-for="item in SECOND_LEVEL"
+                          v-for="item in growthStore.level2"
                           :key="item.id"
                           :label="item.name"
                           :value="item.id"
@@ -50,7 +61,7 @@
                         style="width: 100%"
                       >
                         <el-option
-                          v-for="item in THREE_LEVEL"
+                          v-for="item in growthStore.level3"
                           :key="item.id"
                           :label="item.name"
                           :value="item.id"
@@ -70,7 +81,7 @@
                         style="width: 100%"
                       >
                         <el-option
-                          v-for="item in YEAR"
+                          v-for="item in dictionaryStore.year"
                           :key="item.oid"
                           :label="item.value"
                           :value="item.oid"
@@ -85,7 +96,7 @@
                         style="width: 100%"
                       >
                         <el-option
-                          v-for="item in GRADE"
+                          v-for="item in dictionaryStore.grade"
                           :key="item.oid"
                           :label="item.gradeName"
                           :value="item.oid"
@@ -247,25 +258,21 @@
 <script setup lang="ts" name="GrowScore">
 import { ref, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
-import { RecScoreVO, getRecScorePage } from '@/api/growScore/index'
-import { GrowthTreeVO, getGrowthTree } from '@/api/grow/config'
-import { getGraderList } from '@/api/basic/grade/index'
-import { getYearList } from '@/api/basic/year/index'
+import type { RecScoreVO } from '@/api/growScore/type'
+import type { GrowthTreeVO } from '@/api/grow/config/type'
+import { getRecScorePage } from '@/api/growScore/index'
+import useDictionaryStore from '@/store/modules/dictionary'
+import { DictionaryType } from '@/store/modules/dictionary'
+import useGrowthStore from '@/store/modules/growth'
 
-onMounted(() => {
-  initYear()
-  initGrade()
-  initGrowth()
+const dictionaryStore = useDictionaryStore()
+const growthStore = useGrowthStore()
+
+onMounted(async () => {
+  await dictionaryStore.init(DictionaryType.YEAR, DictionaryType.GRADE)
+  await growthStore.init()
   fetchList()
 })
-
-// 字典
-const GROWTH_TREE = ref<GrowthTreeVO[]>([])
-const YEAR = ref()
-const GRADE = ref()
-const FIRST_LEVEL = ref()
-const SECOND_LEVEL = ref()
-const THREE_LEVEL = ref()
 
 const loading = ref<boolean>(false)
 const tableData = ref<RecScoreVO[]>()
@@ -273,36 +280,20 @@ const total = ref<number>(0)
 const searchForm = ref({
   current: 1,
   size: 10,
-  yearId: undefined,
-  firstLevelId: undefined,
-  secondLevelId: undefined,
-  threeLevelId: undefined,
-  growName: undefined,
-  gradeId: undefined,
-  className: undefined,
-  studentName: undefined,
-  studentNo: undefined,
+  yearId: void 0,
+  firstLevelId: void 0,
+  secondLevelId: void 0,
+  threeLevelId: void 0,
+  growName: void 0,
+  gradeId: void 0,
+  className: void 0,
+  studentName: void 0,
+  studentNo: void 0,
   datatimeRange: [],
-  startTime: undefined,
-  endTime: undefined,
+  startTime: void 0,
+  endTime: void 0,
 })
 const searchFormRef = ref<FormInstance>()
-
-const initYear = async () => {
-  const { data: res } = await getYearList()
-  YEAR.value = res
-}
-
-const initGrade = async () => {
-  const { data: res } = await getGraderList()
-  GRADE.value = res
-}
-
-const initGrowth = async () => {
-  const { data: res } = await getGrowthTree()
-  GROWTH_TREE.value = res
-  FIRST_LEVEL.value = res
-}
 
 const handleSearch = () => {
   const timeRange = searchForm.value.datatimeRange
@@ -336,17 +327,6 @@ const findChildrenById = (
   return []
 }
 
-const firstLevelChange = (val: number) => {
-  searchForm.value.secondLevelId = undefined
-  searchForm.value.threeLevelId = undefined
-  SECOND_LEVEL.value = findChildrenById(FIRST_LEVEL.value, val)
-}
-
-const secondLevelChange = (val: number) => {
-  searchForm.value.threeLevelId = undefined
-  THREE_LEVEL.value = findChildrenById(SECOND_LEVEL.value, val)
-}
-
 const handleCurrentChange = (val: number) => {
   searchForm.value.current = val
   fetchList()
@@ -360,18 +340,18 @@ const searchFormReset = () => {
   searchForm.value = {
     current: 1,
     size: 10,
-    yearId: undefined,
-    firstLevelId: undefined,
-    secondLevelId: undefined,
-    threeLevelId: undefined,
-    growName: undefined,
-    gradeId: undefined,
-    className: undefined,
-    studentName: undefined,
-    studentNo: undefined,
+    yearId: void 0,
+    firstLevelId: void 0,
+    secondLevelId: void 0,
+    threeLevelId: void 0,
+    growName: void 0,
+    gradeId: void 0,
+    className: void 0,
+    studentName: void 0,
+    studentNo: void 0,
     datatimeRange: [],
-    startTime: undefined,
-    endTime: undefined,
+    startTime: void 0,
+    endTime: void 0,
   }
 }
 </script>

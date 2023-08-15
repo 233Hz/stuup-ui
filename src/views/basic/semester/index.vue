@@ -18,7 +18,7 @@
                       class="w-full"
                     >
                       <el-option
-                        v-for="item in YEAR"
+                        v-for="item in dictionaryStore.year"
                         :key="item.oid"
                         :label="item.value"
                         :value="item.oid"
@@ -146,7 +146,7 @@
         <el-form-item label="所属学年" prop="yearId">
           <el-select v-model="form.yearId" placeholder="请选择" class="w-full">
             <el-option
-              v-for="item in YEAR"
+              v-for="item in dictionaryStore.year"
               :key="item.oid"
               :label="item.value"
               :value="item.oid"
@@ -191,13 +191,18 @@ import {
   delSemester,
   setCurrentSemester,
 } from '@/api/basic/semester'
-import { getYearList } from '@/api/basic/year'
+import type { SemesterVO, SemesterDTO } from '@/api/basic/semester/type'
 import { requiredRule } from '@/utils/rules'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { WHETHER } from '@/utils/dict'
+import useDictionaryStore from '@/store/modules/dictionary'
+import { DictionaryType } from '@/store/modules/dictionary'
 
-onMounted(() => {
-  initYear()
+const dictionaryStore = useDictionaryStore()
+
+onMounted(async () => {
+  // 初始化仓库年份信息
+  await dictionaryStore.init(DictionaryType.YEAR)
   fetchList()
 })
 
@@ -205,20 +210,17 @@ onMounted(() => {
 const searchFormRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
 
-// DICT
-const YEAR = ref()
-
 // DATA
 const active = ref<boolean>(false)
 const title = ref<string>('')
 const loading = ref<boolean>(false)
-const tableData = ref()
+const tableData = ref<SemesterVO[]>()
 const total = ref<number>(0)
-const form = ref({
+const form = ref<any>({
   id: void 0,
   yearId: void 0,
   name: void 0,
-  dateRange: void 0,
+  dateRange: [],
 })
 const rules = {
   yearId: [requiredRule('所属学年')],
@@ -233,10 +235,6 @@ const searchForm = ref({
 })
 
 // METHODS
-const initYear = async () => {
-  const { data: res } = await getYearList()
-  YEAR.value = res
-}
 
 const fetchList = async () => {
   loading.value = true
@@ -272,12 +270,10 @@ const addRow = () => {
   title.value = '添加'
   active.value = true
 }
-const updateRow = (row) => {
+const updateRow = (row: SemesterVO) => {
   title.value = '修改'
   active.value = true
-  form.value.id = row.id
-  form.value.yearId = row.yearId
-  form.value.name = row.name
+  Object.assign(form.value, row)
   form.value.dateRange = [row.startTime, row.endTime]
 }
 
@@ -308,10 +304,12 @@ const submitForm = async () => {
   const { dateRange, ...data } = form.value
   const startTime = dateRange![0]
   const endTime = dateRange![1]
+  const formData = Object.assign(data, {
+    startTime,
+    endTime,
+  }) as unknown as SemesterDTO
   try {
-    const res = await saveOrUpdateSemester(
-      Object.assign(data, { startTime, endTime }),
-    )
+    const res = await saveOrUpdateSemester(formData)
     ElMessage.success(res.message)
     active.value = false
     fetchList()
@@ -331,9 +329,10 @@ const handleSizeChange = (val: number) => {
 
 const resetForm = () => {
   form.value = {
+    id: void 0,
     yearId: void 0,
     name: void 0,
-    dataRange: void 0,
+    dateRange: [],
   }
   formRef.value?.resetFields()
 }

@@ -7,6 +7,7 @@ export type StudentSemesterInfoList = StudentSemesterInfo[]
 
 export interface SemesterVO {
   id: number
+  yearId: number
   yearName: string
   name: string
   startTime: Date

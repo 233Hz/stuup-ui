@@ -21,7 +21,7 @@
       ref="treeRef"
       v-loading="loading"
       default-expand-all
-      :data="treeData"
+      :data="growthStore.level1"
       :props="props"
       :expand-on-click-node="false"
       :filter-node-method="filterNode"
@@ -45,7 +45,7 @@
             v-model="form.pid"
             placeholder="请选择父项目"
             clearable
-            :options="treeData"
+            :options="growthStore.level1"
             :props="cascaderProps"
             style="width: 100%"
           />
@@ -87,15 +87,13 @@
 <script setup lang="ts">
 import { onMounted, ref, reactive, watch, h } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import {
-  GrowthTreeVO,
-  GrowthVO,
-  getGrowthTree,
-  saveOrUpdateGrowth,
-  delGrowth,
-} from '@/api/grow/config'
+import { saveOrUpdateGrowth, delGrowth } from '@/api/grow/config'
+import { GrowthVO, GrowthTreeVO } from '@/api/grow/config/type'
 import { ElMessage, ElMessageBox, ElTree } from 'element-plus'
 import bus from '@/utils/bus'
+import useGrowthStore from '@/store/modules/growth'
+
+const growthStore = useGrowthStore()
 
 const props = {
   label: 'name',
@@ -115,7 +113,6 @@ const active = ref<boolean>(false)
 const title = ref<string>('')
 const loading = ref<boolean>(false)
 const filterText = ref<string>()
-const treeData = ref<GrowthTreeVO[]>([])
 
 const treeRef = ref<InstanceType<typeof ElTree>>()
 const formRef = ref<FormInstance>()
@@ -131,20 +128,9 @@ const rules = reactive<FormRules>({
   sort: [{ required: true, message: '请填写顺序', trigger: 'blur' }],
 })
 
-onMounted(() => {
-  fetchGetGrowthTree()
+onMounted(async () => {
+  await growthStore.init()
 })
-
-const fetchGetGrowthTree = async () => {
-  loading.value = true
-  try {
-    const { data: res } = await getGrowthTree()
-    treeData.value = res
-    bus.emit('get-tree', res)
-  } finally {
-    loading.value = false
-  }
-}
 
 const addRow = () => {
   resetForm()
@@ -179,7 +165,7 @@ const delRow = () => {
       try {
         const res = await delGrowth(form.value.id!)
         ElMessage.success(res.message)
-        fetchGetGrowthTree()
+        growthStore.init()
       } finally {
         loading.value = false
       }
@@ -187,7 +173,7 @@ const delRow = () => {
     .catch(() => {})
 }
 
-const handleNodeClick = (nodeData: GrowthTreeVO, e) => {
+const handleNodeClick = (nodeData: GrowthTreeVO, e: any) => {
   const keys = []
   form.value.id = nodeData.id
   form.value.pid = nodeData.pid
@@ -214,7 +200,7 @@ const submitForm = async () => {
     const res = await saveOrUpdateGrowth(form.value)
     ElMessage.success(res.message)
     active.value = false
-    fetchGetGrowthTree()
+    await growthStore.init()
   } finally {
     loading.value = false
   }
@@ -223,7 +209,8 @@ const submitForm = async () => {
 watch(filterText, (val) => {
   treeRef.value!.filter(val)
 })
-const filterNode = (value: string, data: GrowthTreeVO) => {
+
+const filterNode = (value: string, data: { [key: string]: any }) => {
   if (!value) return true
   return data.name.includes(value)
 }

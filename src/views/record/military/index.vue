@@ -18,7 +18,7 @@
                         style="width: 100%"
                       >
                         <el-option
-                          v-for="item in YEAR"
+                          v-for="item in dictionaryStore.year"
                           :key="item.oid"
                           :label="item.value"
                           :value="item.oid"
@@ -33,7 +33,7 @@
                         style="width: 100%"
                       >
                         <el-option
-                          v-for="item in GRADE"
+                          v-for="item in dictionaryStore.grade"
                           :key="item.oid"
                           :label="item.gradeName"
                           :value="item.oid"
@@ -182,24 +182,22 @@
 <script setup lang="ts" name="Military">
 import { ref, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
-import { RecMilitaryVO, getRecMilitaryPage } from '@/api/record/military/index'
-import { getGraderList } from '@/api/basic/grade/index'
-import { getYearList } from '@/api/basic/year/index'
+import { getRecMilitaryPage } from '@/api/record/military/index'
+import type { RecMilitaryVO } from '@/api/record/military/type'
 import { MILITARY_LEVEL, WHETHER, REC_CODE } from '@/utils/dict'
 import { downRecord } from '@/api/record'
+import useDictionaryStore from '@/store/modules/dictionary'
+import { DictionaryType } from '@/store/modules/dictionary'
 
-onMounted(() => {
-  initYear()
-  initGrade()
+const dictionaryStore = useDictionaryStore()
+
+onMounted(async () => {
+  await dictionaryStore.init(DictionaryType.YEAR, DictionaryType.GRADE)
   fetchList()
 })
 
 // REF
 const searchFormRef = ref<FormInstance>()
-
-// DICT
-const YEAR = ref()
-const GRADE = ref()
 
 // DATA
 const loading = ref<boolean>(false)
@@ -218,16 +216,6 @@ const searchForm = ref({
   level: undefined,
 })
 
-// METHODS
-const initYear = async () => {
-  const { data: res } = await getYearList()
-  YEAR.value = res
-}
-
-const initGrade = async () => {
-  const { data: res } = await getGraderList()
-  GRADE.value = res
-}
 const fetchList = async () => {
   loading.value = true
   try {

@@ -18,7 +18,7 @@
                         style="width: 100%"
                       >
                         <el-option
-                          v-for="item in GRADE"
+                          v-for="item in dictionaryStore.grade"
                           :key="item.oid"
                           :label="item.gradeName"
                           :value="item.oid"
@@ -182,18 +182,19 @@
 <script setup lang="ts" name="Society">
 import { ref, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
-import { RecSocietyVO, getRecSocietyPage } from '@/api/record/society/index'
-import { getGraderList } from '@/api/basic/grade/index'
+import { getRecSocietyPage } from '@/api/record/society/index'
+import type { RecSocietyVO } from '@/api/record/society/type'
 import { AWARD_LEVEL, REC_CODE } from '@/utils/dict'
 import { downRecord } from '@/api/record'
+import useDictionaryStore from '@/store/modules/dictionary'
+import { DictionaryType } from '@/store/modules/dictionary'
 
-onMounted(() => {
-  initGrade()
+const dictionaryStore = useDictionaryStore()
+
+onMounted(async () => {
+  await dictionaryStore.init(DictionaryType.GRADE)
   fetchList()
 })
-
-// 字典
-const GRADE = ref()
 
 const loading = ref<boolean>(false)
 const tableData = ref<RecSocietyVO[]>()
@@ -209,10 +210,6 @@ const searchForm = ref({
 })
 const searchFormRef = ref<FormInstance>()
 
-const initGrade = async () => {
-  const { data: res } = await getGraderList()
-  GRADE.value = res
-}
 const fetchList = async () => {
   loading.value = true
   try {

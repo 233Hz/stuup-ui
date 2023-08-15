@@ -174,7 +174,7 @@
             v-model="form.growthItems"
             placeholder="请选择所属项目"
             clearable
-            :options="growthList"
+            :options="growthStore.level1"
             :props="cascaderProps"
             style="width: 100%"
           />
@@ -287,12 +287,11 @@
 import { ref, onMounted, watch, h } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import {
-  GrowthTreeVO,
-  GrowthItemVO,
   getGrowthItemPage,
   saveOrUpdateGrowthItem,
   delGrowthItem,
 } from '@/api/grow/config'
+import type { GrowthItemVO } from '@/api/grow/config/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   PERIOD,
@@ -302,13 +301,12 @@ import {
 } from '@/utils/dict'
 import { requiredRule } from '@/utils/rules'
 import bus from '@/utils/bus'
+import useGrowthStore from '@/store/modules/growth'
 import SetGrowUserDrawer from './SetGrowUserDrawer.vue'
 
-/* Bus */
-bus.on('get-tree', (growthTree: GrowthTreeVO) => {
-  growthList.value = growthTree
-})
+const growthStore = useGrowthStore()
 
+/* Bus */
 bus.on('node-click', (keys: number[]) => {
   searchForm.value.firstLevelId = keys[0]
   searchForm.value.secondLevelId = keys[1]
@@ -330,7 +328,6 @@ const formRef = ref<FormInstance>()
 const setGrowUserDrawerRef = ref()
 
 /* Data */
-const growthList = ref<GrowthTreeVO>()
 const loading = ref<boolean>(false)
 const active = ref<boolean>(false)
 const dialogType = ref<string>('')

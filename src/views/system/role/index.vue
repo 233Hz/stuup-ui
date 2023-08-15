@@ -135,7 +135,8 @@
 <script setup lang="ts" name="Role">
 import { ref, onMounted, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import { getRolePage, saveRole, delRole, RoleVO } from '@/api/system/role/index'
+import { getRolePage, saveRole, delRole } from '@/api/system/role/index'
+import { RoleVO } from '@/api/system/role/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import MenuTree from './MenuTree.vue'
 

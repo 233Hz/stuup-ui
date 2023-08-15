@@ -26,7 +26,7 @@
                       style="width: 100%"
                     >
                       <el-option
-                        v-for="item in basicInfoStore.faculty"
+                        v-for="item in dictionaryStore.faculty"
                         :key="item.oid"
                         :label="item.facultyName"
                         :value="item.oid"
@@ -42,7 +42,7 @@
                       style="width: 100%"
                     >
                       <el-option
-                        v-for="item in basicInfoStore.grade"
+                        v-for="item in dictionaryStore.grade"
                         :key="item.oid"
                         :label="item.gradeName"
                         :value="item.oid"
@@ -177,7 +177,7 @@
           style="width: 100%"
         >
           <el-option
-            v-for="item in basicInfoStore.faculty"
+            v-for="item in dictionaryStore.faculty"
             :key="item.oid"
             :label="item.facultyName"
             :value="item.oid"
@@ -191,7 +191,7 @@
           style="width: 100%"
         >
           <el-option
-            v-for="item in basicInfoStore.grade"
+            v-for="item in dictionaryStore.grade"
             :key="item.oid"
             :label="item.gradeName"
             :value="item.oid"
@@ -205,7 +205,7 @@
           style="width: 100%"
         >
           <el-option
-            v-for="item in basicInfoStore.major"
+            v-for="item in dictionaryStore.major"
             :key="item.oid"
             :label="item.majorName"
             :value="item.oid"
@@ -219,7 +219,7 @@
           style="width: 100%"
         >
           <el-option
-            v-for="item in basicInfoStore.user"
+            v-for="item in dictionaryStore.user"
             :key="item.oid"
             :label="item.value"
             :value="item.oid"
@@ -233,7 +233,7 @@
           style="width: 100%"
         >
           <el-option
-            v-for="item in basicInfoStore.user"
+            v-for="item in dictionaryStore.user"
             :key="item.oid"
             :label="item.value"
             :value="item.oid"
@@ -273,22 +273,18 @@ import {
 } from '@/api/basic/class/index'
 import type { Class } from '@/api/basic/class/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import useBasicInfoStore from '@/store/modules/basicInfo'
-import { BasicInfoType } from '@/store/modules/basicInfo'
+import useDictionaryStore from '@/store/modules/dictionary'
+import { DictionaryType } from '@/store/modules/dictionary'
 
-const basicInfoStore = useBasicInfoStore()
+const dictionaryStore = useDictionaryStore()
 
 onMounted(async () => {
-  // initFacultyList()
-  // initGradeList()
-  // initMajorList()
-  // initUser()
   fetchList()
-  await basicInfoStore.init(
-    BasicInfoType.USER_INFO,
-    BasicInfoType.GRADE_INFO,
-    BasicInfoType.FACULTY_INFO,
-    BasicInfoType.MAJOR_INFO,
+  await dictionaryStore.init(
+    DictionaryType.USER,
+    DictionaryType.GRADE,
+    DictionaryType.FACULTY,
+    DictionaryType.MAJOR,
   )
 })
 

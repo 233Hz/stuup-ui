@@ -69,7 +69,7 @@ onMounted(() => {
 
 const handleTagClick = async (id: number) => (active.value = id)
 
-const handleCoursChange = (data) => {
+const handleCoursChange = (data: any) => {
   courses.value = data
 }
 </script>

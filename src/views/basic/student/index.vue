@@ -26,7 +26,7 @@
                       style="width: 100%"
                     >
                       <el-option
-                        v-for="item in grade_list"
+                        v-for="item in dictionaryStore.grade"
                         :key="item.oid"
                         :label="item.gradeName"
                         :value="item.oid"
@@ -42,7 +42,7 @@
                       style="width: 100%"
                     >
                       <el-option
-                        v-for="item in major_list"
+                        v-for="item in dictionaryStore.major"
                         :key="item.oid"
                         :label="item.majorName"
                         :value="item.oid"
@@ -270,25 +270,20 @@
 <script setup lang="ts" name="Student">
 import { ref, onMounted, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import {
-  getStudentPage,
-  saveStudent,
-  StudentVO,
-} from '@/api/basic/student/index'
-import { GradeDictVO, getGraderList } from '@/api/basic/grade/index'
-import { MajorDictVO, getMajorList } from '@/api/basic/major/index'
+import { getStudentPage, saveStudent } from '@/api/basic/student/index'
+import type { StudentVO } from '@/api/basic/student/type'
 import { ElMessage } from 'element-plus'
 import { SEX, SCHOOL_WORD_STATE } from '@/utils/dict'
+import useDictionaryStore from '@/store/modules/dictionary'
+import { DictionaryType } from '@/store/modules/dictionary'
 
-onMounted(() => {
-  initGradeList()
-  initMajorList()
+const dictionaryStore = useDictionaryStore()
+
+onMounted(async () => {
+  // 初始化仓库年级和专业信息
+  await dictionaryStore.init(DictionaryType.MAJOR, DictionaryType.GRADE)
   fetchList()
 })
-
-// 字典
-const grade_list = ref<GradeDictVO[]>()
-const major_list = ref<MajorDictVO[]>()
 
 const loading = ref<boolean>(false)
 const dialog_active = ref<boolean>(false)
@@ -331,15 +326,6 @@ const rules = reactive<FormRules>({
 })
 const searchFormRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
-
-const initGradeList = async () => {
-  const { data: res } = await getGraderList()
-  grade_list.value = res
-}
-const initMajorList = async () => {
-  const { data: res } = await getMajorList()
-  major_list.value = res
-}
 
 const fetchList = async () => {
   loading.value = true

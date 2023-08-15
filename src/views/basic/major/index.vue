@@ -134,7 +134,7 @@
           style="width: 100%"
         >
           <el-option
-            v-for="item in faculty_list"
+            v-for="item in dictionaryStore.faculty"
             :key="item.oid"
             :label="item.facultyName"
             :value="item.oid"
@@ -182,27 +182,25 @@
 import { ref, onMounted, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import {
-  MajorVO,
   getMajorPage,
   saveOrUpdateMajor,
   delMajor,
 } from '@/api/basic/major/index'
-import { FacultyDictVO, getFacultyList } from '@/api/basic/faculty/index'
+import type { Major } from '@/api/basic/major/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { EFFECTIVENESS } from '@/utils/dict'
+import useDictionaryStore from '@/store/modules/dictionary'
+
+const dictionaryStore = useDictionaryStore()
 
 onMounted(() => {
-  initFacultyList()
   fetchList()
 })
-
-// 字典值
-const faculty_list = ref<FacultyDictVO[]>()
 
 const loading = ref<boolean>(false)
 const dialog_active = ref<boolean>(false)
 const dialog_title = ref<string>('')
-const tableData = ref<MajorVO[]>()
+const tableData = ref<Major[]>()
 const page = ref({
   current: 1,
   size: 10,
@@ -211,7 +209,7 @@ const page = ref({
 const searchForm = ref({
   key: '',
 })
-const form = ref<MajorVO>({
+const form = ref<Major>({
   majorCode: '',
   majorName: '',
   facultyId: undefined,
@@ -227,11 +225,6 @@ const rules = reactive<FormRules>({
 })
 const searchFormRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
-
-const initFacultyList = async () => {
-  const { data: res } = await getFacultyList()
-  faculty_list.value = res
-}
 
 const fetchList = async () => {
   loading.value = true
@@ -259,15 +252,10 @@ const addRow = () => {
   dialog_title.value = '添加'
   dialog_active.value = true
 }
-const updateRow = (row: MajorVO) => {
+const updateRow = (row: Major) => {
   dialog_title.value = '修改'
   dialog_active.value = true
-  form.value.oid = row.oid
-  form.value.majorCode = row.majorCode
-  form.value.majorName = row.majorName
-  form.value.facultyId = row.facultyId
-  form.value.system = row.system
-  form.value.state = row.state
+  Object.assign(form.value, row)
 }
 const delRow = (oid: number) => {
   ElMessageBox.confirm('确认删除？', '删除学年', {
@@ -294,7 +282,7 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
-    const data = form.value as unknown as MajorVO
+    const data = form.value as unknown as Major
     const res = await saveOrUpdateMajor(data)
     ElMessage.success(res.message)
     dialog_active.value = false

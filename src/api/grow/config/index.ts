@@ -1,6 +1,7 @@
 import { get, post, del, download } from '@/api/api'
 import { Page, PageResult } from '@/types/global'
 import type { GrowthTreeVO, GrowthVO, GrowthItemVO } from './type'
+import type { SimpleUserVO } from '@/api/system/user/type'
 
 export const getGrowthTree = async () => {
   return await get<GrowthTreeVO[]>('/growth/tree')
@@ -43,5 +44,5 @@ export const setGrowthItemUser = async (growId: number, userIds: number[]) => {
 }
 
 export const getGrowItemUser = async (growId: number) => {
-  return await get('/growUser/getGrowItemUser/' + growId)
+  return await get<SimpleUserVO[]>('/growUser/getGrowItemUser/' + growId)
 }

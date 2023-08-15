@@ -6,13 +6,13 @@
 import { ref, onMounted, watch } from 'vue'
 import * as echarts from 'echarts'
 import { reqGrowthAnalysis } from '@/api/portrait/index'
-import { PortraitGrowthAnalysisVOList } from '@/api/portrait/type'
+import { PortraitGrowthAnalysisList } from '@/api/portrait/type'
 
 const chartRef = ref()
 let option = {}
 const list = ref()
 
-watch(list, (newVal: PortraitGrowthAnalysisVOList) => {
+watch(list, (newVal: PortraitGrowthAnalysisList) => {
   let xData: string[] = []
   let values: number[] = []
   newVal.forEach((item) => {

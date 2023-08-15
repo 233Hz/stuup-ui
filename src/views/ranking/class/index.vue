@@ -20,7 +20,8 @@
 <script setup lang="tsx" name="RankingClass">
 import { ref, onMounted } from 'vue'
 import type { Column } from 'element-plus'
-import { getClassRank, ClassRankVO } from '@/api/ranking/class/index'
+import type { ClassRankVO } from '@/api/ranking/class/type'
+import { getClassRank } from '@/api/ranking/class/index'
 import { ElButton, ElSelectV2, ElIcon, ElPopover } from 'element-plus'
 import { Filter } from '@element-plus/icons-vue'
 

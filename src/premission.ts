@@ -12,7 +12,6 @@ const premissionStore = usePermissionStore(pinia)
 
 // ↓全局后置钩子
 router.beforeEach(async (to, from, next) => {
-  console.log(to)
   NProgress.start()
   if (existToken()) {
     if (to.path === '/login') {

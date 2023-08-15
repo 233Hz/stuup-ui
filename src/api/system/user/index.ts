@@ -17,7 +17,10 @@ export const getUserList = async () => {
 }
 
 export const getSimpleUserPage = async (params: Page) => {
-  return await get<SimpleUserVO[]>('/user/getSimpleUserPage', params)
+  return await get<PageResult<SimpleUserVO[]>>(
+    '/user/getSimpleUserPage',
+    params,
+  )
 }
 
 export const getUserPage = async (params: Page) => {

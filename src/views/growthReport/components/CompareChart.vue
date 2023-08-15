@@ -111,7 +111,7 @@ const option = {
       type: 'value',
       inverse: true,
       min: 0,
-      max: (val) => {
+      max: (val: any) => {
         return Math.floor(val.max * 1.1)
       },
       axisLine: {
@@ -139,7 +139,7 @@ const option = {
       type: 'value',
       gridIndex: 1,
       min: 0,
-      max: (val) => {
+      max: (val: any) => {
         return Math.floor(val.max * 1.1)
       },
       axisLine: {

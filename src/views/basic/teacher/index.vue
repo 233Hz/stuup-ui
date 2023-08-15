@@ -22,7 +22,7 @@
                       style="width: 100%"
                     >
                       <el-option
-                        v-for="item in faculty_list"
+                        v-for="item in dictionaryStore.faculty"
                         :key="item.oid"
                         :label="item.facultyName"
                         :value="item.oid"
@@ -232,22 +232,19 @@
 <script setup lang="ts" name="Teacher">
 import { ref, onMounted, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import {
-  getTeacherPage,
-  saveTeacher,
-  TeacherVO,
-} from '@/api/basic/teacher/index'
-import { FacultyDictVO, getFacultyList } from '@/api/basic/faculty/index'
+import { getTeacherPage, saveTeacher } from '@/api/basic/teacher/index'
+import type { TeacherVO } from '@/api/basic/teacher/type'
 import { ElMessage } from 'element-plus'
 import { SEX, TESCHER_STATE } from '@/utils/dict'
+import useDictionaryStore from '@/store/modules/dictionary'
+import { DictionaryType } from '@/store/modules/dictionary'
 
-onMounted(() => {
-  fetchFacultyList()
+const dictionaryStore = useDictionaryStore()
+
+onMounted(async () => {
+  await dictionaryStore.init(DictionaryType.FACULTY)
   fetchList()
 })
-
-// 字典值
-const faculty_list = ref<FacultyDictVO[]>()
 
 const loading = ref<boolean>(false)
 const dialog_active = ref<boolean>(false)
@@ -265,13 +262,13 @@ const searchForm = ref({
 const form = ref<TeacherVO>({
   jobNo: '',
   name: '',
-  sex: undefined,
-  facultyId: undefined,
-  teachGroup: undefined,
+  sex: void 0,
+  facultyId: void 0,
+  teachGroup: void 0,
   phone: '',
   idCard: '',
   address: '',
-  state: undefined,
+  state: void 0,
 })
 const rules = reactive<FormRules>({
   jobNo: [{ required: true, message: '请填写教师工号', trigger: 'blur' }],
@@ -286,11 +283,6 @@ const rules = reactive<FormRules>({
 })
 const searchFormRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
-
-const fetchFacultyList = async () => {
-  const { data: res } = await getFacultyList()
-  faculty_list.value = res
-}
 
 const fetchList = async () => {
   loading.value = true
@@ -356,13 +348,13 @@ const resetForm = () => {
   form.value = {
     jobNo: '',
     name: '',
-    sex: undefined,
-    facultyId: undefined,
-    teachGroup: undefined,
+    sex: void 0,
+    facultyId: void 0,
+    teachGroup: void 0,
     phone: '',
     idCard: '',
     address: '',
-    state: undefined,
+    state: void 0,
   }
   formRef.value?.resetFields()
 }

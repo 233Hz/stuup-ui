@@ -160,7 +160,8 @@
 <script setup lang="ts" name="Menu">
 import { ref, onMounted, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import { getMenuTree, saveMenu, MenuVO } from '@/api/system/menu/index'
+import { getMenuTree, saveMenu } from '@/api/system/menu/index'
+import type { Menu } from '@/api/system/menu/type'
 import { ElMessage } from 'element-plus'
 
 onMounted(() => {
@@ -170,13 +171,13 @@ onMounted(() => {
 const loading = ref<boolean>(false)
 const dialog_active = ref<boolean>(false)
 const dialog_title = ref<string>('')
-const tableData = ref<MenuVO[]>()
+const tableData = ref<Menu[]>()
 const searchForm = ref({
   pid: undefined,
   name: '',
   code: '',
 })
-const form = ref<MenuVO>({
+const form = ref<Menu>({
   oid: undefined,
   pid: undefined,
   name: '',
@@ -208,7 +209,7 @@ const addRow = () => {
   dialog_title.value = '添加'
   dialog_active.value = true
 }
-const updateRow = (row: MenuVO) => {
+const updateRow = (row: Menu) => {
   dialog_title.value = '修改'
   dialog_active.value = true
   form.value.oid = row.oid
@@ -224,7 +225,7 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
-    const data = form.value as unknown as MenuVO
+    const data = form.value as unknown as Menu
     const res = await saveMenu(data)
     ElMessage.success(res.message)
     dialog_active.value = false

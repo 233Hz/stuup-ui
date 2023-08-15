@@ -1,12 +1,6 @@
 import { get, post } from '@/api/api'
 import { Page, PageResult } from '@/types/global'
-import type { YearVO } from './type'
-
-export interface YearDictVO {
-  oid: number
-  value: string
-  display: boolean
-}
+import type { YearVO, YearDictVO } from './type'
 
 export const getYearList = async () => {
   return await get<YearDictVO[]>('/year/all')

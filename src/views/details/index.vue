@@ -32,7 +32,8 @@
 
 <script setup lang="ts" name="Details">
 import { ref, onMounted } from 'vue'
-import { pageStudentRecScore, StudentRecScoreVO } from '@/api/details'
+import { pageStudentRecScore } from '@/api/details'
+import type { StudentRecScoreVO } from '@/api/details/type'
 import { ArrowLeft, Loading, ArrowRight } from '@element-plus/icons-vue'
 
 const loading = ref(false)

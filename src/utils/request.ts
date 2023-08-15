@@ -1,4 +1,4 @@
-import axios from 'axios'
+/* import axios from 'axios'
 import { getToken, setToken } from '@/utils/auth'
 import errorCode from '@/const/errorCode'
 import { ElMessage } from 'element-plus'
@@ -66,3 +66,4 @@ request.interceptors.response.use(
     return Promise.reject(error)
   },
 )
+ */

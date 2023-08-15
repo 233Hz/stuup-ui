@@ -20,7 +20,8 @@
 <script setup lang="tsx" name="RankingProgress">
 import { ref, onMounted } from 'vue'
 import type { Column } from 'element-plus'
-import { getProgressRank, ProgressRankVO } from '@/api/ranking/progress/index'
+import type { ProgressRankVO } from '@/api/ranking/progress/type'
+import { getProgressRank } from '@/api/ranking/progress/index'
 import { ElButton, ElSelectV2, ElIcon, ElPopover } from 'element-plus'
 import { Filter } from '@element-plus/icons-vue'
 

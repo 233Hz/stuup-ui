@@ -6,7 +6,7 @@
 import { ref, onMounted, watch } from 'vue'
 import * as echarts from 'echarts'
 import { reqRankingCurve } from '@/api/portrait/index'
-import { PortraitRankingCurveVOList } from '@/api/portrait/type'
+import { PortraitRankingCurveList } from '@/api/portrait/type'
 
 const data = Array.from({ length: 7 }, (_, index) => {
   return Math.floor(Math.random() * 1000 + 200)
@@ -20,7 +20,7 @@ interface DataType {
   value: number | undefined
   score: number | undefined
 }
-watch(list, (newVal: PortraitRankingCurveVOList) => {
+watch(list, (newVal: PortraitRankingCurveList) => {
   let xData: string[] = []
   let values: DataType[] = []
   newVal.forEach((item) => {

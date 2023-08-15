@@ -20,7 +20,8 @@
 <script setup lang="tsx" name="RankingFaculty">
 import { ref, onMounted } from 'vue'
 import type { Column } from 'element-plus'
-import { getFacultyRank, FacultyRankVO } from '@/api/ranking/faculty/index'
+import type { FacultyRankVO } from '@/api/ranking/faculty/type'
+import { getFacultyRank } from '@/api/ranking/faculty/index'
 import { ElButton, ElIcon, ElPopover } from 'element-plus'
 import { Filter } from '@element-plus/icons-vue'
 

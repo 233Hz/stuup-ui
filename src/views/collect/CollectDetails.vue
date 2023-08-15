@@ -17,7 +17,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RecDefaultVO, growthRecordDetails } from '@/api/collect/index'
+import { growthRecordDetails } from '@/api/collect/index'
+import type { RecDefaultVO } from '@/api/collect/type'
 
 const columns = [
   {

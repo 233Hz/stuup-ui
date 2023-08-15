@@ -118,12 +118,8 @@
 <script setup lang="ts" name="Dept">
 import { ref, onMounted, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import {
-  DeptVO,
-  getDeptPage,
-  saveOrUpdateDept,
-  delDept,
-} from '@/api/basic/dept/index'
+import { getDeptPage, saveOrUpdateDept, delDept } from '@/api/basic/dept/index'
+import type { Dept } from '@/api/basic/dept/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 onMounted(() => {
@@ -133,7 +129,7 @@ onMounted(() => {
 const loading = ref<boolean>(false)
 const dialog_active = ref<boolean>(false)
 const dialog_title = ref<string>('')
-const tableData = ref<DeptVO[]>()
+const tableData = ref<Dept[]>()
 const page = ref({
   current: 1,
   size: 10,
@@ -142,7 +138,8 @@ const page = ref({
 const searchForm = ref({
   key: '',
 })
-const form = ref<DeptVO>({
+const form = ref<Dept>({
+  oid: void 0,
   deptName: '',
 })
 const rules = reactive<FormRules>({
@@ -177,11 +174,10 @@ const addRow = () => {
   dialog_title.value = '添加'
   dialog_active.value = true
 }
-const updateRow = (row: DeptVO) => {
+const updateRow = (row: Dept) => {
   dialog_title.value = '修改'
   dialog_active.value = true
-  form.value.oid = row.oid
-  form.value.deptName = row.deptName
+  Object.assign(form.value, row)
 }
 const delRow = (oid: number) => {
   ElMessageBox.confirm('确认删除？', '删除学年', {
@@ -208,7 +204,7 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
-    const data = form.value as unknown as DeptVO
+    const data = form.value as unknown as Dept
     const res = await saveOrUpdateDept(data)
     ElMessage.success(res.message)
     dialog_active.value = false

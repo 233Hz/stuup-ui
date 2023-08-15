@@ -10,3 +10,9 @@ export interface YearVO {
   createUser?: string
   createTime?: Date
 }
+
+export interface YearDictVO {
+  oid: number
+  value: string
+  display: boolean
+}

@@ -108,7 +108,7 @@
           style="width: 100%"
         >
           <el-option
-            v-for="item in year_list"
+            v-for="item in dictionaryStore.year"
             :key="item.oid"
             :label="item.value"
             :value="item.value"
@@ -133,26 +133,26 @@
 import { ref, onMounted, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import {
-  GradeVO,
   getGraderPage,
   saveOrUpdateGrade,
   delGrade,
 } from '@/api/basic/grade/index'
-import { YearDictVO, getYearList } from '@/api/basic/year/index'
+import type { Grade } from '@/api/basic/grade/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import useDictionaryStore from '@/store/modules/dictionary'
+import { DictionaryType } from '@/store/modules/dictionary'
 
-onMounted(() => {
-  fetchYear()
+const dictionaryStore = useDictionaryStore()
+
+onMounted(async () => {
+  // await dictionaryStore.init(DictionaryType.YEAR)
   fetchList()
 })
-
-/**字典值 */
-const year_list = ref<YearDictVO[]>()
 
 const loading = ref<boolean>(false)
 const dialog_active = ref<boolean>(false)
 const dialog_title = ref<string>('')
-const tableData = ref<GradeVO[]>()
+const tableData = ref<Grade[]>()
 const page = ref({
   current: 1,
   size: 10,
@@ -161,7 +161,8 @@ const page = ref({
 const searchForm = ref({
   key: '',
 })
-const form = ref<GradeVO>({
+const form = ref<Grade>({
+  oid: void 0,
   gradeName: '',
   year: '',
 })
@@ -171,11 +172,6 @@ const rules = reactive<FormRules>({
 })
 const searchFormRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
-
-const fetchYear = async () => {
-  const { data: res } = await getYearList()
-  year_list.value = res
-}
 
 const fetchList = async () => {
   loading.value = true
@@ -203,12 +199,10 @@ const addRow = () => {
   dialog_title.value = '添加'
   dialog_active.value = true
 }
-const updateRow = (row: GradeVO) => {
+const updateRow = (row: Grade) => {
   dialog_title.value = '修改'
   dialog_active.value = true
-  form.value.oid = row.oid
-  form.value.gradeName = row.gradeName
-  form.value.year = row.year
+  Object.assign(form.value, row)
 }
 const delRow = (oid: number) => {
   ElMessageBox.confirm('确认删除？', '删除学年', {
@@ -235,7 +229,7 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
-    const data = form.value as unknown as GradeVO
+    const data = form.value as unknown as Grade
     const res = await saveOrUpdateGrade(data)
     ElMessage.success(res.message)
     dialog_active.value = false

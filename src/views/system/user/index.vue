@@ -246,7 +246,7 @@
           style="width: 100%"
         >
           <el-option
-            v-for="item in dept_list"
+            v-for="item in dictionaryStore.dept"
             :key="item.oid"
             :label="item.value"
             :value="item.oid"
@@ -272,7 +272,7 @@
           style="width: 100%"
         >
           <el-option
-            v-for="item in role_list"
+            v-for="item in dictionaryStore.role"
             :label="item.value"
             :value="item.oid"
           />
@@ -309,26 +309,19 @@
 <script setup lang="ts" name="User">
 import { ref, onMounted, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import {
-  UserVO,
-  getUserPage,
-  saveOrUpdateUser,
-  delUser,
-} from '@/api/system/user/index'
-import { DeptDictVO, getDeptList } from '@/api/basic/dept'
-import { RoleDictVO, getRoleList } from '@/api/system/role/index'
+import type { UserVO } from '@/api/system/user/type'
+import { getUserPage, saveOrUpdateUser, delUser } from '@/api/system/user/index'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { SEX, TESCHER_TYPE, USER_TYPE, USER_STATE } from '@/utils/dict'
+import useDictionaryStore from '@/store/modules/dictionary'
+import { DictionaryType } from '@/store/modules/dictionary'
 
-onMounted(() => {
-  initDeptList()
-  initRoleList()
+const dictionaryStore = useDictionaryStore()
+
+onMounted(async () => {
+  await dictionaryStore.init(DictionaryType.DEPT, DictionaryType.ROLE)
   fetchList()
 })
-
-//字典
-const dept_list = ref<DeptDictVO[]>()
-const role_list = ref<RoleDictVO[]>()
 
 const loading = ref<boolean>(false)
 const dialog_active = ref<boolean>(false)
@@ -363,16 +356,6 @@ const rules = reactive<FormRules>({
 })
 const searchFormRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
-
-const initDeptList = async () => {
-  const { data: res } = await getDeptList()
-  dept_list.value = res
-}
-
-const initRoleList = async () => {
-  const { data: res } = await getRoleList()
-  role_list.value = res
-}
 
 const fetchList = async () => {
   loading.value = true

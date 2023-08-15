@@ -7,7 +7,7 @@ enum API {
 }
 
 export const pageSemester = async (params: Page) => {
-  return await get<PageResult<SemesterVO>>('/semester/page', params)
+  return await get<PageResult<SemesterVO[]>>('/semester/page', params)
 }
 
 export const saveOrUpdateSemester = async (data: SemesterDTO) => {

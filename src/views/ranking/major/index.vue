@@ -20,7 +20,8 @@
 <script setup lang="tsx" name="RankingMajor">
 import { ref, onMounted } from 'vue'
 import type { Column } from 'element-plus'
-import { getMajorRank, MajorRankVO } from '@/api/ranking/major/index'
+import type { MajorRankVO } from '@/api/ranking/major/type'
+import { getMajorRank } from '@/api/ranking/major/index'
 import { ElButton, ElSelectV2, ElIcon, ElPopover } from 'element-plus'
 import { Filter } from '@element-plus/icons-vue'
 

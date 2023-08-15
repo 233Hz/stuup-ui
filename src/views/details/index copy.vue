@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <el-row style="margin: 20px">
     <el-col :span="24">
       <el-card>
@@ -315,4 +315,4 @@ const searchFormReset = () => {
     endTime: undefined,
   }
 }
-</script>
+</script> -->

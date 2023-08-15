@@ -32,7 +32,7 @@
                   placeholder="请选择所属部门"
                 >
                   <el-option
-                    v-for="item in DEPT"
+                    v-for="item in dictionaryStore.dept"
                     :key="item.oid"
                     :label="item.value"
                     :value="item.oid"
@@ -119,17 +119,18 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import type { FormInstance } from 'element-plus'
-import { SimpleUserVO, getSimpleUserPage } from '@/api/system/user'
-import { getDeptList } from '@/api/basic/dept'
+import { getSimpleUserPage } from '@/api/system/user'
+import { SimpleUserVO } from '@/api/system/user/type'
 import { getGrowItemUser, setGrowthItemUser } from '@/api/grow/config'
 import { ElMessage, ElTable } from 'element-plus'
+import useDictionaryStore from '@/store/modules/dictionary'
+import { DictionaryType } from '@/store/modules/dictionary'
+
+const dictionaryStore = useDictionaryStore()
 
 /* Ref */
 const searchFormRef = ref<FormInstance>()
 const tableRef = ref<InstanceType<typeof ElTable>>()
-
-/* Dict */
-const DEPT = ref()
 
 /* Data */
 const active = ref<boolean>(false)
@@ -144,21 +145,15 @@ const searchForm = ref({
   teacherNo: void 0,
   deptId: void 0,
 })
-const form = ref({
+const form = ref<any>({
   growId: void 0,
   userIds: [],
 })
 
-onMounted(() => {
-  initDept()
+onMounted(async () => {
+  await dictionaryStore.init(DictionaryType.DEPT)
   fetchList()
 })
-
-/* Init */
-const initDept = async () => {
-  const { data } = await getDeptList()
-  DEPT.value = data
-}
 
 /* Methods */
 const open = (id: number) => {

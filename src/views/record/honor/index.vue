@@ -18,7 +18,7 @@
                         style="width: 100%"
                       >
                         <el-option
-                          v-for="item in YEAR"
+                          v-for="item in dictionaryStore.year"
                           :key="item.oid"
                           :label="item.value"
                           :value="item.oid"
@@ -33,7 +33,7 @@
                         style="width: 100%"
                       >
                         <el-option
-                          v-for="item in GRADE"
+                          v-for="item in dictionaryStore.grade"
                           :key="item.oid"
                           :label="item.gradeName"
                           :value="item.oid"
@@ -191,18 +191,17 @@
 <script setup lang="ts" name="Honor">
 import { ref, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
-import { RecHonorVO, getRecHonorPage } from '@/api/record/honor/index'
-import { getGraderList } from '@/api/basic/grade/index'
-import { getYearList } from '@/api/basic/year/index'
+import type { RecHonorVO } from '@/api/record/honor/type'
+import { getRecHonorPage } from '@/api/record/honor/index'
 import { AWARD_LEVEL, REC_CODE } from '@/utils/dict'
 import { downRecord } from '@/api/record'
+import useDictionaryStore from '@/store/modules/dictionary'
+import { DictionaryType } from '@/store/modules/dictionary'
+
+const dictionaryStore = useDictionaryStore()
 
 // REF
 const searchFormRef = ref<FormInstance>()
-
-// DICT
-const YEAR = ref()
-const GRADE = ref()
 
 //DATA
 const loading = ref<boolean>(false)
@@ -221,22 +220,11 @@ const searchForm = ref({
   level: undefined,
 })
 
-onMounted(() => {
-  initYear()
-  initGrade()
+onMounted(async () => {
+  await dictionaryStore.init(DictionaryType.YEAR, DictionaryType.GRADE)
   fetchList()
 })
 
-// METHODS
-const initYear = async () => {
-  const { data: res } = await getYearList()
-  YEAR.value = res
-}
-
-const initGrade = async () => {
-  const { data: res } = await getGraderList()
-  GRADE.value = res
-}
 const fetchList = async () => {
   loading.value = true
   try {
