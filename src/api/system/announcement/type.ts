@@ -1,4 +1,4 @@
-export interface Announcement {
+export interface Notify {
   id: number
   title: string
   type: number
@@ -10,17 +10,11 @@ export interface Announcement {
   updateTime: Date
 }
 
-export interface AnnouncementVO {
+export interface NotifyVO {
   id?: number
   title: string
   type: number
   scope: number
   userIds: number[]
   publish?: boolean
-}
-
-export interface AnnouncementPremUserVO {
-  id?: number
-  username: string
-  userType: number
 }

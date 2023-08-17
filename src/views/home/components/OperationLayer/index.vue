@@ -60,7 +60,10 @@
           </div>
         </div>
       </div>
-      <div class="growth-level">
+      <div
+        class="growth-level"
+        v-if="userStore.userInfo.userType === USER_TYPE.STUDENT"
+      >
         <div
           class="level-item"
           v-for="(item, index) in conversionFlower.calculateConversionFlower(
@@ -80,14 +83,26 @@
         <ul class="relative flex flex-wrap">
           <li
             class="w-80 mx-10 cursor-pointer fs-12"
-            v-for="(item, index) in menus"
+            v-for="(item, index) in frontRoute"
             :key="index"
             @click="item.path ? router.push(item.path) : ''"
           >
             <div class="w-full h-80 p-10">
-              <img :src="item.icon" class="w-full h-full object-cover" />
+              <svg-icon :name="item.meta?.icon" width="60px" height="60px" />
             </div>
-            <p class="text-center" style="color: #19c975">{{ item.name }}</p>
+            <p class="text-center" style="color: #19c975">
+              {{ item.meta?.title }}
+            </p>
+          </li>
+          <li
+            v-if="userStore.userInfo.userType === USER_TYPE.TEACHER"
+            class="w-80 mx-10 cursor-pointer fs-12"
+            @click="router.push('/dashboard')"
+          >
+            <div class="w-full h-80 p-10">
+              <svg-icon name="home-icon-back" width="60px" height="60px" />
+            </div>
+            <p class="text-center" style="color: #19c975">后台管理</p>
           </li>
         </ul>
       </span>
@@ -98,22 +113,21 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { GARDEN_TYPE, USER_TYPE } from '@/utils/dict'
+import { GARDEN_TYPE, USER_TYPE, MENU_FLAG } from '@/utils/dict'
 import defaultAvatar from '@/assets/image/default_avatar.png'
-import applaySvg from '@/assets/svg/home-applay.svg'
-import detailsSvg from '@/assets/svg/home-score.svg'
-import portraitSvg from '@/assets/svg/home-portrait.svg'
-import reportSvg from '@/assets/svg/home-report.svg'
-import backSvg from '@/assets/svg/home-back.svg'
 import { useConversionFlower } from '@/utils/conversionFlower'
 import bus from '@/utils/bus'
 import useUserStore from '@/store/modules/user'
+import usePermissionStore from '@/store/modules/premission'
 import { reqGrowthInfo, reqUpdateRecordState } from '@/api/home/index'
 import { GrowthInfo } from '@/api/home/type'
+import { filterRouter } from '@/utils/util'
 
 const router = useRouter()
 const conversionFlower = useConversionFlower()
 const userStore = useUserStore()
+const permissionStore = usePermissionStore()
+const frontRoute = filterRouter(permissionStore.routes, MENU_FLAG.FRONT)
 
 const wrapperRef = ref()
 const tipRef = ref()
@@ -154,34 +168,6 @@ const flowerHint: Record<string, string> = {
   xhh_bloom: `<h3>西红花</h3>
      <p>&nbsp;&nbsp;&nbsp;&nbsp;象征快乐、挂念、真心、多彩、期望和青春的喜悦`,
 }
-
-const menus = [
-  {
-    name: '我的积分申请',
-    icon: applaySvg,
-    path: '/apply',
-  },
-  {
-    name: '我的积分明细',
-    icon: detailsSvg,
-    path: '/details',
-  },
-  {
-    name: '我的成长画像',
-    icon: portraitSvg,
-    path: '/portrait',
-  },
-  {
-    name: '我的成长报告',
-    icon: reportSvg,
-    path: '/growthReport',
-  },
-  {
-    name: '后台管理',
-    icon: backSvg,
-    path: '/dashboard',
-  },
-]
 
 const growthInfo = ref<GrowthInfo>()
 

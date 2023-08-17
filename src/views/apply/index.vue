@@ -2,106 +2,111 @@
   <div style="padding: 10px 20px">
     <el-card style="margin: 10px 0">
       <template #header>
-        <el-row>
-          <el-col :span="24">
-            <el-form
-              ref="searchFormRef"
-              :model="searchForm"
-              label-width="100px"
-            >
-              <el-row>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="一级项目" prop="firstLevelId">
-                    <el-select
-                      v-model="searchForm.firstLevelId"
-                      @change="
-                        (id: number) => {
-                          growthStore.handleLevel1Change(id)
-                          searchForm.secondLevelId = void 0
-                          searchForm.thirdLevelId = void 0
-                        }
-                      "
-                      style="width: 100%"
-                    >
-                      <el-option
-                        v-for="item in growthStore.level1"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="二级项目" prop="secondLevelId">
-                    <el-select
-                      v-model="searchForm.secondLevelId"
-                      @change="
-                        (id: number) => {
-                          growthStore.handleLevel2Change(id)
-                          searchForm.thirdLevelId = void 0
-                        }
-                      "
-                      style="width: 100%"
-                    >
-                      <el-option
-                        v-for="item in growthStore.level2"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="三级项目" prop="thirdLevelId">
-                    <el-select
-                      v-model="searchForm.thirdLevelId"
-                      style="width: 100%"
-                    >
-                      <el-option
-                        v-for="item in growthStore.level3"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="项目名称" prop="growName">
-                    <el-input v-model="searchForm.growName" />
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="状态" prop="state">
-                    <el-select v-model="searchForm.state" class="w-full">
-                      <el-option
-                        v-for="item in AUDIT_STATUS.getDict()"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
-          </el-col>
-        </el-row>
+        <el-page-header :icon="ArrowLeft" @click="router.back()">
+          <template #content>我的积分申请</template>
+        </el-page-header>
       </template>
-      <div style="text-align: center">
-        <el-space>
-          <el-button type="primary" @click="fetchList" :loading="loading">
-            <el-icon><Search /></el-icon>
-            查询
-          </el-button>
-          <el-button @click="searchFormRef?.resetFields()">
-            <el-icon><Close /></el-icon>
-            清空
-          </el-button>
-        </el-space>
-      </div>
+      <el-row>
+        <el-col :span="24">
+          <el-form ref="searchFormRef" :model="searchForm" label-width="100px">
+            <el-row>
+              <el-col :sm="24" :md="12" :xl="8">
+                <el-form-item label="一级项目" prop="firstLevelId">
+                  <el-select
+                    v-model="searchForm.firstLevelId"
+                    @change="
+                      (id: number) => {
+                        growthStore.handleLevel1Change(id)
+                        searchForm.secondLevelId = void 0
+                        searchForm.thirdLevelId = void 0
+                      }
+                    "
+                    style="width: 100%"
+                  >
+                    <el-option
+                      v-for="item in growthStore.level1"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :sm="24" :md="12" :xl="8">
+                <el-form-item label="二级项目" prop="secondLevelId">
+                  <el-select
+                    v-model="searchForm.secondLevelId"
+                    @change="
+                      (id: number) => {
+                        growthStore.handleLevel2Change(id)
+                        searchForm.thirdLevelId = void 0
+                      }
+                    "
+                    style="width: 100%"
+                  >
+                    <el-option
+                      v-for="item in growthStore.level2"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :sm="24" :md="12" :xl="8">
+                <el-form-item label="三级项目" prop="thirdLevelId">
+                  <el-select
+                    v-model="searchForm.thirdLevelId"
+                    style="width: 100%"
+                  >
+                    <el-option
+                      v-for="item in growthStore.level3"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :sm="24" :md="12" :xl="8">
+                <el-form-item label="项目名称" prop="growName">
+                  <el-input v-model="searchForm.growName" />
+                </el-form-item>
+              </el-col>
+              <el-col :sm="24" :md="12" :xl="8">
+                <el-form-item label="状态" prop="state">
+                  <el-select v-model="searchForm.state" class="w-full">
+                    <el-option
+                      v-for="item in AUDIT_STATUS.getDict()"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :sm="24" :md="12" :xl="8">
+                <el-form-item>
+                  <el-space>
+                    <el-button
+                      type="primary"
+                      @click="fetchList"
+                      :loading="loading"
+                    >
+                      <el-icon><Search /></el-icon>
+                      查询
+                    </el-button>
+                    <el-button @click="searchFormRef?.resetFields()">
+                      <el-icon><Close /></el-icon>
+                      清空
+                    </el-button>
+                  </el-space>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </el-col>
+      </el-row>
     </el-card>
     <el-card>
       <template #header>
@@ -222,19 +227,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="page-r">
-        <el-pagination
-          background
-          :disabled="loading"
-          :total="total"
-          v-model:current-page="searchForm.current"
-          v-model:page-size="searchForm.size"
-          :page-sizes="[10, 20, 30, 50, 100]"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next"
-        />
-      </div>
+      <Pagination @size-change="fetchList" @current-change="fetchList" />
     </el-card>
     <el-dialog
       v-model="active"
@@ -336,9 +329,14 @@ import { getToken } from '@/utils/auth'
 import { AUDIT_STATUS } from '@/utils/dict'
 import { requiredRule } from '@/utils/rules'
 import AuditInfo from '@/components/AuditInfo/index.vue'
+import { useRouter } from 'vue-router'
 import useGrowthStore from '@/store/modules/growth'
+import usePaginationStore from '@/store/modules/pagination'
+import { ArrowLeft } from '@element-plus/icons-vue'
 
 const growthStore = useGrowthStore()
+const paginationStore = usePaginationStore()
+const router = useRouter()
 
 //DICT
 const GROW_ITEM = ref()
@@ -353,10 +351,8 @@ const loading = ref<boolean>(false)
 const active = ref<boolean>(false)
 const title = ref<string>()
 const tableData = ref()
-const total = ref<number>(0)
+
 const searchForm = ref({
-  current: 1,
-  size: 10,
   firstLevelId: void 0,
   secondLevelId: void 0,
   thirdLevelId: void 0,
@@ -408,8 +404,10 @@ const initGrowthItem = async () => {
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data } = await pageGrowApplyRecord(searchForm.value)
-    total.value = data.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    const { data } = await pageGrowApplyRecord(query)
+    paginationStore.setTotal(data.total)
     tableData.value = data.records
   } finally {
     loading.value = false

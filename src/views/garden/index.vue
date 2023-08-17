@@ -30,7 +30,7 @@
           <el-form-item prop="gradeId">
             <el-select v-model="searchForm.gradeId">
               <el-option
-                v-for="item in GRADE"
+                v-for="item in dictionaryStore.grade"
                 :key="item.oid"
                 :label="item.gradeName"
                 :value="item.oid"
@@ -100,15 +100,17 @@ import { useRoute, useRouter } from 'vue-router'
 import type { FormInstance } from 'element-plus'
 import { getGrowGarden } from '@/api/garden'
 import type { GrowGardenVO } from '@/api/garden/type'
-import { getGraderList } from '@/api/basic/grade/index'
 import { GARDEN_TYPE } from '@/utils/dict'
-import icon from '@/assets/flower_icons/bmh_bloom.jpg'
+import icon from '@/assets/image/default_avatar.png'
+import useDictionaryStore from '@/store/modules/dictionary'
+import { DictionaryType } from '@/store/modules/dictionary'
+
+const dictionaryStore = useDictionaryStore()
+
 const route = useRoute()
 const router = useRouter()
 
 const searchFormRef = ref<FormInstance>()
-
-const GRADE = ref()
 
 const searchForm = ref({
   current: 1,
@@ -123,15 +125,10 @@ const total = ref<number>(0)
 const listData = ref<GrowGardenVO[]>([])
 const loading = ref<boolean>(false)
 
-onMounted(() => {
-  initGrade()
+onMounted(async () => {
+  await dictionaryStore.init(DictionaryType.DEPT)
   fetchList()
 })
-
-const initGrade = async () => {
-  const { data: res } = await getGraderList()
-  GRADE.value = res
-}
 
 const fetchList = async () => {
   loading.value = true

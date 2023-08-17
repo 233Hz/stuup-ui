@@ -51,7 +51,6 @@ import { getUserGrowthItems, downTemp } from '@/api/grow/config'
 import type { GrowthItemVO } from '@/api/grow/config/type'
 import { ElMessage } from 'element-plus'
 import bus from '@/utils/bus'
-import UploadExcel from '@/components/UploadExcel.vue'
 
 const fromRef = ref()
 const uploadExcelRef = ref()

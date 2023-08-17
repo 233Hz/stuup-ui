@@ -7,13 +7,15 @@
           icon="FullScreen"
           type="success"
           circle
-          plain
+          text
+          bg
           @click="fullScreen"
         ></el-button>
         <el-button
           icon="ArrowLeft"
           type="success"
-          plain
+          text
+          bg
           @click="router.push('/home')"
         >
           回到前台
@@ -97,12 +99,6 @@ const handleuserLogout = () => {
     float: right;
     display: flex;
     justify-content: end;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .logo {
-    display: none;
   }
 }
 </style>

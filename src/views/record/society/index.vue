@@ -187,6 +187,7 @@ import type { RecSocietyVO } from '@/api/record/society/type'
 import { AWARD_LEVEL, REC_CODE } from '@/utils/dict'
 import { downRecord } from '@/api/record'
 import useDictionaryStore from '@/store/modules/dictionary'
+
 import { DictionaryType } from '@/store/modules/dictionary'
 
 const dictionaryStore = useDictionaryStore()

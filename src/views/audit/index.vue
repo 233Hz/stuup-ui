@@ -246,7 +246,7 @@ const auditInfoRef = ref()
 
 // DATA
 const loading = ref<boolean>(false)
-const tableData = ref([{}])
+const tableData = ref()
 const total = ref<number>(0)
 const searchForm = ref({
   current: 1,

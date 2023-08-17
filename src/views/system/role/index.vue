@@ -72,7 +72,7 @@
           <template #default="{ row }">
             <el-button @click="updateRow(row)">修改</el-button>
             <el-button @click="openRoleMenuTree(row.oid)">角色权限</el-button>
-            <el-button>角色用户</el-button>
+            <!-- <el-button>角色用户</el-button> -->
             <el-button @click="delRow(row.oid)" type="danger">删除</el-button>
           </template>
         </el-table-column>

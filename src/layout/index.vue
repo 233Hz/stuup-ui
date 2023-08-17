@@ -14,7 +14,11 @@
         <div class="main">
           <router-view v-slot="{ Component, route }">
             <keep-alive :include="permissionStore.getCachedView">
-              <component :is="Component" :key="route.fullPath" />
+              <transition name="fade">
+                <div class="w-full h-full relative" :key="route.fullPath">
+                  <component :is="Component" />
+                </div>
+              </transition>
             </keep-alive>
           </router-view>
         </div>
@@ -53,6 +57,7 @@ const permissionStore = usePermissionStore()
 
     .right {
       flex: 1;
+      width: calc(100% - var(--aside-width));
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -63,10 +68,27 @@ const permissionStore = usePermissionStore()
       }
 
       .main {
+        position: relative;
         flex: 1;
-        overflow-y: auto;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
       }
     }
   }
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.fade-enter-active {
+  transition: all 0.3s;
+}
+
+.fade-enter-to {
+  opacity: 1;
+  transform: scale(1);
 }
 </style>

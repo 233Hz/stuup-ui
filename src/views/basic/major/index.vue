@@ -32,10 +32,10 @@
     <el-card>
       <template #header>
         <el-space>
-          <el-button type="primary" @click="addRow">
+          <!-- <el-button type="primary" @click="addRow">
             <el-icon><Plus /></el-icon>
             添加
-          </el-button>
+          </el-button> -->
           <el-divider direction="vertical" />
           <el-button :disabled="loading" circle @click="fetchList">
             <el-icon><Refresh /></el-icon>
@@ -86,12 +86,12 @@
             {{ EFFECTIVENESS.getKeyForValue(row.state) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" align="center">
+        <!-- <el-table-column label="操作" width="200" align="center">
           <template #default="{ row }">
             <el-button @click="updateRow(row)">修改</el-button>
             <el-button @click="delRow(row.oid)" type="danger">删除</el-button>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
       <div class="page-r">
         <el-pagination

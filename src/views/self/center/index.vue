@@ -1,5 +1,12 @@
 <template>
   <el-card shadow="never" class="m-20">
+    <template #header>
+      <el-page-header icon="ArrowLeft" @back="router.back()">
+        <template #content>
+          <span class="text-large font-600 mr-3">个人中心</span>
+        </template>
+      </el-page-header>
+    </template>
     <el-form ref="formRef" :model="form" label-position="top" class="w-800">
       <el-form-item label="用户头像">
         <el-upload
@@ -38,6 +45,9 @@
 import { ref, computed } from 'vue'
 import { getToken } from '@/utils/auth'
 import type { UploadProps, UploadUserFile } from 'element-plus'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 // REF
 const formRef = ref()
@@ -68,7 +78,9 @@ const handleUploadSuccess: UploadProps['onSuccess'] = (
   uploadFile,
   uploadFiles,
 ) => {
-  form.value.imageUrl = response.data.url
+  console.log(response)
+
+  // form.value.imageUrl = response.data.url
 }
 </script>
 

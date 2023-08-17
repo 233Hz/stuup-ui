@@ -47,4 +47,10 @@ $logo-picture-height: 99px;
     }
   }
 }
+
+@media only screen and (max-width: 768px) {
+  .title {
+    display: none;
+  }
+}
 </style>

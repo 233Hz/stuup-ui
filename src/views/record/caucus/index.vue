@@ -201,9 +201,11 @@ import { getRecCaucusPage } from '@/api/record/caucus/index'
 import { AWARD_LEVEL, REC_CODE } from '@/utils/dict'
 import { downRecord } from '@/api/record'
 import useDictionaryStore from '@/store/modules/dictionary'
+import useUserStore from '@/store/modules/user'
 import { DictionaryType } from '@/store/modules/dictionary'
 
 const dictionaryStore = useDictionaryStore()
+const userStore = useUserStore()
 
 onMounted(async () => {
   await dictionaryStore.init(DictionaryType.YEAR, DictionaryType.GRADE)
@@ -218,7 +220,7 @@ const page = ref({
   total: 10,
 })
 const searchForm = ref({
-  yearId: undefined,
+  yearId: userStore.userInfo.yearId,
   gradeId: undefined,
   className: undefined,
   studentName: undefined,

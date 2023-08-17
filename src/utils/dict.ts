@@ -49,7 +49,7 @@ export const MENU_TYPE = new Enum({
  */
 export const ANNOUNCEMENT_TYPE = new Enum({
   SYSTEM: ['系统消息', 1],
-  ACTIVE: ['活动通知', 2],
+  NOTIFY: ['通知公告', 2],
 })
 
 /**

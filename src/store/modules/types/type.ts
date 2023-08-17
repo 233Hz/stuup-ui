@@ -39,3 +39,9 @@ export interface BasicInfoState {
   dept: DeptDict[]
   role: RoleDictVO[]
 }
+
+export interface PaginationState {
+  current: number
+  size: number
+  total: number
+}

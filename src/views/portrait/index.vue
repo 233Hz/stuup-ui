@@ -1,6 +1,11 @@
 <template>
   <div class="w-full h-full overflow-auto">
     <div class="w-1400 relative m-auto mt-24 p-24 flex flex-col gap-12">
+      <el-page-header :icon="ArrowLeft" @back="router.back()">
+        <template #content>
+          <span class="text-large font-600 mr-3">学生成长画像</span>
+        </template>
+      </el-page-header>
       <PortraitCard title="个人信息">
         <UserInfo />
       </PortraitCard>
@@ -41,6 +46,10 @@ import ActivityRecord from './components/ActivityRecord.vue'
 import GrowthRecord from './components/GrowthRecord/index.vue'
 import FinalGradeChart from './components/FinalGradeChart.vue'
 import GradeScoreChart from './components/GradeScoreChart.vue'
+import { ArrowLeft } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 </script>
 
 <style scoped lang="scss">

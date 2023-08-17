@@ -259,7 +259,6 @@
 import { ref, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import type { RecScoreVO } from '@/api/growScore/type'
-import type { GrowthTreeVO } from '@/api/grow/config/type'
 import { getRecScorePage } from '@/api/growScore/index'
 import useDictionaryStore from '@/store/modules/dictionary'
 import { DictionaryType } from '@/store/modules/dictionary'
@@ -313,18 +312,6 @@ const fetchList = async () => {
   } finally {
     loading.value = false
   }
-}
-
-const findChildrenById = (
-  list: GrowthTreeVO[],
-  id: number,
-): GrowthTreeVO[] | [] => {
-  for (const item of list) {
-    if (item.id === id) {
-      return item.children || []
-    }
-  }
-  return []
 }
 
 const handleCurrentChange = (val: number) => {

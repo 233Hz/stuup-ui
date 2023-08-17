@@ -1,6 +1,12 @@
 import type { App, Component } from 'vue'
 import SvgIcon from './SvgIcon/index.vue'
-const components: { [name: string]: Component } = { SvgIcon }
+import UploadExcel from './UploadExcel/index.vue'
+import Pagination from './Pagination/index.vue'
+const components: { [name: string]: Component } = {
+  SvgIcon,
+  UploadExcel,
+  Pagination,
+}
 //引入element-plus提供全部图标组件
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 export default {

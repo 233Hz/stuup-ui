@@ -57,8 +57,9 @@ const isCollapse = ref(false)
   }
 
   .shrink {
-    height: 40px;
-    background: #228070;
+    height: 30px;
+    border-top: #fff solid 2px;
+    box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;

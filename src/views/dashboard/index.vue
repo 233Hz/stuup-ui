@@ -3,12 +3,25 @@
     <el-row :gutter="20">
       <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="mb-20">
         <el-card shadow="never">
-          <template #header>通知公告</template>
+          <template #header>
+            <div class="flex justify-between items-center">
+              <span class="fs-18 font-600">通知公告</span>
+              <el-button
+                type="success"
+                text
+                bg
+                @click="router.push('/self/notify')"
+              >
+                更多
+                <el-icon><DArrowRight /></el-icon>
+              </el-button>
+            </div>
+          </template>
           <el-skeleton :rows="10" animated :loading="loading">
             <el-scrollbar height="600px">
               <div
                 class="message-item"
-                v-for="(item, index) in activeMags"
+                v-for="(item, index) in notifyMsgs"
                 :key="item.id"
                 @click="router.push('/article/' + item.id)"
               >
@@ -25,12 +38,25 @@
       </el-col>
       <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="mb-20">
         <el-card shadow="never">
-          <template #header>智慧提醒</template>
+          <template #header>
+            <div class="flex justify-between items-center">
+              <span class="fs-18 font-600">通知公告</span>
+              <el-button
+                type="success"
+                text
+                bg
+                @click="router.push('/self/notify')"
+              >
+                更多
+                <el-icon><DArrowRight /></el-icon>
+              </el-button>
+            </div>
+          </template>
           <el-skeleton :rows="10" animated :loading="loading">
             <el-scrollbar height="600px">
               <div
                 class="message-item"
-                v-for="(item, index) in systemMags"
+                v-for="(item, index) in systemMsgs"
                 :key="item.id"
               >
                 <span class="message-item__title">
@@ -97,8 +123,7 @@
 <script setup lang="ts" name="Dashboard">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { getAnnouncementMyPage } from '@/api/system/announcement'
-import { ANNOUNCEMENT_TYPE } from '@/utils/dict'
+import { reqMyNotifyPage, reqMySystemPage } from '@/api/system/announcement'
 import project from '@/assets/svg/project.svg'
 import model from '@/assets/svg/model.svg'
 import collect from '@/assets/svg/collect.svg'
@@ -110,26 +135,26 @@ import { formatDate } from '@/utils/util'
 const router = useRouter()
 
 const loading = ref<boolean>(false)
-const systemMags = ref()
-const activeMags = ref()
+const systemMsgs = ref()
+const notifyMsgs = ref()
 
 onMounted(() => {
   initMsg()
 })
 
-const initMsg = async () => {
+const initMsg = () => {
   loading.value = true
-  try {
-    const { data } = await getAnnouncementMyPage()
-    systemMags.value = data.records.filter(
-      (item) => item.type === ANNOUNCEMENT_TYPE.SYSTEM,
-    )
-    activeMags.value = data.records.filter(
-      (item) => item.type === ANNOUNCEMENT_TYPE.ACTIVE,
-    )
-  } finally {
-    loading.value = false
-  }
+  reqMyNotifyPage()
+    .then(({ data }) => {
+      notifyMsgs.value = data.records
+      return reqMySystemPage()
+    })
+    .then(({ data }) => {
+      systemMsgs.value = data.records
+    })
+    .finally(() => {
+      loading.value = false
+    })
 }
 </script>
 

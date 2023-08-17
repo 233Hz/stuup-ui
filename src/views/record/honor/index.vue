@@ -196,9 +196,11 @@ import { getRecHonorPage } from '@/api/record/honor/index'
 import { AWARD_LEVEL, REC_CODE } from '@/utils/dict'
 import { downRecord } from '@/api/record'
 import useDictionaryStore from '@/store/modules/dictionary'
+import useUserStore from '@/store/modules/user'
 import { DictionaryType } from '@/store/modules/dictionary'
 
 const dictionaryStore = useDictionaryStore()
+const userStore = useUserStore()
 
 // REF
 const searchFormRef = ref<FormInstance>()
@@ -212,7 +214,7 @@ const page = ref({
   total: 10,
 })
 const searchForm = ref({
-  yearId: undefined,
+  yearId: userStore.userInfo.yearId,
   gradeId: undefined,
   className: undefined,
   studentName: undefined,

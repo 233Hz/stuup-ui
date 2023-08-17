@@ -4,22 +4,27 @@
       <template #header>
         <el-row>
           <el-col :span="24">
-            <el-form ref="searchFormRef" :model="searchForm" label-width="80px">
+            <el-form
+              ref="searchFormRef"
+              :model="searchForm"
+              label-width="80px"
+              :disabled="loading"
+            >
               <el-row>
                 <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="通知标题" prop="title">
-                    <el-input v-model="searchForm.title" />
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="消息类型" prop="type">
-                    <el-select v-model="searchForm.type" class="w-full">
+                  <el-form-item label="消息类型">
+                    <el-select v-model="type" class="w-full">
                       <el-option
                         v-for="item in ANNOUNCEMENT_TYPE.getDict()"
                         :label="item.label"
                         :value="item.value"
                       />
                     </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :sm="24" :md="12" :xl="8">
+                  <el-form-item label="通知标题" prop="title">
+                    <el-input v-model="searchForm.title" />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -104,29 +109,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ANNOUNCEMENT_TYPE } from '@/utils/dict'
-import { getAnnouncementMyPage } from '@/api/system/announcement'
+import { reqMyNotifyPage, reqMySystemPage } from '@/api/system/announcement'
 
 const router = useRouter()
 
 // REF
 const searchFormRef = ref()
-const formRef = ref()
 
 // DATA
 const loading = ref(false)
 const total = ref(0)
+const type = ref(ANNOUNCEMENT_TYPE.NOTIFY)
 const searchForm = ref({
   current: 1,
   size: 10,
   title: void 0,
-  type: void 0,
 })
 const tableData = ref()
 
-//ONMOUNTED
+//WATCH
+watch(type, () => {
+  fetchList()
+})
+
 onMounted(() => {
   fetchList()
 })
@@ -135,9 +143,16 @@ onMounted(() => {
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data } = await getAnnouncementMyPage(searchForm.value)
-    total.value = data.total
-    tableData.value = data.records
+    if (type.value === ANNOUNCEMENT_TYPE.NOTIFY) {
+      const { data } = await reqMyNotifyPage(searchForm.value)
+      total.value = data.total
+      tableData.value = data.records
+    } else if (type.value === ANNOUNCEMENT_TYPE.SYSTEM) {
+      const { data } = await reqMySystemPage(searchForm.value)
+      total.value = data.total
+      tableData.value = data.records
+    }
+  } catch (error) {
   } finally {
     loading.value = false
   }

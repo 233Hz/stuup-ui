@@ -448,6 +448,7 @@ const fetchList = async () => {
   loading.value = true
   try {
     const { data: res } = await getProgressRank()
+
     data = Object.freeze(res)
     tableData.value = [...data]
     let gradeName = new Set<string>()

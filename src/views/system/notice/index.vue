@@ -83,7 +83,7 @@
         </el-table-column>
         <el-table-column label="操作" width="400" align="center">
           <template #default="{ row }">
-            <el-button @click="viewRow(row)">查看</el-button>
+            <el-button @click="perviewRow(row.id)">预览</el-button>
             <el-button
               :disabled="row.state === ANNOUNCEMENT_STATE.PUBLISHED"
               @click="updateRow(row)"
@@ -157,7 +157,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="通知内容" prop="content">
-        <div style="border: 1px solid #ccc">
+        <div style="border: 1px solid #ccc; width: 100%">
           <Toolbar
             style="border-bottom: 1px solid #ccc"
             :editor="editorRef"
@@ -166,7 +166,7 @@
           <Editor
             style="height: 500px; overflow-y: hidden"
             v-model="form.content"
-            :defaultConfig="{ placeholder: '请输入内容...' }"
+            :defaultConfig="{ placeholder: '请输入内容...', maxLength: 4000 }"
             mode="default"
             @onCreated="handleCreated"
           />
@@ -192,7 +192,7 @@
   </el-dialog>
 </template>
 
-<script setup lang="ts" name="Announcement">
+<script setup lang="ts" name="Notify">
 import {
   ref,
   onMounted,
@@ -204,16 +204,19 @@ import {
 } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ANNOUNCEMENT_SCOPE, ANNOUNCEMENT_STATE } from '@/utils/dict'
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
+import { ANNOUNCEMENT_SCOPE, ANNOUNCEMENT_STATE } from '@/utils/dict'
 import { requiredRule } from '@/utils/rules'
 import {
-  getAnnouncementPage,
-  saveOrUpdateAnnouncement,
-  delAnnouncement,
-  publishAnnouncement,
-} from '@/api/system/announcement'
+  reqNotifyPage,
+  saveOrUpdateNotify,
+  delNotify,
+  publishNotify,
+} from '@/api/system/announcement/index'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 /**
  * ==================== Ref ====================
@@ -238,12 +241,11 @@ const searchForm = ref({
   type: void 0,
   state: void 0,
 })
-const form = ref({
+const form = ref<any>({
   id: void 0,
   title: void 0,
   scope: void 0,
-  userIds: [],
-  content: ' ',
+  content: void 0,
 })
 const rules = reactive<FormRules>({
   title: [requiredRule('公告标题')],
@@ -276,7 +278,7 @@ const handleCreated = (editor) => {
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data } = await getAnnouncementPage(searchForm.value)
+    const { data } = await reqNotifyPage(searchForm.value)
     total.value = data.total
     tableData.value = data.records
   } finally {
@@ -284,18 +286,10 @@ const fetchList = async () => {
   }
 }
 
-const viewRow = (row) => {
+const perviewRow = (id: number) => {
   title.value = '查看'
   active.value = true
-  nextTick(() => {
-    disabled.value = true
-    editorRef.value.disable()
-    form.value.id = row.id
-    form.value.title = row.title
-    form.value.scope = row.scope
-    form.value.userIds = row.userIds
-    form.value.content = row.content || ''
-  })
+  router.push('/article/' + id)
 }
 
 const addRow = () => {
@@ -327,7 +321,7 @@ const delRow = (id: number, title: string) => {
     .then(async () => {
       loading.value = true
       try {
-        const res = await delAnnouncement(id)
+        const res = await delNotify(id)
         ElMessage.success(res.message)
         fetchList()
       } finally {
@@ -351,7 +345,7 @@ const publishRow = (id: number, title: string) => {
     .then(async () => {
       loading.value = true
       try {
-        const res = await publishAnnouncement(id)
+        const res = await publishNotify(id)
         ElMessage.success(res.message)
         fetchList()
       } finally {
@@ -367,9 +361,7 @@ const submitForm = async (publish: boolean) => {
   if (!valid) return
   loading.value = true
   try {
-    const res = await saveOrUpdateAnnouncement(
-      Object.assign({ publish }, form.value),
-    )
+    const res = await saveOrUpdateNotify(Object.assign({ publish }, form.value))
     ElMessage.success(res.message)
     active.value = false
     fetchList()
@@ -392,8 +384,7 @@ const resetForm = () => {
     id: void 0,
     title: void 0,
     scope: void 0,
-    userIds: [],
-    content: ' ',
+    content: void 0,
   }
   formRef.value?.resetFields()
   disabled.value = false

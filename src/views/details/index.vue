@@ -1,7 +1,7 @@
 <template>
   <div class="details">
     <div class="details-wrapper">
-      <el-page-header :icon="ArrowLeft"></el-page-header>
+      <el-page-header :icon="ArrowLeft" @back="router.back()"></el-page-header>
       <div class="details-wrapper__header">
         <p class="total-score">{{ totalScore }}</p>
         <p class="total-text">当前总积分</p>
@@ -35,6 +35,9 @@ import { ref, onMounted } from 'vue'
 import { pageStudentRecScore } from '@/api/details'
 import type { StudentRecScoreVO } from '@/api/details/type'
 import { ArrowLeft, Loading, ArrowRight } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const loading = ref(false)
 const size = 10

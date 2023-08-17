@@ -143,6 +143,12 @@
           align="center"
         />
         <el-table-column
+          prop="roleNames"
+          label="用户角色"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
           prop="state"
           label="状态"
           show-overflow-tooltip
@@ -174,8 +180,8 @@
     </el-card>
   </div>
   <el-dialog
-    v-model="dialog_active"
-    :title="dialog_title"
+    v-model="active"
+    :title="title"
     width="500"
     draggable
     @close="resetForm"
@@ -294,7 +300,7 @@
       </el-form-item>
     </el-form>
     <template #footer>
-      <el-button @click="dialog_active = false">
+      <el-button @click="active = false">
         <el-icon><Close /></el-icon>
         取消
       </el-button>
@@ -324,30 +330,30 @@ onMounted(async () => {
 })
 
 const loading = ref<boolean>(false)
-const dialog_active = ref<boolean>(false)
-const dialog_title = ref<string>('')
+const active = ref<boolean>(false)
+const title = ref<string>('')
 const tableData = ref<UserVO[]>()
 const total = ref<number>(0)
 const searchForm = ref({
   current: 1,
   size: 10,
   key: void 0,
-  state: undefined,
+  state: void 0,
 })
-const form = ref<UserVO>({
-  oid: undefined,
-  loginName: '',
-  userName: '',
-  sex: undefined,
-  mobile: '',
-  degree: '',
-  teacherType: undefined,
-  userType: undefined,
-  deptId: undefined,
-  idCard: '',
-  birthday: undefined,
+const form = ref<any>({
+  oid: void 0,
+  loginName: void 0,
+  userName: void 0,
+  sex: void 0,
+  mobile: void 0,
+  degree: void 0,
+  teacherType: void 0,
+  userType: void 0,
+  deptId: void 0,
+  idCard: void 0,
+  birthday: void 0,
   roles: [],
-  state: undefined,
+  state: USER_STATE.NORMAL,
 })
 const rules = reactive<FormRules>({
   loginName: [{ required: true, message: '请输入用户账号', trigger: 'blur' }],
@@ -378,25 +384,15 @@ const handleSizeChange = (val: number) => {
 }
 
 const addRow = () => {
-  dialog_title.value = '添加'
-  dialog_active.value = true
+  title.value = '添加'
+  active.value = true
 }
 const updateRow = (row: UserVO) => {
-  dialog_title.value = '修改'
-  dialog_active.value = true
-  form.value.oid = row.oid
-  form.value.loginName = row.loginName
-  form.value.userName = row.userName
-  form.value.sex = row.sex
-  form.value.mobile = row.mobile
-  form.value.degree = row.degree
-  form.value.teacherType = row.teacherType
-  form.value.userType = row.userType
-  form.value.deptId = row.deptId
-  form.value.idCard = row.idCard
-  form.value.birthday = row.birthday
-  form.value.roles = row.roles
-  form.value.state = row.state
+  title.value = '修改'
+  active.value = true
+  console.log(row, form.value)
+
+  Object.assign(form.value, row)
 }
 const delRow = (oid: number) => {
   ElMessageBox.confirm('确认删除？', '删除学年', {
@@ -423,10 +419,10 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
-    const data = form.value as unknown as UserVO
+    const data = form.value as UserVO
     const res = await saveOrUpdateUser(data)
     ElMessage.success(res.message)
-    dialog_active.value = false
+    active.value = false
     fetchList()
   } finally {
     loading.value = false
@@ -435,19 +431,19 @@ const submitForm = async () => {
 
 const resetForm = () => {
   form.value = {
-    oid: undefined,
+    oid: void 0,
     loginName: '',
     userName: '',
-    sex: undefined,
+    sex: void 0,
     mobile: '',
     degree: '',
-    teacherType: undefined,
-    userType: undefined,
-    deptId: undefined,
+    teacherType: void 0,
+    userType: void 0,
+    deptId: void 0,
     idCard: '',
-    birthday: undefined,
+    birthday: void 0,
     roles: [],
-    state: undefined,
+    state: void 0,
   }
   formRef.value?.resetFields()
 }

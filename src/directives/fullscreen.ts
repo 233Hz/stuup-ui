@@ -1,11 +1,12 @@
 import type { App } from 'vue'
 
+const getScale = (w: number = 1920, h: number = 1080) => {
+  const ww = window.innerWidth / w
+  const wh = window.innerHeight / h
+  return ww < wh ? ww : wh
+}
+
 export const fullscreen = (app: App<Element>) => {
-  const getScale = (w: number = 1920, h: number = 1080) => {
-    const ww = window.innerWidth / w
-    const wh = window.innerHeight / h
-    return ww < wh ? ww : wh
-  }
   app.directive('fullscreen', {
     mounted(el, binding) {
       const w = binding.value?.width || 1920

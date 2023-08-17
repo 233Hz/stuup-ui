@@ -2,17 +2,17 @@ export interface UserVO {
   oid?: number
   loginName: string
   userName: string
-  sex: number | undefined
+  sex: number
   mobile: string
   degree: string
-  teacherType: number | undefined
-  userType: number | undefined
-  deptId: number | undefined
+  teacherType: number
+  userType: number
+  deptId: number
   idCard: string
-  birthday: Date | undefined
-  state: number | undefined
+  birthday: Date
+  state: number
   roles: number[]
-  createTime?: Date
+  createTime: Date
 }
 
 export interface SimpleUserVO {

@@ -34,28 +34,21 @@ export const constantRoute: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/home',
-    name: 'Home',
-    component: () => import('@/views/home/index.vue'),
-    meta: {
-      title: '首页',
-      hidden: true,
-      icon: 'House',
-      flag: 1,
-    },
-  },
-  {
     path: '/',
-    name: 'Layout',
-    component: () => import('@/layout/index.vue'),
+    name: 'App',
     redirect: '/home',
-    meta: {
-      title: '布局',
-      hidden: true,
-      icon: '',
-      flag: 3,
-    },
     children: [
+      {
+        path: '/home',
+        name: 'Home',
+        component: () => import('@/views/home/index.vue'),
+        meta: {
+          title: '首页',
+          hidden: true,
+          icon: 'House',
+          flag: 1,
+        },
+      },
       {
         path: '/garden/:id',
         name: 'Garden',
@@ -70,7 +63,7 @@ export const constantRoute: RouteRecordRaw[] = [
       {
         path: '/article/:id',
         name: 'Article',
-        component: () => import('@/views/dashboard/Article.vue'),
+        component: () => import('@/views/article/index.vue'),
         meta: {
           title: '文章详情',
           hidden: true,
@@ -78,20 +71,6 @@ export const constantRoute: RouteRecordRaw[] = [
           flag: 1,
         },
       },
-    ],
-  },
-  {
-    path: '/self',
-    redirect: '/self/center',
-    name: 'Self',
-    component: () => import('@/layout/index.vue'),
-    meta: {
-      title: '我的',
-      hidden: true,
-      icon: '',
-      flag: 3,
-    },
-    children: [
       {
         path: '/self/center',
         name: 'SelfCenter',
