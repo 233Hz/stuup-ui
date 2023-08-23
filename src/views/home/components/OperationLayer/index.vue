@@ -3,7 +3,7 @@
     <div ref="wrapperRef" class="relative t-0 l-0 w-full h-full">
       <div
         ref="tipRef"
-        class="absolute t-0 l-0 max-w-500 p-16 text-white fs-24 tracking-widest rounded-lg z-9999"
+        class="absolute t-0 l-0 max-w-800 line-h-40 p-16 text-white fs-24 tracking-widest rounded-lg z-9999"
         style="background-color: rgba(136, 134, 127, 0.5)"
         v-show="show_hint"
       />
@@ -26,86 +26,13 @@
         @click="router.push(`/garden/${GARDEN_TYPE.XHH}`)"
       />
       <div class="sun" @click="bus.emit('show-rank')">荣誉榜</div>
-      <!-- 用户头像&等级 -->
-      <div
-        class="user absolute t-0 l-0 w-500"
-        v-if="userStore.userInfo.userType === USER_TYPE.STUDENT"
-      >
-        <div class="user-self relative w-full h-200 user-info-border">
-          <div class="relative w-full h-full flex user-info-bg">
-            <div class="w-100 p-10">
-              <img :src="defaultAvatar" class="w-full h-full object-cover" />
-            </div>
-            <div class="flex-1 flex">
-              <div class="flex-1 m-auto">
-                <div class="absolute b-20">
-                  <p class="fs-24 font-bold" style="color: #e0cc45">
-                    {{ growthInfo?.studentName }}
-                  </p>
-                  <p class="text-white">
-                    <span class="fs-18">全校排名:</span>
-                    <span class="fs-28">{{ growthInfo?.ranking }}</span>
-                  </p>
-                </div>
-              </div>
-              <div class="flex-1 flex">
-                <div class="m-auto">
-                  <p class="text-center text-white fs-24">总积分</p>
-                  <h1 class="text-center fs-36 italic total-score-text">
-                    {{ growthInfo?.totalScore }}
-                  </h1>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <!-- 用户信息 -->
+      <div class="absolute t-0 l-0 flex">
+        <Self />
+        <Menu />
       </div>
-      <div
-        class="growth-level"
-        v-if="userStore.userInfo.userType === USER_TYPE.STUDENT"
-      >
-        <div
-          class="level-item"
-          v-for="(item, index) in conversionFlower.calculateConversionFlower(
-            growthInfo?.totalScore!,
-          )"
-          :key="index"
-        >
-          <img :src="item.imageSrc" />
-          <p>
-            x
-            <span>{{ item.value }}</span>
-          </p>
-        </div>
-      </div>
-      <!-- 菜单 -->
-      <span class="absolute t-30 l-500 w-500">
-        <ul class="relative flex flex-wrap">
-          <li
-            class="w-80 mx-10 cursor-pointer fs-12"
-            v-for="(item, index) in frontRoute"
-            :key="index"
-            @click="item.path ? router.push(item.path) : ''"
-          >
-            <div class="w-full h-80 p-10">
-              <svg-icon :name="item.meta?.icon" width="60px" height="60px" />
-            </div>
-            <p class="text-center" style="color: #19c975">
-              {{ item.meta?.title }}
-            </p>
-          </li>
-          <li
-            v-if="userStore.userInfo.userType === USER_TYPE.TEACHER"
-            class="w-80 mx-10 cursor-pointer fs-12"
-            @click="router.push('/dashboard')"
-          >
-            <div class="w-full h-80 p-10">
-              <svg-icon name="home-icon-back" width="60px" height="60px" />
-            </div>
-            <p class="text-center" style="color: #19c975">后台管理</p>
-          </li>
-        </ul>
-      </span>
+      <!-- 用户等级 -->
+      <Level class="absolute b-140 l-460" />
     </div>
   </div>
 </template>
@@ -113,70 +40,30 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { GARDEN_TYPE, USER_TYPE, MENU_FLAG } from '@/utils/dict'
-import defaultAvatar from '@/assets/image/default_avatar.png'
-import { useConversionFlower } from '@/utils/conversionFlower'
+import { GARDEN_TYPE, USER_TYPE } from '@/utils/dict'
 import bus from '@/utils/bus'
 import useUserStore from '@/store/modules/user'
-import usePermissionStore from '@/store/modules/premission'
-import { reqGrowthInfo, reqUpdateRecordState } from '@/api/home/index'
-import { GrowthInfo } from '@/api/home/type'
-import { filterRouter } from '@/utils/util'
+import { reqUnCollectScore, reqUpdateRecordState } from '@/api/home/index'
+import { UnCollectScore } from '@/api/home/type'
+import Self from './self/index.vue'
+import Menu from './menu/index.vue'
+import Level from './level/index.vue'
+import { flowerHint } from './const'
 
 const router = useRouter()
-const conversionFlower = useConversionFlower()
 const userStore = useUserStore()
-const permissionStore = usePermissionStore()
-const frontRoute = filterRouter(permissionStore.routes, MENU_FLAG.FRONT)
 
 const wrapperRef = ref()
 const tipRef = ref()
 const show_hint = ref<boolean>(false)
-const flowerHint: Record<string, string> = {
-  bmh_fruit: `<h3>白梅花</h3>
-     <p>异名：绿萼梅</p>
-     <p>药用部位：蔷薇科植物梅的花蕾。其根（梅根）、枝（梅梗）、干燥未成熟果实（乌梅）、未成熟果实的盐渍品（白梅）、种仁（梅核仁）亦供药用。</p>
-     <p>性味：酸涩，平</p>
-     <p>归经：入肝、肺二经</p>
-     <p>功效：舒肝，和胃，化痰</p>
-     <p>主治：治梅核气，肝胃气痛，食欲不振，头晕，瘰疬</p>
-     <p>用法与用量：内服：煎汤或入丸散。外用：敷贴</p>`,
-  bmh_bloom: `<h3>白梅花</h3>
-     <p>&nbsp;&nbsp;&nbsp;&nbsp;迎寒早开,美丽脱俗。被誉为花中“四君子”之首，因其所处环境恶劣，却仍在凌厉寒风中傲然绽放于枝头，是中华民族最有骨气的花，是民族魂代表。梅的傲骨激励着一代又一代的中国人不畏艰险、奋勇前进、百折不挠。象征正直、纯洁、坚贞、气节、谦虚的品格。</p>`,
-  xcj_fruit: `<h3>小雏菊</h3>
-     <p>雏菊属于菊花的一个类别</p>
-     <p>药用菊花包含了：白菊（雏菊）；滁菊；贡菊；杭菊（杭白菊，杭黄菊）</p>
-     <p>药用部位：菊科植物菊的头状花序。其根（白菊花根）、嫩茎叶（菊花苗）、叶（菊花叶）亦供药用。</p>
-     <p>性味：甘苦；凉</p>
-     <p>归经：入肺；肝经</p>
-     <p>功效：疏风，清热，明目，解毒</p>
-     <p>主治：治头痛，眩晕，目赤，心胸烦热，疔疮，肿毒</p>
-     <p>用法与用量：内服；泡茶或入丸散</p>`,
-  xcj_bloom: `<h3>小雏菊</h3>
-     <p>&nbsp;&nbsp;&nbsp;&nbsp;盛开在百花凋零之后，隽美多姿，素雅坚贞被称之为“傲霜之花”，受国人爱重，视为高尚情操和坚贞不屈的象征。</p>`,
-  xhh_fruit: `<h3>西红花</h3>
-     <p>药用部位：鸢尾科植物番红花花柱的上部及柱头</p>
-     <p>又称“女人花”分布在南欧各国及伊朗等地，上海崇明岛成功引种。</p>
-     <p>是最名贵的香料及色素。零售价：50元/克</p>
-     <p>性味：甘，平</p>
-     <p>归经：入心、肝经</p>
-     <p>功效：活血化瘀，散瘀开结</p>
-     <p>主治：治忧思郁结，胸膈痞闷，吐血，伤寒发狂，惊怖恍惚，妇女经闭，产后瘀血腹痛，跌扑肿痛</p>
-     <p>用法用量：内服：煎汤</p>
-     <p>保健用法：泡茶：每天5-7根</p>
-     <p>保健用法：泡茶：每天5-7根</p>`,
-  xhh_bloom: `<h3>西红花</h3>
-     <p>&nbsp;&nbsp;&nbsp;&nbsp;象征快乐、挂念、真心、多彩、期望和青春的喜悦`,
-}
-
-const growthInfo = ref<GrowthInfo>()
+const unCollectScores = ref<UnCollectScore[]>()
 
 onMounted(async () => {
   init()
   if (userStore.userInfo.userType === USER_TYPE.STUDENT) {
-    const { data } = await reqGrowthInfo()
-    growthInfo.value = data
-    data.unearnedPoints.forEach((item) => {
+    const { data } = await reqUnCollectScore()
+    unCollectScores.value = data
+    data.forEach((item) => {
       generateBlisters(item.id, item.score)
     })
   }
@@ -209,17 +96,18 @@ const init = () => {
         element.remove()
       })
       // 更新分数
-      const totalScore = growthInfo.value?.unearnedPoints.reduce(
+      const totalScore = unCollectScores.value?.reduce(
         (accumulator, item) => accumulator + item.score,
         0,
       )
-      growthInfo.value!.totalScore += totalScore!
+      // 更新仓库总分
+      totalScore && userStore.updateTotalScore(totalScore)
       // 更新记录状态
-      const idArr = growthInfo.value?.unearnedPoints.map((item) => item.id)
+      const idArr = unCollectScores.value?.map((item) => item.id)
       const idStr = idArr?.join(',')
       await reqUpdateRecordState(idStr!)
       // 通知显示升级动画
-      bus.emit('collect-drop', growthInfo.value?.totalScore)
+      bus.emit('collect-drop', userStore.userInfo.totalScore)
     }
   })
 }
@@ -273,87 +161,6 @@ const generateBlisters = (key: number | string, score: number): void => {
   &:hover {
     cursor: pointer;
     font-size: 34px;
-  }
-}
-
-.user-info-border {
-  border-width: 50px;
-  border-style: solid;
-  border-image: url(src/assets/image/home-student-info-border.png);
-  border-image-slice: 200 400;
-  border-image-repeat: no-repeat;
-}
-
-.user-info-bg {
-  background-color: #16a085;
-  background-image: linear-gradient(90deg, #16a085 0%, #f4d03f 100%);
-  border-radius: 8px;
-}
-
-.total-score-text {
-  background-color: #fa8bff;
-  background-image: linear-gradient(
-    45deg,
-    #fa8bff 0%,
-    #2bd2ff 52%,
-    #2bff88 90%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.growth-level {
-  width: 312px;
-  height: 250px;
-  background: url(src/assets/image/home-growth-level-bg2.png);
-  background-size: 100% 100%;
-  position: absolute;
-  bottom: 140px;
-  left: 460px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-
-  &::after {
-    content: '当前等级';
-    width: 100%;
-    font-size: 24px;
-    font-family: 华文行楷;
-    text-align: center;
-    color: #fff;
-    position: absolute;
-    left: 0;
-    top: -10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .level-item {
-    position: relative;
-    width: 100px;
-    height: 100px;
-
-    > img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      -webkit-user-drag: none;
-    }
-
-    > p {
-      width: 100%;
-      position: absolute;
-      bottom: -20px;
-      text-align: center;
-      color: #16a085;
-      font-style: 14px;
-
-      > span {
-        font-style: 16px;
-      }
-    }
   }
 }
 

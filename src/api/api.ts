@@ -1,6 +1,6 @@
 import request from './request'
 import { ElLoading } from 'element-plus'
-import type { ResponseData } from '@/types/global'
+import type { ResponseData, File } from '@/types/global'
 
 export async function get<T>(
   url: string,
@@ -57,4 +57,13 @@ export async function download(url: string, params?: any, fileName?: string) {
   } finally {
     loading.close()
   }
+}
+
+export async function upload(url: string, params: any) {
+  const response = await request.post<ResponseData<File>>(url, params, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+  return response.data
 }

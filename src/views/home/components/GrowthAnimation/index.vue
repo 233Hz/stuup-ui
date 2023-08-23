@@ -67,7 +67,6 @@ const upgradeScore = ref<number>(0)
 watch(score, (newVal) => {
   show.value = true
   nextTick(() => {
-    console.log(landRef.value.offsetLeft, landRef.value.offsetTop)
     wateringAnimation()
   })
 })

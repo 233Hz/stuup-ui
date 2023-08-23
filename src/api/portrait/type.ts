@@ -2,6 +2,7 @@ export interface PortraitBasicInfo {
   studentName: string
   studentNo: string
   phone: string
+  avatar: string
   className: string
   classTeacher: string
   majorName: string

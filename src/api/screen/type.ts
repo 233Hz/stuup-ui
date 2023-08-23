@@ -42,3 +42,8 @@ export interface StudentGrowthMonitor {
   personNum: number
 }
 export type StudentGrowthMonitorList = StudentGrowthMonitor[]
+
+export interface DailyVisits {
+  date: string
+  count: number
+}

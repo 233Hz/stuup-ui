@@ -8,7 +8,7 @@
       <div class="w-60 flex">
         <img :src="icon" class="w-60 h-60 m-auto object-cover" />
       </div>
-      <div class="flex-1 text-center">
+      <div class="flex-1 text-center flex flex-col justify-around">
         <p>
           <span class="fs-18 text-gray-400">{{ item.label }}</span>
         </p>
@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import icon from '@/assets/svg/home-applay.svg'
+import icon from '@/assets/svg/home-apply.svg'
 import { reqGrowthData } from '@/api/portrait'
 import { PortraitGrowthData } from '@/api/portrait/type'
 
@@ -30,12 +30,12 @@ const props = defineProps({
   },
 })
 
-interface CrowthData {
+interface GrowthData {
   key: keyof PortraitGrowthData
   label: string
   value: number | string
 }
-const data = ref<CrowthData[]>([
+const data = ref<GrowthData[]>([
   {
     key: 'score',
     label: '成长值',

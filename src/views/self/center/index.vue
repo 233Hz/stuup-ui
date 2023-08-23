@@ -7,80 +7,121 @@
         </template>
       </el-page-header>
     </template>
-    <el-form ref="formRef" :model="form" label-position="top" class="w-800">
+
+    <el-form
+      ref="formRef"
+      :model="form"
+      :rules="rules"
+      label-position="top"
+      class="w-800"
+      :disabled="loading"
+    >
       <el-form-item label="用户头像">
-        <el-upload
-          class="avatar-uploader"
-          action="/api/file/upload"
-          :headers="headers"
-          :disabled="loading"
-          :show-file-list="false"
-          :on-remove="handleUploadRemove"
-          :on-success="handleUploadSuccess"
-        >
-          <div v-if="form.imageUrl" class="avatar">
-            <img :src="form.imageUrl" />
-          </div>
-          <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-        </el-upload>
+        <UploadAvatar />
       </el-form-item>
       <el-form-item label="原密码" prop="opassword">
-        <el-input v-model="form.opassword" type="password" autocomplete="off" />
+        <el-input
+          v-model="form.opassword"
+          type="password"
+          autocomplete="off"
+          show-password
+        />
       </el-form-item>
       <el-form-item label="新密码" prop="npassword">
-        <el-input v-model="form.npassword" type="password" autocomplete="off" />
+        <el-input
+          v-model="form.npassword"
+          type="password"
+          autocomplete="off"
+          show-password
+        />
       </el-form-item>
       <el-form-item label="确认密码" prop="rpassword">
-        <el-input v-model="form.rpassword" type="password" autocomplete="off" />
+        <el-input
+          v-model="form.rpassword"
+          type="password"
+          autocomplete="off"
+          show-password
+        />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">修改</el-button>
-        <el-button @click="formRef?.resetFields()">重 置</el-button>
+        <el-button type="primary" @click="submitForm">
+          <el-icon
+            :class="loading ? 'is-loading el-icon--left' : 'el-icon--left'"
+          >
+            <Loading v-show="loading" />
+            <Edit v-show="!loading" />
+          </el-icon>
+          修改
+        </el-button>
+        <el-button :icon="RefreshLeft" @click="formRef?.resetFields()">
+          重 置
+        </el-button>
       </el-form-item>
     </el-form>
   </el-card>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { getToken } from '@/utils/auth'
-import type { UploadProps, UploadUserFile } from 'element-plus'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import { Loading, Edit, RefreshLeft } from '@element-plus/icons-vue'
+import { updatePassword } from '@/api/system/user'
+import useUserStore from '@/store/modules/user'
+
+const validateRpassword = (rule: any, value: any, callback: any) => {
+  if (value === '') {
+    callback(new Error('请确认密码'))
+  } else if (value !== form.value.npassword) {
+    callback(new Error('两次密码不一致'))
+  } else {
+    callback()
+  }
+}
 
 const router = useRouter()
+const userStore = useUserStore()
 
-// REF
 const formRef = ref()
 
-// DATA
+const rules = {
+  opassword: {
+    required: true,
+    message: '请输入原密码',
+    trigger: 'blur',
+  },
+  npassword: {
+    required: true,
+    message: '请输入新密码',
+    trigger: 'blur',
+  },
+  rpassword: {
+    required: true,
+    validator: validateRpassword,
+    trigger: 'blur',
+  },
+}
+
 const loading = ref(false)
-const form = ref({
-  imageUrl: void 0,
+const form = ref<any>({
   opassword: void 0,
   npassword: void 0,
   rpassword: void 0,
 })
 
-//COMPUTED
-const headers = computed(() => {
-  return {
-    Authorization: getToken(),
+const submitForm = async () => {
+  await formRef.value.validate()
+  loading.value = true
+  try {
+    const res = await updatePassword(form.value)
+    ElMessage.success(res.message)
+    userStore.userLogout()
+    window.location.reload()
+  } catch (error) {
+    formRef.value.resetFields()
+  } finally {
+    loading.value = false
   }
-})
-
-//METHODS
-const submitForm = () => {}
-const handleUploadRemove: UploadProps['onRemove'] = (file, uploadFiles) => {
-  console.log(file, uploadFiles)
-}
-const handleUploadSuccess: UploadProps['onSuccess'] = (
-  response,
-  uploadFile,
-  uploadFiles,
-) => {
-  console.log(response)
-
-  // form.value.imageUrl = response.data.url
 }
 </script>
 

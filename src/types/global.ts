@@ -25,4 +25,13 @@ export interface Tree {
   children: Tree[]
 }
 
+export interface File {
+  id: number
+  storageName: string
+  originalName: string
+  bucket: string
+  suffix: string
+  url: string
+}
+
 export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>

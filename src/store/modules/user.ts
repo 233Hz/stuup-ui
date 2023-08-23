@@ -30,6 +30,20 @@ let useUserStore = defineStore('User', {
       webCache.clear()
       resetRouter()
     },
+    updateAvatar(url: string) {
+      this.userInfo.avatar = url
+      this.updateLocalStorage()
+    },
+    updateTotalScore(score: number) {
+      this.userInfo.totalScore += score
+      this.updateLocalStorage()
+    },
+    /**
+     * 更新 LocalStorage
+     */
+    updateLocalStorage() {
+      webCache.set(STORAGE_KEY.USER_INFO, this.userInfo)
+    },
   },
 })
 

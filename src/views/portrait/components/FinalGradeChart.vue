@@ -8,17 +8,29 @@ import * as echarts from 'echarts'
 import { reqStudyGrade } from '@/api/portrait'
 import type { PortraitStudyGradeList } from '@/api/portrait/type'
 
-let data = ref<PortraitStudyGradeList>()
-let option = {}
-
 const chartRef = ref()
-watch(data, (newVal) => {
-  const xData = newVal?.map((item) => item.semesterName)
-  const yData = newVal?.map((item) => item.score)
-  option = {
+let chart: echarts.ECharts
+const dataArr = ref<PortraitStudyGradeList>()
+
+watch(
+  dataArr,
+  (newVal) => {
+    if (newVal && newVal?.length) chart.setOption(update(newVal))
+  },
+  { deep: true },
+)
+
+const update = (data: PortraitStudyGradeList): echarts.EChartOption => {
+  let xArr: string[] = []
+  let yArr: number[] = []
+  data.forEach((item) => {
+    xArr.push(item.semesterName)
+    yArr.push(item.score)
+  })
+  return {
     xAxis: {
       type: 'category',
-      data: xData,
+      data: xArr,
     },
     yAxis: {
       type: 'value',
@@ -31,18 +43,28 @@ watch(data, (newVal) => {
           fontSize: 18,
           color: '#03aa8c',
         },
-        data: yData,
+        data: yArr,
         type: 'line',
         smooth: true,
       },
     ],
   }
-  const chart = echarts.init(chartRef.value)
-  option && chart.setOption(option)
-})
+}
 
-onMounted(async () => {
-  const { data: res } = await reqStudyGrade()
-  data.value = res
+const fetch = async () => {
+  try {
+    chart.showLoading()
+    const { data } = await reqStudyGrade()
+    dataArr.value = data
+  } catch (error) {
+    console.log(error)
+  } finally {
+    chart.hideLoading()
+  }
+}
+
+onMounted(() => {
+  chart = echarts.init(chartRef.value)
+  fetch()
 })
 </script>

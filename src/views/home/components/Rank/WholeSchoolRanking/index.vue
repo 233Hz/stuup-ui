@@ -7,7 +7,7 @@
       <li class="rank-list__item" v-for="item in dataArr" :key="item.ranking">
         <div class="item-wrapper">
           <div class="item-wrapper__avatar">
-            <img class="avatar" :src="defaultAvatar" />
+            <img class="avatar" :src="item.avatar || defaultAvatar" />
           </div>
           <div class="item-wrapper__info">
             <p class="name">{{ item.studentName }}</p>
@@ -50,11 +50,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import defaultAvatar from '@/assets/image/default_avatar.png'
 import { useConversionFlower } from '@/utils/conversionFlower'
 import { reqWholeSchoolTop10Ranking } from '@/api/home/index'
 import { WholeSchoolTop10List } from '@/api/home/type'
+import setting from '@/setting'
 
+const { defaultAvatar } = setting
 const conversionFlower = useConversionFlower()
 
 const dataArr = ref<WholeSchoolTop10List>()
@@ -161,25 +162,8 @@ onMounted(async () => {
           color: white;
           display: flex;
           flex-direction: column;
-          padding-left: 4px;
           justify-content: space-around;
-
-          > p {
-            height: 10px;
-            line-height: 10px;
-            margin-top: 5px;
-            font-weight: 100;
-
-            > span {
-              font-weight: 500;
-            }
-
-            &:nth-child(1) {
-              height: 15px;
-              line-height: 15px;
-              margin-top: 0;
-            }
-          }
+          padding-left: 4px;
 
           .name {
             font-size: 14px;

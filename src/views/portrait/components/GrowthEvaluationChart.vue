@@ -9,19 +9,28 @@ import { reqCapacityEvaluator } from '@/api/portrait/index'
 import { PortraitCapacityEvaluatorList } from '@/api/portrait/type'
 
 let chartRef = ref()
+let chart: echarts.ECharts
+const dataArr = ref<PortraitCapacityEvaluatorList>()
 
-let option = {}
-const list = ref<PortraitCapacityEvaluatorList>()
+watch(
+  dataArr,
+  (newVal) => {
+    if (newVal && newVal?.length) chart.setOption(update(newVal))
+  },
+  { deep: true },
+)
 
-watch(list, (newVal) => {
-  const indicator = newVal?.map((item) => {
+const update = (data: PortraitCapacityEvaluatorList): echarts.EChartOption => {
+  const indicator = data?.map((item) => {
     return {
       name: `${item.indicatorName}（${item.indicatorScore}分）`,
       max: item.indicatorAvgScore,
     }
   })
-  const value = newVal?.map((item) => item.indicatorScore)
-  option = {
+  console.log(indicator)
+
+  const value = data?.map((item) => item.indicatorScore)
+  return {
     tooltip: {
       trigger: 'item',
     },
@@ -52,12 +61,22 @@ watch(list, (newVal) => {
       },
     ],
   }
-  const chart = echarts.init(chartRef.value)
-  option && chart.setOption(option, true)
-})
+}
 
-onMounted(async () => {
-  const { data } = await reqCapacityEvaluator()
-  list.value = data
+const fetch = async () => {
+  try {
+    chart.showLoading()
+    const { data } = await reqCapacityEvaluator()
+    dataArr.value = data
+  } catch (error) {
+    console.log(error)
+  } finally {
+    chart.hideLoading()
+  }
+}
+
+onMounted(() => {
+  chart = echarts.init(chartRef.value)
+  fetch()
 })
 </script>

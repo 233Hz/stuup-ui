@@ -4,4 +4,5 @@ export default {
   showLogo: true, //是否显示logo
   whiteRouter: ['/login', '/404'], //路由白名单
   whiteRouterName: ['Login', '404'], //路由白名单
+  defaultAvatar: 'src/assets/image/default_avatar.png', //默认头像
 }

@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import * as echarts from 'echarts'
 import { reqStudyCourse } from '@/api/portrait'
 
@@ -14,22 +14,29 @@ const props = defineProps({
 })
 
 const chartRef = ref()
+let chart: echarts.ECharts
 
-let option = {}
+interface Indicator {
+  name: string
+  max: number
+}
 
 watch(
   () => props.semesterId,
   async (newVal) => {
     if (!newVal) return
     const { data } = await reqStudyCourse(newVal)
-    const indicatorData = data?.map((item) => {
-      return {
+    if (!(data && data.length)) return
+    let indicatorData: Indicator[] = []
+    let values: number[] = []
+    data.forEach((item) => {
+      indicatorData.push({
         name: `${item.courseName}（${item.score}分）`,
         max: 100,
-      }
+      })
+      values.push(item.score)
     })
-    const values = data?.map((item) => item.score)
-    option = {
+    let option: echarts.EChartOption = {
       tooltip: {
         trigger: 'item',
       },
@@ -54,11 +61,14 @@ watch(
         },
       ],
     }
-    const chart = echarts.init(chartRef.value)
-    option && chart.setOption(option)
+    chart.setOption(option)
     emit('change', data)
   },
 )
+
+onMounted(() => {
+  chart = echarts.init(chartRef.value)
+})
 
 const emit = defineEmits(['change'])
 </script>

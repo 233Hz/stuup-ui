@@ -35,7 +35,7 @@
               <el-dropdown-item @click="router.push('/self/notify')">
                 我的消息
               </el-dropdown-item>
-              <el-dropdown-item @click="handleuserLogout">
+              <el-dropdown-item @click="handlerLogout">
                 退出登入
               </el-dropdown-item>
             </el-dropdown-menu>
@@ -70,7 +70,7 @@ const fullScreen = () => {
   }
 }
 
-const handleuserLogout = () => {
+const handlerLogout = () => {
   ElMessageBox.confirm('确认退出？', '退出登入', {
     confirmButtonText: '确认',
     cancelButtonText: '取消',
@@ -78,7 +78,7 @@ const handleuserLogout = () => {
   })
     .then(async () => {
       await userStore.userLogout()
-      router.push({ path: '/login', query: { redirect: route.path } })
+      window.location.reload()
     })
     .catch(() => {})
 }

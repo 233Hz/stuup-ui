@@ -42,6 +42,7 @@ export interface CusUser {
   degree: string
   roleIds: number[]
   yearId: number
+  avatar: string
 }
 
 export interface UserMenu {
@@ -58,4 +59,10 @@ export interface UserMenu {
   keepAlive: number
   hidden: boolean
   redirect?: string
+}
+
+export interface UpdatePasswordForm {
+  opassword: string
+  npassword: string
+  rpassword: string
 }

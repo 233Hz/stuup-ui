@@ -7,7 +7,7 @@
       <li class="rank-list__item" v-for="item in dataArr" :key="item.ranking">
         <div class="item-wrapper">
           <div class="item-wrapper__avatar">
-            <img class="avatar" :src="defaultAvatar" />
+            <img class="avatar" :src="item.avatar || defaultAvatar" />
           </div>
           <div class="item-wrapper__info">
             <p class="name">{{ item.classTeacher }}</p>
@@ -24,9 +24,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import defaultAvatar from '@/assets/image/default_avatar.png'
 import { reqWholeClassTop10Ranking } from '@/api/home/index'
 import { WholeClassTop10List } from '@/api/home/type'
+import setting from '@/setting'
+
+const { defaultAvatar } = setting
 
 const dataArr = ref<WholeClassTop10List>()
 

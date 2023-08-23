@@ -1,5 +1,6 @@
 export interface WholeSchoolTop10 {
   studentName: string
+  avatar: string
   className: string
   classTeacher: string
   ranking: number
@@ -12,6 +13,7 @@ export interface WholeClassTop10 {
   classTeacher: string
   ranking: number
   score: number
+  avatar: string
 }
 export type WholeClassTop10List = WholeClassTop10[]
 
@@ -22,17 +24,11 @@ export interface ProgressTop10 {
   ranking: number
   score: number
   riseRanking: number
+  avatar: string
 }
 export type ProgressTop10List = ProgressTop10[]
 
-interface UnearnedPoints {
+export interface UnCollectScore {
   id: number
   score: number
-}
-
-export interface GrowthInfo {
-  studentName: string
-  totalScore: number
-  ranking: number
-  unearnedPoints: UnearnedPoints[]
 }

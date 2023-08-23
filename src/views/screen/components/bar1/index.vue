@@ -23,7 +23,7 @@ const dataArr = ref<StudentGrowthMonitorList>()
 watch(
   dataArr,
   (newVal) => {
-    if (dataArr && newVal?.length) chart.setOption(update(newVal))
+    if (newVal && newVal?.length) chart.setOption(update(newVal))
   },
   { deep: true },
 )

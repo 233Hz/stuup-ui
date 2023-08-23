@@ -3,7 +3,7 @@
     <div class="w-198 relative">
       <div class="w-150 h-150 m-auto br-8 overflow-hidden">
         <img
-          :src="defaultAvatar"
+          :src="userInfo?.avatar || defaultAvatar"
           alt="avatar"
           class="w-full h-full object-cover"
         />
@@ -40,7 +40,7 @@
           <p class="text-center">
             <span class="fs-18 text-gray-400">成长等级</span>
           </p>
-          <div class="flex gap-12 junstify-center pt-12">
+          <div class="flex gap-12 justify-center pt-12">
             <div
               class="w-100 h-100 relative"
               v-for="(
@@ -88,11 +88,7 @@
           </span>
         </p>
         <div class="mt-12 flex gap-12 flex-wrap">
-          <div
-            class="mb-12"
-            v-for="(item, index) in userInfo?.associations"
-            :key="index"
-          >
+          <div class="mb-12" v-for="item in userInfo?.associations" :key="item">
             <span class="br-4 px-12 py-8 mr-12 text-sky-400">
               社团{{ item }}
             </span>
@@ -105,11 +101,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import defaultAvatar from '@/assets/image/default_avatar.png'
 import { reqBasicInfo } from '@/api/portrait/index'
 import { PortraitBasicInfo } from '@/api/portrait/type'
 import { useConversionFlower } from '@/utils/conversionFlower'
+import setting from '@/setting'
 
+const { defaultAvatar } = setting
 const conversionFlower = useConversionFlower()
 const userInfo = ref<PortraitBasicInfo>()
 

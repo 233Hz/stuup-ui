@@ -81,13 +81,13 @@ const handleLogin = async () => {
   await formRef.value.validate()
   try {
     loading.value = true
-    await userStore.userLogin(form.value)
+    const data = await userStore.userLogin(form.value)
     // 初始化花朵兑换信息
     await flowersStore.getFlowers()
     //判断登录的时候,路由路径当中是否有query参数，如果有就往query参数挑战，没有跳转到首页
     let redirect: any = $route.query.redirect
     $router.push({ path: redirect || '/home' })
-    ElMessage.success('登录成功')
+    ElMessage.success(data.message)
   } catch (error) {
     console.error(error)
   } finally {

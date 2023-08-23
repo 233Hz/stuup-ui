@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
-import usePermissionStore from '@/store/modules/premission'
+import usePermissionStore from '@/store/modules/permission'
 import Menu from '../menu/index.vue'
 import { filterRouter } from '@/utils/util'
 import { MENU_FLAG } from '@/utils/dict'

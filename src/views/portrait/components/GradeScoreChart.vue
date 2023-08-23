@@ -8,32 +8,37 @@ import * as echarts from 'echarts'
 import { reqRankingCurve } from '@/api/portrait/index'
 import { PortraitRankingCurveList } from '@/api/portrait/type'
 
-const data = Array.from({ length: 7 }, (_, index) => {
-  return Math.floor(Math.random() * 1000 + 200)
-})
+interface DataType {
+  value: number
+  score: number
+}
 
 const chartRef = ref()
-let option = {}
-const list = ref()
+let chart: echarts.ECharts
+const dataArr = ref<PortraitRankingCurveList>()
 
-interface DataType {
-  value: number | undefined
-  score: number | undefined
-}
-watch(list, (newVal: PortraitRankingCurveList) => {
-  let xData: string[] = []
-  let values: DataType[] = []
-  newVal.forEach((item) => {
-    xData.push(item.semesterName)
-    values.push({
+watch(
+  dataArr,
+  (newVal) => {
+    if (newVal && newVal?.length) chart.setOption(update(newVal))
+  },
+  { deep: true },
+)
+
+const update = (data: PortraitRankingCurveList): echarts.EChartOption => {
+  let xArr: string[] = []
+  let yArr: DataType[] = []
+  data.forEach((item) => {
+    xArr.push(item.semesterName)
+    yArr.push({
       value: item.rank,
       score: item.score,
     })
   })
-  option = {
+  return {
     xAxis: {
       type: 'category',
-      data: xData,
+      data: xArr,
     },
     yAxis: {
       type: 'value',
@@ -49,18 +54,28 @@ watch(list, (newVal: PortraitRankingCurveList) => {
           fontSize: 18,
           color: '#03aa8c',
         },
-        data: values,
+        data: yArr,
         type: 'line',
         smooth: true,
       },
     ],
   }
-  const chart = echarts.init(chartRef.value)
-  option && chart.setOption(option, true)
-})
+}
 
-onMounted(async () => {
-  const { data } = await reqRankingCurve()
-  list.value = data
+const fetch = async () => {
+  try {
+    chart.showLoading()
+    const { data } = await reqRankingCurve()
+    dataArr.value = data
+  } catch (error) {
+    console.log(error)
+  } finally {
+    chart.hideLoading()
+  }
+}
+
+onMounted(() => {
+  chart = echarts.init(chartRef.value)
+  fetch()
 })
 </script>

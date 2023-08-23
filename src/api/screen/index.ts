@@ -6,6 +6,7 @@ import type {
   AwardsByCompetitionList,
   GrowthScoreCountList,
   StudentGrowthMonitorList,
+  DailyVisits,
 } from './type'
 
 enum API {
@@ -15,6 +16,7 @@ enum API {
   AWARDS_BY_COMPETITION = '/screen/countAllKindsOfCompetitionAwardNum',
   GROWTH_SCORE_COMPARE = '/screen/countGrowthScoreCompare',
   STUDENT_GROWTH_MONITOR = '/screen/studentGrowthMonitor',
+  COUNT_DAILY_VISITS = '/screen/countDailyVisits',
 }
 
 export const reqCountMajorPopulations = () =>
@@ -34,3 +36,6 @@ export const reqGrowthScoreCompare = () =>
 
 export const reqStudentGrowthMonitor = () =>
   get<StudentGrowthMonitorList>(API.STUDENT_GROWTH_MONITOR)
+
+export const reqCountDailyVisits = () =>
+  get<DailyVisits[]>(API.COUNT_DAILY_VISITS)

@@ -3,14 +3,14 @@ import type {
   WholeSchoolTop10List,
   WholeClassTop10List,
   ProgressTop10List,
-  GrowthInfo,
+  UnCollectScore,
 } from './type'
 
 enum API {
   WHOLE_SCHOOL_TOP10_RANKING = '/rank/wholeSchoolTop10',
   WHOLE_CLASS_TOP10_RANKING = '/rank/wholeClassTop10',
   PROGRESS_TOP10_RANKING = '/rank/progressTop10',
-  GROWTH_INFO = '/growth/info',
+  UN_COLLECT_SCORE = '/recScore/unCollectScore',
   UPDATE_RECORD_STATE = '/recScore/updateState',
 }
 
@@ -39,7 +39,8 @@ export const reqProgressTop10Ranking = () =>
  * 查询当前学生的成长信息
  * @returns
  */
-export const reqGrowthInfo = () => get<GrowthInfo>(API.GROWTH_INFO)
+export const reqUnCollectScore = () =>
+  get<UnCollectScore[]>(API.UN_COLLECT_SCORE)
 
 /**
  * 更新记录状态

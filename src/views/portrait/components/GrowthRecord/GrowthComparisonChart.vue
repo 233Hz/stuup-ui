@@ -14,8 +14,7 @@ const props = defineProps({
 })
 
 const chartRef = ref()
-
-let option = {}
+let chart: echarts.ECharts
 
 watch(
   () => props.semesterId,
@@ -25,7 +24,7 @@ watch(
     const xData = data.map((item) => item.growthItemName)
     const yData1 = data.map((item) => item.score)
     const yData2 = data.map((item) => item.avgScore)
-    option = {
+    let option: echarts.EChartOption = {
       dataZoom: [
         {
           type: 'slider', //隐藏或显示（true）组件
@@ -34,6 +33,7 @@ watch(
           endValue: 5,
           filterMode: 'empty',
           zoomLock: true, // 是否锁定选择区域（或叫做数据窗口）的大小
+          // @ts-ignore
           brushSelect: false,
           fillerColor: 'rgb(3, 187, 154)',
         },
@@ -68,6 +68,7 @@ watch(
           },
           label: {
             show: true,
+            // @ts-ignore
             formatter: '{c} 分',
             fontSize: 18,
             color: '#fff',
@@ -86,6 +87,7 @@ watch(
           },
           label: {
             show: true,
+            // @ts-ignore
             formatter: '{c} 分',
             fontSize: 18,
             color: '#fff',
@@ -93,10 +95,13 @@ watch(
         },
       ],
     }
-    const chart = echarts.init(chartRef.value)
-    option && chart.setOption(option)
+    chart.setOption(option)
   },
 )
+
+onMounted(() => {
+  chart = echarts.init(chartRef.value)
+})
 </script>
 
 <style scoped lang="scss"></style>

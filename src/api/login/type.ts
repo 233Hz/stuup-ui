@@ -12,4 +12,7 @@ export interface LoginUserVO {
   userType: number
   roleIds: string
   yearId: number
+  avatar: string
+  ranking: number
+  totalScore: number
 }

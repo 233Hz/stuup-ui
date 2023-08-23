@@ -31,7 +31,7 @@
 import Header from './components/header/index.vue'
 import Aside from './components/aside/index.vue'
 import Breadcrumb from './components/breadcrumb/index.vue'
-import usePermissionStore from '@/store/modules/premission'
+import usePermissionStore from '@/store/modules/permission'
 
 const permissionStore = usePermissionStore()
 </script>

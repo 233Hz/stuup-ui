@@ -9,22 +9,30 @@ import { reqGrowthAnalysis } from '@/api/portrait/index'
 import { PortraitGrowthAnalysisList } from '@/api/portrait/type'
 
 const chartRef = ref()
-let option = {}
-const list = ref()
+let chart: echarts.ECharts
+const dataArr = ref<PortraitGrowthAnalysisList>()
 
-watch(list, (newVal: PortraitGrowthAnalysisList) => {
-  let xData: string[] = []
-  let values: number[] = []
-  newVal.forEach((item) => {
-    xData.push(item.semesterName)
-    values.push(item.avgScoreGap)
+watch(
+  dataArr,
+  (newVal) => {
+    if (newVal && newVal?.length) chart.setOption(update(newVal))
+  },
+  { deep: true },
+)
+
+const update = (data: PortraitGrowthAnalysisList): echarts.EChartOption => {
+  let xArr: string[] = []
+  let yArr: number[] = []
+  data.forEach((item) => {
+    xArr.push(item.semesterName)
+    yArr.push(item.avgScoreGap)
   })
-  option = {
+  return {
     xAxis: {
       type: 'category',
       name: '全校成长平均值',
       boundaryGap: false,
-      data: xData,
+      data: xArr,
     },
     yAxis: {
       type: 'value',
@@ -32,7 +40,7 @@ watch(list, (newVal: PortraitGrowthAnalysisList) => {
     },
     series: [
       {
-        data: values,
+        data: yArr,
         type: 'line',
         areaStyle: {},
         smooth: true,
@@ -43,19 +51,29 @@ watch(list, (newVal: PortraitGrowthAnalysisList) => {
           fontSize: 18,
           color: '#03bb9a',
         },
+        areaStyle: {
+          color: '#a9df96',
+        },
       },
     ],
-    areaStyle: {
-      color: '#a9df96',
-    },
   }
-  const chart = echarts.init(chartRef.value)
-  option && chart.setOption(option)
-})
+}
 
-onMounted(async () => {
-  const { data } = await reqGrowthAnalysis()
-  list.value = data
+const fetch = async () => {
+  try {
+    chart.showLoading()
+    const { data } = await reqGrowthAnalysis()
+    dataArr.value = data
+  } catch (error) {
+    console.log(error)
+  } finally {
+    chart.hideLoading()
+  }
+}
+
+onMounted(() => {
+  chart = echarts.init(chartRef.value)
+  fetch()
 })
 </script>
 
