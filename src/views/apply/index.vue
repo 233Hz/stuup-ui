@@ -279,7 +279,7 @@
             <el-upload
               ref="uploadRef"
               drag
-              action="/api/file/upload"
+              :action="action"
               :headers="headers"
               :disabled="loading"
               :on-remove="handleUploadRemove"
@@ -333,6 +333,9 @@ import { useRouter } from 'vue-router'
 import useGrowthStore from '@/store/modules/growth'
 import usePaginationStore from '@/store/modules/pagination'
 import { ArrowLeft } from '@element-plus/icons-vue'
+
+const baseApi = import.meta.env.VITE_APP_BASE_API
+const action = baseApi + '/file/upload'
 
 const growthStore = useGrowthStore()
 const paginationStore = usePaginationStore()
@@ -511,14 +514,5 @@ const resetForm = () => {
     fileIds: '',
   }
   formRef.value?.resetFields()
-}
-
-const handleCurrentChange = (val: number) => {
-  searchForm.value.current = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  searchForm.value.size = val
-  fetchList()
 }
 </script>

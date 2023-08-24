@@ -104,9 +104,8 @@ import { ref, onMounted } from 'vue'
 import { reqBasicInfo } from '@/api/portrait/index'
 import { PortraitBasicInfo } from '@/api/portrait/type'
 import { useConversionFlower } from '@/utils/conversionFlower'
-import setting from '@/setting'
+import defaultAvatar from '@/assets/image/default_avatar.png'
 
-const { defaultAvatar } = setting
 const conversionFlower = useConversionFlower()
 const userInfo = ref<PortraitBasicInfo>()
 

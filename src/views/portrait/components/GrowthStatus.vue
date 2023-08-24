@@ -51,6 +51,7 @@ const update = (data: PortraitGrowthAnalysisList): echarts.EChartOption => {
           fontSize: 18,
           color: '#03bb9a',
         },
+        // @ts-ignore
         areaStyle: {
           color: '#a9df96',
         },

@@ -25,10 +25,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { reqWholeClassTop10Ranking } from '@/api/home/index'
-import { WholeClassTop10List } from '@/api/home/type'
-import setting from '@/setting'
-
-const { defaultAvatar } = setting
+import defaultAvatar from '@/assets/image/default_avatar.png'
 
 const dataArr = ref<WholeClassTop10List>()
 

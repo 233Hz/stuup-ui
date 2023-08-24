@@ -53,9 +53,8 @@ import { ref, onMounted } from 'vue'
 import { useConversionFlower } from '@/utils/conversionFlower'
 import { reqWholeSchoolTop10Ranking } from '@/api/home/index'
 import { WholeSchoolTop10List } from '@/api/home/type'
-import setting from '@/setting'
+import defaultAvatar from '@/assets/image/default_avatar.png'
 
-const { defaultAvatar } = setting
 const conversionFlower = useConversionFlower()
 
 const dataArr = ref<WholeSchoolTop10List>()

@@ -22,15 +22,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import useUserStore from '@/store/modules/user'
-import { GrowthInfo } from '@/api/home/type'
-import { reqGrowthInfo } from '@/api/home/index'
 import { USER_TYPE } from '@/utils/dict'
-import setting from '@/setting'
+import defaultAvatar from '@/assets/image/default_avatar.png'
 
-const { defaultAvatar } = setting
 const router = useRouter()
 const userStore = useUserStore()
 </script>

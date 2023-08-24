@@ -29,7 +29,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import useUserStore from '@/store/modules/user'
 import usePermissionStore from '@/store/modules/permission'
 import { filterRouter } from '@/utils/util'

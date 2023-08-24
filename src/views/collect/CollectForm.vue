@@ -13,7 +13,7 @@
       label-position="top"
     >
       <el-form-item label="成长项目" prop="rec_code">
-        <el-radio-group v-model="form.rec_code">
+        <el-radio-group v-model="form.recCode">
           <el-row>
             <el-col :span="8" v-for="item in growItems" :key="item.id">
               <el-radio :label="item.code" border style="margin: 5px">
@@ -26,7 +26,7 @@
       <el-form-item>
         <UploadExcel
           ref="uploadExcelRef"
-          url="/api/grow/import"
+          :url="action"
           :data="form"
           :disabled="loading"
           @success="handleSuccess"
@@ -52,6 +52,9 @@ import type { GrowthItemVO } from '@/api/grow/config/type'
 import { ElMessage } from 'element-plus'
 import bus from '@/utils/bus'
 
+const baseApi = import.meta.env.VITE_APP_BASE_API
+const action = baseApi + '/grow/import'
+
 const fromRef = ref()
 const uploadExcelRef = ref()
 
@@ -59,7 +62,7 @@ const active = ref<boolean>(false)
 const loading = ref<boolean>(false)
 const growItems = ref<GrowthItemVO[]>([])
 const form = reactive({
-  rec_code: '',
+  recCode: '',
 })
 
 onMounted(() => {
@@ -69,7 +72,7 @@ onMounted(() => {
 const initGrowthItem = async () => {
   const { data: res } = await getUserGrowthItems()
   growItems.value = res
-  form.rec_code = growItems.value[0].code
+  form.recCode = growItems.value[0].code
 }
 
 const open = () => {
@@ -78,7 +81,7 @@ const open = () => {
 }
 
 const handleDownTemp = async () => {
-  downTemp(form.rec_code)
+  downTemp(form.recCode)
 }
 
 const handleSuccess = () => {
@@ -87,7 +90,7 @@ const handleSuccess = () => {
 }
 
 const handleClose = () => {
-  form.rec_code = growItems.value[0].code
+  form.recCode = growItems.value[0].code
   uploadExcelRef.value.reset()
 }
 

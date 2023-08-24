@@ -5,11 +5,7 @@
   >
     <div
       v-fullscreen
-      class="w-1920 h-1080 relative overflow-hidden select-none"
-      style="
-        background: url(src/assets/image/home_bg.png) no-repeat center 0;
-        background-size: 100% 100%;
-      "
+      class="bg w-1920 h-1080 relative overflow-hidden select-none"
     >
       <AnimationLayer class="z-10" />
       <OperationLayer class="z-20" />
@@ -25,3 +21,10 @@ import OperationLayer from './components/OperationLayer/index.vue'
 import GrowthAnimation from './components/GrowthAnimation/index.vue'
 import Rank from './components/Rank/index.vue'
 </script>
+
+<style lang="scss" scoped>
+.bg {
+  background: url(@/assets/image/home_bg.png) no-repeat center 0;
+  background-size: 100% 100%;
+}
+</style>

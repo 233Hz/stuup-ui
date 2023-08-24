@@ -45,6 +45,7 @@ const columns: Column[] = [
     dataKey: 'facultyName',
     title: '系部名称',
     width: 150,
+    // @ts-ignore
     headerCellRenderer: (props: HeaderCellSlotProps) => {
       return (
         <div class="flex items-center justify-center">

@@ -1,6 +1,6 @@
 <template>
   <div ref="turntableRef" class="turntable" v-show="show">
-    <div class="turntable-outer">
+    <!-- <div class="turntable-outer">
       <div ref="turntableInnerRef" class="turntable-outer__wrapper">
         <div class="sector">
           <img id="bmhSeed" src="@/assets/flower_icons/xcj_seed.png" />
@@ -40,7 +40,7 @@
         </div>
       </div>
       <div class="arrow"></div>
-    </div>
+    </div> -->
   </div>
 </template>
 

@@ -270,7 +270,7 @@ onBeforeUnmount(() => {
 /**
  * ==================== 方法 ====================
  */
-
+//@ts-ignore
 const handleCreated = (editor) => {
   editorRef.value = editor // 记录 editor 实例，重要！
 }
@@ -296,6 +296,8 @@ const addRow = () => {
   title.value = '添加'
   active.value = true
 }
+
+//@ts-ignore
 const updateRow = (row) => {
   title.value = '修改'
   active.value = true

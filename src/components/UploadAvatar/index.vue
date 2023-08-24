@@ -25,6 +25,7 @@ const avatarSrc = ref(userStore.userInfo.avatar || default_avatar)
 const openSelectFile = async () => {
   loading.value = true
   try {
+    // @ts-ignore
     const [fileHandle] = await window.showOpenFilePicker({
       types: [
         {

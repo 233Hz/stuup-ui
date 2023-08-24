@@ -62,6 +62,7 @@ const columns: Column[] = [
     dataKey: 'studentName',
     title: '学生姓名',
     width: 150,
+    // @ts-ignore
     headerCellRenderer: (props: HeaderCellSlotProps) => {
       return (
         <div class="flex items-center justify-center">
@@ -111,6 +112,7 @@ const columns: Column[] = [
     dataKey: 'studentNo',
     title: '学号',
     width: 150,
+    // @ts-ignore
     headerCellRenderer: (props: HeaderCellSlotProps) => {
       return (
         <div class="flex items-center justify-center">
@@ -160,6 +162,7 @@ const columns: Column[] = [
     dataKey: 'gradeName',
     title: '所属年级',
     width: 150,
+    // @ts-ignore
     headerCellRenderer: (props: HeaderCellSlotProps) => {
       return (
         <div class="flex items-center justify-center">
@@ -211,6 +214,7 @@ const columns: Column[] = [
     dataKey: 'className',
     title: '所属班级',
     width: 300,
+    // @ts-ignore
     headerCellRenderer: (props: HeaderCellSlotProps) => {
       return (
         <div class="flex items-center justify-center">
@@ -268,6 +272,7 @@ const columns: Column[] = [
     dataKey: 'facultyName',
     title: '所属系部',
     width: 150,
+    // @ts-ignore
     headerCellRenderer: (props: HeaderCellSlotProps) => {
       return (
         <div class="flex items-center justify-center">
@@ -319,6 +324,7 @@ const columns: Column[] = [
     dataKey: 'majorName',
     title: '所属专业',
     width: 300,
+    // @ts-ignore
     headerCellRenderer: (props: HeaderCellSlotProps) => {
       return (
         <div class="flex items-center justify-center">

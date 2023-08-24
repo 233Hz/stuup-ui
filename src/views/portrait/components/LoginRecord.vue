@@ -52,7 +52,7 @@ const option = ref({
 })
 
 onMounted(() => {
-  const chart = echarts.init(chartRef.value)
-  option.value && chart.setOption(option.value)
+  // const chart = echarts.init(chartRef.value)
+  // option.value && chart.setOption(option.value)
 })
 </script>

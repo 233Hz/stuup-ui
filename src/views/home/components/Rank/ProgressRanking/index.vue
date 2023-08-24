@@ -58,9 +58,7 @@ import { ref, onMounted } from 'vue'
 import { useConversionFlower } from '@/utils/conversionFlower'
 import { reqProgressTop10Ranking } from '@/api/home/index'
 import { ProgressTop10List } from '@/api/home/type'
-import setting from '@/setting'
-
-const { defaultAvatar } = setting
+import defaultAvatar from '@/assets/image/default_avatar.png'
 
 const conversionFlower = useConversionFlower()
 

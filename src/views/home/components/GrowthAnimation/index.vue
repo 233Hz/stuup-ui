@@ -26,13 +26,19 @@
             <div class="progress-tip">距离下一级还有{{ upgradeScore }}分</div>
           </div>
         </div>
+        <div
+          class="absolute t-0 r-0 w-80 h-80 cursor-pointer transition ease-in-out hover:rotate-180 duration-300"
+          @click="show = false"
+        >
+          <svg-icon name="close" width="80px" height="80px" />
+        </div>
       </div>
-      <p
+      <!-- <p
         class="absolute b-20 text-center text-slate-300 fs-18 cursor-pointer left-1/2 -translate-x-1/2 hover:text-white"
         @click="show = false"
       >
         点击关闭动画
-      </p>
+      </p> -->
     </div>
   </div>
 </template>
@@ -134,12 +140,10 @@ const wateringAnimation = () => {
                   ? 0
                   : totalProgress - currentProgress
               const ratio =
-                totalProgress === 0
-                  ? 1
-                  : (currentProgress / totalProgress).toFixed(4)
+                totalProgress === 0 ? 1 : currentProgress / totalProgress
               upgradeScore.value = needScore
-              progressRatio.value = Number(ratio)
-              increaseProgress(progressRatio.value)
+              progressRatio.value = Number(ratio.toFixed(2))
+              increaseProgress(Number(ratio))
               if (
                 current.key === currentLevel.value?.key &&
                 current.value === currentLevel.value?.value &&

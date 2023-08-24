@@ -160,7 +160,7 @@
 <script setup lang="ts" name="Menu">
 import { ref, onMounted, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import { getMenuTree, saveMenu } from '@/api/system/menu/index'
+import { saveMenu } from '@/api/system/menu/index'
 import type { Menu } from '@/api/system/menu/type'
 import { ElMessage } from 'element-plus'
 
@@ -177,7 +177,7 @@ const searchForm = ref({
   name: '',
   code: '',
 })
-const form = ref<Menu>({
+const form = ref<any>({
   oid: undefined,
   pid: undefined,
   name: '',

@@ -55,6 +55,7 @@ const columns: Column[] = [
     dataKey: 'majorName',
     title: '专业名称',
     width: 150,
+    // @ts-ignore
     headerCellRenderer: (props: HeaderCellSlotProps) => {
       return (
         <div class="flex items-center justify-center">
@@ -104,6 +105,7 @@ const columns: Column[] = [
     dataKey: 'facultyName',
     title: '所属系部',
     width: 150,
+    // @ts-ignore
     headerCellRenderer: (props: HeaderCellSlotProps) => {
       return (
         <div class="flex items-center justify-center">
