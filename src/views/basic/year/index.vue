@@ -79,7 +79,7 @@
         </el-table-column>
         <!-- <el-table-column label="操作" width="300" align="center">
           <template #default="{ row }">
-            <el-button :disabled="row.curr === 1" @click="setCurrent(row.oid)" :type="row.curr === 1 ? 'success' : ''">
+            <el-button :disabled="row.curr === 1" @click="setCurrent(row.oid)" :type="row.curr === 1 ? 'success' : void 0">
               {{ row.curr === 1 ? '当前学年' : '设置为当前年' }}
             </el-button>
             <el-button @click="updateRow(row)">修改</el-button>
@@ -158,16 +158,16 @@ const dialog_active = ref<boolean>(false)
 const dialog_title = ref<string>('')
 const tableData = ref<YearVO[]>()
 const searchForm = ref({
-  yearName: '',
+  yearName: void 0,
 })
-const form = ref<YearVO>({
+const form = ref<any>({
   oid: void 0,
-  yearName: '',
+  yearName: void 0,
   yearRange: [],
-  yearStart: '',
-  yearEnd: '',
-  lastSemester: '',
-  nextSemester: '',
+  yearStart: void 0,
+  yearEnd: void 0,
+  lastSemester: void 0,
+  nextSemester: void 0,
 })
 const rules = reactive<FormRules>({
   yearName: [{ required: true, message: '请填写年份名称', trigger: 'blur' }],
@@ -250,8 +250,7 @@ const submitForm = async () => {
   form.value.yearStart = form.value.yearRange[0]
   form.value.yearEnd = form.value.yearRange[1]
   try {
-    const data = form.value as unknown as YearVO
-    const res = await saveOrUpdateYear(data)
+    const res = await saveOrUpdateYear(form.value)
     ElMessage.success(res.message)
     dialog_active.value = false
     fetchList()
@@ -263,12 +262,12 @@ const submitForm = async () => {
 const resetForm = () => {
   form.value = {
     oid: void 0,
-    yearName: '',
+    yearName: void 0,
     yearRange: [],
-    yearStart: '',
-    yearEnd: '',
-    lastSemester: '',
-    nextSemester: '',
+    yearStart: void 0,
+    yearEnd: void 0,
+    lastSemester: void 0,
+    nextSemester: void 0,
   }
   formRef.value?.resetFields()
 }

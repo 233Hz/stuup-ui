@@ -12,6 +12,21 @@
               >
                 <el-row>
                   <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="学年" prop="yearId">
+                      <el-select
+                        v-model="searchForm.yearId"
+                        style="width: 100%"
+                      >
+                        <el-option
+                          v-for="item in dictionaryStore.year"
+                          :key="item.oid"
+                          :label="item.value"
+                          :value="item.oid"
+                        />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
                     <el-form-item label="年级" prop="gradeId">
                       <el-select
                         v-model="searchForm.gradeId"
@@ -162,18 +177,7 @@
             align="center"
           />
         </el-table>
-        <div class="page-r">
-          <el-pagination
-            background
-            :total="total"
-            v-model:current-page="current"
-            v-model:page-size="size"
-            :page-sizes="[10, 20, 30, 50, 100]"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            layout="total, sizes, prev, pager, next"
-          />
-        </div>
+        <Pagination @size-change="fetchList" @current-change="fetchList" />
       </el-card>
     </el-col>
   </el-row>
@@ -186,11 +190,14 @@ import { getRecSocietyPage } from '@/api/record/society/index'
 import type { RecSocietyVO } from '@/api/record/society/type'
 import { AWARD_LEVEL, REC_CODE } from '@/utils/dict'
 import { downRecord } from '@/api/record'
-import useDictionaryStore from '@/store/modules/dictionary'
-
 import { DictionaryType } from '@/store/modules/dictionary'
+import useUserStore from '@/store/modules/user'
+import useDictionaryStore from '@/store/modules/dictionary'
+import usePaginationStore from '@/store/modules/pagination'
 
+const userStore = useUserStore()
 const dictionaryStore = useDictionaryStore()
+const paginationStore = usePaginationStore()
 
 onMounted(async () => {
   await dictionaryStore.init(DictionaryType.GRADE)
@@ -199,10 +206,8 @@ onMounted(async () => {
 
 const loading = ref<boolean>(false)
 const tableData = ref<RecSocietyVO[]>()
-const current = ref<number>(1)
-const size = ref<number>(10)
-const total = ref<number>(0)
 const searchForm = ref({
+  yearId: userStore.userInfo.yearId,
   gradeId: void 0,
   className: void 0,
   studentName: void 0,
@@ -214,16 +219,10 @@ const searchFormRef = ref<FormInstance>()
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data: res } = await getRecSocietyPage(
-      Object.assign(
-        {
-          current: current.value,
-          size: size.value,
-        },
-        searchForm.value,
-      ),
-    )
-    total.value = res.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    const { data: res } = await getRecSocietyPage(query)
+    paginationStore.setTotal(res.total)
     tableData.value = res.records
   } finally {
     loading.value = false
@@ -238,15 +237,6 @@ const downloadRec = async () => {
     }),
     `${REC_CODE.getKey('REC_SOCIETY')}.xlsx`,
   )
-}
-
-const handleCurrentChange = (val: number) => {
-  current.value = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  size.value = val
-  fetchList()
 }
 </script>
 

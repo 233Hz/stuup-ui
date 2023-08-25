@@ -136,18 +136,7 @@
           </template>
         </el-table-column> -->
       </el-table>
-      <div class="page-r">
-        <el-pagination
-          background
-          :total="page.total"
-          v-model:current-page="page.current"
-          v-model:page-size="page.size"
-          :page-sizes="[10, 20, 30, 50, 100]"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next"
-        />
-      </div>
+      <Pagination @size-change="fetchList" @current-change="fetchList" />
     </el-card>
   </div>
   <el-dialog
@@ -273,10 +262,12 @@ import {
 } from '@/api/basic/class/index'
 import type { Class } from '@/api/basic/class/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import useDictionaryStore from '@/store/modules/dictionary'
 import { DictionaryType } from '@/store/modules/dictionary'
+import useDictionaryStore from '@/store/modules/dictionary'
+import usePaginationStore from '@/store/modules/pagination'
 
 const dictionaryStore = useDictionaryStore()
+const paginationStore = usePaginationStore()
 
 onMounted(async () => {
   fetchList()
@@ -292,25 +283,20 @@ const loading = ref<boolean>(false)
 const dialog_active = ref<boolean>(false)
 const dialog_title = ref<string>('')
 const tableData = ref<Class[]>()
-const page = ref({
-  current: 1,
-  size: 10,
-  total: 10,
-})
 const searchForm = ref({
-  key: '',
-  facultyId: undefined,
-  gradeId: undefined,
+  key: void 0,
+  facultyId: void 0,
+  gradeId: void 0,
 })
-const form = ref<Class>({
-  id: undefined,
-  code: '',
-  name: '',
-  facultyId: undefined,
-  gradeId: undefined,
-  majorId: undefined,
-  teacherId: undefined,
-  adminId: undefined,
+const form = ref<any>({
+  id: void 0,
+  code: void 0,
+  name: void 0,
+  facultyId: void 0,
+  gradeId: void 0,
+  majorId: void 0,
+  teacherId: void 0,
+  adminId: void 0,
   count: 0,
 })
 const rules = reactive<FormRules>({
@@ -329,23 +315,14 @@ const formRef = ref<FormInstance>()
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data: res } = await getClassPage(
-      Object.assign(page.value, searchForm.value),
-    )
-    page.value.total = res.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    const { data: res } = await getClassPage(query)
+    paginationStore.setTotal(res.total)
     tableData.value = res.records
   } finally {
     loading.value = false
   }
-}
-
-const handleCurrentChange = (val: number) => {
-  page.value.current = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  page.value.size = val
-  fetchList()
 }
 
 const addRow = () => {
@@ -355,7 +332,15 @@ const addRow = () => {
 const updateRow = (row: Class) => {
   dialog_title.value = '修改'
   dialog_active.value = true
-  Object.assign(form.value, row)
+  form.value.id = row.id
+  form.value.code = row.code
+  form.value.name = row.name
+  form.value.facultyId = row.facultyId
+  form.value.gradeId = row.gradeId
+  form.value.majorId = row.majorId
+  form.value.teacherId = row.teacherId
+  form.value.adminId = row.adminId
+  form.value.count = row.count
 }
 const delRow = (id: number) => {
   ElMessageBox.confirm('确认删除？', '删除学年', {
@@ -382,8 +367,7 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
-    const data = form.value as unknown as Class
-    const res = await saveOrUpdateClass(data)
+    const res = await saveOrUpdateClass(form.value)
     ElMessage.success(res.message)
     dialog_active.value = false
     fetchList()
@@ -394,13 +378,13 @@ const submitForm = async () => {
 
 const resetForm = () => {
   form.value = {
-    code: '',
-    name: '',
-    facultyId: undefined,
-    gradeId: undefined,
-    majorId: undefined,
-    teacherId: undefined,
-    adminId: undefined,
+    code: void 0,
+    name: void 0,
+    facultyId: void 0,
+    gradeId: void 0,
+    majorId: void 0,
+    teacherId: void 0,
+    adminId: void 0,
     count: 0,
   }
   formRef.value?.resetFields()

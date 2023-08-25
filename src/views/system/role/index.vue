@@ -77,18 +77,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="page-r">
-        <el-pagination
-          background
-          :total="page.total"
-          v-model:current-page="page.current"
-          v-model:page-size="page.size"
-          :page-sizes="[10, 20, 30, 50, 100]"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next"
-        />
-      </div>
+      <Pagination @size-change="fetchList" @current-change="fetchList" />
     </el-card>
     <el-dialog
       v-model="dialog_active"
@@ -139,6 +128,9 @@ import { getRolePage, saveRole, delRole } from '@/api/system/role/index'
 import { RoleVO } from '@/api/system/role/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import MenuTree from './MenuTree.vue'
+import usePaginationStore from '@/store/modules/pagination'
+
+const paginationStore = usePaginationStore()
 
 onMounted(() => {
   fetchList()
@@ -148,18 +140,13 @@ const loading = ref<boolean>(false)
 const dialog_active = ref<boolean>(false)
 const dialog_title = ref<string>('')
 const tableData = ref<RoleVO[]>()
-const page = ref({
-  current: 1,
-  size: 10,
-  total: 10,
-})
 const searchForm = ref({
-  roleName: '',
+  roleName: void 0,
 })
-const form = ref<RoleVO>({
-  oid: undefined,
-  roleName: '',
-  roleDesc: '',
+const form = ref<any>({
+  oid: void 0,
+  roleName: void 0,
+  roleDesc: void 0,
 })
 const rules = reactive<FormRules>({
   roleName: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
@@ -171,23 +158,14 @@ const menuTreeRef = ref()
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data: res } = await getRolePage(
-      Object.assign(page.value, searchForm.value),
-    )
-    page.value.total = res.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    const { data: res } = await getRolePage(query)
+    paginationStore.setTotal(res.total)
     tableData.value = res.records
   } finally {
     loading.value = false
   }
-}
-
-const handleCurrentChange = (val: number) => {
-  page.value.current = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  page.value.size = val
-  fetchList()
 }
 
 const addRow = () => {
@@ -226,8 +204,7 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
-    const data = form.value as unknown as RoleVO
-    const res = await saveRole(data)
+    const res = await saveRole(form.value)
     ElMessage.success(res.message)
     dialog_active.value = false
     fetchList()
@@ -242,9 +219,9 @@ const openRoleMenuTree = async (roleId: number) => {
 
 const resetForm = () => {
   form.value = {
-    oid: undefined,
-    roleName: '',
-    roleDesc: '',
+    oid: void 0,
+    roleName: void 0,
+    roleDesc: void 0,
   }
   formRef.value?.resetFields()
 }

@@ -162,18 +162,7 @@
           </template>
         </el-table-column> -->
       </el-table>
-      <div class="page-r">
-        <el-pagination
-          background
-          :total="page.total"
-          v-model:current-page="page.current"
-          v-model:page-size="page.size"
-          :page-sizes="[10, 20, 30, 50, 100]"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next"
-        />
-      </div>
+      <Pagination @size-change="fetchList" @current-change="fetchList" />
     </el-card>
   </div>
   <el-dialog
@@ -274,10 +263,12 @@ import { getStudentPage, saveStudent } from '@/api/basic/student/index'
 import type { StudentVO } from '@/api/basic/student/type'
 import { ElMessage } from 'element-plus'
 import { SEX, SCHOOL_WORD_STATE } from '@/utils/dict'
-import useDictionaryStore from '@/store/modules/dictionary'
 import { DictionaryType } from '@/store/modules/dictionary'
+import useDictionaryStore from '@/store/modules/dictionary'
+import usePaginationStore from '@/store/modules/pagination'
 
 const dictionaryStore = useDictionaryStore()
+const paginationStore = usePaginationStore()
 
 onMounted(async () => {
   // 初始化仓库年级和专业信息
@@ -289,28 +280,24 @@ const loading = ref<boolean>(false)
 const dialog_active = ref<boolean>(false)
 const dialog_title = ref<string>('')
 const tableData = ref<StudentVO[]>()
-const page = ref({
-  current: 1,
-  size: 10,
-  total: 10,
-})
+
 const searchForm = ref({
-  key: '',
-  gradeId: undefined,
-  majorId: undefined,
+  key: void 0,
+  gradeId: void 0,
+  majorId: void 0,
 })
-const form = ref<StudentVO>({
-  oid: undefined,
-  studentNo: '',
-  name: '',
-  sex: undefined,
-  classId: undefined,
-  gradeId: undefined,
-  majorId: undefined,
-  idCard: '',
-  nation: undefined,
-  phone: '',
-  statue: undefined,
+const form = ref<any>({
+  oid: void 0,
+  studentNo: void 0,
+  name: void 0,
+  sex: void 0,
+  classId: void 0,
+  gradeId: void 0,
+  majorId: void 0,
+  idCard: void 0,
+  nation: void 0,
+  phone: void 0,
+  statue: void 0,
 })
 const rules = reactive<FormRules>({
   studentNo: [{ required: true, message: '请填写学号', trigger: 'blur' }],
@@ -330,23 +317,14 @@ const formRef = ref<FormInstance>()
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data: res } = await getStudentPage(
-      Object.assign(page.value, searchForm.value),
-    )
-    page.value.total = res.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    const { data: res } = await getStudentPage(query)
+    paginationStore.setTotal(res.total)
     tableData.value = res.records
   } finally {
     loading.value = false
   }
-}
-
-const handleCurrentChange = (val: number) => {
-  page.value.current = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  page.value.size = val
-  fetchList()
 }
 
 const addRow = () => {
@@ -378,8 +356,7 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
-    const data = form.value as unknown as StudentVO
-    const res = await saveStudent(data)
+    const res = await saveStudent(form.value)
     ElMessage.success(res.message)
     dialog_active.value = false
     fetchList()
@@ -390,17 +367,17 @@ const submitForm = async () => {
 
 const resetForm = () => {
   form.value = {
-    oid: undefined,
-    studentNo: '',
-    name: '',
-    sex: undefined,
-    classId: undefined,
-    gradeId: undefined,
-    majorId: undefined,
-    idCard: '',
-    nation: undefined,
-    phone: '',
-    statue: undefined,
+    oid: void 0,
+    studentNo: void 0,
+    name: void 0,
+    sex: void 0,
+    classId: void 0,
+    gradeId: void 0,
+    majorId: void 0,
+    idCard: void 0,
+    nation: void 0,
+    phone: void 0,
+    statue: void 0,
   }
   formRef.value?.resetFields()
 }

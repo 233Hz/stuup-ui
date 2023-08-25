@@ -115,18 +115,7 @@
           </template>
         </el-table-column> -->
       </el-table>
-      <div class="page-r">
-        <el-pagination
-          background
-          :total="total"
-          v-model:current-page="searchForm.current"
-          v-model:page-size="searchForm.size"
-          :page-sizes="[10, 20, 30, 50, 100]"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next"
-        />
-      </div>
+      <Pagination @size-change="fetchList" @current-change="fetchList" />
     </el-card>
     <el-dialog
       v-model="active"
@@ -195,10 +184,12 @@ import type { SemesterVO, SemesterDTO } from '@/api/basic/semester/type'
 import { requiredRule } from '@/utils/rules'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { WHETHER } from '@/utils/dict'
-import useDictionaryStore from '@/store/modules/dictionary'
 import { DictionaryType } from '@/store/modules/dictionary'
+import useDictionaryStore from '@/store/modules/dictionary'
+import usePaginationStore from '@/store/modules/pagination'
 
 const dictionaryStore = useDictionaryStore()
+const paginationStore = usePaginationStore()
 
 onMounted(async () => {
   // 初始化仓库年份信息
@@ -215,7 +206,7 @@ const active = ref<boolean>(false)
 const title = ref<string>('')
 const loading = ref<boolean>(false)
 const tableData = ref<SemesterVO[]>()
-const total = ref<number>(0)
+
 const form = ref<any>({
   id: void 0,
   yearId: void 0,
@@ -228,8 +219,6 @@ const rules = {
   dateRange: [requiredRule('起止时间')],
 }
 const searchForm = ref({
-  current: 1,
-  size: 10,
   yearId: void 0,
   name: void 0,
 })
@@ -239,8 +228,10 @@ const searchForm = ref({
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data } = await pageSemester(searchForm.value)
-    total.value = data.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    const { data } = await pageSemester(query)
+    paginationStore.setTotal(data.total)
     tableData.value = data.records
   } finally {
     loading.value = false
@@ -307,7 +298,7 @@ const submitForm = async () => {
   const formData = Object.assign(data, {
     startTime,
     endTime,
-  }) as unknown as SemesterDTO
+  })
   try {
     const res = await saveOrUpdateSemester(formData)
     ElMessage.success(res.message)
@@ -317,16 +308,6 @@ const submitForm = async () => {
     loading.value = false
   }
 }
-
-const handleCurrentChange = (val: number) => {
-  searchForm.value.current = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  searchForm.value.size = val
-  fetchList()
-}
-
 const resetForm = () => {
   form.value = {
     id: void 0,

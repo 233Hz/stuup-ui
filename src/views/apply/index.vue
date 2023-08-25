@@ -311,7 +311,12 @@
 
 <script setup lang="ts" name="Apply">
 import { ref, onMounted, reactive, computed } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import type {
+  FormInstance,
+  FormRules,
+  UploadInstance,
+  UploadProps,
+} from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   getStudentGrowthItems,
@@ -322,17 +327,16 @@ import {
   submitGrowItem,
 } from '@/api/apply'
 import type { AudGrow } from '@/api/apply/type'
-import type { UploadProps } from 'element-plus'
 import type { ResponseData } from '@/types/global'
 import type { FileVO } from '@/api/file/type'
 import { getToken } from '@/utils/auth'
 import { AUDIT_STATUS } from '@/utils/dict'
 import { requiredRule } from '@/utils/rules'
-import AuditInfo from '@/components/AuditInfo/index.vue'
 import { useRouter } from 'vue-router'
+import { ArrowLeft } from '@element-plus/icons-vue'
+import AuditInfo from '@/components/AuditInfo/index.vue'
 import useGrowthStore from '@/store/modules/growth'
 import usePaginationStore from '@/store/modules/pagination'
-import { ArrowLeft } from '@element-plus/icons-vue'
 
 const baseApi = import.meta.env.VITE_APP_BASE_API
 const action = baseApi + '/file/upload'
@@ -347,6 +351,7 @@ const GROW_ITEM = ref()
 //REF
 const searchFormRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
+const uploadRef = ref<UploadInstance>()
 const auditInfoRef = ref()
 
 //DATA
@@ -362,11 +367,11 @@ const searchForm = ref({
   growName: void 0,
   state: void 0,
 })
-const form = ref({
+const form = ref<any>({
   id: void 0,
   growId: void 0,
-  reason: '',
-  fileIds: '',
+  reason: void 0,
+  fileIds: void 0,
 })
 const rules = reactive<FormRules>({
   growId: [requiredRule('申请项目')],
@@ -424,7 +429,10 @@ const addRow = () => {
 const updateRow = (row: AudGrow) => {
   title.value = '修改申请'
   active.value = true
-  Object.assign(form.value, row)
+  form.value.id = row.id
+  form.value.growId = row.growId
+  form.value.reason = row.reason
+  form.value.fileIds = row.fileIds
 }
 const delRow = (id: number) => {
   ElMessageBox.confirm('确认删除？', '删除该申请记录', {
@@ -470,13 +478,12 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
-    const formData = form.value as unknown as AudGrow
     if (title.value === '申请成长积分') {
-      const data = await applyGrowItem(formData)
+      const data = await applyGrowItem(form.value)
       ElMessage.success(data.message)
     }
     if (title.value === '修改申请') {
-      const data = await updateAudGrow(formData)
+      const data = await updateAudGrow(form.value)
       ElMessage.success(data.message)
     }
     fetchList()
@@ -514,5 +521,6 @@ const resetForm = () => {
     fileIds: '',
   }
   formRef.value?.resetFields()
+  uploadRef.value?.clearFiles()
 }
 </script>

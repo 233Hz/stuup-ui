@@ -70,18 +70,7 @@
           </template>
         </el-table-column> -->
       </el-table>
-      <div class="page-r">
-        <el-pagination
-          background
-          :total="page.total"
-          v-model:current-page="page.current"
-          v-model:page-size="page.size"
-          :page-sizes="[10, 20, 30, 50, 100]"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next"
-        />
-      </div>
+      <Pagination @size-change="fetchList" @current-change="fetchList" />
     </el-card>
   </div>
   <el-dialog
@@ -141,8 +130,10 @@ import type { Grade } from '@/api/basic/grade/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import useDictionaryStore from '@/store/modules/dictionary'
 import { DictionaryType } from '@/store/modules/dictionary'
+import usePaginationStore from '@/store/modules/pagination'
 
 const dictionaryStore = useDictionaryStore()
+const paginationStore = usePaginationStore()
 
 onMounted(async () => {
   // await dictionaryStore.init(DictionaryType.YEAR)
@@ -153,18 +144,14 @@ const loading = ref<boolean>(false)
 const dialog_active = ref<boolean>(false)
 const dialog_title = ref<string>('')
 const tableData = ref<Grade[]>()
-const page = ref({
-  current: 1,
-  size: 10,
-  total: 10,
-})
+
 const searchForm = ref({
-  key: '',
+  key: void 0,
 })
-const form = ref<Grade>({
+const form = ref<any>({
   oid: void 0,
-  gradeName: '',
-  year: '',
+  gradeName: void 0,
+  year: void 0,
 })
 const rules = reactive<FormRules>({
   gradeName: [{ required: true, message: '请填写年级名称', trigger: 'blur' }],
@@ -176,23 +163,14 @@ const formRef = ref<FormInstance>()
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data: res } = await getGraderPage(
-      Object.assign(page.value, searchForm.value),
-    )
-    page.value.total = res.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    const { data: res } = await getGraderPage(query)
+    paginationStore.setTotal(res.total)
     tableData.value = res.records
   } finally {
     loading.value = false
   }
-}
-
-const handleCurrentChange = (val: number) => {
-  page.value.current = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  page.value.size = val
-  fetchList()
 }
 
 const addRow = () => {
@@ -202,7 +180,9 @@ const addRow = () => {
 const updateRow = (row: Grade) => {
   dialog_title.value = '修改'
   dialog_active.value = true
-  Object.assign(form.value, row)
+  form.value.oid = row.oid
+  form.value.gradeName = row.gradeName
+  form.value.year = row.year
 }
 const delRow = (oid: number) => {
   ElMessageBox.confirm('确认删除？', '删除学年', {
@@ -229,8 +209,7 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
-    const data = form.value as unknown as Grade
-    const res = await saveOrUpdateGrade(data)
+    const res = await saveOrUpdateGrade(form.value)
     ElMessage.success(res.message)
     dialog_active.value = false
     fetchList()
@@ -241,8 +220,8 @@ const submitForm = async () => {
 
 const resetForm = () => {
   form.value = {
-    gradeName: '',
-    year: '',
+    gradeName: void 0,
+    year: void 0,
   }
   formRef.value?.resetFields()
 }

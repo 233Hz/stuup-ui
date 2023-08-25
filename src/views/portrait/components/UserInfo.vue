@@ -90,7 +90,7 @@
         <div class="mt-12 flex gap-12 flex-wrap">
           <div class="mb-12" v-for="item in userInfo?.associations" :key="item">
             <span class="br-4 px-12 py-8 mr-12 text-sky-400">
-              社团{{ item }}
+              {{ item }}
             </span>
           </div>
         </div>

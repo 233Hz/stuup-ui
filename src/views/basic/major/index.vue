@@ -93,18 +93,7 @@
           </template>
         </el-table-column> -->
       </el-table>
-      <div class="page-r">
-        <el-pagination
-          background
-          :total="page.total"
-          v-model:current-page="page.current"
-          v-model:page-size="page.size"
-          :page-sizes="[10, 20, 30, 50, 100]"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next"
-        />
-      </div>
+      <Pagination @size-change="fetchList" @current-change="fetchList" />
     </el-card>
   </div>
   <el-dialog
@@ -190,8 +179,10 @@ import type { Major } from '@/api/basic/major/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { EFFECTIVENESS } from '@/utils/dict'
 import useDictionaryStore from '@/store/modules/dictionary'
+import usePaginationStore from '@/store/modules/pagination'
 
 const dictionaryStore = useDictionaryStore()
+const paginationStore = usePaginationStore()
 
 onMounted(() => {
   fetchList()
@@ -201,20 +192,17 @@ const loading = ref<boolean>(false)
 const dialog_active = ref<boolean>(false)
 const dialog_title = ref<string>('')
 const tableData = ref<Major[]>()
-const page = ref({
-  current: 1,
-  size: 10,
-  total: 10,
-})
+
 const searchForm = ref({
-  key: '',
+  key: void 0,
 })
-const form = ref<Major>({
-  majorCode: '',
-  majorName: '',
-  facultyId: undefined,
-  system: undefined,
-  state: undefined,
+const form = ref<any>({
+  oid: void 0,
+  majorCode: void 0,
+  majorName: void 0,
+  facultyId: void 0,
+  system: void 0,
+  state: void 0,
 })
 const rules = reactive<FormRules>({
   majorCode: [{ required: true, message: '请填写专业编号', trigger: 'blur' }],
@@ -229,23 +217,14 @@ const formRef = ref<FormInstance>()
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data: res } = await getMajorPage(
-      Object.assign(page.value, searchForm.value),
-    )
-    page.value.total = res.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    const { data: res } = await getMajorPage(query)
+    paginationStore.setTotal(res.total)
     tableData.value = res.records
   } finally {
     loading.value = false
   }
-}
-
-const handleCurrentChange = (val: number) => {
-  page.value.current = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  page.value.size = val
-  fetchList()
 }
 
 const addRow = () => {
@@ -255,7 +234,12 @@ const addRow = () => {
 const updateRow = (row: Major) => {
   dialog_title.value = '修改'
   dialog_active.value = true
-  Object.assign(form.value, row)
+  form.value.oid = row.oid
+  form.value.majorCode = row.majorCode
+  form.value.majorName = row.majorName
+  form.value.facultyId = row.facultyId
+  form.value.system = row.system
+  form.value.state = row.state
 }
 const delRow = (oid: number) => {
   ElMessageBox.confirm('确认删除？', '删除学年', {
@@ -282,8 +266,7 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
-    const data = form.value as unknown as Major
-    const res = await saveOrUpdateMajor(data)
+    const res = await saveOrUpdateMajor(form.value)
     ElMessage.success(res.message)
     dialog_active.value = false
     fetchList()
@@ -294,11 +277,12 @@ const submitForm = async () => {
 
 const resetForm = () => {
   form.value = {
-    majorCode: '',
-    majorName: '',
-    facultyId: undefined,
-    system: undefined,
-    state: undefined,
+    oid: void 0,
+    majorCode: void 0,
+    majorName: void 0,
+    facultyId: void 0,
+    system: void 0,
+    state: void 0,
   }
   formRef.value?.resetFields()
 }

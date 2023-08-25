@@ -238,18 +238,7 @@
             align="center"
           />
         </el-table>
-        <div class="page-r">
-          <el-pagination
-            background
-            :total="total"
-            v-model:current-page="searchForm.current"
-            v-model:page-size="searchForm.size"
-            :page-sizes="[10, 20, 30, 50, 100]"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            layout="total, sizes, prev, pager, next"
-          />
-        </div>
+        <Pagination @size-change="fetchList" @current-change="fetchList" />
       </el-card>
     </el-col>
   </el-row>
@@ -263,9 +252,11 @@ import { getRecScorePage } from '@/api/growScore/index'
 import useDictionaryStore from '@/store/modules/dictionary'
 import { DictionaryType } from '@/store/modules/dictionary'
 import useGrowthStore from '@/store/modules/growth'
+import usePaginationStore from '@/store/modules/pagination'
 
 const dictionaryStore = useDictionaryStore()
 const growthStore = useGrowthStore()
+const paginationStore = usePaginationStore()
 
 onMounted(async () => {
   await dictionaryStore.init(DictionaryType.YEAR, DictionaryType.GRADE)
@@ -275,10 +266,7 @@ onMounted(async () => {
 
 const loading = ref<boolean>(false)
 const tableData = ref<RecScoreVO[]>()
-const total = ref<number>(0)
 const searchForm = ref({
-  current: 1,
-  size: 10,
   yearId: void 0,
   firstLevelId: void 0,
   secondLevelId: void 0,
@@ -306,27 +294,18 @@ const handleSearch = () => {
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data: res } = await getRecScorePage(searchForm.value)
-    total.value = res.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    const { data: res } = await getRecScorePage(query)
+    paginationStore.setTotal(res.total)
     tableData.value = res.records
   } finally {
     loading.value = false
   }
 }
 
-const handleCurrentChange = (val: number) => {
-  searchForm.value.current = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  searchForm.value.size = val
-  fetchList()
-}
-
 const searchFormReset = () => {
   searchForm.value = {
-    current: 1,
-    size: 10,
     yearId: void 0,
     firstLevelId: void 0,
     secondLevelId: void 0,

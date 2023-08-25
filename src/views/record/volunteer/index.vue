@@ -189,18 +189,7 @@
             align="center"
           />
         </el-table>
-        <div class="page-r">
-          <el-pagination
-            background
-            :total="page.total"
-            v-model:current-page="page.current"
-            v-model:page-size="page.size"
-            :page-sizes="[10, 20, 30, 50, 100]"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            layout="total, sizes, prev, pager, next"
-          />
-        </div>
+        <Pagination @size-change="fetchList" @current-change="fetchList" />
       </el-card>
     </el-col>
   </el-row>
@@ -213,12 +202,14 @@ import type { RecVolunteerVO } from '@/api/record/volunteer/type'
 import { getVolunteerPage } from '@/api/record/volunteer/index'
 import { downRecord } from '@/api/record'
 import { AWARD_LEVEL, REC_CODE } from '@/utils/dict'
+import { DictionaryType } from '@/store/modules/dictionary'
 import useDictionaryStore from '@/store/modules/dictionary'
 import useUserStore from '@/store/modules/user'
-import { DictionaryType } from '@/store/modules/dictionary'
+import usePaginationStore from '@/store/modules/pagination'
 
 const dictionaryStore = useDictionaryStore()
 const userStore = useUserStore()
+const paginationStore = usePaginationStore()
 
 onMounted(async () => {
   await dictionaryStore.init(DictionaryType.YEAR, DictionaryType.GRADE)
@@ -227,28 +218,23 @@ onMounted(async () => {
 
 const loading = ref<boolean>(false)
 const tableData = ref<RecVolunteerVO[]>()
-const page = ref({
-  current: 1,
-  size: 10,
-  total: 10,
-})
 const searchForm = ref({
   yearId: userStore.userInfo.yearId,
-  gradeId: undefined,
-  className: undefined,
-  studentName: undefined,
-  name: undefined,
-  level: undefined,
+  gradeId: void 0,
+  className: void 0,
+  studentName: void 0,
+  name: void 0,
+  level: void 0,
 })
 const searchFormRef = ref<FormInstance>()
 
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data: res } = await getVolunteerPage(
-      Object.assign(page.value, searchForm.value),
-    )
-    page.value.total = res.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    const { data: res } = await getVolunteerPage(query)
+    paginationStore.setTotal(res.total)
     tableData.value = res.records
   } finally {
     loading.value = false
@@ -263,14 +249,5 @@ const downloadRec = async () => {
     }),
     `${REC_CODE.getKey('REC_SOCIETY')}.xlsx`,
   )
-}
-
-const handleCurrentChange = (val: number) => {
-  page.value.current = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  page.value.size = val
-  fetchList()
 }
 </script>

@@ -136,18 +136,7 @@
           </template>
         </el-table-column> -->
       </el-table>
-      <div class="page-r">
-        <el-pagination
-          background
-          :total="page.total"
-          v-model:current-page="page.current"
-          v-model:page-size="page.size"
-          :page-sizes="[10, 20, 30, 50, 100]"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next"
-        />
-      </div>
+      <Pagination @size-change="fetchList" @current-change="fetchList" />
     </el-card>
   </div>
   <el-dialog
@@ -236,10 +225,12 @@ import { getTeacherPage, saveTeacher } from '@/api/basic/teacher/index'
 import type { TeacherVO } from '@/api/basic/teacher/type'
 import { ElMessage } from 'element-plus'
 import { SEX, TESCHER_STATE } from '@/utils/dict'
-import useDictionaryStore from '@/store/modules/dictionary'
 import { DictionaryType } from '@/store/modules/dictionary'
+import useDictionaryStore from '@/store/modules/dictionary'
+import usePaginationStore from '@/store/modules/pagination'
 
 const dictionaryStore = useDictionaryStore()
+const paginationStore = usePaginationStore()
 
 onMounted(async () => {
   await dictionaryStore.init(DictionaryType.FACULTY)
@@ -250,24 +241,20 @@ const loading = ref<boolean>(false)
 const dialog_active = ref<boolean>(false)
 const dialog_title = ref<string>('')
 const tableData = ref<TeacherVO[]>()
-const page = ref({
-  current: 1,
-  size: 10,
-  total: 10,
-})
+
 const searchForm = ref({
-  key: '',
-  facultyId: '',
+  key: void 0,
+  facultyId: void 0,
 })
-const form = ref<TeacherVO>({
-  jobNo: '',
-  name: '',
+const form = ref<any>({
+  jobNo: void 0,
+  name: void 0,
   sex: void 0,
   facultyId: void 0,
   teachGroup: void 0,
-  phone: '',
-  idCard: '',
-  address: '',
+  phone: void 0,
+  idCard: void 0,
+  address: void 0,
   state: void 0,
 })
 const rules = reactive<FormRules>({
@@ -287,23 +274,14 @@ const formRef = ref<FormInstance>()
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data: res } = await getTeacherPage(
-      Object.assign(page.value, searchForm.value),
-    )
-    page.value.total = res.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    const { data: res } = await getTeacherPage(query)
+    paginationStore.setTotal(res.total)
     tableData.value = res.records
   } finally {
     loading.value = false
   }
-}
-
-const handleCurrentChange = (val: number) => {
-  page.value.current = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  page.value.size = val
-  fetchList()
 }
 
 const addRow = () => {
@@ -334,8 +312,7 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
-    const data = form.value as unknown as TeacherVO
-    const res = await saveTeacher(data)
+    const res = await saveTeacher(form.value)
     ElMessage.success(res.message)
     dialog_active.value = false
     fetchList()
@@ -346,14 +323,14 @@ const submitForm = async () => {
 
 const resetForm = () => {
   form.value = {
-    jobNo: '',
-    name: '',
+    jobNo: void 0,
+    name: void 0,
     sex: void 0,
     facultyId: void 0,
     teachGroup: void 0,
-    phone: '',
-    idCard: '',
-    address: '',
+    phone: void 0,
+    idCard: void 0,
+    address: void 0,
     state: void 0,
   }
   formRef.value?.resetFields()

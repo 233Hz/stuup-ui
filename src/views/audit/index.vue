@@ -206,19 +206,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="page-r">
-        <el-pagination
-          background
-          :disabled="loading"
-          :total="total"
-          v-model:current-page="searchForm.current"
-          v-model:page-size="searchForm.size"
-          :page-sizes="[10, 20, 30, 50, 100]"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next"
-        />
-      </div>
+      <Pagination @size-change="fetchList" @current-change="fetchList" />
     </el-card>
     <AuditInfo ref="auditInfoRef" />
   </div>
@@ -237,8 +225,10 @@ import {
 import { AUDIT_STATUS } from '@/utils/dict'
 import AuditInfo from '@/components/AuditInfo/index.vue'
 import useGrowthStore from '@/store/modules/growth'
+import usePaginationStore from '@/store/modules/pagination'
 
 const growthStore = useGrowthStore()
+const paginationStore = usePaginationStore()
 
 //REF
 const searchFormRef = ref<FormInstance>()
@@ -247,10 +237,7 @@ const auditInfoRef = ref()
 // DATA
 const loading = ref<boolean>(false)
 const tableData = ref()
-const total = ref<number>(0)
 const searchForm = ref({
-  current: 1,
-  size: 10,
   firstLevelId: void 0,
   secondLevelId: void 0,
   thirdLevelId: void 0,
@@ -269,8 +256,10 @@ onMounted(async () => {
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data } = await pageGrowAuditRecord(searchForm.value)
-    total.value = data.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    const { data } = await pageGrowAuditRecord(query)
+    paginationStore.setTotal(data.total)
     tableData.value = data.records
   } finally {
     loading.value = false
@@ -332,14 +321,5 @@ const returnRow = (id: number) => {
       }
     })
     .catch(() => {})
-}
-
-const handleCurrentChange = (val: number) => {
-  searchForm.value.current = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  searchForm.value.size = val
-  fetchList()
 }
 </script>

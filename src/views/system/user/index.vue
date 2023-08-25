@@ -165,18 +165,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="page-r">
-        <el-pagination
-          background
-          :total="total"
-          v-model:current-page="searchForm.current"
-          v-model:page-size="searchForm.size"
-          :page-sizes="[10, 20, 30, 50, 100]"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next"
-        />
-      </div>
+      <Pagination @size-change="fetchList" @current-change="fetchList" />
     </el-card>
   </div>
   <el-dialog
@@ -319,10 +308,12 @@ import type { UserVO } from '@/api/system/user/type'
 import { getUserPage, saveOrUpdateUser, delUser } from '@/api/system/user/index'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { SEX, TESCHER_TYPE, USER_TYPE, USER_STATE } from '@/utils/dict'
-import useDictionaryStore from '@/store/modules/dictionary'
 import { DictionaryType } from '@/store/modules/dictionary'
+import useDictionaryStore from '@/store/modules/dictionary'
+import usePaginationStore from '@/store/modules/pagination'
 
 const dictionaryStore = useDictionaryStore()
+const paginationStore = usePaginationStore()
 
 onMounted(async () => {
   await dictionaryStore.init(DictionaryType.DEPT, DictionaryType.ROLE)
@@ -333,9 +324,7 @@ const loading = ref<boolean>(false)
 const active = ref<boolean>(false)
 const title = ref<string>('')
 const tableData = ref<UserVO[]>()
-const total = ref<number>(0)
 const searchForm = ref({
-  current: 1,
   size: 10,
   key: void 0,
   state: void 0,
@@ -366,21 +355,14 @@ const formRef = ref<FormInstance>()
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data: res } = await getUserPage(Object.assign(searchForm.value))
-    total.value = res.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    const { data: res } = await getUserPage(Object.assign(query))
+    paginationStore.setTotal(res.total)
     tableData.value = res.records
   } finally {
     loading.value = false
   }
-}
-
-const handleCurrentChange = (val: number) => {
-  searchForm.value.current = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  searchForm.value.size = val
-  fetchList()
 }
 
 const addRow = () => {
@@ -390,9 +372,19 @@ const addRow = () => {
 const updateRow = (row: UserVO) => {
   title.value = '修改'
   active.value = true
-  console.log(row, form.value)
-
-  Object.assign(form.value, row)
+  form.value.oid = row.oid
+  form.value.loginName = row.loginName
+  form.value.userName = row.userName
+  form.value.sex = row.sex
+  form.value.mobile = row.mobile
+  form.value.degree = row.degree
+  form.value.teacherType = row.teacherType
+  form.value.userType = row.userType
+  form.value.deptId = row.deptId
+  form.value.idCard = row.idCard
+  form.value.birthday = row.birthday
+  form.value.roles = row.roles
+  form.value.state = row.state
 }
 const delRow = (oid: number) => {
   ElMessageBox.confirm('确认删除？', '删除学年', {
@@ -419,8 +411,7 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
-    const data = form.value as UserVO
-    const res = await saveOrUpdateUser(data)
+    const res = await saveOrUpdateUser(form.value)
     ElMessage.success(res.message)
     active.value = false
     fetchList()
@@ -432,15 +423,15 @@ const submitForm = async () => {
 const resetForm = () => {
   form.value = {
     oid: void 0,
-    loginName: '',
-    userName: '',
+    loginName: void 0,
+    userName: void 0,
     sex: void 0,
-    mobile: '',
-    degree: '',
+    mobile: void 0,
+    degree: void 0,
     teacherType: void 0,
     userType: void 0,
     deptId: void 0,
-    idCard: '',
+    idCard: void 0,
     birthday: void 0,
     roles: [],
     state: void 0,

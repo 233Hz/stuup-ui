@@ -13,7 +13,7 @@
               <el-row>
                 <el-col :sm="24" :md="12" :xl="8">
                   <el-form-item label="消息类型">
-                    <el-select v-model="type" class="w-full">
+                    <el-select v-model="searchForm.type" class="w-full">
                       <el-option
                         v-for="item in ANNOUNCEMENT_TYPE.getDict()"
                         :label="item.label"
@@ -92,18 +92,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="page-r">
-        <el-pagination
-          background
-          :total="total"
-          v-model:current-page="searchForm.current"
-          v-model:page-size="searchForm.size"
-          :page-sizes="[10, 20, 30, 50, 100]"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next"
-        />
-      </div>
+      <Pagination @size-change="fetchList" @current-change="fetchList" />
     </el-card>
   </div>
 </template>
@@ -113,27 +102,29 @@ import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ANNOUNCEMENT_TYPE } from '@/utils/dict'
 import { reqMyNotifyPage, reqMySystemPage } from '@/api/system/announcement'
+import usePaginationStore from '@/store/modules/pagination'
 
 const router = useRouter()
+const paginationStore = usePaginationStore()
 
 // REF
 const searchFormRef = ref()
 
 // DATA
 const loading = ref(false)
-const total = ref(0)
-const type = ref(ANNOUNCEMENT_TYPE.NOTIFY)
+const tableData = ref()
 const searchForm = ref({
-  current: 1,
-  size: 10,
+  type: ANNOUNCEMENT_TYPE.NOTIFY,
   title: void 0,
 })
-const tableData = ref()
 
 //WATCH
-watch(type, () => {
-  fetchList()
-})
+watch(
+  () => searchForm.value.type,
+  () => {
+    fetchList()
+  },
+)
 
 onMounted(() => {
   fetchList()
@@ -143,28 +134,21 @@ onMounted(() => {
 const fetchList = async () => {
   loading.value = true
   try {
-    if (type.value === ANNOUNCEMENT_TYPE.NOTIFY) {
-      const { data } = await reqMyNotifyPage(searchForm.value)
-      total.value = data.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    if (searchForm.value.type === ANNOUNCEMENT_TYPE.NOTIFY) {
+      const { data } = await reqMyNotifyPage(query)
+      paginationStore.setTotal(data.total)
       tableData.value = data.records
-    } else if (type.value === ANNOUNCEMENT_TYPE.SYSTEM) {
-      const { data } = await reqMySystemPage(searchForm.value)
-      total.value = data.total
+    } else if (searchForm.value.type === ANNOUNCEMENT_TYPE.SYSTEM) {
+      const { data } = await reqMySystemPage(query)
+      paginationStore.setTotal(data.total)
       tableData.value = data.records
     }
   } catch (error) {
   } finally {
     loading.value = false
   }
-}
-
-const handleCurrentChange = (val: number) => {
-  searchForm.value.current = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  searchForm.value.size = val
-  fetchList()
 }
 </script>
 

@@ -113,51 +113,53 @@ const wateringAnimation = () => {
         // 创建内层img
         const image = document.createElement('img') as HTMLImageElement
         image.src = wateringAnimSrc
-        image.style.width = width * wateringAnimFrame + 'px'
-        image.style.height = '100%'
-        image.style.objectFit = 'cover'
-        imageContainer.appendChild(image)
-        wrapperRef.value.appendChild(imageContainer)
-        // 添加动画结束事件监听器
-        image.addEventListener('animationend', () => {
-          // 动画结束后销毁动画元素
-          imageContainer.removeChild(image)
-          wrapperRef.value.removeChild(imageContainer)
-          // 木勺回到原位
-          gsap.to(spoonRef.value!, {
-            left: spoonX,
-            top: spoonY,
-            duration: 1,
-            onComplete: () => {
-              const { current, next } = conversionFlower.calculateMaxLevel(
-                score.value,
-              )
-              // 计算进度
-              const totalProgress = next.value - current.value
-              const currentProgress = score.value - current.value
-              const needScore =
-                totalProgress - currentProgress < 0
-                  ? 0
-                  : totalProgress - currentProgress
-              const ratio =
-                totalProgress === 0 ? 1 : currentProgress / totalProgress
-              upgradeScore.value = needScore
-              progressRatio.value = Number(ratio.toFixed(2))
-              increaseProgress(Number(ratio))
-              if (
-                current.key === currentLevel.value?.key &&
-                current.value === currentLevel.value?.value &&
-                current.imageSrc === currentLevel.value?.imageSrc
-              )
-                return
-              currentLevel.value = current
-              // 等级有变化播放升级动画
-              upgradeAnimation()
-            },
+        image.onload = () => {
+          image.style.width = width * wateringAnimFrame + 'px'
+          image.style.height = '100%'
+          image.style.objectFit = 'cover'
+          imageContainer.appendChild(image)
+          wrapperRef.value.appendChild(imageContainer)
+          // 添加动画结束事件监听器
+          image.addEventListener('animationend', () => {
+            // 动画结束后销毁动画元素
+            imageContainer.removeChild(image)
+            wrapperRef.value.removeChild(imageContainer)
+            // 木勺回到原位
+            gsap.to(spoonRef.value!, {
+              left: spoonX,
+              top: spoonY,
+              duration: 1,
+              onComplete: () => {
+                const { current, next } = conversionFlower.calculateMaxLevel(
+                  score.value,
+                )
+                // 计算进度
+                const totalProgress = next.value - current.value
+                const currentProgress = score.value - current.value
+                const needScore =
+                  totalProgress - currentProgress < 0
+                    ? 0
+                    : totalProgress - currentProgress
+                const ratio =
+                  totalProgress === 0 ? 1 : currentProgress / totalProgress
+                upgradeScore.value = needScore
+                progressRatio.value = Number(ratio.toFixed(2))
+                increaseProgress(Number(ratio))
+                if (
+                  current.key === currentLevel.value?.key &&
+                  current.value === currentLevel.value?.value &&
+                  current.imageSrc === currentLevel.value?.imageSrc
+                )
+                  return
+                currentLevel.value = current
+                // 等级有变化播放升级动画
+                upgradeAnimation()
+              },
+            })
           })
-        })
-        // 添加动画效果
-        image.style.animation = `translateXAnimation 1s steps(${wateringAnimFrame})`
+          // 添加动画效果
+          image.style.animation = `translateXAnimation 1s steps(${wateringAnimFrame})`
+        }
       },
     })
   }

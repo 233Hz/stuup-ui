@@ -71,16 +71,7 @@
         </el-table-column>
       </el-table>
       <div class="page-r">
-        <el-pagination
-          background
-          :total="page.total"
-          v-model:current-page="page.current"
-          v-model:page-size="page.size"
-          :page-sizes="[10, 20, 30, 50, 100]"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next"
-        />
+        <Pagination @size-change="fetchList" @current-change="fetchList" />
       </div>
     </el-card>
   </div>
@@ -121,6 +112,9 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { getDeptPage, saveOrUpdateDept, delDept } from '@/api/basic/dept/index'
 import type { Dept } from '@/api/basic/dept/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import usePaginationStore from '@/store/modules/pagination'
+
+const paginationStore = usePaginationStore()
 
 onMounted(() => {
   fetchList()
@@ -130,17 +124,12 @@ const loading = ref<boolean>(false)
 const dialog_active = ref<boolean>(false)
 const dialog_title = ref<string>('')
 const tableData = ref<Dept[]>()
-const page = ref({
-  current: 1,
-  size: 10,
-  total: 10,
-})
 const searchForm = ref({
-  key: '',
+  key: void 0,
 })
-const form = ref<Dept>({
+const form = ref<any>({
   oid: void 0,
-  deptName: '',
+  deptName: void 0,
 })
 const rules = reactive<FormRules>({
   deptName: [{ required: true, message: '请填写部门名称', trigger: 'blur' }],
@@ -151,23 +140,14 @@ const formRef = ref<FormInstance>()
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data: res } = await getDeptPage(
-      Object.assign(page.value, searchForm.value),
-    )
-    page.value.total = res.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    const { data: res } = await getDeptPage(query)
+    paginationStore.setTotal(res.total)
     tableData.value = res.records
   } finally {
     loading.value = false
   }
-}
-
-const handleCurrentChange = (val: number) => {
-  page.value.current = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  page.value.size = val
-  fetchList()
 }
 
 const addRow = () => {
@@ -177,7 +157,8 @@ const addRow = () => {
 const updateRow = (row: Dept) => {
   dialog_title.value = '修改'
   dialog_active.value = true
-  Object.assign(form.value, row)
+  form.value.oid = row.oid
+  form.value.deptName = row.deptName
 }
 const delRow = (oid: number) => {
   ElMessageBox.confirm('确认删除？', '删除学年', {
@@ -204,8 +185,7 @@ const submitForm = async () => {
   if (!valid) return
   loading.value = true
   try {
-    const data = form.value as unknown as Dept
-    const res = await saveOrUpdateDept(data)
+    const res = await saveOrUpdateDept(form.value)
     ElMessage.success(res.message)
     dialog_active.value = false
     fetchList()
@@ -216,7 +196,7 @@ const submitForm = async () => {
 
 const resetForm = () => {
   form.value = {
-    deptName: '',
+    deptName: void 0,
   }
   formRef.value?.resetFields()
 }

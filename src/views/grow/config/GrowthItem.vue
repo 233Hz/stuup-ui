@@ -141,18 +141,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="page-r">
-          <el-pagination
-            background
-            :total="total"
-            v-model:current-page="page.current"
-            v-model:page-size="page.size"
-            :page-sizes="[10, 20, 30, 50, 100]"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            layout="total, sizes, prev, pager, next"
-          />
-        </div>
+        <Pagination @size-change="fetchList" @current-change="fetchList" />
       </el-card>
     </el-col>
     <el-dialog
@@ -303,8 +292,10 @@ import { requiredRule } from '@/utils/rules'
 import bus from '@/utils/bus'
 import useGrowthStore from '@/store/modules/growth'
 import SetGrowUserDrawer from './SetGrowUserDrawer.vue'
+import usePaginationStore from '@/store/modules/pagination'
 
 const growthStore = useGrowthStore()
+const paginationStore = usePaginationStore()
 
 /* Bus */
 bus.on('node-click', (keys: number[]) => {
@@ -332,11 +323,7 @@ const loading = ref<boolean>(false)
 const active = ref<boolean>(false)
 const dialogType = ref<string>('')
 const tableData = ref<GrowthItemVO[]>()
-const page = ref({
-  current: 1,
-  size: 10,
-})
-const total = ref<number>(0)
+
 const searchForm = ref<Partial<GrowthItemVO>>({})
 
 const form = ref<Partial<GrowthItemVO>>({})
@@ -369,23 +356,14 @@ watch(
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data: res } = await getGrowthItemPage(
-      Object.assign(page.value, searchForm.value),
-    )
-    total.value = res.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    const { data: res } = await getGrowthItemPage(query)
+    paginationStore.setTotal(res.total)
     tableData.value = res.records
   } finally {
     loading.value = false
   }
-}
-
-const handleCurrentChange = (val: number) => {
-  page.value.current = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  page.value.size = val
-  fetchList()
 }
 
 const addRow = () => {
@@ -450,10 +428,10 @@ const submitForm = async () => {
   loading.value = true
   if (form.value.growthItems && form.value.growthItems.length > 0) {
     form.value.firstLevelId = form.value.growthItems[0]
-    form.value.secondLevelId = form.value.growthItems[1] || undefined
-    form.value.threeLevelId = form.value.growthItems[2] || undefined
+    form.value.secondLevelId = form.value.growthItems[1] || void 0
+    form.value.threeLevelId = form.value.growthItems[2] || void 0
   } else {
-    ElMessage.warning('请旋转所属项目')
+    ElMessage.warning('请选择所属项目')
   }
   try {
     const res = await saveOrUpdateGrowthItem(form.value as GrowthItemVO)

@@ -210,18 +210,7 @@
             </el-table>
           </el-col>
           <el-col :span="24">
-            <div class="page-r">
-              <el-pagination
-                background
-                :total="total"
-                v-model:current-page="page.current"
-                v-model:page-size="page.size"
-                :page-sizes="[10, 20, 30, 50, 100]"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                layout="total, sizes, prev, pager, next"
-              />
-            </div>
+            <Pagination @size-change="fetchList" @current-change="fetchList" />
           </el-col>
         </el-row>
       </el-card>
@@ -236,16 +225,18 @@ import { ref, onMounted } from 'vue'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { getRecLogPage } from '@/api/collect/index'
 import { manualTask } from '@/api/grow/config'
+import { DictionaryType } from '@/store/modules/dictionary'
 import type { GrowthTreeVO } from '@/api/grow/config/type'
 import CollectForm from './CollectForm.vue'
 import CollectDetails from './CollectDetails.vue'
 import bus from '@/utils/bus'
 import useGrowthStore from '@/store/modules/growth'
 import useDictionaryStore from '@/store/modules/dictionary'
-import { DictionaryType } from '@/store/modules/dictionary'
+import usePaginationStore from '@/store/modules/pagination'
 
 const growthStore = useGrowthStore()
 const dictionaryStore = useDictionaryStore()
+const paginationStore = usePaginationStore()
 
 bus.on('upload-success', () => {
   fetchList()
@@ -263,11 +254,7 @@ const collectDetailsRef = ref()
 
 const loading = ref<boolean>(false)
 const tableData = ref()
-const page = ref({
-  current: 1,
-  size: 10,
-})
-const total = ref<number>(0)
+
 const searchForm = ref({
   yearId: void 0,
   firstLevelId: void 0,
@@ -280,10 +267,10 @@ const searchFormRef = ref<FormInstance>()
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data: res } = await getRecLogPage(
-      Object.assign(page.value, searchForm.value),
-    )
-    total.value = res.total
+    const { current, size } = paginationStore
+    const query = Object.assign(searchForm.value, { current, size })
+    const { data: res } = await getRecLogPage(query)
+    paginationStore.setTotal(res.total)
     tableData.value = res.records
   } finally {
     loading.value = false
@@ -303,15 +290,6 @@ const findChildrenById = (
     }
   }
   return []
-}
-
-const handleCurrentChange = (val: number) => {
-  page.value.current = val
-  fetchList()
-}
-const handleSizeChange = (val: number) => {
-  page.value.size = val
-  fetchList()
 }
 
 // =======================测试=======================
