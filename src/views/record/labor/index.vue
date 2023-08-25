@@ -184,7 +184,7 @@ const fetchList = async () => {
     const { current, size } = paginationStore
     const query = Object.assign(searchForm.value, { current, size })
     const { data: res } = await getRecLaborTimePage(query)
-    paginationStore.setTotal(data.total)
+    paginationStore.setTotal(res.total)
     tableData.value = res.records
   } finally {
     loading.value = false

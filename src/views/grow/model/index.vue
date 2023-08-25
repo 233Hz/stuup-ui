@@ -10,8 +10,14 @@
         <h2>{{ value.name }}</h2>
         <p>
           所需水滴：
-          <span>{{ flowersStore.flowers[key] }}</span>
+          <span>
+            {{
+              // @ts-ignore
+              flowersStore.flowers[key]
+            }}
+          </span>
         </p>
+        <!-- @vue-ignore -->
         <el-button @click="setExchangeValue(key, flowersStore.flowers[key])">
           设置兑换值
         </el-button>
@@ -42,13 +48,7 @@ import xhh_fruit from '@/assets/image/FlowerLevel/xhh4.png'
 
 const flowersStore = useFlowersStore()
 
-const flowers: Record<
-  keyof FlowerVO,
-  {
-    src: string
-    name: string
-  }
-> = {
+const flowers = {
   xcjSeed: {
     src: xcj_seed,
     name: '小雏菊种子',
@@ -98,7 +98,6 @@ const flowers: Record<
     name: '西红花结果',
   },
 }
-
 const loading = ref<boolean>(false)
 
 const setExchangeValue = (key: keyof FlowerVO, num: number) => {

@@ -18,9 +18,9 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const props = defineProps<{
-  title: string
+  title: any
   path?: string
-  icon?: string
+  icon?: any
 }>()
 </script>
 

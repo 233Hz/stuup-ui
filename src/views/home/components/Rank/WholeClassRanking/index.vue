@@ -27,7 +27,7 @@ import { ref, onMounted } from 'vue'
 import { reqWholeClassTop10Ranking } from '@/api/home/index'
 import defaultAvatar from '@/assets/image/default_avatar.png'
 
-const dataArr = ref<WholeClassTop10List>()
+const dataArr = ref()
 
 onMounted(async () => {
   const { data } = await reqWholeClassTop10Ranking()
