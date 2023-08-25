@@ -41,7 +41,7 @@
             <el-button type="primary" @click="fetchList" :loading="loading">
               查询
             </el-button>
-            <el-button @click="searchFormRef?.resetFields()">清空</el-button>
+            <el-button @click="resetSearchHandle">清空</el-button>
           </el-space>
         </div>
       </el-card>
@@ -324,7 +324,13 @@ const active = ref<boolean>(false)
 const dialogType = ref<string>('')
 const tableData = ref<GrowthItemVO[]>()
 
-const searchForm = ref<Partial<GrowthItemVO>>({})
+const searchForm = ref<any>({
+  name: void 0,
+  calculateType: void 0,
+  firstLevelId: void 0,
+  secondLevelId: void 0,
+  threeLevelId: void 0,
+})
 
 const form = ref<Partial<GrowthItemVO>>({})
 const rules = ref<FormRules>({
@@ -346,7 +352,7 @@ onMounted(() => {
 /* WATCH */
 watch(
   () => form.value.scorePeriod,
-  (newValue, oldValue) => {
+  (newValue) => {
     if (newValue !== PERIOD.UNLIMITED) form.value.collectLimit = void 0
   },
 )
@@ -440,6 +446,16 @@ const submitForm = async () => {
     fetchList()
   } finally {
     loading.value = false
+  }
+}
+
+const resetSearchHandle = () => {
+  searchForm.value = {
+    name: void 0,
+    calculateType: void 0,
+    firstLevelId: void 0,
+    secondLevelId: void 0,
+    threeLevelId: void 0,
   }
 }
 </script>

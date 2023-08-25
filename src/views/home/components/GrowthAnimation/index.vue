@@ -253,7 +253,7 @@ $height: math.div(1122px, 2);
   top: 50%;
   margin-left: math.div(-$background-width, 2);
   margin-top: math.div(-$background-height, 2);
-  background: url(src/assets/image/GrowthAnimation/background.png) no-repeat
+  background: url(@/assets/image/GrowthAnimation/background.png) no-repeat
     center center;
   background-size: 100% 100%;
 
@@ -272,8 +272,8 @@ $height: math.div(1122px, 2);
       top: 80px;
       width: $board-width;
       height: $board-height;
-      background: url(src/assets/image/GrowthAnimation/board.png) no-repeat
-        center center;
+      background: url(@/assets/image/GrowthAnimation/board.png) no-repeat center
+        center;
       background-size: 100% 100%;
 
       &-text {
@@ -310,7 +310,7 @@ $height: math.div(1122px, 2);
       bottom: 80px;
       width: $barrel-width;
       height: $barrel-height;
-      background: url(src/assets/image/GrowthAnimation/barrel.png) no-repeat
+      background: url(@/assets/image/GrowthAnimation/barrel.png) no-repeat
         center center;
       background-size: 100% 100%;
     }
@@ -324,8 +324,8 @@ $height: math.div(1122px, 2);
       bottom: 165px;
       width: $spoon-width;
       height: $spoon-height;
-      background: url(src/assets/image/GrowthAnimation/spoon.png) no-repeat
-        center center;
+      background: url(@/assets/image/GrowthAnimation/spoon.png) no-repeat center
+        center;
       background-size: 100% 100%;
       cursor: pointer;
     }

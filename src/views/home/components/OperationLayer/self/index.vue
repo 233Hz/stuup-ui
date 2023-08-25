@@ -34,7 +34,7 @@ const userStore = useUserStore()
 <style scoped lang="scss">
 .self {
   .wrapper {
-    background: url(src/assets/image/home-student-info-border.png) no-repeat;
+    background: url(@/assets/image/home-student-info-border.png) no-repeat;
     background-size: 100% 100%;
     padding: 40px 100px 40px 100px;
 

@@ -98,7 +98,9 @@ const handleRoleMenu = async () => {
   loading.value = true
   try {
     if (roleId.value) {
-      const keys = treeRef.value.getCheckedKeys() as number[]
+      const keys = treeRef.value
+        .getCheckedKeys()
+        .concat(treeRef.value.getHalfCheckedKeys()) as number[]
       const res = await setRoleMenu(roleId.value, keys)
       ElMessage.success(res.message)
       active.value = false
