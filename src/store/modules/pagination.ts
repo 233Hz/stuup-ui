@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { PaginationState } from './types/type'
 
-let usePaginationStore = defineStore('Pagination', {
+const usePaginationStore = defineStore('Pagination', {
   state: (): PaginationState => {
     return {
       current: 1,

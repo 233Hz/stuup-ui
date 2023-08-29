@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import type { GrowthState } from './types/type'
 import { getGrowthTree } from '@/api/grow/config'
 
-let useGrowthStore = defineStore('Growth', {
+const useGrowthStore = defineStore('Growth', {
   state: (): GrowthState => ({
     // 用户信息
     level1: [],

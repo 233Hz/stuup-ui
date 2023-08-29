@@ -8,7 +8,7 @@ import { ElMessage } from 'element-plus'
 import useUserStore from '@/store/modules/user'
 import pinia from '@/store'
 
-let request: AxiosInstance = axios.create({
+const request: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 30000,
   headers: { 'Content-Type': 'application/json' },

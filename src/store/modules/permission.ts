@@ -13,7 +13,7 @@ interface MenuTree extends UserMenu {
   children?: MenuTree[]
 }
 
-let usePermissionStore = defineStore('Permission', {
+const usePermissionStore = defineStore('Permission', {
   state: (): PermissionState => {
     return {
       routes: [],
@@ -88,7 +88,7 @@ const isFirstLevelMenu = (menu: MenuTree): boolean => {
 const formatRouter = (menus: UserMenu[]): RouteRecordRaw[] => {
   const menuObj: Record<number, UserMenu> = {}
   menus.forEach((menu) => (menuObj[menu.oid!] = menu))
-  let routerTree: MenuTree[] = []
+  const routerTree: MenuTree[] = []
   menus.forEach((menu) => {
     const parentRouter: MenuTree = menuObj[menu.pid!]
     if (parentRouter) {

@@ -7,7 +7,7 @@ import { resetRouter } from '@/router'
 import { useWebCache, STORAGE_KEY } from '@/utils/cache'
 const webCache = useWebCache()
 
-let useUserStore = defineStore('User', {
+const useUserStore = defineStore('User', {
   state: (): UserInfoState => {
     return {
       userInfo: webCache.get(STORAGE_KEY.USER_INFO),

@@ -16,7 +16,7 @@ import { USER_TYPE } from '@/utils/dict'
 const userStore = useUserStore()
 const flowersStore = useFlowersStore()
 const flowerLevel = flowersStore.calculateFlowerNewLevel(
-  userStore.userInfo.totalScore
+  userStore.userInfo.totalScore,
 )
 </script>
 

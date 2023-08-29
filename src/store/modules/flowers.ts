@@ -21,7 +21,7 @@ import xhh_sprout from '@/assets/image/FlowerLevel/xhh2.png'
 import xhh_bloom from '@/assets/image/FlowerLevel/xhh3.png'
 import xhh_fruit from '@/assets/image/FlowerLevel/xhh4.png'
 
-let useFlowersStore = defineStore('Flowers', {
+const useFlowersStore = defineStore('Flowers', {
   state: (): FlowersState => {
     return {
       flowerConversionOption: {

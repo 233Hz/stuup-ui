@@ -19,7 +19,7 @@ import globalComponent from '@/components'
 import globalDirective from '@/directives'
 
 //配置element-plus国际化
-//@ts-ignore
+//@ts-expect-error
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 
 //暗黑模式需要的样式

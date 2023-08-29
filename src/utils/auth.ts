@@ -10,7 +10,7 @@ export const getToken = (): string | undefined => {
 
 // ↓设置token
 export const setToken = (token: string): string | undefined => {
-  let time = new Date(new Date().getTime() + 30 * 60 * 1000)
+  const time = new Date(new Date().getTime() + 30 * 60 * 1000)
   return Cookies.set(tokenKey, token, { expires: time })
 }
 

@@ -25,7 +25,7 @@ export enum DictionaryType {
   ROLE,
 }
 
-let useDictionaryStore = defineStore('BasicInfo', {
+const useDictionaryStore = defineStore('BasicInfo', {
   state: (): BasicInfoState => ({
     user: [],
     grade: [],
