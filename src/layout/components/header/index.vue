@@ -33,7 +33,7 @@
                 个人中心
               </el-dropdown-item>
               <el-dropdown-item @click="router.push('/self/notify')">
-                我的消息
+                消息通知
               </el-dropdown-item>
               <el-dropdown-item @click="handlerLogout">
                 退出登入

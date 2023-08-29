@@ -34,7 +34,7 @@ export const constantRoute: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/',
+    path: '',
     name: 'App',
     redirect: '/home',
     children: [
@@ -94,5 +94,16 @@ export const constantRoute: RouteRecordRaw[] = [
         },
       },
     ],
+  },
+  {
+    path: '/screen',
+    name: 'Screen',
+    component: () => import('@/views/screen/index.vue'),
+    meta: {
+      title: '可视化',
+      hidden: false,
+      icon: 'home-icon-screen',
+      flag: 1,
+    },
   },
 ]

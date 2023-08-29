@@ -96,7 +96,11 @@
           label="创建时间"
           show-overflow-tooltip
           align="center"
-        />
+        >
+          <template #default="{ row }">
+            {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
+          </template>
+        </el-table-column>
         <el-table-column label="当前学期" show-overflow-tooltip align="center">
           <template #default="{ row }">
             <el-tag v-show="row.isCurrent === WHETHER.YES">当前学期</el-tag>
@@ -173,18 +177,19 @@
 
 <script setup lang="ts" name="Semester">
 import { ref, onMounted } from 'vue'
-import type { FormInstance } from 'element-plus'
 import {
   pageSemester,
   saveOrUpdateSemester,
   delSemester,
   setCurrentSemester,
 } from '@/api/basic/semester'
-import type { SemesterVO, SemesterDTO } from '@/api/basic/semester/type'
 import { requiredRule } from '@/utils/rules'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { WHETHER } from '@/utils/dict'
 import { DictionaryType } from '@/store/modules/dictionary'
+import { formatDate } from '@/utils/util'
+import type { FormInstance } from 'element-plus'
+import type { SemesterVO } from '@/api/basic/semester/type'
 import useDictionaryStore from '@/store/modules/dictionary'
 import usePaginationStore from '@/store/modules/pagination'
 

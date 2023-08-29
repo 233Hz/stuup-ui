@@ -126,18 +126,35 @@
             align="center"
           />
           <el-table-column
+            prop="gatherer"
+            label="项目采集类型"
+            show-overflow-tooltip
+            align="center"
+          >
+            <template #default="{ row }">
+              {{ GROWTH_GATHERER.getKeyForValue(row.gatherer) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="300" align="center">
+            <template #default="{ row }">
+              <el-button @click="updateRow(row)">修改</el-button>
+              <el-button
+                v-show="row.gatherer === GROWTH_GATHERER.ASSIGN"
+                @click="setGrowUserDrawerRef.open(row.id)"
+              >
+                设置项目负责人
+              </el-button>
+              <el-button @click="delRow(row)" type="danger">删除</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column
             prop="createTime"
             label="创建时间"
             show-overflow-tooltip
             align="center"
-          />
-          <el-table-column label="操作" width="300" align="center">
+          >
             <template #default="{ row }">
-              <el-button @click="updateRow(row)">修改</el-button>
-              <el-button @click="setGrowUserDrawerRef.open(row.id)">
-                设置项目负责人
-              </el-button>
-              <el-button @click="delRow(row)" type="danger">删除</el-button>
+              {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
             </template>
           </el-table-column>
         </el-table>
@@ -149,7 +166,7 @@
       :title="DIALOG_TYPE.getKeyForValue(dialogType)"
       width="30%"
       draggable
-      @close="formRef?.resetFields()"
+      @close="resetFormHandle"
     >
       <el-form
         ref="formRef"
@@ -164,19 +181,12 @@
             placeholder="请选择所属项目"
             clearable
             :options="growthStore.level1"
-            :props="cascaderProps"
+            :props="cascadeProps"
             style="width: 100%"
           />
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入项目名称" />
-        </el-form-item>
-        <el-form-item label="项目编号" prop="code">
-          <el-input
-            v-model="form.code"
-            placeholder="请输入项目编号"
-            :disabled="dialogType === DIALOG_TYPE.EDIT"
-          />
         </el-form-item>
         <el-form-item label="填报说明" prop="description">
           <el-input
@@ -247,7 +257,7 @@
         <el-form-item label="项目采集者" prop="gatherer">
           <el-radio-group v-model="form.gatherer">
             <el-radio
-              v-for="item in GROWITEM_GATHERER.getDict()"
+              v-for="item in GROWTH_GATHERER.getDict()"
               :key="item.value"
               :label="item.value"
               border
@@ -268,30 +278,31 @@
         </el-button>
       </template>
     </el-dialog>
-    <SetGrowUserDrawer ref="setGrowUserDrawerRef" />
+    <set-grow-user-drawer ref="setGrowUserDrawerRef" />
   </el-row>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, watch, h } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
 import {
   getGrowthItemPage,
   saveOrUpdateGrowthItem,
   delGrowthItem,
 } from '@/api/grow/config'
-import type { GrowthItemVO } from '@/api/grow/config/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   PERIOD,
   CALCULATE_TYPE,
-  GROWITEM_GATHERER,
+  GROWTH_GATHERER,
   DIALOG_TYPE,
 } from '@/utils/dict'
 import { requiredRule } from '@/utils/rules'
+import { formatDate } from '@/utils/util'
+import type { GrowthItemVO } from '@/api/grow/config/type'
+import type { FormInstance, FormRules } from 'element-plus'
 import bus from '@/utils/bus'
 import useGrowthStore from '@/store/modules/growth'
-import SetGrowUserDrawer from './SetGrowUserDrawer.vue'
+import SetGrowUserDrawer from '../SetGrowUserDrawer/index.vue'
 import usePaginationStore from '@/store/modules/pagination'
 
 const growthStore = useGrowthStore()
@@ -305,7 +316,7 @@ bus.on('node-click', (keys: number[]) => {
   fetchList()
 })
 
-const cascaderProps = {
+const cascadeProps = {
   label: 'name',
   value: 'id',
   children: 'children',
@@ -332,18 +343,28 @@ const searchForm = ref<any>({
   threeLevelId: void 0,
 })
 
-const form = ref<Partial<GrowthItemVO>>({})
+const form = ref<any>({
+  id: void 0,
+  growthItems: [],
+  name: void 0,
+  description: void 0,
+  scorePeriod: void 0,
+  scoreUpperLimit: void 0,
+  collectLimit: void 0,
+  calculateType: void 0,
+  score: void 0,
+  gatherer: void 0,
+})
 const rules = ref<FormRules>({
   growthItems: [requiredRule('所属项目')],
   name: [requiredRule('项目名称')],
-  code: [requiredRule('项目编号')],
   scorePeriod: [requiredRule('分值刷新周期')],
   calculateType: [requiredRule('分值计算类型')],
   score: [requiredRule('项目可获得分值')],
-  gatherer: [requiredRule('项目可获得分值')],
+  gatherer: [requiredRule('项目采集用户')],
 })
 
-/* ONMOUNT */
+/* ONMOUNTED */
 
 onMounted(() => {
   fetchList()
@@ -380,7 +401,6 @@ const updateRow = (row: GrowthItemVO) => {
   dialogType.value = DIALOG_TYPE.EDIT
   form.value.id = row.id
   form.value.name = row.name
-  form.value.code = row.code
   form.value.description = row.description
   form.value.scorePeriod = row.scorePeriod
   form.value.scoreUpperLimit = row.scoreUpperLimit
@@ -398,7 +418,6 @@ const updateRow = (row: GrowthItemVO) => {
   if (row.threeLevelId) {
     form.value.growthItems.push(row.threeLevelId)
   }
-  console.log(form.value)
   active.value = true
 }
 
@@ -447,6 +466,22 @@ const submitForm = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const resetFormHandle = () => {
+  form.value = {
+    id: void 0,
+    growthItems: [],
+    name: void 0,
+    description: void 0,
+    scorePeriod: void 0,
+    scoreUpperLimit: void 0,
+    collectLimit: void 0,
+    calculateType: void 0,
+    score: void 0,
+    gatherer: void 0,
+  }
+  formRef.value?.clearValidate()
 }
 
 const resetSearchHandle = () => {

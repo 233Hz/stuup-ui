@@ -74,7 +74,11 @@
           label="创建时间"
           show-overflow-tooltip
           align="center"
-        />
+        >
+          <template #default="{ row }">
+            {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
+          </template>
+        </el-table-column>
         <!-- <el-table-column label="操作" width="200" align="center">
           <template #default="{ row }">
             <el-button @click="updateRow(row)">修改</el-button>
@@ -135,14 +139,15 @@
 
 <script setup lang="ts" name="Faculty">
 import { ref, onMounted, reactive } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
 import {
   getFacultyPage,
   saveOrUpdateFaculty,
   delFaculty,
 } from '@/api/basic/faculty'
-import type { Faculty } from '@/api/basic/faculty/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { formatDate } from '@/utils/util'
+import type { FormInstance, FormRules } from 'element-plus'
+import type { Faculty } from '@/api/basic/faculty/type'
 import useDictionaryStore from '@/store/modules/dictionary'
 import usePaginationStore from '@/store/modules/pagination'
 

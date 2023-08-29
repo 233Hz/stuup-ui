@@ -11,7 +11,9 @@
           <li class="content-wrapper__item" v-for="item in list" :key="item.id">
             <div class="item-left">
               <div class="score-source">{{ item.name }}</div>
-              <div class="score-time">{{ item.createTime }}</div>
+              <div class="score-time">
+                {{ formatDate(String(item.createTime), 'YYYY-MM-DD') }}
+              </div>
             </div>
             <div class="item-right">
               <div class="score-number">{{ item.score }}</div>
@@ -33,9 +35,10 @@
 <script setup lang="ts" name="Details">
 import { ref, onMounted } from 'vue'
 import { pageStudentRecScore } from '@/api/details'
-import type { StudentRecScoreVO } from '@/api/details/type'
 import { ArrowLeft, Loading, ArrowRight } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
+import { formatDate } from '@/utils/util'
+import type { StudentRecScoreVO } from '@/api/details/type'
 
 const router = useRouter()
 

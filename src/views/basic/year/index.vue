@@ -71,7 +71,11 @@
           label="创建时间"
           show-overflow-tooltip
           align="center"
-        />
+        >
+          <template #default="{ row }">
+            {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
+          </template>
+        </el-table-column>
         <el-table-column label="当前学年" show-overflow-tooltip align="center">
           <template #default="{ row }">
             <el-tag v-show="row.curr === WHETHER.YES">当前学年</el-tag>
@@ -135,16 +139,17 @@
 
 <script setup lang="ts" name="Year">
 import { ref, onMounted, reactive } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
 import {
   getYearPage,
   saveOrUpdateYear,
   delYear,
   setCurrentYear,
 } from '@/api/basic/year/index'
-import type { YearVO } from '@/api/basic/year/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { WHETHER } from '@/utils/dict'
+import { formatDate } from '@/utils/util'
+import type { FormInstance, FormRules } from 'element-plus'
+import type { YearVO } from '@/api/basic/year/type'
 import usePaginationStore from '@/store/modules/pagination'
 
 const paginationStore = usePaginationStore()

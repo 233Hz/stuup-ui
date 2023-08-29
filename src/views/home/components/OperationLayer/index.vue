@@ -26,13 +26,19 @@
         @click="router.push(`/garden/${GARDEN_TYPE.XHH}`)"
       />
       <div class="sun" @click="bus.emit('show-rank')">荣誉榜</div>
-      <!-- 用户信息 -->
+      <span class="absolute block t-0 r-150">
+        <el-link type="danger" icon="CloseBold" @click="handleLogout">
+          退出登录
+        </el-link>
+      </span>
+      <!-- 用户信息 and 菜单 -->
       <div class="absolute t-0 l-0 flex">
         <Self />
         <Menu />
       </div>
+      <Level class="absolute t-200 l-0" />
       <!-- 用户等级 -->
-      <Level class="absolute b-140 l-460" />
+      <current-level class="absolute b-140 l-460" />
     </div>
   </div>
 </template>
@@ -41,14 +47,16 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { GARDEN_TYPE, USER_TYPE } from '@/utils/dict'
-import bus from '@/utils/bus'
-import useUserStore from '@/store/modules/user'
 import { reqUnCollectScore, reqUpdateRecordState } from '@/api/home/index'
 import { UnCollectScore } from '@/api/home/type'
-import Self from './self/index.vue'
-import Menu from './menu/index.vue'
-import Level from './level/index.vue'
 import { flowerHint } from './const'
+import { ElMessageBox } from 'element-plus'
+import bus from '@/utils/bus'
+import useUserStore from '@/store/modules/user'
+import Self from './Self/index.vue'
+import Menu from './Menu/index.vue'
+import Level from './Level/index.vue'
+import CurrentLevel from './CurrentLevel/index.vue'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -139,6 +147,19 @@ const generateBlisters = (key: number | string, score: number): void => {
     Math.floor(Math.random() * (1920 - size * 2)) + size + 'px'
   dropElement.classList.add('drop')
   wrapperRef.value.appendChild(dropElement)
+}
+
+const handleLogout = () => {
+  ElMessageBox.confirm('确认退出？', '退出登入', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(async () => {
+      await userStore.userLogout()
+      window.location.reload()
+    })
+    .catch(() => {})
 }
 </script>
 

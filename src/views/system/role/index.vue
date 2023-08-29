@@ -62,18 +62,23 @@
           show-overflow-tooltip
           align="center"
         />
-        <el-table-column
-          prop="createTime"
-          label="创建时间"
-          show-overflow-tooltip
-          align="center"
-        />
         <el-table-column label="操作" width="400" align="center">
           <template #default="{ row }">
             <el-button @click="updateRow(row)">修改</el-button>
             <el-button @click="openRoleMenuTree(row.oid)">角色权限</el-button>
             <!-- <el-button>角色用户</el-button> -->
             <el-button @click="delRow(row.oid)" type="danger">删除</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          width="200"
+          prop="createTime"
+          label="创建时间"
+          show-overflow-tooltip
+          align="center"
+        >
+          <template #default="{ row }">
+            {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
           </template>
         </el-table-column>
       </el-table>
@@ -117,17 +122,18 @@
         </el-button>
       </template>
     </el-dialog>
-    <MenuTree ref="menuTreeRef" />
+    <menu-tree ref="menuTreeRef" />
   </div>
 </template>
 
 <script setup lang="ts" name="Role">
 import { ref, onMounted, reactive } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
 import { getRolePage, saveRole, delRole } from '@/api/system/role/index'
 import { RoleVO } from '@/api/system/role/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import MenuTree from './MenuTree.vue'
+import { formatDate } from '@/utils/util'
+import type { FormInstance, FormRules } from 'element-plus'
+import MenuTree from './menu-tree/index.vue'
 import usePaginationStore from '@/store/modules/pagination'
 
 const paginationStore = usePaginationStore()

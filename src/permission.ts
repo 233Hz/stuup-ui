@@ -8,7 +8,7 @@ import _ from 'lodash'
 import setting from '@/setting'
 
 const flowersStore = useFlowersStore(pinia)
-const premissionStore = usePermissionStore(pinia)
+const permissionStore = usePermissionStore(pinia)
 
 // ↓全局后置钩子
 router.beforeEach(async (to, from, next) => {
@@ -22,9 +22,9 @@ router.beforeEach(async (to, from, next) => {
       if (!flowersStore.isExist) {
         await flowersStore.getFlowers()
       }
-      if (_.isEmpty(premissionStore.routes)) {
-        await premissionStore.generateRoutes()
-        premissionStore.routes.forEach((route) => {
+      if (_.isEmpty(permissionStore.routes)) {
+        await permissionStore.generateRoutes()
+        permissionStore.routes.forEach((route) => {
           if (!router.hasRoute(route.name!)) {
             router.addRoute(route)
           }

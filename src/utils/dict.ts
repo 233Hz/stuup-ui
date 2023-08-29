@@ -56,7 +56,7 @@ export const ANNOUNCEMENT_TYPE = new Enum({
  * 通知范围
  */
 export const ANNOUNCEMENT_SCOPE = new Enum({
-  ALL: ['全体用户', 1],
+  ALL: ['全体师生', 1],
   DESIGNATED: ['全体教师', 2],
 })
 
@@ -112,7 +112,7 @@ export const TESCHER_STATE = new Enum({
 /**
  * 教师类型
  */
-export const TESCHER_TYPE = new Enum({
+export const TEACHER_TYPE = new Enum({
   ON_PAYROLL: ['在职在编', 1],
   SUPERNUMERARY: ['编外运行', 2],
   ADMINISTRATIVE: ['行政外编', 3],
@@ -178,7 +178,7 @@ export const PROGRESS_STATE = new Enum({
 /**
  * 成长项目类型
  */
-export const GROWITEM_TYPE = new Enum({
+export const GROWTH_TYPE = new Enum({
   CUSTOM: ['自定义', 1],
   SYSTEM: ['系统类', 2],
 })
@@ -186,8 +186,13 @@ export const GROWITEM_TYPE = new Enum({
 /**
  * 成长项目采集者
  */
-export const GROWITEM_GATHERER = new Enum({
+export const GROWTH_GATHERER = new Enum({
   ASSIGN: ['指定用户', 1],
+  STUDENT: ['学生', 2],
+})
+
+export const ASSIGN_TYPE = new Enum({
+  TEACHER: ['老师', 1],
   STUDENT: ['学生', 2],
 })
 

@@ -322,7 +322,6 @@ const data = [
     ],
   },
 ]
-console.log(data)
 
 // const option = {
 //   backgroundColor: bgColor,

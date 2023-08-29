@@ -16,28 +16,34 @@
       <GrowthData :semesterId="active" />
       <el-divider>学习课程</el-divider>
       <div class="w-full flex">
-        <div class="flex-1">
-          <el-table :data="courses" style="width: 100%">
-            <el-table-column
-              prop="courseName"
-              label="课程名称"
-              header-align="center"
-              align="center"
-            />
-            <el-table-column
-              prop="score"
-              label="课程成绩"
-              header-align="center"
-              align="center"
-            />
-          </el-table>
-        </div>
-        <div class="flex-2">
+        <!-- <div class="flex-1">
+        </div> -->
+        <el-table :data="courses" style="width: 100%">
+          <el-table-column
+            prop="courseName"
+            label="课程名称"
+            header-align="center"
+            align="center"
+          />
+          <el-table-column
+            prop="score"
+            label="课程成绩"
+            header-align="center"
+            align="center"
+          />
+          <el-table-column
+            prop="state"
+            label="成长对比"
+            header-align="center"
+            align="center"
+          />
+        </el-table>
+        <!-- <div class="flex-2">
           <CourseComparisonChart
             :semesterId="active"
             @change="handleCourseChange"
           />
-        </div>
+        </div> -->
       </div>
       <el-divider>成长对比</el-divider>
       <GrowthComparisonChart :semesterId="active" />

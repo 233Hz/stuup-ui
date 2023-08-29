@@ -65,7 +65,6 @@ const playAnimate = (options: { endX: number; endY: number }) => {
       ease: 'power4.out',
       duration: 4,
       onComplete: () => {
-        console.log('动画执行完成')
         // 创建图片元素
         const image = document.createElement('img')
         image.src = imageEl.getAttribute('src') as string
@@ -104,8 +103,6 @@ const playAnimate = (options: { endX: number; endY: number }) => {
 const getElTransformAngle = (el: Element): number => {
   const computedStyle = getComputedStyle(el)
   const transform = computedStyle.transform // 处理不同浏览器的前缀
-  console.log(computedStyle)
-  console.log(transform)
   let angle = 0
 
   if (transform && transform !== 'none') {

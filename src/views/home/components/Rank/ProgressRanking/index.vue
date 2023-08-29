@@ -23,16 +23,16 @@
           <div class="item-wrapper__grade">
             <div
               class="icon-wrapper"
-              v-for="(
-                flower, index
-              ) in conversionFlower.calculateConversionFlower(item.score)"
+              v-for="(flower, index) in flowersStore.calculateFlowerLevelIgnore(
+                item.score,
+              )"
               :key="index"
             >
               <div class="icon-wrapper__border">
-                <img :src="flower.imageSrc" />
+                <img :src="flower.image" />
               </div>
               <p class="absolute b-0 l0 w-full text-right text-white fs-12">
-                x{{ flower.value }}
+                x{{ flower.count }}
               </p>
             </div>
           </div>
@@ -41,12 +41,12 @@
               {{ item.score }}
             </div>
             <div class="custom">
-              <div style="font-size: 20px; color: #67c5ce">
-                ↑{{ item.riseRanking }}
-              </div>
+              <div>↑ {{ item.riseRanking }}</div>
             </div>
           </div>
-          <span class="ranking">{{ item.ranking }}</span>
+          <span :class="`${rankingColorHandle(item.ranking)} ranking`">
+            {{ item.ranking }}
+          </span>
         </div>
       </li>
     </ul>
@@ -55,12 +55,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useConversionFlower } from '@/utils/conversionFlower'
 import { reqProgressTop10Ranking } from '@/api/home/index'
 import { ProgressTop10List } from '@/api/home/type'
+import useFlowersStore from '@/store/modules/flowers'
 import defaultAvatar from '@/assets/image/default_avatar.png'
 
-const conversionFlower = useConversionFlower()
+const flowersStore = useFlowersStore()
 
 const dataArr = ref<ProgressTop10List>()
 
@@ -68,9 +68,30 @@ onMounted(async () => {
   const { data } = await reqProgressTop10Ranking()
   dataArr.value = data
 })
+
+const rankingColorHandle = (ranking: number) => {
+  if (ranking === 1) {
+    return 'no_1'
+  } else if (ranking === 2) {
+    return 'no_2'
+  } else if (ranking === 3) {
+    return 'no_3'
+  } else {
+    return ''
+  }
+}
 </script>
 
 <style scoped lang="scss">
+.no_1 {
+  background-color: #ffb628 !important;
+}
+.no_2 {
+  background-color: #94b6db !important;
+}
+.no_3 {
+  background-color: #f2a897 !important;
+}
 .rank-list {
   width: 500px;
   height: 900px;
@@ -110,15 +131,15 @@ onMounted(async () => {
       height: 80px;
       padding: 5px 0;
 
-      &:nth-child(1) .ranking {
-        background-color: #ffb628 !important;
-      }
-      &:nth-child(2) .ranking {
-        background-color: #94b6db !important;
-      }
-      &:nth-child(3) .ranking {
-        background-color: #f2a897 !important;
-      }
+      // &:nth-child(1) .ranking {
+      //   background-color: #ffb628 !important;
+      // }
+      // &:nth-child(2) .ranking {
+      //   background-color: #94b6db !important;
+      // }
+      // &:nth-child(3) .ranking {
+      //   background-color: #f2a897 !important;
+      // }
 
       .item-wrapper {
         position: relative;
@@ -232,6 +253,11 @@ onMounted(async () => {
             background-image: linear-gradient(160deg, #0093e9 0%, #80d0c7 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+          }
+
+          .custom {
+            font-size: 20px;
+            color: orchid;
           }
         }
 

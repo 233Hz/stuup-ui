@@ -19,8 +19,24 @@ export interface PermissionState {
   cachedView: Set<string>
 }
 
+export interface Flower {
+  key: string
+  name: string
+  conversionCount: number
+  image: string
+}
+export interface FlowerGrowStage extends Flower {
+  count: number
+}
+export interface FlowerMaxStage {
+  current: Flower
+  next: Flower
+}
+
 export interface FlowersState {
-  flowers: FlowerVO
+  flowerConversionOption: FlowerVO
+  flowers: Flower[]
+  readonly flowerIconOption: Record<string, { src: string; name: string }>
   isExist: boolean
 }
 

@@ -193,18 +193,22 @@
                 show-overflow-tooltip
                 align="center"
               />
-              <el-table-column
-                prop="createTime"
-                label="创建时间"
-                show-overflow-tooltip
-                align="center"
-              />
               <el-table-column label="操作" width="200" align="center">
                 <template #default="{ row }">
                   <el-button @click="collectDetailsRef.open(row.batchCode)">
                     <el-icon class="el-icon--left"><View /></el-icon>
                     查看详情
                   </el-button>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="createTime"
+                label="创建时间"
+                show-overflow-tooltip
+                align="center"
+              >
+                <template #default="{ row }">
+                  {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
                 </template>
               </el-table-column>
             </el-table>
@@ -226,10 +230,11 @@ import { ElMessage, type FormInstance } from 'element-plus'
 import { getRecLogPage } from '@/api/collect/index'
 import { manualTask } from '@/api/grow/config'
 import { DictionaryType } from '@/store/modules/dictionary'
+import { formatDate } from '@/utils/util'
 import type { GrowthTreeVO } from '@/api/grow/config/type'
+import bus from '@/utils/bus'
 import CollectForm from './CollectForm.vue'
 import CollectDetails from './CollectDetails.vue'
-import bus from '@/utils/bus'
 import useGrowthStore from '@/store/modules/growth'
 import useDictionaryStore from '@/store/modules/dictionary'
 import usePaginationStore from '@/store/modules/pagination'

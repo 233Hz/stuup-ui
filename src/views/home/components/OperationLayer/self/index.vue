@@ -13,7 +13,7 @@
           </p>
         </div>
         <div class="score">
-          <p>总积分</p>
+          <p>成长总积分</p>
           <p>{{ userStore.userInfo.totalScore || 0 }}</p>
         </div>
       </div>
@@ -89,7 +89,7 @@ const userStore = useUserStore()
         text-align: center;
 
         > p:nth-child(1) {
-          font-size: 24px;
+          font-size: 18px;
           color: white;
           margin-top: 30px;
         }

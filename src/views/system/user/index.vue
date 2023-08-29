@@ -111,7 +111,7 @@
           align="center"
         >
           <template #default="{ row }">
-            {{ TESCHER_TYPE.getKeyForValue(row.teacherType) }}
+            {{ TEACHER_TYPE.getKeyForValue(row.teacherType) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -141,7 +141,11 @@
           label="出生年月"
           show-overflow-tooltip
           align="center"
-        />
+        >
+          <template #default="{ row }">
+            {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="roleNames"
           label="用户角色"
@@ -213,7 +217,7 @@
           style="width: 100%"
         >
           <el-option
-            v-for="item in TESCHER_TYPE.getDict()"
+            v-for="item in TEACHER_TYPE.getDict()"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -307,7 +311,8 @@ import type { FormInstance, FormRules } from 'element-plus'
 import type { UserVO } from '@/api/system/user/type'
 import { getUserPage, saveOrUpdateUser, delUser } from '@/api/system/user/index'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { SEX, TESCHER_TYPE, USER_TYPE, USER_STATE } from '@/utils/dict'
+import { SEX, TEACHER_TYPE, USER_TYPE, USER_STATE } from '@/utils/dict'
+import { formatDate } from '@/utils/util'
 import { DictionaryType } from '@/store/modules/dictionary'
 import useDictionaryStore from '@/store/modules/dictionary'
 import usePaginationStore from '@/store/modules/pagination'

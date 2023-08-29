@@ -41,10 +41,6 @@ $logo-picture-height: 99px;
     font-size: 24px;
     font-weight: 600;
     line-height: var(--header-height);
-
-    &:hover {
-      opacity: 0.7;
-    }
   }
 }
 

@@ -236,7 +236,11 @@
             label="获取时间"
             show-overflow-tooltip
             align="center"
-          />
+          >
+            <template #default="{ row }">
+              {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
+            </template>
+          </el-table-column>
         </el-table>
         <Pagination @size-change="fetchList" @current-change="fetchList" />
       </el-card>
@@ -246,11 +250,12 @@
 
 <script setup lang="ts" name="GrowScore">
 import { ref, onMounted } from 'vue'
+import { getRecScorePage } from '@/api/growScore/index'
+import { DictionaryType } from '@/store/modules/dictionary'
+import { formatDate } from '@/utils/util'
 import type { FormInstance } from 'element-plus'
 import type { RecScoreVO } from '@/api/growScore/type'
-import { getRecScorePage } from '@/api/growScore/index'
 import useDictionaryStore from '@/store/modules/dictionary'
-import { DictionaryType } from '@/store/modules/dictionary'
 import useGrowthStore from '@/store/modules/growth'
 import usePaginationStore from '@/store/modules/pagination'
 

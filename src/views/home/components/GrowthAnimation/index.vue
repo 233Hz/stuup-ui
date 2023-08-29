@@ -33,12 +33,6 @@
           <svg-icon name="close" width="80px" height="80px" />
         </div>
       </div>
-      <!-- <p
-        class="absolute b-20 text-center text-slate-300 fs-18 cursor-pointer left-1/2 -translate-x-1/2 hover:text-white"
-        @click="show = false"
-      >
-        点击关闭动画
-      </p> -->
     </div>
   </div>
 </template>
@@ -49,12 +43,13 @@ import gsap from 'gsap'
 import plantSrc from '@/assets/image/FlowerLevel/xhh4.png'
 import wateringAnimSrc from '@/assets/image/GrowthAnimation/flowing-water-anim.png'
 import upgradeAnimSrc from '@/assets/image/GrowthAnimation/upgrade-anim.png'
-import { useConversionFlower, Flowers } from '@/utils/conversionFlower'
+import useFlowersStore from '@/store/modules/flowers'
 import bus from '@/utils/bus'
+import type { Flower } from '@/store/modules/types/type'
 
 bus.on('collect-drop', (_score: number) => (score.value = _score))
 
-const conversionFlower = useConversionFlower()
+const flowersStore = useFlowersStore()
 
 const wateringAnimFrame = 15
 const upgradeAnimFrame = 11
@@ -66,7 +61,7 @@ let animationend = false
 
 const show = ref<boolean>(false)
 const score = ref<number>(0)
-const currentLevel = ref<Flowers>()
+const currentLevel = ref<Flower>()
 const progressRatio = ref<number>(0)
 const upgradeScore = ref<number>(0)
 
@@ -83,12 +78,10 @@ const wateringAnimation = () => {
     // animationend = true
     const wateringX = landRef.value.offsetLeft + landRef.value.clientWidth / 2
     const wateringY = landRef.value.offsetTop - spoonRef.value.clientHeight
-    console.log(landRef.value.offsetLeft, landRef.value.offsetTop)
 
     // 记录木勺的left和top
     const spoonX = spoonRef.value.offsetLeft
     const spoonY = spoonRef.value.offsetTop
-    console.log(spoonX, spoonY)
 
     gsap.to(spoonRef.value!, {
       left: wateringX,
@@ -130,12 +123,13 @@ const wateringAnimation = () => {
               top: spoonY,
               duration: 1,
               onComplete: () => {
-                const { current, next } = conversionFlower.calculateMaxLevel(
+                const { current, next } = flowersStore.calculateFlowerMaxLevel(
                   score.value,
                 )
                 // 计算进度
-                const totalProgress = next.value - current.value
-                const currentProgress = score.value - current.value
+                const totalProgress =
+                  next.conversionCount - current.conversionCount
+                const currentProgress = score.value - current.conversionCount
                 const needScore =
                   totalProgress - currentProgress < 0
                     ? 0
@@ -147,8 +141,9 @@ const wateringAnimation = () => {
                 increaseProgress(Number(ratio))
                 if (
                   current.key === currentLevel.value?.key &&
-                  current.value === currentLevel.value?.value &&
-                  current.imageSrc === currentLevel.value?.imageSrc
+                  current.conversionCount ===
+                    currentLevel.value?.conversionCount &&
+                  current.image === currentLevel.value?.image
                 )
                   return
                 currentLevel.value = current
@@ -200,7 +195,7 @@ const upgradeAnimation = () => {
     const image = new Image()
     image.src = plantSrc
     image.onload = () => {
-      plantImage.src = currentLevel.value!.imageSrc
+      plantImage.src = currentLevel.value!.image
       plantImage.style.width = image.width / 5 + 'px'
       plantImage.style.height = image.height / 5 + 'px'
       plantImage.style.position = 'absolute'

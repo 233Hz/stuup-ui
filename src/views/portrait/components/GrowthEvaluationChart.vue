@@ -27,7 +27,6 @@ const update = (data: PortraitCapacityEvaluatorList): echarts.EChartOption => {
       max: item.indicatorAvgScore,
     }
   })
-  console.log(indicator)
 
   const value = data?.map((item) => item.indicatorScore)
   return {

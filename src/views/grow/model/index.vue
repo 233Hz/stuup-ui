@@ -1,16 +1,19 @@
 <template>
-  <div class="bunga-flower" v-loading="loading">
+  <div
+    class="relative m-auto max-w-960 flex justify-center flex-wrap select-none"
+    v-loading="loading"
+  >
     <div
-      class="bunga-flower-item"
+      class="w-200 relative br-8 m-20 p-20 shadow-lg"
       v-for="[key, value] in Object.entries(flowers)"
       :key="key"
     >
-      <img :src="value.src" />
-      <div class="bunga-flower-item__content">
-        <h2>{{ value.name }}</h2>
-        <p>
+      <img class="block w-100 h-100 rounded-full m-auto" :src="value.src" />
+      <div class="text-center">
+        <h2 class="fs-20 mt-10 text-green-300">{{ value.name }}</h2>
+        <p class="my-10 fs-16 text-#ccc">
           所需水滴：
-          <span>
+          <span class="fs-26 font-bold text-#67c23a">
             {{
               // @ts-ignore
               flowersStore.flowers[key]

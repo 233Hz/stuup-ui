@@ -9,14 +9,14 @@
       <PortraitCard title="个人信息">
         <UserInfo />
       </PortraitCard>
-      <PortraitCard class="flex-1" title="成长能力">
+      <PortraitCard class="flex-1" title="我的成长雷达图">
         <GrowthEvaluationChart />
       </PortraitCard>
       <div class="flex gap-12">
-        <PortraitCard class="flex-1" title="获奖">
+        <PortraitCard class="flex-1" title="我的获奖">
           <AwardRecord />
         </PortraitCard>
-        <PortraitCard class="flex-1" title="参加活动">
+        <PortraitCard class="flex-1" title="我参加的活动">
           <ActivityRecord />
         </PortraitCard>
       </div>
@@ -29,7 +29,7 @@
       <PortraitCard title="学习成绩">
         <FinalGradeChart />
       </PortraitCard>
-      <PortraitCard title="历史成长记录">
+      <PortraitCard title="成长记录">
         <GrowthRecord />
       </PortraitCard>
     </div>

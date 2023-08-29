@@ -53,24 +53,28 @@ interface FilterDataType {
 const columns: Column[] = [
   {
     align: 'center',
+    key: 'rank',
     dataKey: 'rank',
     title: '排名',
-    width: 150,
+    width: 50,
   },
   {
     align: 'center',
+    key: 'year',
     dataKey: 'year',
     title: '年份',
-    width: 150,
+    width: 50,
   },
   {
     align: 'center',
+    key: 'month',
     dataKey: 'month',
     title: '月份',
-    width: 150,
+    width: 50,
   },
   {
     align: 'center',
+    key: 'studentName',
     dataKey: 'studentName',
     title: '学生姓名',
     width: 150,
@@ -121,6 +125,7 @@ const columns: Column[] = [
   },
   {
     align: 'center',
+    key: 'studentNo',
     dataKey: 'studentNo',
     title: '学号',
     width: 150,
@@ -171,61 +176,10 @@ const columns: Column[] = [
   },
   {
     align: 'center',
-    dataKey: 'gradeName',
-    title: '所属年级',
-    width: 150,
-    // @ts-ignore
-    headerCellRenderer: (props: HeaderCellSlotProps) => {
-      return (
-        <div class="flex items-center justify-center">
-          <span class="mr-2 size-14 weight-700">{props.column.title}</span>
-          <ElPopover
-            v-model:visible={visible3.value}
-            trigger="click"
-            {...{ width: 200 }}
-          >
-            {{
-              default: () => (
-                <div>
-                  <div>
-                    <ElSelectV2
-                      v-model={filterForm.value.gradeName}
-                      options={[...filterData.gradeName]}
-                      placeholder="请选择年级"
-                      teleported={false}
-                    />
-                  </div>
-                  <div class="flex items-center justify-center mt-4">
-                    <ElButton text onClick={onFilter}>
-                      确 认
-                    </ElButton>
-                    <ElButton
-                      text
-                      onClick={() =>
-                        onReset(props.column.dataKey as keyof FilterFormType)
-                      }
-                    >
-                      清 空
-                    </ElButton>
-                  </div>
-                </div>
-              ),
-              reference: () => (
-                <ElIcon class="cursor-pointer">
-                  <Filter />
-                </ElIcon>
-              ),
-            }}
-          </ElPopover>
-        </div>
-      )
-    },
-  },
-  {
-    align: 'center',
+    key: 'className',
     dataKey: 'className',
     title: '所属班级',
-    width: 150,
+    width: 400,
     // @ts-ignore
     headerCellRenderer: (props: HeaderCellSlotProps) => {
       return (
@@ -275,128 +229,28 @@ const columns: Column[] = [
   },
   {
     align: 'center',
+    key: 'classTeacher',
     dataKey: 'classTeacher',
     title: '班主任',
     width: 150,
   },
   {
     align: 'center',
-    dataKey: 'facultyName',
-    title: '所属系部',
-    width: 150,
-    // @ts-ignore
-    headerCellRenderer: (props: HeaderCellSlotProps) => {
-      return (
-        <div class="flex items-center justify-center">
-          <span class="mr-2 size-14 weight-700">{props.column.title}</span>
-          <ElPopover
-            v-model:visible={visible5.value}
-            trigger="click"
-            {...{ width: 200 }}
-          >
-            {{
-              default: () => (
-                <div>
-                  <div>
-                    <ElSelectV2
-                      v-model={filterForm.value.facultyName}
-                      options={[...filterData.facultyName]}
-                      placeholder="请选择系部"
-                      teleported={false}
-                    />
-                  </div>
-                  <div class="flex items-center justify-center mt-4">
-                    <ElButton text onClick={onFilter}>
-                      确 认
-                    </ElButton>
-                    <ElButton
-                      text
-                      onClick={() =>
-                        onReset(props.column.dataKey as keyof FilterFormType)
-                      }
-                    >
-                      清 空
-                    </ElButton>
-                  </div>
-                </div>
-              ),
-              reference: () => (
-                <ElIcon class="cursor-pointer">
-                  <Filter />
-                </ElIcon>
-              ),
-            }}
-          </ElPopover>
-        </div>
-      )
-    },
-  },
-  {
-    align: 'center',
-    dataKey: 'majorName',
-    title: '所属专业',
-    width: 150,
-    // @ts-ignore
-    headerCellRenderer: (props: HeaderCellSlotProps) => {
-      return (
-        <div class="flex items-center justify-center">
-          <span class="mr-2 size-14 weight-700">{props.column.title}</span>
-          <ElPopover
-            v-model:visible={visible6.value}
-            trigger="click"
-            {...{ width: 200 }}
-          >
-            {{
-              default: () => (
-                <div>
-                  <div>
-                    <ElSelectV2
-                      v-model={filterForm.value.majorName}
-                      options={[...filterData.majorName]}
-                      placeholder="请选择专业"
-                      teleported={false}
-                    />
-                  </div>
-                  <div class="flex items-center justify-center mt-4">
-                    <ElButton text onClick={onFilter}>
-                      确 认
-                    </ElButton>
-                    <ElButton
-                      text
-                      onClick={() =>
-                        onReset(props.column.dataKey as keyof FilterFormType)
-                      }
-                    >
-                      清 空
-                    </ElButton>
-                  </div>
-                </div>
-              ),
-              reference: () => (
-                <ElIcon class="cursor-pointer">
-                  <Filter />
-                </ElIcon>
-              ),
-            }}
-          </ElPopover>
-        </div>
-      )
-    },
-  },
-  {
-    align: 'center',
+    key: 'score',
     dataKey: 'score',
     title: '成长值',
     width: 150,
   },
   {
     align: 'center',
+    key: 'rankChange',
     dataKey: 'rankChange',
     title: '上升名次',
-    width: 150,
+    width: 100,
   },
   {
     align: 'center',
+    key: 'scoreChange',
     dataKey: 'scoreChange',
     title: '本月获取分数',
     width: 150,

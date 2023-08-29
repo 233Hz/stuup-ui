@@ -46,15 +46,17 @@ interface FilterDataType {
 const columns: Column[] = [
   {
     align: 'center',
+    key: 'rank',
     dataKey: 'rank',
     title: '排名',
     width: 50,
   },
   {
     align: 'center',
+    key: 'majorName',
     dataKey: 'majorName',
     title: '专业名称',
-    width: 150,
+    width: 400,
     // @ts-ignore
     headerCellRenderer: (props: HeaderCellSlotProps) => {
       return (
@@ -102,9 +104,10 @@ const columns: Column[] = [
   },
   {
     align: 'center',
+    key: 'facultyName',
     dataKey: 'facultyName',
     title: '所属系部',
-    width: 150,
+    width: 400,
     // @ts-ignore
     headerCellRenderer: (props: HeaderCellSlotProps) => {
       return (
@@ -154,9 +157,10 @@ const columns: Column[] = [
   },
   {
     align: 'center',
+    key: 'score',
     dataKey: 'score',
     title: '成长值',
-    width: 100,
+    width: 200,
   },
 ]
 

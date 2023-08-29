@@ -117,14 +117,14 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="firstLevelName"
-          label="一级项目"
+          prop="growName"
+          label="项目名称"
           show-overflow-tooltip
           align="center"
         />
         <el-table-column
-          prop="secondLevelName"
-          label="二级项目"
+          prop="code"
+          label="项目编号"
           show-overflow-tooltip
           align="center"
         />
@@ -135,8 +135,14 @@
           align="center"
         />
         <el-table-column
-          prop="growName"
-          label="成长项"
+          prop="secondLevelName"
+          label="二级项目"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="firstLevelName"
+          label="一级项目"
           show-overflow-tooltip
           align="center"
         />
@@ -173,12 +179,6 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="createTime"
-          label="提交时间"
-          show-overflow-tooltip
-          align="center"
-        />
         <el-table-column label="操作" width="400" align="center">
           <template #default="{ row }">
             <el-button @click="auditInfoRef.open(row)">审核信息</el-button>
@@ -205,6 +205,16 @@
             </el-button>
           </template>
         </el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="创建时间"
+          show-overflow-tooltip
+          align="center"
+        >
+          <template #default="{ row }">
+            {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
+          </template>
+        </el-table-column>
       </el-table>
       <Pagination @size-change="fetchList" @current-change="fetchList" />
     </el-card>
@@ -223,6 +233,7 @@ import {
   returnGrowItem,
 } from '@/api/audit'
 import { AUDIT_STATUS } from '@/utils/dict'
+import { formatDate } from '@/utils/util'
 import AuditInfo from '@/components/AuditInfo/index.vue'
 import useGrowthStore from '@/store/modules/growth'
 import usePaginationStore from '@/store/modules/pagination'

@@ -38,12 +38,10 @@ let usePermissionStore = defineStore('Permission', {
               .filter((menu) => menu.keepAlive === WHETHER.YES)
               .map((menu) => menu.code),
           )
-          console.log(this.cachedView)
 
           // 生成路由
           const asyncRouter = formatRouter(data)
           this.routes = constantRoute.concat(asyncRouter)
-          console.log(this.routes)
 
           resolve()
         })

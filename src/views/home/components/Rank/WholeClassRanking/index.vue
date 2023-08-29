@@ -15,7 +15,9 @@
           </div>
           <div class="item-wrapper__class">{{ item.className }}</div>
           <div class="item-wrapper__score">{{ item.score }}</div>
-          <span class="ranking">{{ item.ranking }}</span>
+          <span :class="`${rankingColorHandle(item.ranking)} ranking`">
+            {{ item.ranking }}
+          </span>
         </div>
       </li>
     </ul>
@@ -33,9 +35,30 @@ onMounted(async () => {
   const { data } = await reqWholeClassTop10Ranking()
   dataArr.value = data
 })
+
+const rankingColorHandle = (ranking: number) => {
+  if (ranking === 1) {
+    return 'no_1'
+  } else if (ranking === 2) {
+    return 'no_2'
+  } else if (ranking === 3) {
+    return 'no_3'
+  } else {
+    return ''
+  }
+}
 </script>
 
 <style scoped lang="scss">
+.no_1 {
+  background-color: #ffb628 !important;
+}
+.no_2 {
+  background-color: #94b6db !important;
+}
+.no_3 {
+  background-color: #f2a897 !important;
+}
 .rank-list {
   width: 500px;
   height: 900px;

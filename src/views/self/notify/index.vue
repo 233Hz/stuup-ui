@@ -69,12 +69,6 @@
           align="center"
         />
         <el-table-column
-          prop="createTime"
-          label="发布时间"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
           prop="type"
           label="消息类型"
           show-overflow-tooltip
@@ -91,6 +85,17 @@
             </el-button>
           </template>
         </el-table-column>
+        <el-table-column
+          width="200"
+          prop="createTime"
+          label="发布时间"
+          show-overflow-tooltip
+          align="center"
+        >
+          <template #default="{ row }">
+            {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
+          </template>
+        </el-table-column>
       </el-table>
       <Pagination @size-change="fetchList" @current-change="fetchList" />
     </el-card>
@@ -102,6 +107,7 @@ import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ANNOUNCEMENT_TYPE } from '@/utils/dict'
 import { reqMyNotifyPage, reqMySystemPage } from '@/api/system/announcement'
+import { formatDate } from '@/utils/util'
 import usePaginationStore from '@/store/modules/pagination'
 
 const router = useRouter()

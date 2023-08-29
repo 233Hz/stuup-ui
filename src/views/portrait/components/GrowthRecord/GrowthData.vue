@@ -48,7 +48,7 @@ const data = ref<GrowthData[]>([
   },
   {
     key: 'minusScore',
-    label: '成长扣除分',
+    label: '成长扣分',
     value: '暂无数据',
   },
   {

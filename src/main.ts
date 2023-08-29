@@ -13,9 +13,9 @@ import 'element-plus/dist/index.css'
 import 'virtual:svg-icons-register'
 
 //引入自定义插件对象:注册整个项目全局组件
-import gloalComponent from '@/components'
+import globalComponent from '@/components'
 
-// 引入插件注册全局指令
+//引入插件注册全局指令
 import globalDirective from '@/directives'
 
 //配置element-plus国际化
@@ -35,7 +35,7 @@ import pinia from '@/store'
 import 'uno.css'
 
 //引入路由鉴权文件
-import '@/premission'
+import '@/permission'
 
 //获取应用实例对象
 const app = createApp(App)
@@ -52,7 +52,7 @@ app.use(ElementPlus, {
 })
 
 //安装自定义插件
-app.use(gloalComponent)
+app.use(globalComponent)
 
 //安装全局指令
 app.use(globalDirective)

@@ -131,14 +131,8 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="firstLevelName"
-          label="一级项目"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="secondLevelName"
-          label="二级项目"
+          prop="growName"
+          label="项目名称"
           show-overflow-tooltip
           align="center"
         />
@@ -149,8 +143,14 @@
           align="center"
         />
         <el-table-column
-          prop="growName"
-          label="成长项"
+          prop="secondLevelName"
+          label="二级项目"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="firstLevelName"
+          label="一级项目"
           show-overflow-tooltip
           align="center"
         />
@@ -187,12 +187,6 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="createTime"
-          label="创建时间"
-          show-overflow-tooltip
-          align="center"
-        />
         <el-table-column label="操作" width="400" align="center">
           <template #default="{ row }">
             <el-button @click="auditInfoRef.open(row)">审核信息</el-button>
@@ -224,6 +218,16 @@
             >
               删除
             </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="创建时间"
+          show-overflow-tooltip
+          align="center"
+        >
+          <template #default="{ row }">
+            {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
           </template>
         </el-table-column>
       </el-table>
@@ -264,10 +268,10 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="申请项目" prop="reason">
+        <el-form-item label="申请说明" prop="reason">
           <el-input
             v-model="form.reason"
-            placeholder="请输入申请原因"
+            placeholder="请输入申请说明"
             type="textarea"
             maxlength="200"
             :rows="4"
@@ -279,9 +283,15 @@
             <el-upload
               ref="uploadRef"
               drag
+              multiple
+              accept=".jpg, .jpeg, .png"
+              :limit="5"
               :action="action"
               :headers="headers"
               :disabled="loading"
+              :auto-upload="false"
+              :on-change="handleFileChange"
+              :on-exceed="handleExceed"
               :on-remove="handleUploadRemove"
               :on-success="handleUploadSuccess"
             >
@@ -290,6 +300,9 @@
                 将文件拖到此处，或
                 <em>点击上传</em>
               </div>
+              <template #tip>
+                只支持.jpg, .jpeg, .png格式，且单个大小不超过1M,最多上传5个
+              </template>
             </el-upload>
           </div>
         </el-form-item>
@@ -316,6 +329,9 @@ import type {
   FormRules,
   UploadInstance,
   UploadProps,
+  UploadRawFile,
+  UploadFile,
+  UploadFiles,
 } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
@@ -334,6 +350,7 @@ import { AUDIT_STATUS } from '@/utils/dict'
 import { requiredRule } from '@/utils/rules'
 import { useRouter } from 'vue-router'
 import { ArrowLeft } from '@element-plus/icons-vue'
+import { formatDate } from '@/utils/util'
 import AuditInfo from '@/components/AuditInfo/index.vue'
 import useGrowthStore from '@/store/modules/growth'
 import usePaginationStore from '@/store/modules/pagination'
@@ -375,7 +392,7 @@ const form = ref<any>({
 })
 const rules = reactive<FormRules>({
   growId: [requiredRule('申请项目')],
-  reason: [requiredRule('申请原因')],
+  reason: [requiredRule('申请说明')],
 })
 
 //INIT
@@ -511,6 +528,20 @@ const handleUploadSuccess: UploadProps['onSuccess'] = (
     .map((item) => (item.response as ResponseData<FileVO>).data.id)
     .join(',')
   form.value.fileIds = ids
+}
+
+const handleFileChange = (file: UploadFile, fileList: UploadFiles) => {
+  console.log(file, fileList)
+  if (!file) return
+  const size = file.size! / 1024 / 1024
+  if (size > 1) {
+    const currIdx = fileList.indexOf(file)
+    fileList.splice(currIdx, 1)
+    ElMessage.warning('上传文件大小不能超过 3MB!')
+  }
+}
+const handleExceed: UploadProps['onExceed'] = (files) => {
+  console.log(files)
 }
 
 const resetForm = () => {

@@ -36,15 +36,17 @@ interface FilterFormType {
 const columns: Column[] = [
   {
     align: 'center',
+    key: 'rank',
     dataKey: 'rank',
     title: '排名',
     width: 50,
   },
   {
     align: 'center',
+    key: 'facultyName',
     dataKey: 'facultyName',
     title: '系部名称',
-    width: 150,
+    width: 400,
     // @ts-ignore
     headerCellRenderer: (props: HeaderCellSlotProps) => {
       return (
@@ -53,7 +55,7 @@ const columns: Column[] = [
           <ElPopover
             v-model:visible={visible.value}
             trigger="click"
-            {...{ width: 200 }}
+            {...{ width: 400 }}
           >
             {{
               default: () => (
@@ -92,9 +94,10 @@ const columns: Column[] = [
   },
   {
     align: 'center',
+    key: 'score',
     dataKey: 'score',
     title: '成长值',
-    width: 100,
+    width: 200,
   },
 ]
 

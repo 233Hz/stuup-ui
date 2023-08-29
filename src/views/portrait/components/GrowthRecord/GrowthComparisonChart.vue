@@ -71,7 +71,6 @@ watch(
             // @ts-ignore
             formatter: '{c} 分',
             fontSize: 18,
-            color: '#fff',
           },
         },
         {
@@ -83,14 +82,14 @@ watch(
             color: 'rgba(180, 180, 180, 0.2)',
           },
           itemStyle: {
-            color: '#14b8a6',
+            color: '#0ea5e9',
           },
           label: {
             show: true,
             // @ts-ignore
             formatter: '{c} 分',
             fontSize: 18,
-            color: '#fff',
+            color: '#aaa',
           },
         },
       ],

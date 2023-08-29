@@ -18,6 +18,7 @@
     <div class="shrink">
       <el-icon
         :size="24"
+        color="#fff"
         class="cursor-pointer"
         @click="isCollapse = !isCollapse"
       >
@@ -38,8 +39,8 @@ import { MENU_FLAG } from '@/utils/dict'
 import { Expand, Fold } from '@element-plus/icons-vue'
 
 const route = useRoute()
-const premissionStore = usePermissionStore()
-const backRoutes = filterRouter(premissionStore.routes, MENU_FLAG.BACK)
+const permissionStore = usePermissionStore()
+const backRoutes = filterRouter(permissionStore.routes, MENU_FLAG.BACK)
 
 const isCollapse = ref(false)
 </script>
