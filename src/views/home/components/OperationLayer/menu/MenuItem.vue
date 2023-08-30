@@ -6,7 +6,7 @@
     <div class="w-full h-80 p-10">
       <svg-icon :name="props.icon || 'default'" width="60px" height="60px" />
     </div>
-    <p class="text-center" style="color: #19c975">
+    <p class="text-center text-blue-400 font-bold">
       {{ props.title }}
     </p>
   </div>

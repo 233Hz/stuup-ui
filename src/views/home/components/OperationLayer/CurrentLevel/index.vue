@@ -1,6 +1,6 @@
 <template>
   <div class="level" v-if="userStore.userInfo.userType === USER_TYPE.STUDENT">
-    <p class="name">{{ flowerLevel.name }}</p>
+    <p class="name">{{ flowerLevel?.name }}</p>
     <div class="icon" v-if="flowerLevel">
       <img :src="flowerLevel.image" />
     </div>

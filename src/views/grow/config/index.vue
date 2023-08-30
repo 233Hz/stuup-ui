@@ -10,6 +10,6 @@
 </template>
 
 <script setup lang="ts" name="GrowConfig">
-import GrowthTree from './growth-tree/index.vue'
+import GrowthTree from './GrowthTree/index.vue'
 import GrowthItemTable from './GrowthItemTable/index.vue'
 </script>

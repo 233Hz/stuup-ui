@@ -133,7 +133,7 @@ import { RoleVO } from '@/api/system/role/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { formatDate } from '@/utils/util'
 import type { FormInstance, FormRules } from 'element-plus'
-import MenuTree from './menu-tree/index.vue'
+import MenuTree from './MenuTree/index.vue'
 import usePaginationStore from '@/store/modules/pagination'
 
 const paginationStore = usePaginationStore()

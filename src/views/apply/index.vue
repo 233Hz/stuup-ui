@@ -189,7 +189,7 @@
         </el-table-column>
         <el-table-column label="操作" width="400" align="center">
           <template #default="{ row }">
-            <el-button @click="auditInfoRef.open(row)">审核信息</el-button>
+            <el-button @click="auditDetailsRef.open(row)">审核信息</el-button>
             <el-button
               :disabled="
                 row.state !== AUDIT_STATUS.TO_BE_SUBMITTED &&
@@ -299,7 +299,7 @@
         </el-button>
       </template>
     </el-dialog>
-    <AuditInfo ref="auditInfoRef" />
+    <audit-details ref="auditDetailsRef" />
   </div>
 </template>
 
@@ -315,15 +315,13 @@ import {
   submitGrowItem,
 } from '@/api/apply'
 import type { AudGrow } from '@/api/apply/type'
-import type { ResponseData } from '@/types/global'
-import type { FileVO } from '@/api/file/type'
 import { getToken } from '@/utils/auth'
 import { AUDIT_STATUS } from '@/utils/dict'
 import { requiredRule } from '@/utils/rules'
 import { useRouter } from 'vue-router'
 import { ArrowLeft } from '@element-plus/icons-vue'
 import { formatDate } from '@/utils/util'
-import AuditInfo from '@/components/AuditInfo/index.vue'
+import AuditDetails from '@/components/AuditDetails/index.vue'
 import useGrowthStore from '@/store/modules/growth'
 import usePaginationStore from '@/store/modules/pagination'
 
@@ -366,7 +364,7 @@ const GROW_ITEM = ref<TreeNode[]>()
 const searchFormRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
 const uploadRef = ref<UploadInstance>()
-const auditInfoRef = ref()
+const auditDetailsRef = ref()
 
 //DATA
 const loading = ref<boolean>(false)

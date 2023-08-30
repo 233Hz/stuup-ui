@@ -181,7 +181,7 @@
         </el-table-column>
         <el-table-column label="操作" width="400" align="center">
           <template #default="{ row }">
-            <el-button @click="auditInfoRef.open(row)">审核信息</el-button>
+            <el-button @click="auditDetailsRef.open(row)">审核信息</el-button>
             <el-button
               :disabled="row.state !== AUDIT_STATUS.PENDING_REVIEW"
               type="success"
@@ -218,7 +218,7 @@
       </el-table>
       <Pagination @size-change="fetchList" @current-change="fetchList" />
     </el-card>
-    <AuditInfo ref="auditInfoRef" />
+    <audit-details ref="auditDetailsRef" />
   </div>
 </template>
 
@@ -234,7 +234,7 @@ import {
 } from '@/api/audit'
 import { AUDIT_STATUS } from '@/utils/dict'
 import { formatDate } from '@/utils/util'
-import AuditInfo from '@/components/AuditInfo/index.vue'
+import AuditDetails from '@/components/AuditDetails/index.vue'
 import useGrowthStore from '@/store/modules/growth'
 import usePaginationStore from '@/store/modules/pagination'
 
@@ -243,7 +243,7 @@ const paginationStore = usePaginationStore()
 
 //REF
 const searchFormRef = ref<FormInstance>()
-const auditInfoRef = ref()
+const auditDetailsRef = ref()
 
 // DATA
 const loading = ref<boolean>(false)

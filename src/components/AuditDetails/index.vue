@@ -29,7 +29,7 @@
               show-overflow-tooltip
               align="center"
             />
-            <el-table-column label="操作" width="120" align="center">
+            <el-table-column label="操作" align="center">
               <template #default="{ row }">
                 <el-button>预览文件</el-button>
                 <el-button @click="downFile(row.storageName, row.originalName)">
@@ -39,46 +39,48 @@
             </el-table-column>
           </el-table>
         </el-descriptions-item>
+        <el-descriptions-item label="审核进度">
+          <el-timeline>
+            <el-timeline-item
+              v-if="auditLog && auditLog.length > 0"
+              v-for="item in auditLog"
+              :key="item.id"
+              :timestamp="item.createTime"
+              placement="top"
+            >
+              <el-card>
+                <h3>
+                  {{ item.username }}
+                  <el-icon><CaretRight /></el-icon>
+                  <el-tag v-if="item.state === AUDIT_LOG_STATUS.SUBMIT">
+                    {{ AUDIT_LOG_STATUS.getKey('SUBMIT') }}
+                  </el-tag>
+                  <el-tag
+                    v-if="item.state === AUDIT_LOG_STATUS.PASS"
+                    type="success"
+                  >
+                    {{ AUDIT_LOG_STATUS.getKey('PASS') }}
+                  </el-tag>
+                  <el-tag
+                    v-if="item.state === AUDIT_LOG_STATUS.REFUSE"
+                    type="danger"
+                  >
+                    {{ AUDIT_LOG_STATUS.getKey('REFUSE') }}
+                  </el-tag>
+                  <el-tag
+                    v-if="item.state === AUDIT_LOG_STATUS.RETURN"
+                    type="warning"
+                  >
+                    {{ AUDIT_LOG_STATUS.getKey('RETURN') }}
+                  </el-tag>
+                </h3>
+                <p>{{ item.reason }}</p>
+              </el-card>
+            </el-timeline-item>
+            <p v-else class="text-center">暂无审核进度</p>
+          </el-timeline>
+        </el-descriptions-item>
       </el-descriptions>
-      <div class="mt-20">
-        <el-timeline>
-          <el-timeline-item
-            v-for="item in auditLog"
-            :key="item.id"
-            :timestamp="item.createTime"
-            placement="top"
-          >
-            <el-card>
-              <h3>
-                {{ item.username }}
-                <el-icon><CaretRight /></el-icon>
-                <el-tag v-if="item.state === AUDIT_LOG_STATUS.SUBMIT">
-                  {{ AUDIT_LOG_STATUS.getKey('SUBMIT') }}
-                </el-tag>
-                <el-tag
-                  v-if="item.state === AUDIT_LOG_STATUS.PASS"
-                  type="success"
-                >
-                  {{ AUDIT_LOG_STATUS.getKey('PASS') }}
-                </el-tag>
-                <el-tag
-                  v-if="item.state === AUDIT_LOG_STATUS.REFUSE"
-                  type="danger"
-                >
-                  {{ AUDIT_LOG_STATUS.getKey('REFUSE') }}
-                </el-tag>
-                <el-tag
-                  v-if="item.state === AUDIT_LOG_STATUS.RETURN"
-                  type="warning"
-                >
-                  {{ AUDIT_LOG_STATUS.getKey('RETURN') }}
-                </el-tag>
-              </h3>
-              <p>{{ item.reason }}</p>
-            </el-card>
-          </el-timeline-item>
-        </el-timeline>
-      </div>
     </div>
   </el-dialog>
 </template>
@@ -96,7 +98,7 @@ const loading = ref<boolean>(false)
 const applyRecord = ref()
 const auditLog = ref()
 const fileData = ref()
-const splitLine = '<span class="mx-4 text-red-500 font-bold">|</span>'
+const splitLine = '<span class="mx-8 text-red-500 font-bold">|</span>'
 const growth_name = computed(() => {
   const firstLevelName = applyRecord.value?.firstLevelName || '无'
   const secondLevelName = applyRecord.value?.secondLevelName || '无'
