@@ -1,5 +1,5 @@
 <template>
-  <div class="self" v-if="userStore.userInfo.userType === USER_TYPE.STUDENT">
+  <div class="self">
     <div class="wrapper">
       <div class="content">
         <div class="avatar" @click="router.push('/self/center')">
@@ -24,7 +24,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import useUserStore from '@/store/modules/user'
-import { USER_TYPE } from '@/utils/dict'
 import defaultAvatar from '@/assets/image/default_avatar.png'
 
 const router = useRouter()

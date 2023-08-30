@@ -1,5 +1,5 @@
 <template>
-  <div class="level" v-if="userStore.userInfo.userType === USER_TYPE.STUDENT">
+  <div class="level">
     <p class="name">{{ flowerLevel?.name }}</p>
     <div class="icon" v-if="flowerLevel">
       <img :src="flowerLevel.image" />
@@ -10,8 +10,7 @@
 
 <script setup lang="ts">
 import useUserStore from '@/store/modules/user'
-import useFlowersStore from '@/store/modules/flowers.ts'
-import { USER_TYPE } from '@/utils/dict'
+import useFlowersStore from '@/store/modules/flowers'
 
 const userStore = useUserStore()
 const flowersStore = useFlowersStore()

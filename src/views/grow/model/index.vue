@@ -14,14 +14,17 @@
         <p class="my-10 fs-16 text-#ccc">
           所需水滴：
           <span class="fs-26 font-bold text-#67c23a">
-            {{
-              // @ts-ignore
-              flowersStore.flowers[key]
-            }}
+            {{ flowersStore.getFlowerConversionNum(key) }}
           </span>
         </p>
-        <!-- @vue-ignore -->
-        <el-button @click="setExchangeValue(key, flowersStore.flowers[key])">
+        <el-button
+          @click="
+            () => {
+              flowersStore.getFlowerConversionNum(key) &&
+                setExchangeValue(key, flowersStore.getFlowerConversionNum(key)!)
+            }
+          "
+        >
           设置兑换值
         </el-button>
       </div>
@@ -51,7 +54,7 @@ import xhh_fruit from '@/assets/image/FlowerLevel/xhh4.png'
 
 const flowersStore = useFlowersStore()
 
-const flowers = {
+const flowers: Record<keyof FlowerVO, any> = {
   xcjSeed: {
     src: xcj_seed,
     name: '小雏菊种子',
@@ -103,7 +106,13 @@ const flowers = {
 }
 const loading = ref<boolean>(false)
 
-const setExchangeValue = (key: keyof FlowerVO, num: number) => {
+Object.entries(flowers).forEach(([key, value]) => {
+  console.log(key, value)
+})
+
+const setExchangeValue = (key: string, num: number) => {
+  if (!Object.hasOwnProperty.call(flowersStore.flowerConversionOption, key))
+    throw new Error(`不存在对应的等级[${key}]`)
   ElMessageBox.prompt('请输入兑换值', '设置兑换值', {
     inputPlaceholder: '请输入数量',
     inputValue: String(num),
@@ -113,11 +122,12 @@ const setExchangeValue = (key: keyof FlowerVO, num: number) => {
     inputErrorMessage: '请输入数字',
   })
     .then(async ({ value }) => {
+      const _key = key as keyof FlowerVO
       loading.value = true
       try {
-        await setFlowerConfig({ key, value: Number(value) })
+        await setFlowerConfig({ key: _key, value: Number(value) })
         ElMessage.success('设置成功')
-        flowersStore.setFlowers(key, Number(value))
+        flowersStore.setFlowers(_key, Number(value))
       } finally {
         loading.value = false
       }

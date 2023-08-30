@@ -14,6 +14,6 @@ export interface FlowerVO {
 }
 
 export interface FlowerForm {
-  key: string
+  key: keyof FlowerVO
   value: number
 }

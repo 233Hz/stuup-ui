@@ -33,26 +33,26 @@
       </span>
       <!-- 用户信息 and 菜单 -->
       <div class="absolute t-0 l-0 flex">
-        <Self />
+        <Self v-if="isStudent" />
         <Menu />
       </div>
-      <Level class="absolute t-200 l-0" />
+      <Level class="absolute t-200 l-0" v-if="isStudent" />
       <!-- 用户等级 -->
-      <current-level class="absolute b-140 l-460" />
+      <current-level class="absolute b-140 l-460" v-if="isStudent" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { GARDEN_TYPE, USER_TYPE } from '@/utils/dict'
 import { reqUnCollectScore, reqUpdateRecordState } from '@/api/home/index'
 import { UnCollectScore } from '@/api/home/type'
 import { flowerHint } from './const'
 import { ElMessageBox } from 'element-plus'
-import bus from '@/utils/bus'
 import useUserStore from '@/store/modules/user'
+import bus from '@/utils/bus'
 import Self from './Self/index.vue'
 import Menu from './Menu/index.vue'
 import Level from './Level/index.vue'
@@ -65,6 +65,10 @@ const wrapperRef = ref()
 const tipRef = ref()
 const show_hint = ref<boolean>(false)
 const unCollectScores = ref<UnCollectScore[]>()
+
+const isStudent = computed(
+  () => userStore.userInfo.userType === USER_TYPE.STUDENT,
+)
 
 onMounted(async () => {
   init()

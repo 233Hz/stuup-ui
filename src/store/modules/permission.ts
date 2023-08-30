@@ -4,7 +4,7 @@ import type { PermissionState } from './types/type'
 import type { RouteRecordRaw } from 'vue-router'
 import type { UserMenu } from '@/api/system/user/type'
 import { reqUserAuthority } from '@/api/system/user/index'
-import { WHETHER, MENU_TYPE } from '@/utils/dict'
+import { WHETHER, MENU_TYPE, MENU_FLAG } from '@/utils/dict'
 
 const Layout = () => import('@/layout/index.vue')
 const compModels = import.meta.glob('../../views/**/index.vue')
@@ -42,6 +42,7 @@ const usePermissionStore = defineStore('Permission', {
           // 生成路由
           const asyncRouter = formatRouter(data)
           this.routes = constantRoute.concat(asyncRouter)
+          console.log(this.routes)
 
           resolve()
         })

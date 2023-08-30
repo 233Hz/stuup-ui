@@ -95,6 +95,30 @@ export const constantRoute: RouteRecordRaw[] = [
       },
     ],
   },
+  // {
+  //   path: '/',
+  //   name: 'BackAdmin',
+  //   component: () => import('@/layout/index.vue'),
+  //   meta: {
+  //     title: '',
+  //     hidden: true,
+  //     icon: '',
+  //     flag: 3,
+  //   },
+  //   children: [
+  //     {
+  //       path: '/dashboard',
+  //       name: 'Dashboard',
+  //       component: () => import('@/views/dashboard/index.vue'),
+  //       meta: {
+  //         title: '首页',
+  //         hidden: true,
+  //         icon: 'home-icon-back',
+  //         flag: 3,
+  //       },
+  //     },
+  //   ],
+  // },
   {
     path: '/screen',
     name: 'Screen',

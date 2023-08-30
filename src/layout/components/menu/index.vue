@@ -1,5 +1,5 @@
 <template>
-  <template v-for="route in routes" :key="route.path">
+  <template v-for="route in routes" :key="route.name">
     <!--没有子路由-->
     <template v-if="!route.children || route.children.length === 0">
       <el-menu-item :index="route.path" v-if="!route.meta?.hidden">

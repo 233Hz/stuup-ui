@@ -97,6 +97,15 @@ const useFlowersStore = defineStore('Flowers', {
     setFlowers(key: keyof FlowerVO, value: number) {
       this.flowerConversionOption[key] = value
     },
+    getFlowerConversionNum(key: string): number | null {
+      if (Object.hasOwnProperty.call(this.flowerConversionOption, key)) {
+        const _key = key as keyof FlowerVO
+        return this.flowerConversionOption[_key]
+      } else {
+        console.error(`不存在对应的等级[${key}]`)
+        return null
+      }
+    },
     async getFlowers() {
       const { data } = await reqFlowerExchangeNum()
       this.flowerConversionOption = data
