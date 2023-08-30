@@ -1,14 +1,14 @@
 import { get, post, del } from '@/api/api'
 import { Page, PageResult } from '@/types/global'
 import type {
-  GrowthItemSelect,
+  StudentGrowthItems,
   AudGrow,
   GrowApplyRecord,
   AuditLog,
 } from './type'
 
-export const getStudentGrowthItems = async () => {
-  return get<GrowthItemSelect[]>('/growthItem/studentGrowthItems')
+export const reqStudentGrowthItems = async () => {
+  return get<StudentGrowthItems[]>('/growthItem/studentGrowthItems')
 }
 export const pageGrowApplyRecord = async (params: Page) => {
   return get<PageResult<GrowApplyRecord[]>>('/audGrow/page/apply', params)

@@ -23,10 +23,10 @@
       <PortraitCard title="学期成长排名曲线图">
         <GradeScoreChart />
       </PortraitCard>
-      <PortraitCard title="成长分析">
+      <PortraitCard title="成长分析曲线图">
         <GrowthStatus />
       </PortraitCard>
-      <PortraitCard title="学习成绩">
+      <PortraitCard title="学习成绩曲线图">
         <FinalGradeChart />
       </PortraitCard>
       <PortraitCard title="成长记录">

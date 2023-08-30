@@ -242,31 +242,14 @@
     >
       <el-form ref="formRef" :model="form" :rules="rules" label-position="top">
         <el-form-item label="申请项目" prop="growId">
-          <el-select
+          <el-cascader
             v-model="form.growId"
-            placeholder="请选择申请项目"
-            style="width: 100%"
-            :disabled="title === '修改申请'"
+            placeholder="请选择所属项目"
             clearable
-          >
-            <el-option
-              v-for="item in GROW_ITEM"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            >
-              <span style="float: left">{{ item.name }}</span>
-              <span
-                style="
-                  float: right;
-                  color: var(--el-text-color-secondary);
-                  font-size: 13px;
-                "
-              >
-                {{ item.desc }}
-              </span>
-            </el-option>
-          </el-select>
+            :options="GROW_ITEM"
+            :props="cascadeProps"
+            style="width: 100%"
+          />
         </el-form-item>
         <el-form-item label="申请说明" prop="reason">
           <el-input
@@ -278,18 +261,16 @@
             show-word-limit
           />
         </el-form-item>
-        <el-form-item label="证明附件" prop="fileId">
+        <el-form-item label="证明附件" prop="fileIds">
           <div style="width: 100%">
             <el-upload
               ref="uploadRef"
               drag
-              multiple
               accept=".jpg, .jpeg, .png"
-              :limit="5"
+              :limit="1"
               :action="action"
               :headers="headers"
               :disabled="loading"
-              :auto-upload="false"
               :on-change="handleFileChange"
               :on-exceed="handleExceed"
               :on-remove="handleUploadRemove"
@@ -301,7 +282,7 @@
                 <em>点击上传</em>
               </div>
               <template #tip>
-                只支持.jpg, .jpeg, .png格式，且单个大小不超过1M,最多上传5个
+                只支持.jpg, .jpeg, .png格式，且单个大小不超过1M,最多上传1个
               </template>
             </el-upload>
           </div>
@@ -324,18 +305,9 @@
 
 <script setup lang="ts" name="Apply">
 import { ref, onMounted, reactive, computed } from 'vue'
-import type {
-  FormInstance,
-  FormRules,
-  UploadInstance,
-  UploadProps,
-  UploadRawFile,
-  UploadFile,
-  UploadFiles,
-} from 'element-plus'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox, genFileId } from 'element-plus'
 import {
-  getStudentGrowthItems,
+  reqStudentGrowthItems,
   applyGrowItem,
   pageGrowApplyRecord,
   updateAudGrow,
@@ -355,15 +327,40 @@ import AuditInfo from '@/components/AuditInfo/index.vue'
 import useGrowthStore from '@/store/modules/growth'
 import usePaginationStore from '@/store/modules/pagination'
 
+import type {
+  FormInstance,
+  FormRules,
+  UploadInstance,
+  UploadProps,
+  UploadRawFile,
+  UploadFile,
+  UploadFiles,
+} from 'element-plus'
+import type { StudentGrowthItems } from '@/api/apply/type'
+
+interface TreeNode {
+  id: number
+  name: string
+  children?: TreeNode[]
+}
+
 const baseApi = import.meta.env.VITE_APP_BASE_API
 const action = baseApi + '/file/upload'
+
+const cascadeProps = {
+  label: 'name',
+  value: 'id',
+  children: 'children',
+  expandTrigger: 'hover',
+  emitPath: false,
+}
 
 const growthStore = useGrowthStore()
 const paginationStore = usePaginationStore()
 const router = useRouter()
 
 //DICT
-const GROW_ITEM = ref()
+const GROW_ITEM = ref<TreeNode[]>()
 
 //REF
 const searchFormRef = ref<FormInstance>()
@@ -393,6 +390,7 @@ const form = ref<any>({
 const rules = reactive<FormRules>({
   growId: [requiredRule('申请项目')],
   reason: [requiredRule('申请说明')],
+  fileIds: [requiredRule('证明附件')],
 })
 
 //INIT
@@ -414,16 +412,59 @@ const headers = computed(() => {
 
 //METHODS
 const initGrowthItem = async () => {
-  const { data } = await getStudentGrowthItems()
-  GROW_ITEM.value = data.map((item) => {
-    return {
-      id: item.id,
-      name: item.name,
-      desc: `${item.firstLevelName ? item.firstLevelName : '无'} | ${
-        item.secondLevelName ? item.secondLevelName : '无'
-      } | ${item.thirdLevelName ? item.thirdLevelName : '无'}`,
+  const { data } = await reqStudentGrowthItems()
+  GROW_ITEM.value = buildTree(data)
+}
+
+const buildTree = (data: StudentGrowthItems[]): TreeNode[] => {
+  const tree: TreeNode[] = []
+
+  for (const item of data) {
+    const firstLevelId = item.firstLevelId
+    const secondLevelId = item.secondLevelId
+    const thirdLevelId = item.thirdLevelId
+    const firstLevel = item.firstLevelName
+    const secondLevel = item.secondLevelName
+    const thirdLevel = item.thirdLevelName
+    const id = item.id
+    const name = item.name
+
+    let firstLevelNode = tree.find((node) => node.id === firstLevelId)
+    if (!firstLevelNode) {
+      firstLevelNode = { id: firstLevelId, name: firstLevel, children: [] }
+      tree.push(firstLevelNode)
     }
-  })
+
+    let secondLevelNode: TreeNode | undefined
+    if (secondLevel) {
+      secondLevelNode = firstLevelNode.children?.find(
+        (node) => node.id === secondLevelId,
+      )
+      if (!secondLevelNode) {
+        secondLevelNode = { id: secondLevelId, name: secondLevel, children: [] }
+        firstLevelNode.children?.push(secondLevelNode)
+      }
+    } else {
+      secondLevelNode = firstLevelNode
+    }
+
+    let thirdLevelNode: TreeNode | undefined
+    if (thirdLevel) {
+      thirdLevelNode = secondLevelNode.children?.find(
+        (node) => node.id === thirdLevelId,
+      )
+      if (!thirdLevelNode) {
+        thirdLevelNode = { id: thirdLevelId, name: thirdLevel, children: [] }
+        secondLevelNode.children?.push(thirdLevelNode)
+      }
+    } else {
+      thirdLevelNode = secondLevelNode
+    }
+
+    thirdLevelNode.children?.push({ id, name })
+  }
+
+  return tree
 }
 
 const fetchList = async () => {
@@ -510,38 +551,54 @@ const submitForm = async () => {
   }
 }
 
-const handleUploadRemove: UploadProps['onRemove'] = (
-  uploadFile,
-  uploadFiles,
-) => {
-  const ids = uploadFiles
-    .map((item) => (item.response as ResponseData<FileVO>).data.id)
-    .join(',')
-  form.value.fileIds = ids
+const handleUploadRemove: UploadProps['onRemove'] = () => {
+  form.value.fileIds = void 0
 }
-const handleUploadSuccess: UploadProps['onSuccess'] = (
-  response,
-  uploadFile,
-  uploadFiles,
-) => {
-  const ids = uploadFiles
-    .map((item) => (item.response as ResponseData<FileVO>).data.id)
-    .join(',')
-  form.value.fileIds = ids
+const handleUploadSuccess: UploadProps['onSuccess'] = (response) => {
+  form.value.fileIds = response.data.id
 }
 
 const handleFileChange = (file: UploadFile, fileList: UploadFiles) => {
-  console.log(file, fileList)
   if (!file) return
   const size = file.size! / 1024 / 1024
   if (size > 1) {
     const currIdx = fileList.indexOf(file)
     fileList.splice(currIdx, 1)
-    ElMessage.warning('上传文件大小不能超过 3MB!')
+    ElMessage.warning('上传文件大小不能超过 1MB!')
+    return
   }
 }
-const handleExceed: UploadProps['onExceed'] = (files) => {
-  console.log(files)
+const handleExceed: UploadProps['onExceed'] = (files, fileList) => {
+  ElMessageBox.confirm('上传文件超出上限，是否覆盖', '警告', {
+    confirmButtonText: '确 认',
+    cancelButtonText: '取 消',
+    type: 'warning',
+  })
+    .then(() => {
+      uploadRef.value!.clearFiles()
+      const file = files[0] as UploadRawFile
+      file.uid = genFileId()
+      uploadRef.value!.handleStart(file)
+      // const length = files.length
+      // for (let i = 0; i < length; i++) {
+      //   const file = files[i] as UploadRawFile
+      //   const size = file.size! / 1024 / 1024
+      //   if (size > 1) {
+      //     ElMessage.warning('上传文件大小不能超过 1MB!')
+      //     return
+      //   }
+      //   file.uid = genFileId()
+      //   if (fileList.length >= 1) {
+      //     fileList.shift()
+      //   }
+      //   fileList.push(file)
+      // }
+      ElMessage({
+        type: 'success',
+        message: '覆盖成功',
+      })
+    })
+    .catch(() => {})
 }
 
 const resetForm = () => {

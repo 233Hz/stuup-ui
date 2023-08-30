@@ -1,6 +1,9 @@
-export interface GrowthItemSelect {
+export interface StudentGrowthItems {
   id: number
   name: string
+  firstLevelId: number
+  secondLevelId: number
+  thirdLevelId: number
   firstLevelName: string
   secondLevelName: string
   thirdLevelName: string
