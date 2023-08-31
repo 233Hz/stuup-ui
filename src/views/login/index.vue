@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="logo" v-if="setting.showLogo">
       <div class="picture">
-        <img :src="setting.logo" alt="logo" />
+        <img src="/logo.png" alt="logo" />
       </div>
       <div class="title">{{ setting.title }}</div>
     </div>
@@ -47,10 +47,10 @@
 
 <script setup lang="ts" name="Login">
 import { ref } from 'vue'
-import useUserStore from '@/store/modules/user'
-import useFlowersStore from '@/store/modules/flowers'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import useUserStore from '@/store/modules/user'
+import useFlowersStore from '@/store/modules/flowers'
 import setting from '@/setting'
 
 const userStore = useUserStore()

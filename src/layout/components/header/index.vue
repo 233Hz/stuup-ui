@@ -53,7 +53,6 @@ import { ElMessageBox } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
 
 let router = useRouter()
-let route = useRoute()
 const userStore = useUserStore()
 
 //全屏按钮点击的回调

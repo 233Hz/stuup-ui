@@ -37,6 +37,9 @@ export default defineConfig(({ command, mode }) => {
         },
       },
     },
+    build: {
+      assetInlineLimit: 0,
+    },
     server: {
       host: '0.0.0.0',
       port: env.VITE_PROP,
@@ -47,7 +50,7 @@ export default defineConfig(({ command, mode }) => {
           //需要代理跨域
           changeOrigin: true,
           //路径重写
-          rewrite: (path) => path.replace(/^\/api/, ''),
+          rewrite: (path) => path.replace(/^\/stuup_api/, ''),
         },
       },
     },

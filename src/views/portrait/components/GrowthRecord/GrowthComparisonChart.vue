@@ -3,104 +3,106 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
 import * as echarts from 'echarts'
-import { reqGrowthComparison } from '@/api/portrait'
 
-const props = defineProps({
-  semesterId: {
-    type: Number,
-  },
-})
+type EChartsOption = echarts.EChartsOption
 
-const chartRef = ref()
-let chart: echarts.ECharts
+var chartDom = document.getElementById('main')!
+var myChart = echarts.init(chartDom)
+var option: EChartsOption
 
-watch(
-  () => props.semesterId,
-  async (newVal) => {
-    if (!newVal) return
-    const { data } = await reqGrowthComparison(newVal)
-    const xData = data.map((item) => item.growthItemName)
-    const yData1 = data.map((item) => item.score)
-    const yData2 = data.map((item) => item.avgScore)
-    let option: echarts.EChartOption = {
-      dataZoom: [
-        {
-          type: 'slider', //隐藏或显示（true）组件
-          show: true,
-          startValue: 0,
-          endValue: 5,
-          filterMode: 'empty',
-          zoomLock: true, // 是否锁定选择区域（或叫做数据窗口）的大小
-          // @ts-ignore
-          brushSelect: false,
-          fillerColor: 'rgb(3, 187, 154)',
-        },
-        {
-          //没有下面这块的话，只能拖动滚动条，鼠标滚轮在区域内不能控制外部滚动条
-          type: 'inside',
-          zoomOnMouseWheel: false, //滚轮是否触发缩放
-          moveOnMouseMove: true, //鼠标滚轮触发滚动
-          moveOnMouseWheel: true,
-        },
-      ],
-      tooltip: {},
-      legend: {},
-      xAxis: {
-        type: 'category',
-        data: xData,
+option = {
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'cross',
+      crossStyle: {
+        color: '#999',
       },
-      yAxis: {
-        type: 'value',
-      },
-      series: [
-        {
-          name: '我的成长积分',
-          data: yData1,
-          type: 'bar',
-          showBackground: true,
-          backgroundStyle: {
-            color: 'rgba(180, 180, 180, 0.2)',
-          },
-          itemStyle: {
-            color: '#03aa8c',
-          },
-          label: {
-            show: true,
-            // @ts-ignore
-            formatter: '{c} 分',
-            fontSize: 18,
-          },
-        },
-        {
-          name: '全校成长平均值',
-          data: yData2,
-          type: 'bar',
-          showBackground: true,
-          backgroundStyle: {
-            color: 'rgba(180, 180, 180, 0.2)',
-          },
-          itemStyle: {
-            color: '#0ea5e9',
-          },
-          label: {
-            show: true,
-            // @ts-ignore
-            formatter: '{c} 分',
-            fontSize: 18,
-            color: '#aaa',
-          },
-        },
-      ],
-    }
-    chart.setOption(option)
+    },
   },
-)
+  toolbox: {
+    feature: {
+      dataView: { show: true, readOnly: false },
+      magicType: { show: true, type: ['line', 'bar'] },
+      restore: { show: true },
+      saveAsImage: { show: true },
+    },
+  },
+  legend: {
+    data: ['Evaporation', 'Precipitation', 'Temperature'],
+  },
+  xAxis: [
+    {
+      type: 'category',
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      axisPointer: {
+        type: 'shadow',
+      },
+    },
+  ],
+  yAxis: [
+    {
+      type: 'value',
+      name: 'Precipitation',
+      min: 0,
+      max: 250,
+      interval: 50,
+      axisLabel: {
+        formatter: '{value} ml',
+      },
+    },
+    {
+      type: 'value',
+      name: 'Temperature',
+      min: 0,
+      max: 25,
+      interval: 5,
+      axisLabel: {
+        formatter: '{value} °C',
+      },
+    },
+  ],
+  series: [
+    {
+      name: 'Evaporation',
+      type: 'bar',
+      tooltip: {
+        valueFormatter: function (value) {
+          return (value as number) + ' ml'
+        },
+      },
+      data: [
+        2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3,
+      ],
+    },
+    {
+      name: 'Precipitation',
+      type: 'bar',
+      tooltip: {
+        valueFormatter: function (value) {
+          return (value as number) + ' ml'
+        },
+      },
+      data: [
+        2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3,
+      ],
+    },
+    {
+      name: 'Temperature',
+      type: 'line',
+      yAxisIndex: 1,
+      tooltip: {
+        valueFormatter: function (value) {
+          return (value as number) + ' °C'
+        },
+      },
+      data: [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2],
+    },
+  ],
+}
 
-onMounted(() => {
-  chart = echarts.init(chartRef.value)
-})
+option && myChart.setOption(option)
 </script>
 
 <style scoped lang="scss"></style>

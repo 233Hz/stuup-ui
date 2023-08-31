@@ -324,7 +324,6 @@ import { formatDate } from '@/utils/util'
 import AuditDetails from '@/components/AuditDetails/index.vue'
 import useGrowthStore from '@/store/modules/growth'
 import usePaginationStore from '@/store/modules/pagination'
-
 import type {
   FormInstance,
   FormRules,

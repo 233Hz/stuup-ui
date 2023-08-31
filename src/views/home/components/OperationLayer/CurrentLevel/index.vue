@@ -26,7 +26,7 @@ $height: 250px * 0.6;
 .level {
   width: $width;
   height: $height;
-  background: url(src/assets/image/home-growth-level-bg2.png);
+  background: url(@/assets/image/home-growth-level-bg2.png);
   background-size: 100% 100%;
 
   .name {

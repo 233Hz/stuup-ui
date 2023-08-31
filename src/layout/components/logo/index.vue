@@ -1,7 +1,7 @@
 <template>
   <div class="logo" v-if="setting.showLogo" @click="router.push('/dashboard')">
     <div class="picture">
-      <img :src="setting.logo" alt="logo" />
+      <img src="/logo.png" alt="logo" />
     </div>
     <div class="title">{{ setting.title }}</div>
   </div>
