@@ -54,17 +54,19 @@ const option: EChartOption = {
     },
   ],
   graphic: {
-    type: 'text',
-    left: 'center',
-    top: 'middle',
-    silent: true,
-    style: {
-      fill: 'black',
-      fontWeight: 'bold',
-      text: '暂无数据',
-      fontSize: '26px',
-      fill: 'white',
-    },
+    elements: [
+      {
+        type: 'text',
+        left: 'center',
+        top: 'middle',
+        invisible: true,
+        style: {
+          fill: '#fff',
+          text: '暂无数据',
+          fontSize: 30,
+        },
+      },
+    ],
   },
 }
 
@@ -93,7 +95,7 @@ watch(chartData, (newVal) => {
   } else {
     chart.setOption({
       graphic: {
-        invisible: false, //是否可见，这里的意思是当没有数据时可见
+        invisible: false,
       },
     })
   }
