@@ -4,7 +4,7 @@ import type { PermissionState } from './types/type'
 import type { RouteRecordRaw } from 'vue-router'
 import type { UserMenu } from '@/api/system/user/type'
 import { reqUserAuthority } from '@/api/system/user/index'
-import { WHETHER, MENU_TYPE, MENU_FLAG } from '@/utils/dict'
+import { MENU_TYPE, WHETHER } from '@/utils/dict'
 
 const Layout = () => import('@/layout/index.vue')
 const compModels = import.meta.glob('../../views/**/index.vue')
@@ -16,6 +16,7 @@ interface MenuTree extends UserMenu {
 const usePermissionStore = defineStore('Permission', {
   state: (): PermissionState => {
     return {
+      hasBackEntrance: false, // 是否有后台权限
       routes: [],
       cachedView: new Set(),
     }
@@ -32,18 +33,16 @@ const usePermissionStore = defineStore('Permission', {
     async generateRoutes(): Promise<void> {
       return new Promise((resolve) => {
         reqUserAuthority().then(({ data }) => {
+          this.hasBackEntrance = data.some((menu) => menu.path === '/dashboard')
           // 过滤出缓存路由名
           this.cachedView = new Set(
             data
               .filter((menu) => menu.keepAlive === WHETHER.YES)
               .map((menu) => menu.code),
           )
-
           // 生成路由
           const asyncRouter = formatRouter(data)
           this.routes = constantRoute.concat(asyncRouter)
-          console.log(this.routes)
-
           resolve()
         })
       })

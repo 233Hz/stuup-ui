@@ -1,22 +1,23 @@
 <template>
   <div class="level">
-    <p class="name">{{ flowerLevel?.name }}</p>
-    <div class="icon" v-if="flowerLevel">
-      <img :src="flowerLevel.image" />
+    <p class="name">{{ flower?.name }}</p>
+    <div class="icon" v-if="flower">
+      <img :src="flower.image" />
     </div>
     <div v-else class="icon">暂无等级</div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import useUserStore from '@/store/modules/user'
 import useFlowersStore from '@/store/modules/flowers'
 
 const userStore = useUserStore()
 const flowersStore = useFlowersStore()
-const flowerLevel = flowersStore.calculateFlowerNewLevel(
-  userStore.userInfo.totalScore,
-)
+const flower = computed(() => {
+  return flowersStore.calculateFlowerNewLevel(userStore.userInfo.totalScore)
+})
 </script>
 
 <style scoped lang="scss">

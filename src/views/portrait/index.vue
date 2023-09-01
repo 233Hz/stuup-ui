@@ -1,7 +1,7 @@
 <template>
   <div class="w-full h-full overflow-auto">
     <div class="w-1400 relative m-auto mt-24 p-24 flex flex-col gap-12">
-      <el-page-header :icon="ArrowLeft" @back="router.back()">
+      <el-page-header icon="ArrowLeft" @back="router.back()">
         <template #content>
           <span class="text-large font-600 mr-3">学生成长画像</span>
         </template>
@@ -29,6 +29,9 @@
       <PortraitCard title="学习成绩曲线图">
         <FinalGradeChart />
       </PortraitCard>
+      <!--      <PortraitCard title="学生成长评价">-->
+      <!--        &lt;!&ndash; <FinalGradeChart /> &ndash;&gt;-->
+      <!--      </PortraitCard>-->
       <PortraitCard title="成长记录">
         <GrowthRecord />
       </PortraitCard>
@@ -46,7 +49,6 @@ import ActivityRecord from './components/ActivityRecord.vue'
 import GrowthRecord from './components/GrowthRecord/index.vue'
 import FinalGradeChart from './components/FinalGradeChart.vue'
 import GradeScoreChart from './components/GradeScoreChart.vue'
-import { ArrowLeft } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()

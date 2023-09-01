@@ -15,6 +15,7 @@ export interface UserInfoState {
 }
 
 export interface PermissionState {
+  hasBackEntrance: boolean
   routes: RouteRecordRaw[]
   cachedView: Set<string>
 }

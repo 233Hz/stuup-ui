@@ -3,68 +3,73 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import * as echarts from 'echarts'
 import { reqGrowthAnalysis } from '@/api/portrait/index'
 import { PortraitGrowthAnalysisList } from '@/api/portrait/type'
 
-const chartRef = ref()
-let chart: echarts.ECharts
-const dataArr = ref<PortraitGrowthAnalysisList>()
+type ECharts = echarts.ECharts
+type EChartOption = echarts.EChartOption
 
-watch(
-  dataArr,
-  (newVal) => {
-    if (newVal && newVal?.length) chart.setOption(update(newVal))
+let chart: ECharts
+let option: EChartOption = {
+  xAxis: {
+    type: 'category',
+    name: '全校成长平均值',
+    boundaryGap: false,
   },
-  { deep: true },
-)
-
-const update = (data: PortraitGrowthAnalysisList): echarts.EChartOption => {
-  let xArr: string[] = []
-  let yArr: number[] = []
-  data.forEach((item) => {
-    xArr.push(item.semesterName)
-    yArr.push(item.avgScoreGap)
-  })
-  return {
-    xAxis: {
-      type: 'category',
-      name: '全校成长平均值',
-      boundaryGap: false,
-      data: xArr,
+  yAxis: {
+    type: 'value',
+    // interval: 5,
+  },
+  series: [
+    {
+      type: 'line',
+      areaStyle: {},
+      smooth: true,
+      label: {
+        show: true,
+        formatter: '{c} 分',
+        position: 'insideBottomLeft',
+        fontSize: 18,
+        color: '#03bb9a',
+      },
+      // @ts-ignore
+      areaStyle: {
+        color: '#a9df96',
+      },
     },
-    yAxis: {
-      type: 'value',
-      // interval: 5,
+  ],
+}
+
+const chartRef = ref()
+const source = ref<PortraitGrowthAnalysisList>()
+
+watch(source, (newVal) => {
+  if (!newVal) return
+  const x: string[] = []
+  const y: number[] = []
+  newVal.forEach((item) => {
+    x.push(item.semesterName)
+    y.push(item.avgScoreGap)
+  })
+  chart.setOption({
+    xAxis: {
+      data: x,
     },
     series: [
       {
-        data: yArr,
-        type: 'line',
-        areaStyle: {},
-        smooth: true,
-        label: {
-          show: true,
-          formatter: '{c} 分',
-          position: 'insideBottomLeft',
-          fontSize: 18,
-          color: '#03bb9a',
-        },
-        // @ts-ignore
-        areaStyle: {
-          color: '#a9df96',
-        },
+        data: y,
       },
     ],
-  }
-}
+  })
+})
 
 const fetch = async () => {
   try {
     chart.showLoading()
     const { data } = await reqGrowthAnalysis()
-    dataArr.value = data
+    source.value = data
   } catch (error) {
     console.log(error)
   } finally {
@@ -72,9 +77,21 @@ const fetch = async () => {
   }
 }
 
+const generateCourseData = () => {
+  return Array.from({ length: 6 }).map((_, index) => {
+    const plusOrMinus = Math.random() > 0.5 ? 1 : -1
+    return {
+      semesterName: `第${index + 1}学期`,
+      avgScoreGap: (Math.floor(Math.random() * 80) + 20) * plusOrMinus,
+    }
+  })
+}
+
 onMounted(() => {
   chart = echarts.init(chartRef.value)
-  fetch()
+  chart.setOption(option)
+  source.value = generateCourseData()
+  console.log(source.value)
 })
 </script>
 

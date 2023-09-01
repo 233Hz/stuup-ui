@@ -10,7 +10,9 @@
       </p>
     </header>
     <main class="p-24">
-      <slot name="default"></slot>
+      <slot name="default">
+        <p class="text-center">什么也没有</p>
+      </slot>
     </main>
   </section>
 </template>

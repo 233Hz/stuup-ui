@@ -17,10 +17,11 @@ body {
   height: 100%;
   overflow: hidden;
   font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC',
-    'Hiragino Sans GB', 'Microsoft Yahei', 'Heiti SC', 'WenQuanYi Micro Hei',
-    sans-serif;
+  'Hiragino Sans GB', 'Microsoft Yahei', 'Heiti SC', 'WenQuanYi Micro Hei',
+  sans-serif;
   color: var(--text-color);
   background-color: #f9f9f9;
+  font-size: calc(100vw / 750);
 }
 
 #app {

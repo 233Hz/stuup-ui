@@ -1,169 +1,190 @@
 <template>
   <div class="details">
-    <div class="details-wrapper">
-      <el-page-header :icon="ArrowLeft" @back="router.back()"></el-page-header>
-      <div class="details-wrapper__header">
-        <p class="total-score">{{ totalScore }}</p>
-        <p class="total-text">当前总积分</p>
+    <div class="header">
+      <el-page-header :icon="ArrowLeft" @back="router.back()">
+        <template #content>
+          <span class="text-large font-600 mr-3">我的成长明细</span>
+        </template>
+      </el-page-header>
+      <div class="score">
+        <div class="score-wrapper">
+          <div class="content">
+            <p class="total-text">当前总积分</p>
+            <h1 class="total-score">
+              {{ totalScore }}
+              <span class="fs-24">分</span>
+            </h1>
+          </div>
+        </div>
       </div>
-      <div class="details-wrapper__content">
-        <ul class="content-wrapper">
-          <li class="content-wrapper__item" v-for="item in list" :key="item.id">
-            <div class="item-left">
-              <div class="score-source">{{ item.name }}</div>
-              <div class="score-time">
-                {{ formatDate(String(item.createTime), 'YYYY-MM-DD') }}
+    </div>
+    <div class="main">
+      <el-auto-resizer>
+        <template #default="{ height, width }">
+          <el-table-v2
+            :columns="columns"
+            :data="tableData"
+            :width="width"
+            :height="height"
+            :row-height="100"
+            row-class="fs-18 font-bold"
+            row-key="id"
+            fixed
+            @end-reached="onEndReachedHandle"
+          >
+            <template #footer>
+              <div class="text-center fs-20 bg-#f7f7f7">
+                <span v-show="loading">
+                  <el-icon class="is-loading" size="30">
+                    <Loading />
+                  </el-icon>
+                  加载更多中
+                </span>
+                <span v-if="!loading && !hasData">没有更多了</span>
               </div>
-            </div>
-            <div class="item-right">
-              <div class="score-number">{{ item.score }}</div>
-            </div>
-          </li>
-          <li class="flex justify-center py-10">
-            <el-button type="primary" plain v-show="!loading" @click="load">
-              {{ isNoMore ? '没有更多了' : '加载更多' }}
-              <el-icon v-if="!isNoMore"><ArrowRight /></el-icon>
-            </el-button>
-            <el-icon v-show="loading" class="is-loading"><Loading /></el-icon>
-          </li>
-        </ul>
-      </div>
+            </template>
+          </el-table-v2>
+        </template>
+      </el-auto-resizer>
     </div>
   </div>
 </template>
 
-<script setup lang="ts" name="Details">
-import { ref, onMounted } from 'vue'
-import { pageStudentRecScore } from '@/api/details'
-import { ArrowLeft, Loading, ArrowRight } from '@element-plus/icons-vue'
+<script setup lang="tsx">
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { studentScoreDetails } from '@/api/details'
 import { formatDate } from '@/utils/util'
-import type { StudentRecScoreVO } from '@/api/details/type'
+import { ArrowLeft } from '@element-plus/icons-vue'
+import type { Column } from 'element-plus'
 
 const router = useRouter()
 
+const page = ref({
+  current: 1,
+  size: 20,
+})
 const loading = ref(false)
-const size = 10
-const page = ref(1)
-const isNoMore = ref<boolean>(false)
-const totalScore = ref<number>(0)
-const list = ref<StudentRecScoreVO[]>([])
+const totalScore = ref(0)
+const tableData = ref<any[]>([])
+const hasData = ref(true)
 
-const load = () => {
-  if (isNoMore.value) return
-  loading.value = true
-  pageStudentRecScore({ current: page.value, size })
-    .then(({ data }) => {
-      if (data.records && data.records.length) {
-        totalScore.value = data.totalScore
-        data.records.forEach((item) => list.value!.push(item))
-        page.value++
-      } else {
-        isNoMore.value = true
-      }
-    })
-    .finally(() => {
-      loading.value = false
-    })
-}
+const columns: Column[] = [
+  {
+    key: 'name',
+    dataKey: 'name',
+    title: '项目名称',
+    width: 900,
+    cellRenderer: ({ rowData }) => (
+      <div>
+        <p>{rowData.name}</p>
+        {rowData.description ? (
+          <p class="fs-14 text-#969696 mt-10">{rowData.description}</p>
+        ) : null}
+      </div>
+    ),
+  },
+  {
+    align: 'center',
+    key: 'score',
+    dataKey: 'score',
+    title: '获得分数',
+    width: 100,
+  },
+  {
+    align: 'center',
+    key: 'createTime',
+    dataKey: 'createTime',
+    title: '获得时间',
+    width: 200,
+    cellRenderer: ({ cellData }) => (
+      <span>{formatDate(cellData, 'YYYY-MM-DD')}</span>
+    ),
+  },
+]
 
 onMounted(() => {
-  load()
+  fetchData()
 })
+
+const fetchData = async () => {
+  try {
+    loading.value = true
+    const {
+      data: { totalScore: score, records },
+    } = await studentScoreDetails(page.value)
+    totalScore.value = score
+    if (records.length < page.value.size) {
+      hasData.value = false
+    }
+    records.forEach((item) => {
+      tableData.value.push(item)
+    })
+  } finally {
+    loading.value = false
+  }
+}
+
+const onEndReachedHandle = () => {
+  if (!hasData.value) return
+  page.value.current++
+  fetchData()
+}
 </script>
 
 <style scoped lang="scss">
 .details {
-  position: relative;
-  width: 100%;
+  width: 1200px;
   height: 100%;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'Arial', 'SimSun';
+  margin: auto;
+  position: relative;
+  background-color: #f7f7f7;
+  display: flex;
+  flex-direction: column;
 
-  &-wrapper {
-    position: relative;
-    margin: auto;
-    width: 50%;
-    height: 100%;
-    padding: 20px;
+  .header {
+    background-color: #8bc6ec;
+    background-image: linear-gradient(135deg, #8bc6ec 0%, #9599e2 100%);
 
-    &__header {
-      text-align: center;
-      height: 400px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      border-bottom: #ccc solid 1px;
-
-      .total-score {
-        font-size: 48px;
-        font-weight: 600;
-        color: #0a0a24;
-      }
-
-      .total-text {
-        font-size: 16px;
-        color: #818181;
-      }
-    }
-
-    &__content {
+    .score {
       width: 100%;
+      height: 300px;
+      padding: 20px;
 
-      .content-wrapper {
-        position: relative;
+      &-wrapper {
         width: 100%;
+        height: 100%;
+        background-color: #fff;
+        border-radius: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-        &__item {
-          width: 100%;
-          height: 100px;
-          margin: 10px 0;
-          padding: 10px;
-          border-radius: 4px;
-          overflow: hidden;
-          display: flex;
-          cursor: pointer;
-          min-width: 300px;
-
-          &:hover {
-            color: #409eff;
-            background-color: rgba(87, 87, 87, 0.1);
-          }
-
-          .item-left {
-            flex: 1;
-            width: 100%;
-            height: 100px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-
-            .score-source,
-            .score-time {
-              width: 100%;
-            }
-            .score-source {
-              font-size: 18px;
-              font-weight: 600;
-            }
-            .score-time {
-              margin-top: 10px;
-              font-size: 12px;
-              color: #818181;
-            }
-          }
-
-          .item-right {
-            width: 100px;
-            height: 100%;
-            line-height: 100px;
+        .content {
+          .total-text,
+          .total-score {
             text-align: center;
-            font-size: 16px;
-            font-weight: 600;
-            color: #0a0a24;
+          }
+
+          .total-text {
+            font-size: 24px;
+          }
+
+          .total-score {
+            font-size: 48px;
+            font-weight: bold;
+            margin-top: 30px;
           }
         }
       }
     }
+  }
+
+  .main {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    background-color: red;
   }
 }
 </style>

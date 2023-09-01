@@ -52,9 +52,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import GrowthData from './GrowthData.vue'
-import CourseComparisonChart from './CourseComparisonChart.vue'
 import GrowthComparisonChart from './GrowthComparisonChart.vue'
 import { WHETHER } from '@/utils/dict'
 import { reqStudentSemester } from '@/api/basic/semester'
@@ -71,7 +70,19 @@ const getSemester = async () => {
 
 onMounted(() => {
   getSemester()
+  courses.value = generateCourseData()
 })
+
+const generateCourseData = () => {
+  return Array.from({ length: 6 }).map((_, index) => {
+    const random = Math.random()
+    return {
+      courseName: `课程${index + 1}`,
+      score: Math.floor(Math.random() * 80) + 20,
+      state: random > 0.5 ? '⬆️' : '⬇️',
+    }
+  })
+}
 
 const handleTagClick = async (id: number) => (active.value = id)
 

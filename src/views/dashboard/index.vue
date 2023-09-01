@@ -2,10 +2,18 @@
   <div style="margin: 20px">
     <el-row :gutter="20">
       <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="mb-20">
-        <MessageCard :loading="loading" :messages="notifyMsgs" />
+        <MessageCard
+          title="通知公告"
+          :loading="loading"
+          :messages="notifyMsgs"
+        />
       </el-col>
       <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="mb-20">
-        <MessageCard :loading="loading" :messages="systemMsgs" />
+        <MessageCard
+          title="智慧提醒"
+          :loading="loading"
+          :messages="systemMsgs"
+        />
       </el-col>
       <el-col :span="24">
         <FastCard />

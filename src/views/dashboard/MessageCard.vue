@@ -2,7 +2,7 @@
   <el-card shadow="never">
     <template #header>
       <div class="flex justify-between items-center">
-        <span class="fs-18 font-600">通知公告</span>
+        <span class="fs-18 font-600">{{ props.title }}</span>
         <el-button type="success" text bg @click="router.push('/self/notify')">
           更多
           <el-icon><DArrowRight /></el-icon>
@@ -37,6 +37,7 @@ import type { Notify } from '@/api/system/announcement/type'
 const router = useRouter()
 
 interface Props {
+  title?: string
   loading?: boolean
   messages?: Notify[]
 }

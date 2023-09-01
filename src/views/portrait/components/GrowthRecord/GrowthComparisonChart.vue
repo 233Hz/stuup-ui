@@ -3,106 +3,255 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref, watch } from 'vue'
 import * as echarts from 'echarts'
 
-type EChartsOption = echarts.EChartsOption
+type ECharts = echarts.ECharts
+type EChartOption = echarts.EChartOption
 
-var chartDom = document.getElementById('main')!
-var myChart = echarts.init(chartDom)
-var option: EChartsOption
-
-option = {
+const barWidth = 40
+const labelColor = '#e89736'
+const color1 = {
+  x: 0,
+  y: 0,
+  x2: 0,
+  y2: 1,
+  type: 'linear',
+  global: false,
+  colorStops: [
+    {
+      //第一节下面
+      offset: 0,
+      color: 'rgba(32, 170, 146,0.8)',
+    },
+    {
+      offset: 1,
+      color: 'rgba(20, 76, 41,1)',
+    },
+  ],
+}
+const color2 = {
+  x: 0,
+  y: 0,
+  x2: 0,
+  y2: 1,
+  type: 'linear',
+  global: false,
+  colorStops: [
+    {
+      //第一节下面
+      offset: 0,
+      color: 'rgba(5, 164, 224,0.8)',
+    },
+    {
+      offset: 1,
+      color: 'rgba(16, 57, 89,1)',
+    },
+  ],
+}
+let option: EChartOption = {
+  // backgroundColor: 'rgb(6, 29, 43)', //背景色
+  //提示框
   tooltip: {
+    show: true,
     trigger: 'axis',
     axisPointer: {
-      type: 'cross',
-      crossStyle: {
-        color: '#999',
-      },
+      type: 'shadow',
     },
   },
-  toolbox: {
-    feature: {
-      dataView: { show: true, readOnly: false },
-      magicType: { show: true, type: ['line', 'bar'] },
-      restore: { show: true },
-      saveAsImage: { show: true },
-    },
+  grid: {
+    top: '25%',
+    left: '5%',
+    bottom: '10%',
+    right: '5%',
+    containLabel: true,
   },
   legend: {
-    data: ['Evaporation', 'Precipitation', 'Temperature'],
+    data: ['我的', '平均'],
+    selectedMode: false,
   },
   xAxis: [
     {
       type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      axisPointer: {
-        type: 'shadow',
+      axisTick: {
+        show: false,
+      },
+      axisLine: {
+        show: true,
+      },
+      axisLabel: {
+        inside: false,
+        textStyle: {
+          fontWeight: 'normal',
+          fontSize: 12,
+        },
+        margin: 20, //刻度标签与轴线之间的距离。
+      },
+      data: [],
+    },
+    {
+      type: 'category',
+      axisLine: {
+        show: false,
+      },
+      axisTick: {
+        show: false,
+      },
+      axisLabel: {
+        show: false,
+      },
+      splitArea: {
+        show: false,
+      },
+      splitLine: {
+        show: false,
       },
     },
   ],
   yAxis: [
     {
+      show: true,
       type: 'value',
-      name: 'Precipitation',
-      min: 0,
-      max: 250,
-      interval: 50,
-      axisLabel: {
-        formatter: '{value} ml',
+      splitLine: {
+        show: false,
       },
-    },
-    {
-      type: 'value',
-      name: 'Temperature',
-      min: 0,
-      max: 25,
-      interval: 5,
-      axisLabel: {
-        formatter: '{value} °C',
+      axisLine: {
+        show: true,
       },
     },
   ],
   series: [
     {
-      name: 'Evaporation',
-      type: 'bar',
-      tooltip: {
-        valueFormatter: function (value) {
-          return (value as number) + ' ml'
-        },
-      },
-      data: [
-        2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3,
-      ],
+      name: '内部柱子顶部',
+      type: 'pictorialBar',
+      tooltip: { show: false },
+      symbolSize: [barWidth, 10],
+      symbolOffset: ['-81%', -5],
+      symbolPosition: 'end',
+      z: 15,
+      color: 'rgba(45, 206, 177,0.9)',
+      zlevel: 2,
     },
     {
-      name: 'Precipitation',
+      name: '内部柱子顶部2',
+      type: 'pictorialBar',
+      tooltip: { show: false },
+      symbolSize: [barWidth, 10],
+      symbolOffset: ['81%', -5],
+      symbolPosition: 'end',
+      z: 15,
+      color: 'rgba(2, 175, 249,1)',
+      zlevel: 2,
+    },
+
+    {
+      name: '我的',
       type: 'bar',
-      tooltip: {
-        valueFormatter: function (value) {
-          return (value as number) + ' ml'
-        },
+      barGap: '60%',
+      barWidth: barWidth,
+      itemStyle: {
+        color: color1,
+        borderColor: color1,
+        borderWidth: 1,
+        borderType: 'solid',
       },
-      data: [
-        2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3,
-      ],
+      label: {
+        show: true,
+        position: 'top',
+        fontSize: 14,
+        color: labelColor,
+        formatter: '{c}分',
+      },
+      zlevel: 2,
     },
     {
-      name: 'Temperature',
-      type: 'line',
-      yAxisIndex: 1,
-      tooltip: {
-        valueFormatter: function (value) {
-          return (value as number) + ' °C'
-        },
+      name: '平均',
+      type: 'bar',
+      barGap: '60%',
+      barWidth: barWidth,
+      itemStyle: {
+        color: color2,
+        borderColor: color2,
+        borderWidth: 1,
+        borderType: 'solid',
       },
-      data: [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2],
+      label: {
+        show: true,
+        position: 'top',
+        fontSize: 14,
+        color: labelColor,
+        formatter: '{c}分',
+      },
+      zlevel: 2,
     },
   ],
 }
+const xData = ref<string[]>([
+  '道德与公民素养',
+  '技能与学习素养',
+  '运动与身心健康',
+  '审美与艺术修养',
+  '劳动与职业素养',
+])
 
-option && myChart.setOption(option)
+interface Data {
+  name: string
+  myScore: number
+  avgScore: number
+}
+
+let chart: ECharts
+const chartRef = ref()
+const source = ref<Data[]>()
+
+watch(source, (newValue) => {
+  if (!newValue) return
+  const x: string[] = []
+  const y1: number[] = []
+  const y2: number[] = []
+  for (const value of newValue) {
+    x.push(value.name)
+    y1.push(value.myScore)
+    y2.push(value.avgScore)
+  }
+  chart.setOption({
+    xAxis: [
+      {
+        data: x,
+      },
+    ],
+    series: [
+      {
+        data: y1,
+      },
+      {
+        data: y2,
+      },
+      {
+        data: y1,
+      },
+      {
+        data: y2,
+      },
+    ],
+  })
+})
+
+const generateData = () => {
+  return xData.value.map((item) => {
+    return {
+      name: item,
+      myScore: Math.floor(Math.random() * 100),
+      avgScore: Math.floor(Math.random() * 100),
+    }
+  })
+}
+
+onMounted(() => {
+  chart = echarts.init(chartRef.value)
+  chart.setOption(option)
+  source.value = generateData()
+})
 </script>
 
 <style scoped lang="scss"></style>
