@@ -9,6 +9,12 @@
         :icon="item.meta?.icon"
       />
       <menu-item
+        v-if="permissionStore.hasBackEntrance"
+        title="后台管理"
+        path="/dashboard"
+        icon="home-icon-back"
+      />
+      <menu-item
         title="智慧提醒"
         path="/self/notify"
         icon="home-icon-message"
