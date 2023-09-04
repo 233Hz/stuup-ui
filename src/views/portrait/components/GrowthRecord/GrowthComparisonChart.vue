@@ -6,8 +6,14 @@
 import { onMounted, ref, watch } from 'vue'
 import * as echarts from 'echarts'
 
+interface Data {
+  name: string
+  myScore: number
+  avgScore: number
+}
 type ECharts = echarts.ECharts
 type EChartOption = echarts.EChartOption
+type EChartTooltipFormat = echarts.EChartOption.Tooltip.Format[]
 
 const barWidth = 40
 const labelColor = '#e89736'
@@ -49,14 +55,27 @@ const color2 = {
     },
   ],
 }
-let option: EChartOption = {
-  // backgroundColor: 'rgb(6, 29, 43)', //背景色
+const option: EChartOption = {
   //提示框
   tooltip: {
     show: true,
     trigger: 'axis',
     axisPointer: {
       type: 'shadow',
+    },
+    formatter: (params) => {
+      const _params = params as EChartTooltipFormat
+      return (
+        _params[0].name +
+        '：' +
+        _params[0].value +
+        '分' +
+        '<br />' +
+        _params[1].name +
+        '：' +
+        _params[1].value +
+        '分'
+      )
     },
   },
   grid: {
@@ -78,14 +97,6 @@ let option: EChartOption = {
       },
       axisLine: {
         show: true,
-      },
-      axisLabel: {
-        inside: false,
-        textStyle: {
-          fontWeight: 'normal',
-          fontSize: 12,
-        },
-        margin: 20, //刻度标签与轴线之间的距离。
       },
       data: [],
     },
@@ -124,7 +135,6 @@ let option: EChartOption = {
     {
       name: '内部柱子顶部',
       type: 'pictorialBar',
-      tooltip: { show: false },
       symbolSize: [barWidth, 10],
       symbolOffset: ['-81%', -5],
       symbolPosition: 'end',
@@ -135,7 +145,6 @@ let option: EChartOption = {
     {
       name: '内部柱子顶部2',
       type: 'pictorialBar',
-      tooltip: { show: false },
       symbolSize: [barWidth, 10],
       symbolOffset: ['81%', -5],
       symbolPosition: 'end',
@@ -143,7 +152,6 @@ let option: EChartOption = {
       color: 'rgba(2, 175, 249,1)',
       zlevel: 2,
     },
-
     {
       name: '我的',
       type: 'bar',
@@ -185,6 +193,21 @@ let option: EChartOption = {
       zlevel: 2,
     },
   ],
+  graphic: {
+    elements: [
+      {
+        type: 'text',
+        left: 'center',
+        top: 'middle',
+        invisible: true,
+        style: {
+          fill: '#03aa8c',
+          text: '暂无数据',
+          fontSize: 30,
+        },
+      },
+    ],
+  },
 }
 const xData = ref<string[]>([
   '道德与公民素养',
@@ -194,50 +217,61 @@ const xData = ref<string[]>([
   '劳动与职业素养',
 ])
 
-interface Data {
-  name: string
-  myScore: number
-  avgScore: number
-}
-
 let chart: ECharts
 const chartRef = ref()
-const source = ref<Data[]>()
+const chartData = ref<Data[]>()
 
-watch(source, (newValue) => {
-  if (!newValue) return
-  const x: string[] = []
-  const y1: number[] = []
-  const y2: number[] = []
-  for (const value of newValue) {
-    x.push(value.name)
-    y1.push(value.myScore)
-    y2.push(value.avgScore)
-  }
-  chart.setOption({
-    xAxis: [
-      {
-        data: x,
-      },
-    ],
-    series: [
-      {
-        data: y1,
-      },
-      {
-        data: y2,
-      },
-      {
-        data: y1,
-      },
-      {
-        data: y2,
-      },
-    ],
-  })
-})
+const props = defineProps<{
+  semesterId: number | undefined
+}>()
 
-const generateData = () => {
+watch(
+  () => props.semesterId,
+  (newVal) => {
+    if (newVal) {
+      const data = generateData()
+      if (data && data.length) {
+        const x: string[] = []
+        const y1: number[] = []
+        const y2: number[] = []
+        for (const value of data) {
+          x.push(value.name)
+          y1.push(value.myScore)
+          y2.push(value.avgScore)
+        }
+        chart.setOption({
+          xAxis: [
+            {
+              data: x,
+            },
+          ],
+          series: [
+            {
+              data: y1,
+            },
+            {
+              data: y2,
+            },
+            {
+              data: y1,
+            },
+            {
+              data: y2,
+            },
+          ],
+        })
+        return
+      }
+    }
+    chart.setOption({
+      graphic: {
+        invisible: false,
+      },
+    })
+  },
+)
+
+const generateData = (): Data[] => {
   return xData.value.map((item) => {
     return {
       name: item,
@@ -250,8 +284,5 @@ const generateData = () => {
 onMounted(() => {
   chart = echarts.init(chartRef.value)
   chart.setOption(option)
-  source.value = generateData()
 })
 </script>
-
-<style scoped lang="scss"></style>

@@ -29,9 +29,6 @@
       <PortraitCard title="学习成绩曲线图">
         <FinalGradeChart />
       </PortraitCard>
-      <!--      <PortraitCard title="学生成长评价">-->
-      <!--        &lt;!&ndash; <FinalGradeChart /> &ndash;&gt;-->
-      <!--      </PortraitCard>-->
       <PortraitCard title="成长记录">
         <GrowthRecord />
       </PortraitCard>

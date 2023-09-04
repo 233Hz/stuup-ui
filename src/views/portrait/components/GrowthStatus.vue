@@ -5,13 +5,12 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 import * as echarts from 'echarts'
-import { reqGrowthAnalysis } from '@/api/portrait/index'
+import { reqGrowthAnalysis } from '@/api/portrait'
 import { PortraitGrowthAnalysisList } from '@/api/portrait/type'
 
 type ECharts = echarts.ECharts
 type EChartOption = echarts.EChartOption
 
-let chart: ECharts
 let option: EChartOption = {
   xAxis: {
     type: 'category',
@@ -20,7 +19,6 @@ let option: EChartOption = {
   },
   yAxis: {
     type: 'value',
-    // interval: 5,
   },
   series: [
     {
@@ -40,36 +38,59 @@ let option: EChartOption = {
       },
     },
   ],
+  graphic: {
+    elements: [
+      {
+        type: 'text',
+        left: 'center',
+        top: 'middle',
+        invisible: true,
+        style: {
+          fill: '#03aa8c',
+          text: '暂无数据',
+          fontSize: 30,
+        },
+      },
+    ],
+  },
 }
 
 const chartRef = ref()
-const source = ref<PortraitGrowthAnalysisList>()
+let chart: ECharts
+const chartData = ref<PortraitGrowthAnalysisList>()
 
-watch(source, (newVal) => {
-  if (!newVal) return
-  const x: string[] = []
-  const y: number[] = []
-  newVal.forEach((item) => {
-    x.push(item.semesterName)
-    y.push(item.avgScoreGap)
-  })
-  chart.setOption({
-    xAxis: {
-      data: x,
-    },
-    series: [
-      {
-        data: y,
+watch(chartData, (newVal) => {
+  if (newVal && newVal?.length) {
+    const x: string[] = []
+    const y: number[] = []
+    newVal.forEach((item) => {
+      x.push(item.semesterName)
+      y.push(item.avgScoreGap)
+    })
+    chart.setOption({
+      xAxis: {
+        data: x,
       },
-    ],
-  })
+      series: [
+        {
+          data: y,
+        },
+      ],
+    })
+  } else {
+    chart.setOption({
+      graphic: {
+        invisible: false,
+      },
+    })
+  }
 })
 
-const fetch = async () => {
+const fetchData = async () => {
   try {
     chart.showLoading()
     const { data } = await reqGrowthAnalysis()
-    source.value = data
+    chartData.value = data
   } catch (error) {
     console.log(error)
   } finally {
@@ -90,8 +111,7 @@ const generateCourseData = () => {
 onMounted(() => {
   chart = echarts.init(chartRef.value)
   chart.setOption(option)
-  source.value = generateCourseData()
-  console.log(source.value)
+  chartData.value = generateCourseData()
 })
 </script>
 

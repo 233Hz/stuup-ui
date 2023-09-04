@@ -3,9 +3,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import * as echarts from 'echarts'
-import { reqRankingCurve } from '@/api/portrait/index'
+import { reqRankingCurve } from '@/api/portrait'
 import { PortraitRankingCurveList } from '@/api/portrait/type'
 
 interface DataType {
@@ -13,60 +13,91 @@ interface DataType {
   score: number
 }
 
+type ECharts = echarts.ECharts
+type EChartOption = echarts.EChartOption
+
+const option: EChartOption = {
+  xAxis: {
+    type: 'category',
+  },
+  yAxis: {
+    type: 'value',
+    inverse: true,
+  },
+  series: [
+    {
+      label: {
+        show: true,
+        formatter: ({ data }: { data: DataType }) => {
+          return `${data.value} 名(${data.score}分)`
+        },
+        fontSize: 18,
+        color: '#03aa8c',
+      },
+      type: 'line',
+      smooth: true,
+    },
+  ],
+  graphic: {
+    elements: [
+      {
+        type: 'text',
+        left: 'center',
+        top: 'middle',
+        invisible: true,
+        style: {
+          fill: '#03aa8c',
+          text: '暂无数据',
+          fontSize: 30,
+        },
+      },
+    ],
+  },
+}
+
 const chartRef = ref()
 let chart: echarts.ECharts
-const dataArr = ref<PortraitRankingCurveList>()
+const chartData = ref<PortraitRankingCurveList>()
 
 watch(
-  dataArr,
+  chartData,
   (newVal) => {
-    if (newVal && newVal?.length) chart.setOption(update(newVal))
+    if (newVal && newVal?.length) {
+      let x: string[] = []
+      let y: DataType[] = []
+      newVal.forEach((item) => {
+        x.push(item.semesterName)
+        y.push({
+          value: item.rank,
+          score: item.score,
+        })
+      })
+      chart.setOption({
+        xAxis: {
+          data: x,
+        },
+        series: [
+          {
+            data: y,
+          },
+        ],
+      })
+    } else {
+      chart.setOption({
+        graphic: {
+          invisible: false,
+        },
+      })
+    }
   },
   { deep: true },
 )
 
-const update = (data: PortraitRankingCurveList): echarts.EChartOption => {
-  let xArr: string[] = []
-  let yArr: DataType[] = []
-  data.forEach((item) => {
-    xArr.push(item.semesterName)
-    yArr.push({
-      value: item.rank,
-      score: item.score,
-    })
-  })
-  return {
-    xAxis: {
-      type: 'category',
-      data: xArr,
-    },
-    yAxis: {
-      type: 'value',
-      inverse: true,
-    },
-    series: [
-      {
-        label: {
-          show: true,
-          formatter: ({ data }: { data: DataType }) => {
-            return `${data.value} 名(${data.score}分)`
-          },
-          fontSize: 18,
-          color: '#03aa8c',
-        },
-        data: yArr,
-        type: 'line',
-        smooth: true,
-      },
-    ],
-  }
-}
-
-const fetch = async () => {
+const fetchData = async () => {
   try {
     chart.showLoading()
     const { data } = await reqRankingCurve()
-    dataArr.value = data
+    chartData.value = data
   } catch (error) {
     console.log(error)
   } finally {
@@ -76,6 +107,7 @@ const fetch = async () => {
 
 onMounted(() => {
   chart = echarts.init(chartRef.value)
-  fetch()
+  chart.setOption(option)
+  fetchData()
 })
 </script>

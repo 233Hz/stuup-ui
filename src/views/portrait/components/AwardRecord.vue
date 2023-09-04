@@ -28,8 +28,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { reqAwardRecord } from '@/api/portrait/index'
+import { onMounted, ref } from 'vue'
+import { reqAwardRecord } from '@/api/portrait'
 import { AWARD_LEVEL } from '@/utils/dict'
 
 const listData = ref()

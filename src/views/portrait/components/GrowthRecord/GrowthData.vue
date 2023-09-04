@@ -24,11 +24,9 @@ import icon from '@/assets/svg/home-apply.svg'
 import { reqGrowthData } from '@/api/portrait'
 import { PortraitGrowthData } from '@/api/portrait/type'
 
-const props = defineProps({
-  semesterId: {
-    type: Number,
-  },
-})
+const props = defineProps<{
+  semesterId: number | undefined
+}>()
 
 interface GrowthData {
   key: keyof PortraitGrowthData

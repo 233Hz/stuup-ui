@@ -3,70 +3,96 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import * as echarts from 'echarts'
-import { reqCapacityEvaluator } from '@/api/portrait/index'
+import { reqCapacityEvaluator } from '@/api/portrait'
 import { PortraitCapacityEvaluatorList } from '@/api/portrait/type'
+
+type ECharts = echarts.ECharts
+type EChartOption = echarts.EChartOption
+
+const option: EChartOption = {
+  tooltip: {
+    trigger: 'item',
+  },
+  grid: {
+    top: '50%',
+    bottom: '50%',
+    left: '50%',
+    right: '50%',
+  },
+  radar: {
+    shape: 'circle',
+    axisName: {
+      fontSize: 18,
+      color: '#03aa8c',
+    },
+  },
+  series: [
+    {
+      name: '成长综合评价',
+      type: 'radar',
+    },
+  ],
+  graphic: {
+    elements: [
+      {
+        type: 'text',
+        left: 'center',
+        top: 'middle',
+        invisible: true,
+        style: {
+          fill: '#03aa8c',
+          text: '暂无数据',
+          fontSize: 30,
+        },
+      },
+    ],
+  },
+}
 
 let chartRef = ref()
 let chart: echarts.ECharts
-const dataArr = ref<PortraitCapacityEvaluatorList>()
+const chartData = ref<PortraitCapacityEvaluatorList>()
 
-watch(
-  dataArr,
-  (newVal) => {
-    if (newVal && newVal?.length) chart.setOption(update(newVal))
-  },
-  { deep: true },
-)
-
-const update = (data: PortraitCapacityEvaluatorList): echarts.EChartOption => {
-  const indicator = data?.map((item) => {
-    return {
-      name: `${item.indicatorName}（${item.indicatorScore}分）`,
-      max: item.indicatorAvgScore,
-    }
-  })
-
-  const value = data?.map((item) => item.indicatorScore)
-  return {
-    tooltip: {
-      trigger: 'item',
-    },
-    grid: {
-      top: '50%',
-      bottom: '50%',
-      left: '50%',
-      right: '50%',
-    },
-    radar: {
-      shape: 'circle',
-      indicator,
-      axisName: {
-        fontSize: 18,
-        color: '#03aa8c',
+watch(chartData, (newVal) => {
+  if (newVal && newVal?.length) {
+    const indicator: { name: string; max: number }[] = []
+    const value: number[] = []
+    newVal.forEach((item) => {
+      indicator.push({
+        name: `${item.indicatorName}（${item.indicatorScore}分）`,
+        max: item.indicatorAvgScore,
+      })
+      value.push(item.indicatorScore)
+    })
+    chart.setOption({
+      radar: { indicator },
+      series: [
+        {
+          data: [
+            {
+              value,
+              name: '成长方向',
+            },
+          ],
+        },
+      ],
+    })
+  } else {
+    chart.setOption({
+      graphic: {
+        invisible: false,
       },
-    },
-    series: [
-      {
-        name: '成长综合评价',
-        type: 'radar',
-        data: [
-          {
-            value,
-            name: '成长方向',
-          },
-        ],
-      },
-    ],
+    })
   }
-}
+})
 
-const fetch = async () => {
+const fetchData = async () => {
   try {
     chart.showLoading()
     const { data } = await reqCapacityEvaluator()
-    dataArr.value = data
+    chartData.value = []
   } catch (error) {
     console.log(error)
   } finally {
@@ -76,6 +102,7 @@ const fetch = async () => {
 
 onMounted(() => {
   chart = echarts.init(chartRef.value)
-  fetch()
+  chart.setOption(option)
+  fetchData()
 })
 </script>
