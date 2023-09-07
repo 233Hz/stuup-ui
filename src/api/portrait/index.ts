@@ -53,10 +53,11 @@ export const reqGrowthData = (semesterId: number) =>
   get<PortraitGrowthData>(API.GROWTH_DATA_URL + '/' + semesterId)
 
 // 学生画像-成长对比
-export const reqGrowthComparison = (semesterId: number) =>
-  get<PortraitGrowthComparisonList>(
-    API.GROWTH_COMPARISON_URL + '/' + semesterId,
-  )
+export const reqGrowthComparison = (semesterId: number, studentId: number) =>
+  get<PortraitGrowthComparisonList>(API.GROWTH_COMPARISON_URL, {
+    semesterId,
+    studentId,
+  })
 
 // 学生画像-学习成绩
 export const reqStudyGrade = () =>

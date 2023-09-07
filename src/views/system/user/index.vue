@@ -1,319 +1,324 @@
 <template>
-  <div style="padding: 10px 20px">
-    <el-card style="margin: 10px 0">
-      <template #header>
-        <el-row>
-          <el-col :span="24">
-            <el-form
-              ref="searchFormRef"
-              :model="searchForm"
-              label-width="120px"
-            >
-              <el-row>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="用户名/手机号" prop="key">
-                    <el-input
-                      v-model="searchForm.key"
-                      placeholder="请输入用户名/手机号"
-                    />
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="状态" prop="state">
-                    <el-select
-                      v-model="searchForm.state"
-                      placeholder="请选择状态"
-                      style="width: 100%"
-                    >
-                      <el-option
-                        v-for="item in USER_STATE.getDict()"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+  <div>
+    <div style="padding: 10px 20px">
+      <el-card style="margin: 10px 0">
+        <template #header>
+          <el-row>
+            <el-col :span="24">
+              <el-form ref="searchRef" :model="searchForm" label-width="120px">
+                <el-row>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="用户名/手机号" prop="key">
+                      <el-input
+                        v-model="searchForm.key"
+                        placeholder="请输入用户名/手机号"
                       />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
-          </el-col>
-        </el-row>
-      </template>
-      <div style="text-align: center">
-        <el-space>
-          <el-button type="primary" @click="fetchList" :loading="loading">
-            查询
-          </el-button>
-          <el-button @click="searchFormRef?.resetFields()">清空</el-button>
-        </el-space>
-      </div>
-    </el-card>
-    <el-card>
-      <template #header>
-        <el-space>
-          <el-button type="primary" @click="addRow">
-            <el-icon><Plus /></el-icon>
-            添加
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button :disabled="loading" circle @click="fetchList">
-            <el-icon><Refresh /></el-icon>
-          </el-button>
-        </el-space>
-      </template>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="状态" prop="state">
+                      <el-select
+                        v-model="searchForm.state"
+                        placeholder="请选择状态"
+                        style="width: 100%"
+                      >
+                        <el-option
+                          v-for="item in USER_STATE.getDict()"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </el-col>
+          </el-row>
+        </template>
+        <div style="text-align: center">
+          <el-space>
+            <el-button type="primary" @click="fetchList" :loading="loading">
+              查询
+            </el-button>
+            <el-button @click="searchRef?.resetFields()">清空</el-button>
+          </el-space>
+        </div>
+      </el-card>
+      <el-card>
+        <template #header>
+          <el-space>
+            <el-button type="primary" @click="addRow">
+              <el-icon>
+                <Plus />
+              </el-icon>
+              添加
+            </el-button>
+            <el-divider direction="vertical" />
+            <el-button :disabled="loading" circle @click="fetchList">
+              <el-icon>
+                <Refresh />
+              </el-icon>
+            </el-button>
+          </el-space>
+        </template>
 
-      <el-table
-        :data="tableData"
-        border
-        stripe
-        v-loading="loading"
-        empty-text="空空如也~~"
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="loginName"
-          label="登入账号"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="userName"
-          label="用户姓名"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="sex"
-          label="性别"
-          show-overflow-tooltip
-          align="center"
+        <el-table
+          :data="tableData"
+          border
+          stripe
+          v-loading="loading"
+          empty-text="空空如也~~"
+          style="width: 100%"
         >
-          <template #default="{ row }">
-            {{ SEX.getKeyForValue(row.sex) }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="mobile"
-          label="手机号"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="degree"
-          label="文化程度"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="teacherType"
-          label="教师类型"
-          show-overflow-tooltip
-          align="center"
-        >
-          <template #default="{ row }">
-            {{ TEACHER_TYPE.getKeyForValue(row.teacherType) }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="userType"
-          label="用户类型"
-          show-overflow-tooltip
-          align="center"
-        >
-          <template #default="{ row }">
-            {{ USER_TYPE.getKeyForValue(row.userType) }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="deptName"
-          label="所属部门"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="idCard"
-          label="身份证号"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="birthday"
-          label="出生年月"
-          show-overflow-tooltip
-          align="center"
-        >
-          <template #default="{ row }">
-            {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="roleNames"
-          label="用户角色"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="state"
-          label="状态"
-          show-overflow-tooltip
-          align="center"
-        >
-          <template #default="{ row }">
-            {{ USER_STATE.getKeyForValue(row.state) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="200" align="center">
-          <template #default="{ row }">
-            <el-button @click="updateRow(row)">修改</el-button>
-            <el-button @click="delRow(row.oid)" type="danger">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <Pagination @size-change="fetchList" @current-change="fetchList" />
-    </el-card>
-  </div>
-  <el-dialog
-    v-model="active"
-    :title="title"
-    width="500"
-    draggable
-    @close="resetForm"
-  >
-    <el-form
-      ref="formRef"
-      :model="form"
-      :rules="rules"
-      :disabled="loading"
-      label-position="top"
-    >
-      <el-form-item label="用户账号" prop="loginName">
-        <el-input v-model="form.loginName" placeholder="请输入用户账号" />
-      </el-form-item>
-      <el-form-item label="用户名" prop="userName">
-        <el-input v-model="form.userName" placeholder="请输入用户名" />
-      </el-form-item>
-      <el-form-item label="性别" prop="sex">
-        <el-radio-group v-model="form.sex">
-          <el-radio
-            v-for="item in SEX.getDict()"
-            :key="item.value"
-            :label="item.value"
-            border
+          <el-table-column
+            prop="loginName"
+            label="登入账号"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="userName"
+            label="用户姓名"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="sex"
+            label="性别"
+            show-overflow-tooltip
+            align="center"
           >
-            {{ item.label }}
-          </el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="手机号" prop="mobile">
-        <el-input v-model="form.mobile" placeholder="请输入手机号" />
-      </el-form-item>
-      <el-form-item label="文化程度" prop="degree">
-        <el-input v-model="form.degree" placeholder="请选择文化程度" />
-      </el-form-item>
-      <el-form-item label="教师类型" prop="teacherType">
-        <el-select
-          v-model="form.teacherType"
-          placeholder="请选择教师类型"
-          style="width: 100%"
-        >
-          <el-option
-            v-for="item in TEACHER_TYPE.getDict()"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            <template #default="{ row }">
+              {{ SEX.getKeyForValue(row.sex) }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="mobile"
+            label="手机号"
+            show-overflow-tooltip
+            align="center"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="用户类型" prop="userType">
-        <el-select
-          v-model="form.userType"
-          placeholder="请选择用户类型"
-          style="width: 100%"
-        >
-          <el-option
-            v-for="item in USER_TYPE.getDict()"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+          <el-table-column
+            prop="degree"
+            label="文化程度"
+            show-overflow-tooltip
+            align="center"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="所属部门" prop="deptId">
-        <el-select
-          v-model="form.deptId"
-          placeholder="请选择所属部门"
-          style="width: 100%"
-        >
-          <el-option
-            v-for="item in dictionaryStore.dept"
-            :key="item.oid"
-            :label="item.value"
-            :value="item.oid"
+          <el-table-column
+            prop="teacherType"
+            label="教师类型"
+            show-overflow-tooltip
+            align="center"
+          >
+            <template #default="{ row }">
+              {{ TEACHER_TYPE.getKeyForValue(row.teacherType) }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="userType"
+            label="用户类型"
+            show-overflow-tooltip
+            align="center"
+          >
+            <template #default="{ row }">
+              {{ USER_TYPE.getKeyForValue(row.userType) }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="deptName"
+            label="所属部门"
+            show-overflow-tooltip
+            align="center"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="身份证号" prop="idCard">
-        <el-input v-model="form.idCard" placeholder="请输入身份证号" />
-      </el-form-item>
-      <el-form-item label="出生年月" prop="birthday">
-        <el-date-picker
-          v-model="form.birthday"
-          type="date"
-          placeholder="请选择出生年月"
-          style="width: 100%"
-        />
-      </el-form-item>
-      <el-form-item label="用户角色" prop="roles">
-        <el-select
-          v-model="form.roles"
-          placeholder="请选择用户角色"
-          multiple
-          style="width: 100%"
-        >
-          <el-option
-            v-for="item in dictionaryStore.role"
-            :label="item.value"
-            :value="item.oid"
+          <el-table-column
+            prop="idCard"
+            label="身份证号"
+            show-overflow-tooltip
+            align="center"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="状态" prop="state">
-        <el-select
-          v-model="form.state"
-          placeholder="请选择状态"
-          style="width: 100%"
-        >
-          <el-option
-            v-for="item in USER_STATE.getDict()"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+          <el-table-column
+            prop="birthday"
+            label="出生年月"
+            show-overflow-tooltip
+            align="center"
+          >
+            <template #default="{ row }">
+              {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="roleNames"
+            label="用户角色"
+            show-overflow-tooltip
+            align="center"
           />
-        </el-select>
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <el-button @click="active = false">
-        <el-icon><Close /></el-icon>
-        取消
-      </el-button>
-      <el-button type="primary" :loading="loading" @click="submitForm">
-        <el-icon><Check /></el-icon>
-        提交
-      </el-button>
-    </template>
-  </el-dialog>
+          <el-table-column
+            prop="state"
+            label="状态"
+            show-overflow-tooltip
+            align="center"
+          >
+            <template #default="{ row }">
+              {{ USER_STATE.getKeyForValue(row.state) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="200" align="center">
+            <template #default="{ row }">
+              <el-button @click="updateRow(row)">修改</el-button>
+              <el-button @click="delRow(row.oid)" type="danger">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <Pagination @size-change="fetchList" @current-change="fetchList" />
+      </el-card>
+    </div>
+    <el-dialog
+      v-model="active"
+      :title="title"
+      width="500"
+      draggable
+      @close="resetForm"
+    >
+      <el-form
+        ref="formRef"
+        :model="form"
+        :rules="rules"
+        :disabled="loading"
+        label-position="top"
+      >
+        <el-form-item label="用户账号" prop="loginName">
+          <el-input v-model="form.loginName" placeholder="请输入用户账号" />
+        </el-form-item>
+        <el-form-item label="用户名" prop="userName">
+          <el-input v-model="form.userName" placeholder="请输入用户名" />
+        </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-radio-group v-model="form.sex">
+            <el-radio
+              v-for="item in SEX.getDict()"
+              :key="item.value"
+              :label="item.value"
+              border
+            >
+              {{ item.label }}
+            </el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="手机号" prop="mobile">
+          <el-input v-model="form.mobile" placeholder="请输入手机号" />
+        </el-form-item>
+        <el-form-item label="文化程度" prop="degree">
+          <el-input v-model="form.degree" placeholder="请选择文化程度" />
+        </el-form-item>
+        <el-form-item label="教师类型" prop="teacherType">
+          <el-select
+            v-model="form.teacherType"
+            placeholder="请选择教师类型"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in TEACHER_TYPE.getDict()"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="用户类型" prop="userType">
+          <el-select
+            v-model="form.userType"
+            placeholder="请选择用户类型"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in USER_TYPE.getDict()"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="所属部门" prop="deptId">
+          <el-select
+            v-model="form.deptId"
+            placeholder="请选择所属部门"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in dictionaryStore.dept"
+              :key="item.oid"
+              :label="item.value"
+              :value="item.oid"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="身份证号" prop="idCard">
+          <el-input v-model="form.idCard" placeholder="请输入身份证号" />
+        </el-form-item>
+        <el-form-item label="出生年月" prop="birthday">
+          <el-date-picker
+            v-model="form.birthday"
+            type="date"
+            placeholder="请选择出生年月"
+            style="width: 100%"
+          />
+        </el-form-item>
+        <el-form-item label="用户角色" prop="roles">
+          <el-select
+            v-model="form.roles"
+            placeholder="请选择用户角色"
+            multiple
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in dictionaryStore.role"
+              :label="item.value"
+              :value="item.oid"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="状态" prop="state">
+          <el-select
+            v-model="form.state"
+            placeholder="请选择状态"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in USER_STATE.getDict()"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="active = false">
+          <el-icon>
+            <Close />
+          </el-icon>
+          取消
+        </el-button>
+        <el-button type="primary" :loading="loading" @click="submitForm">
+          <el-icon>
+            <Check />
+          </el-icon>
+          提交
+        </el-button>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script setup lang="ts" name="User">
 import { ref, onMounted, reactive } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
-import type { UserVO } from '@/api/system/user/type'
-import { getUserPage, saveOrUpdateUser, delUser } from '@/api/system/user/index'
+import { getUserPage, saveOrUpdateUser, delUser } from '@/api/system/user'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { SEX, TEACHER_TYPE, USER_TYPE, USER_STATE } from '@/utils/dict'
 import { formatDate } from '@/utils/util'
-import { DictionaryType } from '@/store/modules/dictionary'
+import type { FormInstance, FormRules } from 'element-plus'
+import type { UserVO } from '@/api/system/user/type'
 import useDictionaryStore from '@/store/modules/dictionary'
 import usePaginationStore from '@/store/modules/pagination'
 
@@ -321,8 +326,8 @@ const dictionaryStore = useDictionaryStore()
 const paginationStore = usePaginationStore()
 
 onMounted(async () => {
-  await dictionaryStore.init(DictionaryType.DEPT, DictionaryType.ROLE)
-  fetchList()
+  await fetchList()
+  await dictionaryStore.init()
 })
 
 const loading = ref<boolean>(false)
@@ -354,7 +359,7 @@ const rules = reactive<FormRules>({
   userName: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
   roles: [{ required: true, message: '请选择用户角色', trigger: 'blur' }],
 })
-const searchFormRef = ref<FormInstance>()
+const searchRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
 
 const fetchList = async () => {

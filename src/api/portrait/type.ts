@@ -55,8 +55,8 @@ export interface PortraitGrowthData {
 }
 
 export interface PortraitGrowthComparison {
-  growthItemName: string
-  score: number
+  growthName: string
+  myScore: number
   avgScore: number
 }
 export type PortraitGrowthComparisonList = PortraitGrowthComparison[]

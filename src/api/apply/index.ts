@@ -2,23 +2,36 @@ import { get, post, del } from '@/api/api'
 import { Page, PageResult } from '@/types/global'
 import type {
   StudentGrowthItems,
-  AudGrow,
+  GrowthItemApplyForm,
   GrowApplyRecord,
   AuditLog,
+  PageRecordQuery,
 } from './type'
 
 export const reqStudentGrowthItems = async () => {
   return get<StudentGrowthItems[]>('/growthItem/studentGrowthItems')
 }
-export const pageGrowApplyRecord = async (params: Page) => {
-  return get<PageResult<GrowApplyRecord[]>>('/audGrow/page/apply', params)
+export const reqPageStudentApplyRecord = async (params: PageRecordQuery) => {
+  return get<PageResult<GrowApplyRecord[]>>(
+    '/audGrow/page/student/apply',
+    params,
+  )
 }
 
-export const applyGrowItem = async (data: AudGrow) => {
+export const reqPageStudentUnionApplyRecord = async (
+  params: PageRecordQuery,
+) => {
+  return get<PageResult<GrowApplyRecord[]>>(
+    '/audGrow/page/studentUnion/apply',
+    params,
+  )
+}
+
+export const applyGrowItem = async (data: GrowthItemApplyForm) => {
   return post<boolean>('/audGrow/apply', data)
 }
 
-export const updateAudGrow = async (data: AudGrow) => {
+export const updateAudGrow = async (data: GrowthItemApplyForm) => {
   return post<boolean>('/audGrow/update', data)
 }
 

@@ -89,7 +89,9 @@ const reset = () => {
   uploadRef.value.clearFiles()
 }
 
-const emit = defineEmits(['success'])
+const emit = defineEmits<{
+  (e: 'success'): void
+}>()
 defineExpose({ submit, reset })
 </script>
 

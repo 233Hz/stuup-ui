@@ -4,7 +4,7 @@
       <template #header>
         <el-row>
           <el-col :span="24">
-            <el-form ref="searchFormRef" :model="searchForm" label-width="80px">
+            <el-form ref="searchRef" :model="searchForm" label-width="80px">
               <el-row>
                 <el-col :sm="24" :md="12" :xl="8">
                   <el-form-item label="角色名称" prop="roleName">
@@ -24,7 +24,7 @@
           <el-button type="primary" @click="fetchList" :loading="loading">
             查询
           </el-button>
-          <el-button @click="searchFormRef?.resetFields()">清空</el-button>
+          <el-button @click="searchRef?.resetFields()">清空</el-button>
         </el-space>
       </div>
     </el-card>
@@ -157,7 +157,7 @@ const form = ref<any>({
 const rules = reactive<FormRules>({
   roleName: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
 })
-const searchFormRef = ref<FormInstance>()
+const searchRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
 const menuTreeRef = ref()
 

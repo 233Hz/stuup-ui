@@ -2,7 +2,6 @@ import { get, post } from '@/api/api'
 import type { Page, PageResult } from '@/types/global'
 import type {
   UserVO,
-  SimpleUserVO,
   UserDictVO,
   CusUser,
   UserMenu,
@@ -14,7 +13,6 @@ enum API {
   DEL_USER = '/user/del',
   SAVE_OR_UPDATE_USER = '/user/save',
   USER_PAGE = '/user/list',
-  SIMPLE_USER_PAGE = '/user/getSimpleUserPage',
   ALL_USER = '/user/all',
   USER_INFO = '/user/info',
   UPDATE_PASSWORD = '/user/updatePassword',
@@ -23,10 +21,6 @@ enum API {
 
 export const getUserList = async () => {
   return await get<UserDictVO[]>(API.ALL_USER)
-}
-
-export const getSimpleUserPage = async (params: Page) => {
-  return await get<PageResult<SimpleUserVO[]>>(API.SIMPLE_USER_PAGE, params)
 }
 
 export const getUserPage = async (params: Page) => {

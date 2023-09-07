@@ -55,8 +55,8 @@
 import { ref, computed } from 'vue'
 import { getGrowItemUser, setGrowthItemUser } from '@/api/grow/config'
 import { ElMessage } from 'element-plus'
-import { ASSIGN_TYPE } from '@/utils/dict'
-import type { SimpleUserVO } from '@/api/system/user/type'
+import { GROWTH_GATHERER } from '@/utils/dict'
+import { GrowthItemUser } from '@/api/grow/config/type'
 import TeacherSelect from './TeacherSelect.vue'
 import StudentSelect from './StudentSelect.vue'
 
@@ -76,12 +76,13 @@ const userTags = ref<UserTag[]>()
 /**
  * 抽屉打开事件
  * @param id 当前项目id
+ * @param assign
  */
-const open = (id: number, assign?: number) => {
+const open = async (id: number, assign?: number) => {
   active.value = true
   growthItemId.value = id
   assignType.value = assign
-  getGrowUser(id)
+  await getGrowUser(id)
 }
 
 /**
@@ -111,7 +112,11 @@ const setGrowUser = async () => {
   if (userTags.value?.length === 0) ElMessage.error('请选择项目负责人')
   const userId = userTags.value?.map((item) => item.id)
   try {
-    await setGrowthItemUser(growthItemId.value, userId!)
+    await setGrowthItemUser({
+      growthItemId: growthItemId.value,
+      assignType: assignType.value,
+      userIds: userId!,
+    })
     active.value = false
     ElMessage.success('设置成功')
   } finally {
@@ -124,9 +129,9 @@ const setGrowUser = async () => {
  */
 const removeUsersHandler = (userId: number) => {
   userTags.value = userTags.value?.filter((item) => item.id !== userId)
-  if (assignType.value === ASSIGN_TYPE.TEACHER)
+  if (assignType.value === GROWTH_GATHERER.TEACHER)
     teacherSelectRef.value?.cancelSelect(userId)
-  else if (assignType.value === ASSIGN_TYPE.STUDENT)
+  else if (assignType.value === GROWTH_GATHERER.STUDENT_UNION)
     studentSelectRef.value?.cancelSelect(userId)
 }
 
@@ -135,11 +140,11 @@ const removeUsersHandler = (userId: number) => {
  */
 const emptySelectHandler = () => {
   if (userTags.value && userTags.value.length > 0) {
-    if (assignType.value === ASSIGN_TYPE.TEACHER) {
+    if (assignType.value === GROWTH_GATHERER.TEACHER) {
       userTags.value.forEach((item) => {
         teacherSelectRef.value?.cancelSelect(item.id)
       })
-    } else if (assignType.value === ASSIGN_TYPE.STUDENT) {
+    } else if (assignType.value === GROWTH_GATHERER.STUDENT_UNION) {
       userTags.value.forEach((item) => {
         studentSelectRef.value?.cancelSelect(item.id)
       })
@@ -167,20 +172,20 @@ const drawerCloseHandle = () => {
  * 选择老师改变处理
  * @param users
  */
-const teacherSelectChangeHandler = (users: SimpleUserVO[]) => {
+const teacherSelectChangeHandler = (users: GrowthItemUser[]) => {
   if (users.length !== 0) studentSelectRef.value?.clearSelection()
   userTags.value = users.map((item) => ({ id: item.id, name: item.username }))
-  assignType.value = ASSIGN_TYPE.TEACHER
+  assignType.value = GROWTH_GATHERER.TEACHER
 }
 
 /**
  * 选择学生改变处理
  * @param users
  */
-const studentSelectChangeHandler = (users: SimpleUserVO[]) => {
+const studentSelectChangeHandler = (users: GrowthItemUser[]) => {
   if (users.length !== 0) teacherSelectRef.value?.clearSelection()
   userTags.value = users.map((item) => ({ id: item.id, name: item.username }))
-  assignType.value = ASSIGN_TYPE.STUDENT
+  assignType.value = GROWTH_GATHERER.STUDENT_UNION
 }
 
 defineExpose({ open })

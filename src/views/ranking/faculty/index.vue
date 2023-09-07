@@ -1,5 +1,40 @@
 <template>
-  <div shadow="never" class="p-20 w-full h-full" v-loading="loading">
+  <div class="p-20 w-full h-full" v-loading="loading">
+    <el-card shadow="never" class="my-10">
+      <el-form ref="searchRef" :model="search">
+        <el-row :gutter="20">
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="系部名称" prop="facultyName">
+              <el-input v-model="search.facultyName" />
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-space>
+              <el-button
+                type="primary"
+                icon="Search"
+                :loading="loading"
+                plain
+                @click="filterSearchHandler"
+              >
+                查询
+              </el-button>
+              <el-button icon="Close" @click="searchRef?.resetFields()" plain>
+                清空
+              </el-button>
+              <el-button
+                icon="Refresh"
+                :loading="loading"
+                plain
+                @click="fetchData"
+              >
+                刷新
+              </el-button>
+            </el-space>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-card>
     <el-auto-resizer>
       <template #default="{ height, width }">
         <el-table-v2
@@ -17,22 +52,12 @@
   </div>
 </template>
 
-<script setup lang="tsx" name="RankingFaculty">
+<script setup lang="ts" name="RankingFaculty">
 import { ref, onMounted } from 'vue'
+import { getFacultyRank } from '@/api/ranking/faculty'
 import type { Column } from 'element-plus'
 import type { FacultyRankVO } from '@/api/ranking/faculty/type'
-import { getFacultyRank } from '@/api/ranking/faculty/index'
-import { ElButton, ElIcon, ElPopover } from 'element-plus'
-import { Filter } from '@element-plus/icons-vue'
 
-import type { HeaderCellSlotProps } from 'element-plus'
-
-// TYPE
-interface FilterFormType {
-  facultyName: string
-}
-
-// CONST
 const columns: Column[] = [
   {
     align: 'center',
@@ -47,50 +72,6 @@ const columns: Column[] = [
     dataKey: 'facultyName',
     title: '系部名称',
     width: 400,
-    // @ts-ignore
-    headerCellRenderer: (props: HeaderCellSlotProps) => {
-      return (
-        <div class="flex items-center justify-center">
-          <span class="mr-2 size-14 weight-700">{props.column.title}</span>
-          <ElPopover
-            v-model:visible={visible.value}
-            trigger="click"
-            {...{ width: 400 }}
-          >
-            {{
-              default: () => (
-                <div>
-                  <div>
-                    <el-input
-                      v-model={filterForm.value.facultyName}
-                      placeholder="请选择专业"
-                    />
-                  </div>
-                  <div class="flex items-center justify-center mt-4">
-                    <ElButton text onClick={onFilter}>
-                      确 认
-                    </ElButton>
-                    <ElButton
-                      text
-                      onClick={() =>
-                        onReset(props.column.dataKey as keyof FilterFormType)
-                      }
-                    >
-                      清 空
-                    </ElButton>
-                  </div>
-                </div>
-              ),
-              reference: () => (
-                <ElIcon class="cursor-pointer">
-                  <Filter />
-                </ElIcon>
-              ),
-            }}
-          </ElPopover>
-        </div>
-      )
-    },
   },
   {
     align: 'center',
@@ -100,7 +81,6 @@ const columns: Column[] = [
     width: 200,
   },
 ]
-
 const cellProps = ({ columnIndex }: { columnIndex: number }) => {
   const key = `hovering-col-${columnIndex}`
   return {
@@ -113,47 +93,37 @@ const cellProps = ({ columnIndex }: { columnIndex: number }) => {
     },
   }
 }
+let dataSource: readonly FacultyRankVO[]
 
-// DATA
-let data: readonly FacultyRankVO[]
+const searchRef = ref()
 const loading = ref<boolean>(false)
-const tableData = ref<FacultyRankVO[]>([])
+const tableData = ref<any>([])
 const kls = ref<string>('')
-const visible = ref(false)
-const filterForm = ref<FilterFormType>({
-  facultyName: '',
+const search = ref({
+  facultyName: void 0,
 })
 
-// ONMOUNTED
-onMounted(() => {
-  fetchList()
+onMounted(async () => {
+  await fetchData()
 })
 
-// METHOD
-const fetchList = async () => {
+const fetchData = async () => {
   loading.value = true
   try {
-    const { data: res } = await getFacultyRank()
-    data = Object.freeze(res)
-    tableData.value = [...data]
+    const { data } = await getFacultyRank()
+    dataSource = Object.freeze(data)
+    tableData.value = dataSource
   } finally {
     loading.value = false
   }
 }
 
-const onFilter = () => {
-  const { facultyName } = filterForm.value
+const filterSearchHandler = () => {
+  const { facultyName } = search.value
 
-  tableData.value = data.filter((item) => {
-    if (facultyName && !item.facultyName.includes(facultyName)) {
-      return false
-    }
-    return true
+  tableData.value = dataSource.filter((item) => {
+    return !(facultyName && !item.facultyName.includes(facultyName))
   })
-}
-const onReset = (columnKey: keyof FilterFormType) => {
-  filterForm.value[columnKey] = ''
-  onFilter()
 }
 </script>
 

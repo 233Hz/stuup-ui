@@ -1,11 +1,15 @@
 export interface GrowAuditRecord {
   id: number
-  growId: number
-  firstLevelName: string
-  secondLevelName: string
-  thirdLevelName: string
-  applicant: string
-  growName: string
+  yearName: string
+  semesterName: string
+  l1Name: string
+  l2Name: string
+  l3Name: string
+  growthItemId: number
+  growthItemName: string
+  growthItemScore: number
+  applicantName: string
+  submitterName: string
   reason: string
   fileIds: string
   state: number

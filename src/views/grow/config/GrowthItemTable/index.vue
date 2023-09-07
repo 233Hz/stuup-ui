@@ -5,11 +5,7 @@
         <template #header>
           <el-row>
             <el-col :span="24">
-              <el-form
-                ref="searchFormRef"
-                :model="searchForm"
-                label-width="120px"
-              >
+              <el-form ref="searchRef" :model="searchForm" label-width="120px">
                 <el-row>
                   <el-col :sm="24" :md="12" :xl="8">
                     <el-form-item label="项目名称" prop="name">
@@ -139,8 +135,8 @@
             <template #default="{ row }">
               <el-button @click="updateRow(row)">修改</el-button>
               <el-button
-                v-show="row.gatherer === GROWTH_GATHERER.ASSIGN"
-                @click="setGrowUserDrawerRef.open(row.id)"
+                v-show="row.gatherer === GROWTH_GATHERER_TYPE.ASSIGN"
+                @click="setGrowUserDrawerRef.open(row.id, row.gatherer)"
               >
                 设置项目负责人
               </el-button>
@@ -211,7 +207,11 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="周期内分值的上限" prop="scoreUpperLimit">
+        <el-form-item
+          label="周期内分值的上限"
+          prop="scoreUpperLimit"
+          v-show="form.scorePeriod !== PERIOD.UNLIMITED"
+        >
           <el-input-number
             v-model="form.scoreUpperLimit"
             :min="0"
@@ -257,7 +257,7 @@
         <el-form-item label="项目采集者" prop="gatherer">
           <el-radio-group v-model="form.gatherer">
             <el-radio
-              v-for="item in GROWTH_GATHERER.getDict()"
+              v-for="item in GROWTH_GATHERER_TYPE.getDict()"
               :key="item.value"
               :label="item.value"
               border
@@ -289,12 +289,13 @@ import {
   saveOrUpdateGrowthItem,
   delGrowthItem,
 } from '@/api/grow/config'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox, CascaderProps } from 'element-plus'
 import {
   PERIOD,
+  DIALOG_TYPE,
   CALCULATE_TYPE,
   GROWTH_GATHERER,
-  DIALOG_TYPE,
+  GROWTH_GATHERER_TYPE,
 } from '@/utils/dict'
 import { requiredRule } from '@/utils/rules'
 import { formatDate } from '@/utils/util'
@@ -302,8 +303,8 @@ import type { GrowthItemVO } from '@/api/grow/config/type'
 import type { FormInstance, FormRules } from 'element-plus'
 import bus from '@/utils/bus'
 import useGrowthStore from '@/store/modules/growth'
-import SetGrowUserDrawer from '../SetGrowUserDrawer/index.vue'
 import usePaginationStore from '@/store/modules/pagination'
+import SetGrowUserDrawer from '../SetGrowUserDrawer/index.vue'
 
 const growthStore = useGrowthStore()
 const paginationStore = usePaginationStore()
@@ -316,7 +317,7 @@ bus.on('node-click', (keys: number[]) => {
   fetchList()
 })
 
-const cascadeProps = {
+const cascadeProps: CascaderProps = {
   label: 'name',
   value: 'id',
   children: 'children',
@@ -325,7 +326,7 @@ const cascadeProps = {
 }
 
 /* Ref */
-const searchFormRef = ref<FormInstance>()
+const searchRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
 const setGrowUserDrawerRef = ref()
 
@@ -361,7 +362,6 @@ const rules = ref<FormRules>({
   scorePeriod: [requiredRule('分值刷新周期')],
   calculateType: [requiredRule('分值计算类型')],
   score: [requiredRule('项目可获得分值')],
-  gatherer: [requiredRule('项目采集用户')],
 })
 
 /* ONMOUNTED */
@@ -374,7 +374,10 @@ onMounted(() => {
 watch(
   () => form.value.scorePeriod,
   (newValue) => {
-    if (newValue !== PERIOD.UNLIMITED) form.value.collectLimit = void 0
+    if (newValue !== PERIOD.UNLIMITED) {
+      form.value.scoreUpperLimit = void 0
+      form.value.collectLimit = void 0
+    }
   },
 )
 
@@ -407,7 +410,9 @@ const updateRow = (row: GrowthItemVO) => {
   form.value.collectLimit = row.collectLimit
   form.value.calculateType = row.calculateType
   form.value.score = row.score
-  form.value.gatherer = row.gatherer
+  if (row.gatherer !== GROWTH_GATHERER.STUDENT)
+    form.value.gatherer = GROWTH_GATHERER_TYPE.ASSIGN
+  else form.value.gatherer = row.gatherer
   form.value.growthItems = []
   if (row.firstLevelId) {
     form.value.growthItems.push(row.firstLevelId)
@@ -438,7 +443,7 @@ const delRow = (row: GrowthItemVO) => {
         if (!row.id) return console.error('项目id不存在')
         const res = await delGrowthItem(row.id)
         ElMessage.success(res.message)
-        fetchList()
+        await fetchList()
       } finally {
         loading.value = false
       }
@@ -451,6 +456,8 @@ const submitForm = async () => {
   const valid = await formRef.value?.validate()
   if (!valid) return
   loading.value = true
+  if (form.value.gatherer !== GROWTH_GATHERER_TYPE.STUDENT)
+    form.value.gatherer = void 0
   if (form.value.growthItems && form.value.growthItems.length > 0) {
     form.value.firstLevelId = form.value.growthItems[0]
     form.value.secondLevelId = form.value.growthItems[1] || void 0
@@ -462,7 +469,7 @@ const submitForm = async () => {
     const res = await saveOrUpdateGrowthItem(form.value as GrowthItemVO)
     ElMessage.success(res.message)
     active.value = false
-    fetchList()
+    await fetchList()
   } finally {
     loading.value = false
   }

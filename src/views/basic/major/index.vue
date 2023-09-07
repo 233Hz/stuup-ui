@@ -1,170 +1,176 @@
 <template>
-  <div style="padding: 10px 20px">
-    <el-card style="margin: 10px 0">
-      <template #header>
-        <el-row>
-          <el-col :span="24">
-            <el-form ref="searchFormRef" :model="searchForm" label-width="80px">
-              <el-row>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="专业名称" prop="key">
-                    <el-input
-                      v-model="searchForm.key"
-                      placeholder="请输入专业名称"
-                    />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
-          </el-col>
-        </el-row>
-      </template>
+  <div>
+    <div style="padding: 10px 20px">
+      <el-card style="margin: 10px 0">
+        <template #header>
+          <el-row>
+            <el-col :span="24">
+              <el-form ref="searchRef" :model="searchForm" label-width="80px">
+                <el-row>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="专业名称" prop="key">
+                      <el-input
+                        v-model="searchForm.key"
+                        placeholder="请输入专业名称"
+                      />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </el-col>
+          </el-row>
+        </template>
 
-      <div style="text-align: center">
-        <el-space>
-          <el-button type="primary" @click="fetchList" :loading="loading">
-            查询
-          </el-button>
-          <el-button @click="searchFormRef?.resetFields()">清空</el-button>
-        </el-space>
-      </div>
-    </el-card>
-    <el-card>
-      <template #header>
-        <el-space>
-          <!-- <el-button type="primary" @click="addRow">
+        <div style="text-align: center">
+          <el-space>
+            <el-button type="primary" @click="fetchList" :loading="loading">
+              查询
+            </el-button>
+            <el-button @click="searchRef?.resetFields()">清空</el-button>
+          </el-space>
+        </div>
+      </el-card>
+      <el-card>
+        <template #header>
+          <el-space>
+            <!-- <el-button type="primary" @click="addRow">
             <el-icon><Plus /></el-icon>
             添加
           </el-button> -->
-          <el-divider direction="vertical" />
-          <el-button :disabled="loading" circle @click="fetchList">
-            <el-icon><Refresh /></el-icon>
-          </el-button>
-        </el-space>
-      </template>
+            <el-divider direction="vertical" />
+            <el-button :disabled="loading" circle @click="fetchList">
+              <el-icon>
+                <Refresh />
+              </el-icon>
+            </el-button>
+          </el-space>
+        </template>
 
-      <el-table
-        :data="tableData"
-        border
-        stripe
-        v-loading="loading"
-        empty-text="空空如也~~"
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="majorCode"
-          label="专业编号"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="majorName"
-          label="专业名称"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="facultyName"
-          label="所属系部"
-          show-overflow-tooltip
-          align="center"
-        />
-        <!-- TODO 字典 -->
-        <el-table-column
-          prop="system"
-          label="学制"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="state"
-          label="状态"
-          show-overflow-tooltip
-          align="center"
+        <el-table
+          :data="tableData"
+          border
+          stripe
+          v-loading="loading"
+          empty-text="空空如也~~"
+          style="width: 100%"
         >
-          <template #default="{ row }">
-            {{ EFFECTIVENESS.getKeyForValue(row.state) }}
-          </template>
-        </el-table-column>
-        <!-- <el-table-column label="操作" width="200" align="center">
+          <el-table-column
+            prop="majorCode"
+            label="专业编号"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="majorNameSet"
+            label="专业名称"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="facultyNameSet"
+            label="所属系部"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="system"
+            label="学制"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="state"
+            label="状态"
+            show-overflow-tooltip
+            align="center"
+          >
+            <template #default="{ row }">
+              {{ EFFECTIVENESS.getKeyForValue(row.state) }}
+            </template>
+          </el-table-column>
+          <!-- <el-table-column label="操作" width="200" align="center">
           <template #default="{ row }">
             <el-button @click="updateRow(row)">修改</el-button>
             <el-button @click="delRow(row.oid)" type="danger">删除</el-button>
           </template>
         </el-table-column> -->
-      </el-table>
-      <Pagination @size-change="fetchList" @current-change="fetchList" />
-    </el-card>
-  </div>
-  <el-dialog
-    v-model="dialog_active"
-    :title="dialog_title"
-    width="500"
-    draggable
-    @close="resetForm"
-  >
-    <el-form
-      ref="formRef"
-      :model="form"
-      :rules="rules"
-      :disabled="loading"
-      label-position="top"
+        </el-table>
+        <Pagination @size-change="fetchList" @current-change="fetchList" />
+      </el-card>
+    </div>
+    <el-dialog
+      v-model="dialog_active"
+      :title="dialog_title"
+      width="500"
+      draggable
+      @close="resetForm"
     >
-      <el-form-item label="专业编号" prop="majorCode">
-        <el-input v-model="form.majorCode" placeholder="请输入专业编号" />
-      </el-form-item>
-      <el-form-item label="专业名称" prop="majorName">
-        <el-input v-model="form.majorName" placeholder="请输入专业名称" />
-      </el-form-item>
-      <el-form-item label="所属系部" prop="facultyId">
-        <el-select
-          v-model="form.facultyId"
-          placeholder="请输入所属系部"
-          style="width: 100%"
-        >
-          <el-option
-            v-for="item in dictionaryStore.faculty"
-            :key="item.oid"
-            :label="item.facultyName"
-            :value="item.oid"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="专业编号" prop="system">
-        <el-input-number
-          v-model="form.system"
-          placeholder="请输入学制"
-          controls-position="right"
-          :min="0"
-          :max="5"
-          style="width: 100%"
-        />
-      </el-form-item>
-      <!-- TODO 字典 -->
-      <el-form-item label="专业编号" prop="state">
-        <el-radio-group v-model="form.state">
-          <el-radio
-            v-for="item in EFFECTIVENESS.getDict()"
-            :key="item.value"
-            :label="item.value"
-            border
+      <el-form
+        ref="formRef"
+        :model="form"
+        :rules="rules"
+        :disabled="loading"
+        label-position="top"
+      >
+        <el-form-item label="专业编号" prop="majorCode">
+          <el-input v-model="form.majorCode" placeholder="请输入专业编号" />
+        </el-form-item>
+        <el-form-item label="专业名称" prop="majorNameSet">
+          <el-input v-model="form.majorName" placeholder="请输入专业名称" />
+        </el-form-item>
+        <el-form-item label="所属系部" prop="facultyId">
+          <el-select
+            v-model="form.facultyId"
+            placeholder="请输入所属系部"
+            style="width: 100%"
           >
-            {{ item.label }}
-          </el-radio>
-        </el-radio-group>
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <el-button @click="dialog_active = false">
-        <el-icon><Close /></el-icon>
-        取消
-      </el-button>
-      <el-button type="primary" :loading="loading" @click="submitForm">
-        <el-icon><Check /></el-icon>
-        提交
-      </el-button>
-    </template>
-  </el-dialog>
+            <el-option
+              v-for="item in dictionaryStore.faculty"
+              :key="item.oid"
+              :label="item.facultyName"
+              :value="item.oid"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="专业编号" prop="system">
+          <el-input-number
+            v-model="form.system"
+            placeholder="请输入学制"
+            controls-position="right"
+            :min="0"
+            :max="5"
+            style="width: 100%"
+          />
+        </el-form-item>
+        <el-form-item label="专业编号" prop="state">
+          <el-radio-group v-model="form.state">
+            <el-radio
+              v-for="item in EFFECTIVENESS.getDict()"
+              :key="item.value"
+              :label="item.value"
+              border
+            >
+              {{ item.label }}
+            </el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="dialog_active = false">
+          <el-icon>
+            <Close />
+          </el-icon>
+          取消
+        </el-button>
+        <el-button type="primary" :loading="loading" @click="submitForm">
+          <el-icon>
+            <Check />
+          </el-icon>
+          提交
+        </el-button>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script setup lang="ts" name="Major">
@@ -184,8 +190,8 @@ import usePaginationStore from '@/store/modules/pagination'
 const dictionaryStore = useDictionaryStore()
 const paginationStore = usePaginationStore()
 
-onMounted(() => {
-  fetchList()
+onMounted(async () => {
+  await fetchList()
 })
 
 const loading = ref<boolean>(false)
@@ -211,7 +217,7 @@ const rules = reactive<FormRules>({
   system: [{ required: true, message: '请输入学制', trigger: 'blur' }],
   state: [{ required: true, message: '请选择专业状态', trigger: 'blur' }],
 })
-const searchFormRef = ref<FormInstance>()
+const searchRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
 
 const fetchList = async () => {

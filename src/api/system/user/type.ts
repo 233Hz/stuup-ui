@@ -15,13 +15,6 @@ export interface UserVO {
   createTime: Date
 }
 
-export interface SimpleUserVO {
-  id: number
-  username: string
-  teacherNo: string
-  deptName: string
-}
-
 export interface UserDictVO {
   oid: number
   value: string

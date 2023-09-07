@@ -1,5 +1,93 @@
 <template>
-  <div shadow="never" class="p-20 w-full h-full" v-loading="loading">
+  <div class="p-20 w-full h-full" v-loading="loading">
+    <el-card shadow="never" class="my-10">
+      <el-form ref="searchRef" :model="search">
+        <el-row :gutter="20">
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="学生姓名" prop="studentName">
+              <el-input v-model="search.studentName" />
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="学号" prop="studentNo">
+              <el-input v-model="search.studentNo" />
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="年级" prop="gradeName">
+              <el-select v-model="search.gradeName" style="width: 100%">
+                <el-option
+                  v-for="item in searchData.gradeNameSet"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="班级" prop="className">
+              <el-select v-model="search.className" style="width: 100%">
+                <el-option
+                  v-for="item in searchData.classNameSet"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="系部" prop="facultyName">
+              <el-select v-model="search.facultyName" style="width: 100%">
+                <el-option
+                  v-for="item in searchData.facultyNameSet"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="专业" prop="majorName">
+              <el-select v-model="search.majorName" style="width: 100%">
+                <el-option
+                  v-for="item in searchData.majorNameSet"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-space>
+              <el-button
+                type="primary"
+                icon="Search"
+                :loading="loading"
+                plain
+                @click="filterSearchHandler"
+              >
+                查询
+              </el-button>
+              <el-button icon="Close" @click="searchRef?.resetFields()" plain>
+                清空
+              </el-button>
+              <el-button
+                icon="Refresh"
+                :loading="loading"
+                plain
+                @click="fetchData"
+              >
+                刷新
+              </el-button>
+            </el-space>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-card>
     <el-auto-resizer>
       <template #default="{ height, width }">
         <el-table-v2
@@ -17,39 +105,19 @@
   </div>
 </template>
 
-<script setup lang="tsx" name="RankingSchool">
+<script setup lang="ts" name="RankingSchool">
 import { ref, onMounted } from 'vue'
+import { getSchoolRank } from '@/api/ranking/school'
 import type { Column } from 'element-plus'
 import type { SchoolRankVO } from '@/api/ranking/school/type'
-import { getSchoolRank } from '@/api/ranking/school/index'
-import { ElButton, ElSelectV2, ElIcon, ElPopover } from 'element-plus'
-import { Filter } from '@element-plus/icons-vue'
 
-import type { HeaderCellSlotProps } from 'element-plus'
-
-// TYPE
-interface FilterFormType {
-  studentName: string
-  studentNo: string
-  gradeName: string
-  className: string
-  facultyName: string
-  majorName: string
+interface SearchDataType {
+  gradeNameSet: Set<string>
+  classNameSet: Set<string>
+  facultyNameSet: Set<string>
+  majorNameSet: Set<string>
 }
 
-type FilterDataItem = {
-  label: string
-  value: string
-}
-
-interface FilterDataType {
-  gradeName: readonly FilterDataItem[]
-  className: readonly FilterDataItem[]
-  facultyName: readonly FilterDataItem[]
-  majorName: readonly FilterDataItem[]
-}
-
-// CONST
 const columns: Column[] = [
   {
     align: 'center',
@@ -64,50 +132,6 @@ const columns: Column[] = [
     dataKey: 'studentName',
     title: '学生姓名',
     width: 150,
-    // @ts-ignore
-    headerCellRenderer: (props: HeaderCellSlotProps) => {
-      return (
-        <div class="flex items-center justify-center">
-          <span class="mr-2 size-14 weight-700">{props.column.title}</span>
-          <ElPopover
-            v-model:visible={visible1.value}
-            trigger="click"
-            {...{ width: 200 }}
-          >
-            {{
-              default: () => (
-                <div>
-                  <div>
-                    <el-input
-                      v-model={filterForm.value.studentName}
-                      placeholder="请输入学生姓名"
-                    />
-                  </div>
-                  <div class="flex items-center justify-center mt-4">
-                    <ElButton text onClick={onFilter}>
-                      确 认
-                    </ElButton>
-                    <ElButton
-                      text
-                      onClick={() =>
-                        onReset(props.column.dataKey as keyof FilterFormType)
-                      }
-                    >
-                      清 空
-                    </ElButton>
-                  </div>
-                </div>
-              ),
-              reference: () => (
-                <ElIcon class="cursor-pointer">
-                  <Filter />
-                </ElIcon>
-              ),
-            }}
-          </ElPopover>
-        </div>
-      )
-    },
   },
   {
     align: 'center',
@@ -115,50 +139,6 @@ const columns: Column[] = [
     dataKey: 'studentNo',
     title: '学号',
     width: 150,
-    // @ts-ignore
-    headerCellRenderer: (props: HeaderCellSlotProps) => {
-      return (
-        <div class="flex items-center justify-center">
-          <span class="mr-2 size-14 weight-700">{props.column.title}</span>
-          <ElPopover
-            v-model:visible={visible2.value}
-            trigger="click"
-            {...{ width: 200 }}
-          >
-            {{
-              default: () => (
-                <div>
-                  <div>
-                    <el-input
-                      v-model={filterForm.value.studentNo}
-                      placeholder="请输入学号"
-                    />
-                  </div>
-                  <div class="flex items-center justify-center mt-4">
-                    <ElButton text onClick={onFilter}>
-                      确 认
-                    </ElButton>
-                    <ElButton
-                      text
-                      onClick={() =>
-                        onReset(props.column.dataKey as keyof FilterFormType)
-                      }
-                    >
-                      清 空
-                    </ElButton>
-                  </div>
-                </div>
-              ),
-              reference: () => (
-                <ElIcon class="cursor-pointer">
-                  <Filter />
-                </ElIcon>
-              ),
-            }}
-          </ElPopover>
-        </div>
-      )
-    },
   },
   {
     align: 'center',
@@ -166,52 +146,6 @@ const columns: Column[] = [
     dataKey: 'gradeName',
     title: '所属年级',
     width: 100,
-    // @ts-ignore
-    headerCellRenderer: (props: HeaderCellSlotProps) => {
-      return (
-        <div class="flex items-center justify-center">
-          <span class="mr-2 size-14 weight-700">{props.column.title}</span>
-          <ElPopover
-            v-model:visible={visible3.value}
-            trigger="click"
-            {...{ width: 200 }}
-          >
-            {{
-              default: () => (
-                <div>
-                  <div>
-                    <ElSelectV2
-                      v-model={filterForm.value.gradeName}
-                      options={[...filterData.gradeName]}
-                      placeholder="请选择年级"
-                      teleported={false}
-                    />
-                  </div>
-                  <div class="flex items-center justify-center mt-4">
-                    <ElButton text onClick={onFilter}>
-                      确 认
-                    </ElButton>
-                    <ElButton
-                      text
-                      onClick={() =>
-                        onReset(props.column.dataKey as keyof FilterFormType)
-                      }
-                    >
-                      清 空
-                    </ElButton>
-                  </div>
-                </div>
-              ),
-              reference: () => (
-                <ElIcon class="cursor-pointer">
-                  <Filter />
-                </ElIcon>
-              ),
-            }}
-          </ElPopover>
-        </div>
-      )
-    },
   },
   {
     align: 'center',
@@ -219,52 +153,6 @@ const columns: Column[] = [
     dataKey: 'className',
     title: '所属班级',
     width: 300,
-    // @ts-ignore
-    headerCellRenderer: (props: HeaderCellSlotProps) => {
-      return (
-        <div class="flex items-center justify-center">
-          <span class="mr-2 size-14 weight-700">{props.column.title}</span>
-          <ElPopover
-            v-model:visible={visible4.value}
-            trigger="click"
-            {...{ width: 200 }}
-          >
-            {{
-              default: () => (
-                <div>
-                  <div>
-                    <ElSelectV2
-                      v-model={filterForm.value.className}
-                      options={[...filterData.className]}
-                      placeholder="请选择班级"
-                      teleported={false}
-                    />
-                  </div>
-                  <div class="flex items-center justify-center mt-4">
-                    <ElButton text onClick={onFilter}>
-                      确 认
-                    </ElButton>
-                    <ElButton
-                      text
-                      onClick={() =>
-                        onReset(props.column.dataKey as keyof FilterFormType)
-                      }
-                    >
-                      清 空
-                    </ElButton>
-                  </div>
-                </div>
-              ),
-              reference: () => (
-                <ElIcon class="cursor-pointer">
-                  <Filter />
-                </ElIcon>
-              ),
-            }}
-          </ElPopover>
-        </div>
-      )
-    },
   },
   {
     align: 'center',
@@ -279,52 +167,6 @@ const columns: Column[] = [
     dataKey: 'facultyName',
     title: '所属系部',
     width: 300,
-    // @ts-ignore
-    headerCellRenderer: (props: HeaderCellSlotProps) => {
-      return (
-        <div class="flex items-center justify-center">
-          <span class="mr-2 size-14 weight-700">{props.column.title}</span>
-          <ElPopover
-            v-model:visible={visible5.value}
-            trigger="click"
-            {...{ width: 200 }}
-          >
-            {{
-              default: () => (
-                <div>
-                  <div>
-                    <ElSelectV2
-                      v-model={filterForm.value.facultyName}
-                      options={[...filterData.facultyName]}
-                      placeholder="请选择系部"
-                      teleported={false}
-                    />
-                  </div>
-                  <div class="flex items-center justify-center mt-4">
-                    <ElButton text onClick={onFilter}>
-                      确 认
-                    </ElButton>
-                    <ElButton
-                      text
-                      onClick={() =>
-                        onReset(props.column.dataKey as keyof FilterFormType)
-                      }
-                    >
-                      清 空
-                    </ElButton>
-                  </div>
-                </div>
-              ),
-              reference: () => (
-                <ElIcon class="cursor-pointer">
-                  <Filter />
-                </ElIcon>
-              ),
-            }}
-          </ElPopover>
-        </div>
-      )
-    },
   },
   {
     align: 'center',
@@ -332,52 +174,6 @@ const columns: Column[] = [
     dataKey: 'majorName',
     title: '所属专业',
     width: 300,
-    // @ts-ignore
-    headerCellRenderer: (props: HeaderCellSlotProps) => {
-      return (
-        <div class="flex items-center justify-center">
-          <span class="mr-2 size-14 weight-700">{props.column.title}</span>
-          <ElPopover
-            v-model:visible={visible6.value}
-            trigger="click"
-            {...{ width: 200 }}
-          >
-            {{
-              default: () => (
-                <div>
-                  <div>
-                    <ElSelectV2
-                      v-model={filterForm.value.majorName}
-                      options={[...filterData.majorName]}
-                      placeholder="请选择专业"
-                      teleported={false}
-                    />
-                  </div>
-                  <div class="flex items-center justify-center mt-4">
-                    <ElButton text onClick={onFilter}>
-                      确 认
-                    </ElButton>
-                    <ElButton
-                      text
-                      onClick={() =>
-                        onReset(props.column.dataKey as keyof FilterFormType)
-                      }
-                    >
-                      清 空
-                    </ElButton>
-                  </div>
-                </div>
-              ),
-              reference: () => (
-                <ElIcon class="cursor-pointer">
-                  <Filter />
-                </ElIcon>
-              ),
-            }}
-          </ElPopover>
-        </div>
-      )
-    },
   },
   {
     align: 'center',
@@ -387,7 +183,6 @@ const columns: Column[] = [
     width: 150,
   },
 ]
-
 const cellProps = ({ columnIndex }: { columnIndex: number }) => {
   const key = `hovering-col-${columnIndex}`
   return {
@@ -400,87 +195,51 @@ const cellProps = ({ columnIndex }: { columnIndex: number }) => {
     },
   }
 }
-
-const filterData: FilterDataType = {
-  gradeName: [],
-  className: [],
-  facultyName: [],
-  majorName: [],
-}
-
-// DATA
-let data: readonly SchoolRankVO[]
+let dataSource: readonly SchoolRankVO[]
+const searchRef = ref()
 const loading = ref<boolean>(false)
-const tableData = ref<SchoolRankVO[]>([])
+const tableData = ref<any>([])
 const kls = ref<string>('')
-const visible1 = ref(false)
-const visible2 = ref(false)
-const visible3 = ref(false)
-const visible4 = ref(false)
-const visible5 = ref(false)
-const visible6 = ref(false)
-
-const filterForm = ref<FilterFormType>({
-  studentName: '',
-  studentNo: '',
-  gradeName: '',
-  className: '',
-  facultyName: '',
-  majorName: '',
+const search = ref({
+  studentName: void 0,
+  studentNo: void 0,
+  gradeName: void 0,
+  className: void 0,
+  facultyName: void 0,
+  majorName: void 0,
+})
+const searchData = ref<SearchDataType>({
+  gradeNameSet: new Set(),
+  classNameSet: new Set(),
+  facultyNameSet: new Set(),
+  majorNameSet: new Set(),
 })
 
-// ONMOUNTED
-onMounted(() => {
-  fetchList()
+onMounted(async () => {
+  await fetchData()
 })
-
 // METHODS
-const fetchList = async () => {
+const fetchData = async () => {
   loading.value = true
   try {
-    const { data: res } = await getSchoolRank()
-    data = Object.freeze(res)
-    tableData.value = [...data]
-    let gradeName = new Set<string>()
-    let className = new Set<string>()
-    let facultyName = new Set<string>()
-    let majorName = new Set<string>()
-    data.forEach((item) => {
-      gradeName.add(item.gradeName)
-      className.add(item.className)
-      facultyName.add(item.facultyName)
-      majorName.add(item.majorName)
+    const { data } = await getSchoolRank()
+    dataSource = Object.freeze(data)
+    tableData.value = dataSource
+    console.time()
+    dataSource.forEach((item) => {
+      item.gradeName && searchData.value.gradeNameSet.add(item.gradeName)
+      item.className && searchData.value.classNameSet.add(item.className)
+      item.facultyName && searchData.value.facultyNameSet.add(item.facultyName)
+      item.majorName && searchData.value.majorNameSet.add(item.majorName)
     })
-    filterData.gradeName = [...gradeName].map((item) => {
-      return {
-        label: item,
-        value: item,
-      }
-    })
-    filterData.className = [...className].map((item) => {
-      return {
-        label: item,
-        value: item,
-      }
-    })
-    filterData.facultyName = [...facultyName].map((item) => {
-      return {
-        label: item,
-        value: item,
-      }
-    })
-    filterData.majorName = [...majorName].map((item) => {
-      return {
-        label: item,
-        value: item,
-      }
-    })
+    console.timeEnd()
+    console.log(searchData.value)
   } finally {
     loading.value = false
   }
 }
 
-const onFilter = () => {
+const filterSearchHandler = () => {
   const {
     studentName,
     studentNo,
@@ -488,10 +247,9 @@ const onFilter = () => {
     className,
     facultyName,
     majorName,
-  } = filterForm.value
-
-  tableData.value = data.filter((item) => {
-    if (studentName && !item.studentNo.includes(studentName)) {
+  } = search.value
+  tableData.value = dataSource.filter((item) => {
+    if (studentName && !item.studentName.includes(studentName)) {
       return false
     }
     if (studentNo && !item.studentNo.includes(studentNo)) {
@@ -506,15 +264,8 @@ const onFilter = () => {
     if (facultyName && item.facultyName !== facultyName) {
       return false
     }
-    if (majorName && item.majorName !== majorName) {
-      return false
-    }
-    return true
+    return !(majorName && item.majorName !== majorName)
   })
-}
-const onReset = (columnKey: keyof FilterFormType) => {
-  filterForm.value[columnKey] = ''
-  onFilter()
 }
 </script>
 

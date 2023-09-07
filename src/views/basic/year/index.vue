@@ -1,87 +1,94 @@
 <template>
-  <div style="padding: 10px 20px">
-    <el-card style="margin: 10px 0">
-      <template #header>
-        <el-row>
-          <el-col :span="24">
-            <el-form ref="searchFormRef" :model="searchForm">
-              <el-row>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="年份名称" prop="yearName">
-                    <el-input v-model="searchForm.yearName" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
-          </el-col>
-        </el-row>
-      </template>
+  <div>
+    <div style="padding: 10px 20px">
+      <el-card style="margin: 10px 0">
+        <template #header>
+          <el-row>
+            <el-col :span="24">
+              <el-form ref="searchRef" :model="searchForm">
+                <el-row>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="年份名称" prop="yearName">
+                      <el-input v-model="searchForm.yearName" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </el-col>
+          </el-row>
+        </template>
 
-      <div style="text-align: center">
-        <el-space>
-          <el-button type="primary" @click="fetchList" :loading="loading">
-            查询
-          </el-button>
-          <el-button @click="searchFormRef?.resetFields()">清空</el-button>
-        </el-space>
-      </div>
-    </el-card>
-    <el-card>
-      <template #header>
-        <el-space>
-          <!-- <el-button type="primary" @click="addRow">
+        <div style="text-align: center">
+          <el-space>
+            <el-button type="primary" @click="fetchList" :loading="loading">
+              查询
+            </el-button>
+            <el-button @click="searchRef?.resetFields()">清空</el-button>
+          </el-space>
+        </div>
+      </el-card>
+      <el-card>
+        <template #header>
+          <el-space>
+            <!-- <el-button type="primary" @click="addRow">
             <el-icon><Plus /></el-icon>
             添加
           </el-button> -->
-          <el-divider direction="vertical" />
-          <el-button :disabled="loading" circle @click="fetchList">
-            <el-icon><Refresh /></el-icon>
-          </el-button>
-        </el-space>
-      </template>
+            <el-divider direction="vertical" />
+            <el-button :disabled="loading" circle @click="fetchList">
+              <el-icon>
+                <Refresh />
+              </el-icon>
+            </el-button>
+          </el-space>
+        </template>
 
-      <el-table
-        :data="tableData"
-        border
-        stripe
-        v-loading="loading"
-        empty-text="空空如也~~"
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="yearName"
-          label="年份名称"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="yearStart"
-          label="开始时间"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="yearEnd"
-          label="结束时间"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="createTime"
-          label="创建时间"
-          show-overflow-tooltip
-          align="center"
+        <el-table
+          :data="tableData"
+          border
+          stripe
+          v-loading="loading"
+          empty-text="空空如也~~"
+          style="width: 100%"
         >
-          <template #default="{ row }">
-            {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
-          </template>
-        </el-table-column>
-        <el-table-column label="当前学年" show-overflow-tooltip align="center">
-          <template #default="{ row }">
-            <el-tag v-show="row.curr === WHETHER.YES">当前学年</el-tag>
-          </template>
-        </el-table-column>
-        <!-- <el-table-column label="操作" width="300" align="center">
+          <el-table-column
+            prop="yearName"
+            label="年份名称"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="yearStart"
+            label="开始时间"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="yearEnd"
+            label="结束时间"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="createTime"
+            label="创建时间"
+            show-overflow-tooltip
+            align="center"
+          >
+            <template #default="{ row }">
+              {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="当前学年"
+            show-overflow-tooltip
+            align="center"
+          >
+            <template #default="{ row }">
+              <el-tag v-show="row.curr === WHETHER.YES">当前学年</el-tag>
+            </template>
+          </el-table-column>
+          <!-- <el-table-column label="操作" width="300" align="center">
           <template #default="{ row }">
             <el-button :disabled="row.curr === 1" @click="setCurrent(row.oid)" :type="row.curr === 1 ? 'success' : void 0">
               {{ row.curr === 1 ? '当前学年' : '设置为当前年' }}
@@ -90,51 +97,56 @@
             <el-button @click="delRow(row.oid)" type="danger">删除</el-button>
           </template>
         </el-table-column> -->
-      </el-table>
-      <Pagination @size-change="fetchList" @current-change="fetchList" />
-    </el-card>
-  </div>
-  <el-dialog
-    v-model="dialog_active"
-    :title="dialog_title"
-    width="500"
-    draggable
-    @close="resetForm"
-  >
-    <el-form
-      ref="formRef"
-      :model="form"
-      :rules="rules"
-      :disabled="loading"
-      label-position="top"
-      style="margin-top: 10px"
+        </el-table>
+        <Pagination @size-change="fetchList" @current-change="fetchList" />
+      </el-card>
+    </div>
+    <el-dialog
+      v-model="dialog_active"
+      :title="dialog_title"
+      width="500"
+      draggable
+      @close="resetForm"
     >
-      <el-form-item label="年份名称" prop="yearName">
-        <el-input v-model="form.yearName" />
-      </el-form-item>
-      <el-form-item label="起止时间" prop="yearRange">
-        <el-date-picker
-          v-model="form.yearRange"
-          type="daterange"
-          format="YYYY-MM-DD"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          range-separator="至"
-          start-placeholder="开始时间"
-          end-placeholder="结束时间"
-        />
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <el-button @click="dialog_active = false">
-        <el-icon><Close /></el-icon>
-        取消
-      </el-button>
-      <el-button type="primary" :loading="loading" @click="submitForm">
-        <el-icon><Check /></el-icon>
-        提交
-      </el-button>
-    </template>
-  </el-dialog>
+      <el-form
+        ref="formRef"
+        :model="form"
+        :rules="rules"
+        :disabled="loading"
+        label-position="top"
+        style="margin-top: 10px"
+      >
+        <el-form-item label="年份名称" prop="yearName">
+          <el-input v-model="form.yearName" />
+        </el-form-item>
+        <el-form-item label="起止时间" prop="yearRange">
+          <el-date-picker
+            v-model="form.yearRange"
+            type="daterange"
+            format="YYYY-MM-DD"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="dialog_active = false">
+          <el-icon>
+            <Close />
+          </el-icon>
+          取消
+        </el-button>
+        <el-button type="primary" :loading="loading" @click="submitForm">
+          <el-icon>
+            <Check />
+          </el-icon>
+          提交
+        </el-button>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script setup lang="ts" name="Year">
@@ -180,7 +192,7 @@ const rules = reactive<FormRules>({
     { required: true, message: '请填写年份起止时间', trigger: 'blur' },
   ],
 })
-const searchFormRef = ref<FormInstance>()
+const searchRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
 
 const fetchList = async () => {

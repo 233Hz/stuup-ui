@@ -183,17 +183,18 @@ export const GROWTH_TYPE = new Enum({
   SYSTEM: ['系统类', 2],
 })
 
-/**
- * 成长项目采集者
- */
-export const GROWTH_GATHERER = new Enum({
+export const GROWTH_GATHERER_TYPE = new Enum({
   ASSIGN: ['指定用户', 1],
   STUDENT: ['学生', 2],
 })
 
-export const ASSIGN_TYPE = new Enum({
+/**
+ * 成长项目采集者
+ */
+export const GROWTH_GATHERER = new Enum({
   TEACHER: ['老师', 1],
-  STUDENT: ['学生', 2],
+  STUDENT_UNION: ['学生会', 2],
+  STUDENT: ['学生', 3],
 })
 
 /**
@@ -202,9 +203,8 @@ export const ASSIGN_TYPE = new Enum({
 export const AUDIT_STATUS = new Enum({
   TO_BE_SUBMITTED: ['待提交', 1],
   PENDING_REVIEW: ['待审核', 2],
-  PASS: ['通过', 3],
-  REFUSE: ['拒绝', 4],
-  RETURN: ['退回', 5],
+  PASS: ['审核通过', 3],
+  NO_PASS: ['审核不通过', 4],
 })
 
 /**

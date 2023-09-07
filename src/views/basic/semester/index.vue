@@ -4,11 +4,7 @@
       <template #header>
         <el-row>
           <el-col :span="24">
-            <el-form
-              ref="searchFormRef"
-              :model="searchForm"
-              label-width="100px"
-            >
+            <el-form ref="searchRef" :model="searchForm" label-width="100px">
               <el-row>
                 <el-col :sm="24" :md="12" :xl="8">
                   <el-form-item label="所属学年" prop="yearId">
@@ -41,7 +37,7 @@
           <el-button type="primary" @click="fetchList" :loading="loading">
             查询
           </el-button>
-          <el-button @click="searchFormRef?.resetFields()">清空</el-button>
+          <el-button @click="searchRef?.resetFields()">清空</el-button>
         </el-space>
       </div>
     </el-card>
@@ -178,7 +174,7 @@
 <script setup lang="ts" name="Semester">
 import { ref, onMounted } from 'vue'
 import {
-  pageSemester,
+  reqSemesterPage,
   saveOrUpdateSemester,
   delSemester,
   setCurrentSemester,
@@ -186,7 +182,6 @@ import {
 import { requiredRule } from '@/utils/rules'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { WHETHER } from '@/utils/dict'
-import { DictionaryType } from '@/store/modules/dictionary'
 import { formatDate } from '@/utils/util'
 import type { FormInstance } from 'element-plus'
 import type { SemesterVO } from '@/api/basic/semester/type'
@@ -197,13 +192,12 @@ const dictionaryStore = useDictionaryStore()
 const paginationStore = usePaginationStore()
 
 onMounted(async () => {
-  // 初始化仓库年份信息
-  await dictionaryStore.init(DictionaryType.YEAR)
-  fetchList()
+  await fetchList()
+  await dictionaryStore.init()
 })
 
 // REF
-const searchFormRef = ref<FormInstance>()
+const searchRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
 
 // DATA
@@ -235,7 +229,7 @@ const fetchList = async () => {
   try {
     const { current, size } = paginationStore
     const query = Object.assign(searchForm.value, { current, size })
-    const { data } = await pageSemester(query)
+    const { data } = await reqSemesterPage(query)
     paginationStore.setTotal(data.total)
     tableData.value = data.records
   } finally {

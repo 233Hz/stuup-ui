@@ -1,3 +1,5 @@
+import { Page } from '@/types/global'
+
 export interface StudentGrowthItems {
   id: number
   name: string
@@ -9,7 +11,7 @@ export interface StudentGrowthItems {
   thirdLevelName: string
 }
 
-export interface AudGrow {
+export interface GrowthItemApplyForm {
   id?: number
   growId: number
   reason: string
@@ -18,12 +20,18 @@ export interface AudGrow {
 
 export interface GrowApplyRecord {
   id: number
-  growId: number
-  firstLevelName: string
-  secondLevelName: string
-  thirdLevelName: string
-  auditor: string
-  growName: string
+  yearName: string
+  semesterName: string
+  l1Name: string
+  l2Name?: string
+  l3Name?: string
+  growthItemId: number
+  growthItemName: string
+  growthItemScore: number
+  applicantName: string
+  auditorName: string
+  submitterName: string
+  className: string
   reason: string
   fileIds: string
   state: number
@@ -36,4 +44,14 @@ export interface AuditLog {
   state: number
   reason: string
   createTime: Date
+}
+
+export interface PageRecordQuery extends Page {
+  yearId?: number
+  semesterId?: number
+  l1Id?: number
+  l2Id?: number
+  l3Id?: number
+  growthItemName?: string
+  state?: number
 }

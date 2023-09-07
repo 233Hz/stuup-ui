@@ -5,11 +5,7 @@
         <template #header>
           <el-row>
             <el-col :span="24">
-              <el-form
-                ref="searchFormRef"
-                :model="searchForm"
-                label-width="80px"
-              >
+              <el-form ref="searchRef" :model="searchForm" label-width="80px">
                 <el-row>
                   <el-col :sm="24" :md="12" :xl="8">
                     <el-form-item label="学年" prop="yearId">
@@ -78,7 +74,7 @@
             <el-button type="primary" @click="fetchList" :loading="loading">
               查询
             </el-button>
-            <el-button @click="searchFormRef?.resetFields()">清空</el-button>
+            <el-button @click="searchRef?.resetFields()">清空</el-button>
           </el-space>
         </div>
       </el-card>
@@ -113,7 +109,7 @@
             align="center"
           />
           <el-table-column
-            prop="gradeName"
+            prop="gradeNameSet"
             label="年级"
             show-overflow-tooltip
             align="center"
@@ -185,12 +181,11 @@
 
 <script setup lang="ts" name="Society">
 import { ref, onMounted } from 'vue'
-import type { FormInstance } from 'element-plus'
-import { getRecSocietyPage } from '@/api/record/society/index'
-import type { RecSocietyVO } from '@/api/record/society/type'
+import { getRecSocietyPage } from '@/api/record/society'
 import { AWARD_LEVEL, REC_CODE } from '@/utils/dict'
 import { downRecord } from '@/api/record'
-import { DictionaryType } from '@/store/modules/dictionary'
+import type { FormInstance } from 'element-plus'
+import type { RecSocietyVO } from '@/api/record/society/type'
 import useUserStore from '@/store/modules/user'
 import useDictionaryStore from '@/store/modules/dictionary'
 import usePaginationStore from '@/store/modules/pagination'
@@ -200,8 +195,8 @@ const dictionaryStore = useDictionaryStore()
 const paginationStore = usePaginationStore()
 
 onMounted(async () => {
-  await dictionaryStore.init(DictionaryType.GRADE)
-  fetchList()
+  await fetchList()
+  await dictionaryStore.init()
 })
 
 const loading = ref<boolean>(false)
@@ -214,7 +209,7 @@ const searchForm = ref({
   name: void 0,
   level: void 0,
 })
-const searchFormRef = ref<FormInstance>()
+const searchRef = ref<FormInstance>()
 
 const fetchList = async () => {
   loading.value = true

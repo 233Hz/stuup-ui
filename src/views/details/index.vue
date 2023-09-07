@@ -118,6 +118,7 @@ const fetchData = async () => {
       hasData.value = false
     }
     records.forEach((item) => {
+      item.score = Number(item.score) > 0 ? '+' + item.score : item.score
       tableData.value.push(item)
     })
   } finally {

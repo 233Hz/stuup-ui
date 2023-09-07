@@ -24,23 +24,23 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { reqStudentSemester } from '@/api/basic/semester'
 import { WHETHER } from '@/utils/dict'
+import useUserStore from '@/store/modules/user'
 import GrowthData from './GrowthData.vue'
 import GrowthComparisonChart from './GrowthComparisonChart.vue'
 import CourseGrades from './CourseGrades.vue'
 
+const userStore = useUserStore()
+
 const semester = ref()
 const active = ref<number>()
 
-const getSemester = async () => {
-  const { data } = await reqStudentSemester()
-  semester.value = data
-  active.value = data.find((item) => item.isCurrent === WHETHER.YES)?.id
-}
-
 onMounted(() => {
-  getSemester()
+  const { semesters } = userStore.userInfo
+  if (semesters && semesters.length > 0) {
+    semester.value = semesters
+    active.value = semesters.find((item) => item.isCurrent === WHETHER.YES)?.id
+  }
 })
 
 const handleTagClick = (id: number) => (active.value = id)

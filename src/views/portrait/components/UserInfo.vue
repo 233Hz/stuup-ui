@@ -32,7 +32,7 @@
       <p class="fs-18">
         <span class="text-gray-500 mr-24">专业:</span>
         <span class="text-gray-400">
-          {{ userInfo?.majorName }}
+          {{ userInfo?.majorNameSet }}
         </span>
       </p>
       <div class="flex mt-24 items-center gap-24">

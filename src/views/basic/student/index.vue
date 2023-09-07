@@ -1,269 +1,272 @@
 <template>
-  <div style="padding: 10px 20px">
-    <el-card style="margin: 10px 0">
-      <template #header>
-        <el-row>
-          <el-col :span="24">
-            <el-form
-              ref="searchFormRef"
-              :model="searchForm"
-              label-width="140px"
-            >
-              <el-row>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="学生姓名/班级名称" prop="key">
-                    <el-input
-                      v-model="searchForm.key"
-                      placeholder="请输入学生姓名/班级名称"
-                    />
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="所属年级" prop="gradeId">
-                    <el-select
-                      v-model="searchForm.gradeId"
-                      placeholder="请选择所属年级"
-                      style="width: 100%"
-                    >
-                      <el-option
-                        v-for="item in dictionaryStore.grade"
-                        :key="item.oid"
-                        :label="item.gradeName"
-                        :value="item.oid"
+  <div>
+    <div style="padding: 10px 20px">
+      <el-card style="margin: 10px 0">
+        <template #header>
+          <el-row>
+            <el-col :span="24">
+              <el-form ref="searchRef" :model="searchForm" label-width="140px">
+                <el-row>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="学生姓名/班级名称" prop="key">
+                      <el-input
+                        v-model="searchForm.key"
+                        placeholder="请输入学生姓名/班级名称"
                       />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="所属专业" prop="majorId">
-                    <el-select
-                      v-model="searchForm.majorId"
-                      placeholder="请选择所属专业"
-                      style="width: 100%"
-                    >
-                      <el-option
-                        v-for="item in dictionaryStore.major"
-                        :key="item.oid"
-                        :label="item.majorName"
-                        :value="item.oid"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
-          </el-col>
-        </el-row>
-      </template>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="所属年级" prop="gradeId">
+                      <el-select
+                        v-model="searchForm.gradeId"
+                        placeholder="请选择所属年级"
+                        style="width: 100%"
+                      >
+                        <el-option
+                          v-for="item in dictionaryStore.grade"
+                          :key="item.oid"
+                          :label="item.gradeName"
+                          :value="item.oid"
+                        />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :sm="24" :md="12" :xl="8">
+                    <el-form-item label="所属专业" prop="majorId">
+                      <el-select
+                        v-model="searchForm.majorId"
+                        placeholder="请选择所属专业"
+                        style="width: 100%"
+                      >
+                        <el-option
+                          v-for="item in dictionaryStore.major"
+                          :key="item.oid"
+                          :label="item.majorName"
+                          :value="item.oid"
+                        />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </el-col>
+          </el-row>
+        </template>
 
-      <div style="text-align: center">
-        <el-space>
-          <el-button type="primary" @click="fetchList" :loading="loading">
-            查询
-          </el-button>
-          <el-button @click="searchFormRef?.resetFields()">清空</el-button>
-        </el-space>
-      </div>
-    </el-card>
-    <el-card>
-      <template #header>
-        <el-space>
-          <!--  <el-button type="primary" @click="addRow">
+        <div style="text-align: center">
+          <el-space>
+            <el-button type="primary" @click="fetchList" :loading="loading">
+              查询
+            </el-button>
+            <el-button @click="searchRef?.resetFields()">清空</el-button>
+          </el-space>
+        </div>
+      </el-card>
+      <el-card>
+        <template #header>
+          <el-space>
+            <!--  <el-button type="primary" @click="addRow">
               <el-icon><Plus /></el-icon>
               添加
             </el-button> -->
-          <el-divider direction="vertical" />
-          <el-button :disabled="loading" circle @click="fetchList">
-            <el-icon><Refresh /></el-icon>
-          </el-button>
-        </el-space>
-      </template>
+            <el-divider direction="vertical" />
+            <el-button :disabled="loading" circle @click="fetchList">
+              <el-icon>
+                <Refresh />
+              </el-icon>
+            </el-button>
+          </el-space>
+        </template>
 
-      <el-table
-        :data="tableData"
-        border
-        stripe
-        v-loading="loading"
-        empty-text="空空如也~~"
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="studentNo"
-          label="学号"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="name"
-          label="学生姓名"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="sex"
-          label="性别"
-          show-overflow-tooltip
-          align="center"
+        <el-table
+          :data="tableData"
+          border
+          stripe
+          v-loading="loading"
+          empty-text="空空如也~~"
+          style="width: 100%"
         >
-          <template #default="{ row }">
-            {{ SEX.getKeyForValue(row.sex) }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="className"
-          label="所属班级"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="gradeName"
-          label="所属年级"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="majorName"
-          label="所属专业"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="idCard"
-          label="身份证号"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="nation"
-          label="民族"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="phone"
-          label="联系方式"
-          show-overflow-tooltip
-          align="center"
-        />
-        <el-table-column
-          prop="status"
-          label="学业状态"
-          show-overflow-tooltip
-          align="center"
-        >
-          <template #default="{ row }">
-            {{ SCHOOL_WORD_STATE.getKeyForValue(row.status) }}
-          </template>
-        </el-table-column>
-        <!-- <el-table-column label="操作" width="200" align="center">
+          <el-table-column
+            prop="studentNo"
+            label="学号"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="name"
+            label="学生姓名"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="sex"
+            label="性别"
+            show-overflow-tooltip
+            align="center"
+          >
+            <template #default="{ row }">
+              {{ SEX.getKeyForValue(row.sex) }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="className"
+            label="所属班级"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="gradeNameSet"
+            label="所属年级"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="majorNameSet"
+            label="所属专业"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="idCard"
+            label="身份证号"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="nation"
+            label="民族"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="phone"
+            label="联系方式"
+            show-overflow-tooltip
+            align="center"
+          />
+          <el-table-column
+            prop="status"
+            label="学业状态"
+            show-overflow-tooltip
+            align="center"
+          >
+            <template #default="{ row }">
+              {{ SCHOOL_WORD_STATE.getKeyForValue(row.status) }}
+            </template>
+          </el-table-column>
+          <!-- <el-table-column label="操作" width="200" align="center">
           <template #default="{ row }">
             <el-button @click="updateRow(row)">修改</el-button>
             <el-button @click="delRow(row.oid)" type="danger">删除</el-button>
           </template>
         </el-table-column> -->
-      </el-table>
-      <Pagination @size-change="fetchList" @current-change="fetchList" />
-    </el-card>
-  </div>
-  <el-dialog
-    v-model="dialog_active"
-    :title="dialog_title"
-    width="500"
-    draggable
-    @close="resetForm"
-  >
-    <el-form
-      ref="formRef"
-      :model="form"
-      :rules="rules"
-      :disabled="loading"
-      label-position="top"
+        </el-table>
+        <Pagination @size-change="fetchList" @current-change="fetchList" />
+      </el-card>
+    </div>
+    <el-dialog
+      v-model="dialog_active"
+      :title="dialog_title"
+      width="500"
+      draggable
+      @close="resetForm"
     >
-      <el-form-item label="学号" prop="studentNo">
-        <el-input v-model="form.studentNo" placeholder="请输入学号" />
-      </el-form-item>
-      <el-form-item label="性别" prop="sex">
-        <el-radio-group v-model="form.sex">
-          <el-radio
-            v-for="item in SEX.getDict()"
-            :key="item.value"
-            :label="item.value"
-            border
+      <el-form
+        ref="formRef"
+        :model="form"
+        :rules="rules"
+        :disabled="loading"
+        label-position="top"
+      >
+        <el-form-item label="学号" prop="studentNo">
+          <el-input v-model="form.studentNo" placeholder="请输入学号" />
+        </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-radio-group v-model="form.sex">
+            <el-radio
+              v-for="item in SEX.getDict()"
+              :key="item.value"
+              :label="item.value"
+              border
+            >
+              {{ item.label }}
+            </el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="所属班级" prop="classId">
+          <el-select
+            v-model="form.classId"
+            placeholder="请选择所属班级"
+            style="width: 100%"
+          ></el-select>
+        </el-form-item>
+        <el-form-item label="所属年级" prop="gradeId">
+          <el-select
+            v-model="form.gradeId"
+            placeholder="请选择所属年级"
+            style="width: 100%"
+          ></el-select>
+        </el-form-item>
+        <el-form-item label="所属专业" prop="majorId">
+          <el-select
+            v-model="form.majorId"
+            placeholder="请选择所属专业"
+            style="width: 100%"
+          ></el-select>
+        </el-form-item>
+        <el-form-item label="身份证号" prop="idCard">
+          <el-input v-model="form.idCard" placeholder="请输入身份证号" />
+        </el-form-item>
+        <el-form-item label="民族" prop="nation">
+          <el-select
+            v-model="form.nation"
+            placeholder="请选择民族"
+            style="width: 100%"
+          ></el-select>
+        </el-form-item>
+        <el-form-item label="联系电话" prop="phone">
+          <el-input v-model="form.phone" placeholder="请输入联系电话" />
+        </el-form-item>
+        <el-form-item label="学业状态" prop="statue">
+          <el-select
+            v-model="form.statue"
+            placeholder="请选择学业状态"
+            style="width: 100%"
           >
-            {{ item.label }}
-          </el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="所属班级" prop="classId">
-        <el-select
-          v-model="form.classId"
-          placeholder="请选择所属班级"
-          style="width: 100%"
-        ></el-select>
-      </el-form-item>
-      <el-form-item label="所属年级" prop="gradeId">
-        <el-select
-          v-model="form.gradeId"
-          placeholder="请选择所属年级"
-          style="width: 100%"
-        ></el-select>
-      </el-form-item>
-      <el-form-item label="所属专业" prop="majorId">
-        <el-select
-          v-model="form.majorId"
-          placeholder="请选择所属专业"
-          style="width: 100%"
-        ></el-select>
-      </el-form-item>
-      <el-form-item label="身份证号" prop="idCard">
-        <el-input v-model="form.idCard" placeholder="请输入身份证号" />
-      </el-form-item>
-      <el-form-item label="民族" prop="nation">
-        <el-select
-          v-model="form.nation"
-          placeholder="请选择民族"
-          style="width: 100%"
-        ></el-select>
-      </el-form-item>
-      <el-form-item label="联系电话" prop="phone">
-        <el-input v-model="form.phone" placeholder="请输入联系电话" />
-      </el-form-item>
-      <el-form-item label="学业状态" prop="statue">
-        <el-select
-          v-model="form.statue"
-          placeholder="请选择学业状态"
-          style="width: 100%"
-        >
-          <el-option
-            v-for="item in SCHOOL_WORD_STATE.getDict()"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <el-button @click="dialog_active = false">
-        <el-icon><Close /></el-icon>
-        取消
-      </el-button>
-      <el-button type="primary" :loading="loading" @click="submitForm">
-        <el-icon><Check /></el-icon>
-        提交
-      </el-button>
-    </template>
-  </el-dialog>
+            <el-option
+              v-for="item in SCHOOL_WORD_STATE.getDict()"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="dialog_active = false">
+          <el-icon>
+            <Close />
+          </el-icon>
+          取消
+        </el-button>
+        <el-button type="primary" :loading="loading" @click="submitForm">
+          <el-icon>
+            <Check />
+          </el-icon>
+          提交
+        </el-button>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script setup lang="ts" name="Student">
 import { ref, onMounted, reactive } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
-import { getStudentPage, saveStudent } from '@/api/basic/student/index'
-import type { StudentVO } from '@/api/basic/student/type'
+import { getStudentPage, saveStudent } from '@/api/basic/student'
 import { ElMessage } from 'element-plus'
 import { SEX, SCHOOL_WORD_STATE } from '@/utils/dict'
-import { DictionaryType } from '@/store/modules/dictionary'
+import type { FormInstance, FormRules } from 'element-plus'
+import type { StudentVO } from '@/api/basic/student/type'
 import useDictionaryStore from '@/store/modules/dictionary'
 import usePaginationStore from '@/store/modules/pagination'
 
@@ -271,9 +274,8 @@ const dictionaryStore = useDictionaryStore()
 const paginationStore = usePaginationStore()
 
 onMounted(async () => {
-  // 初始化仓库年级和专业信息
-  await dictionaryStore.init(DictionaryType.MAJOR, DictionaryType.GRADE)
-  fetchList()
+  await fetchList()
+  await dictionaryStore.init()
 })
 
 const loading = ref<boolean>(false)
@@ -311,7 +313,7 @@ const rules = reactive<FormRules>({
   phone: [{ required: true, message: '请输入联系方式', trigger: 'blur' }],
   statue: [{ required: true, message: '请选择学业状态', trigger: 'blur' }],
 })
-const searchFormRef = ref<FormInstance>()
+const searchRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
 
 const fetchList = async () => {

@@ -1,15 +1,17 @@
+import { Page } from '@/types/global'
+
 export interface GrowthTreeVO {
-  id?: number
-  pid?: number
+  id: number
+  pid: number
   name: string
-  description?: string
+  description: string
   sort: number
   children?: GrowthTreeVO[] | []
 }
 
 export interface GrowthVO {
-  id?: number
-  pid?: number
+  id: number
+  pid: number
   name: string
   description?: string
   sort?: number
@@ -30,4 +32,26 @@ export interface GrowthItemVO {
   firstLevelId: number
   secondLevelId?: number
   threeLevelId?: number
+}
+
+export interface SetGrowUserForm {
+  assignType: number
+  growthItemId: number
+  userIds: number[]
+}
+
+export interface GrowthItemUser {
+  id: number
+  username: string
+  loginName: string
+  deptName: string
+  className: string
+}
+
+export interface GrowthItemUserQuery extends Page {
+  userType?: number
+  username?: string
+  loginName?: string
+  deptId?: number
+  classId?: number
 }

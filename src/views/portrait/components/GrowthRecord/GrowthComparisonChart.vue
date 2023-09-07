@@ -4,7 +4,11 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
+import { reqGrowthComparison, reqStudyGrade } from '@/api/portrait'
+import useUserStore from '@/store/modules/user'
 import * as echarts from 'echarts'
+
+const userStore = useUserStore()
 
 interface Data {
   name: string
@@ -66,14 +70,14 @@ const option: EChartOption = {
     formatter: (params) => {
       const _params = params as EChartTooltipFormat
       return (
-        _params[0].name +
+        _params[2].seriesName +
         '：' +
-        _params[0].value +
+        _params[2].value +
         '分' +
         '<br />' +
-        _params[1].name +
+        _params[3].seriesName +
         '：' +
-        _params[1].value +
+        _params[3].value +
         '分'
       )
     },
@@ -227,15 +231,16 @@ const props = defineProps<{
 
 watch(
   () => props.semesterId,
-  (newVal) => {
+  async (newVal) => {
     if (newVal) {
-      const data = generateData()
+      // const data = generateData()
+      const data = await fetchData(newVal)
       if (data && data.length) {
         const x: string[] = []
         const y1: number[] = []
         const y2: number[] = []
         for (const value of data) {
-          x.push(value.name)
+          x.push(value.growthName)
           y1.push(value.myScore)
           y2.push(value.avgScore)
         }
@@ -271,6 +276,28 @@ watch(
   },
 )
 
+/**
+ * 获取数据
+ * @param semesterId
+ */
+const fetchData = async (semesterId: number) => {
+  const { studentId } = userStore.userInfo
+  if (!studentId) return null
+  try {
+    chart.showLoading()
+    const { data } = await reqGrowthComparison(semesterId, studentId)
+    return data
+    // source.value = data
+  } catch (error) {
+    console.log(error)
+  } finally {
+    chart.hideLoading()
+  }
+}
+
+/**
+ * 生成随机数据
+ */
 const generateData = (): Data[] => {
   return xData.value.map((item) => {
     return {

@@ -1,7 +1,13 @@
 import { get, post, del, download } from '@/api/api'
 import { Page, PageResult } from '@/types/global'
-import type { GrowthTreeVO, GrowthVO, GrowthItemVO } from './type'
-import type { SimpleUserVO } from '@/api/system/user/type'
+import type {
+  GrowthTreeVO,
+  GrowthVO,
+  GrowthItemVO,
+  SetGrowUserForm,
+  GrowthItemUser,
+  GrowthItemUserQuery,
+} from './type'
 
 export const getGrowthTree = async () => {
   return await get<GrowthTreeVO[]>('/growth/tree')
@@ -27,22 +33,26 @@ export const delGrowthItem = async (id: number) => {
   return await del('/growthItem/del/' + id)
 }
 
-export const getUserGrowthItems = async () => {
-  return await get<GrowthItemVO[]>('/growthItem/myGrowthItems')
+export const reqSelfApplyItem = async (type: 'teacher' | 'studentUnion') => {
+  return await get<GrowthItemVO[]>('/growthItem/self/apply', { type })
 }
 
 export const manualTask = async (num: number) => {
   return await get(`/manualTask/task${num}`)
 }
 
-export const downTemp = async (rec_code: string) => {
-  await download('/grow/downTemp', { rec_code })
+export const downTemp = async (recCode: string) => {
+  await download('/grow/downTemp', { recCode })
 }
 
-export const setGrowthItemUser = async (growId: number, userIds: number[]) => {
-  return await post('/growUser/setGrowthItemUser', { growId, userIds })
+export const setGrowthItemUser = async (data: SetGrowUserForm) => {
+  return await post('/growUser/setGrowthItemUser', data)
 }
 
-export const getGrowItemUser = async (growId: number) => {
-  return await get<SimpleUserVO[]>('/growUser/getGrowItemUser/' + growId)
+export const getGrowItemUser = async (growthItemId: number) => {
+  return await get<any[]>('/growUser/getGrowItemUser/' + growthItemId)
+}
+
+export const reqPaginateGrowthItemUser = async (query: GrowthItemUserQuery) => {
+  return await get<PageResult<GrowthItemUser[]>>('/growUser/page/user', query)
 }

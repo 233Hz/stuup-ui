@@ -1,24 +1,48 @@
 <template>
-  <div style="padding: 10px 20px">
-    <el-card style="margin: 10px 0">
+  <div>
+    <el-card>
       <template #header>
-        <el-page-header :icon="ArrowLeft" @click="router.back()">
+        <el-page-header icon="ArrowLeft" @click="router.back()">
           <template #content>我的积分申请</template>
         </el-page-header>
       </template>
       <el-row>
         <el-col :span="24">
-          <el-form ref="searchFormRef" :model="searchForm" label-width="100px">
-            <el-row>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="一级项目" prop="firstLevelId">
+          <el-form ref="searchRef" :model="search" label-width="100px">
+            <el-row :gutter="20">
+              <el-col :sm="24" :md="12" :xl="4">
+                <el-form-item label="学年">
+                  <el-select v-model="search.yearId" style="width: 100%">
+                    <el-option
+                      v-for="item in dictionaryStore.year"
+                      :key="item.oid"
+                      :label="item.value"
+                      :value="item.oid"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :sm="24" :md="12" :xl="4">
+                <el-form-item label="学期">
+                  <el-select v-model="search.semesterId" style="width: 100%">
+                    <el-option
+                      v-for="item in dictionaryStore.semester"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :sm="24" :md="12" :xl="4">
+                <el-form-item label="一级项目" prop="l1Id">
                   <el-select
-                    v-model="searchForm.firstLevelId"
+                    v-model="search.l1Id"
                     @change="
                       (id: number) => {
                         growthStore.handleLevel1Change(id)
-                        searchForm.secondLevelId = void 0
-                        searchForm.thirdLevelId = void 0
+                        search.l2Id = void 0
+                        search.l3Id = void 0
                       }
                     "
                     style="width: 100%"
@@ -32,14 +56,14 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="二级项目" prop="secondLevelId">
+              <el-col :sm="24" :md="12" :xl="4">
+                <el-form-item label="二级项目" prop="l2Id">
                   <el-select
-                    v-model="searchForm.secondLevelId"
+                    v-model="search.l2Id"
                     @change="
                       (id: number) => {
                         growthStore.handleLevel2Change(id)
-                        searchForm.thirdLevelId = void 0
+                        search.l3Id = void 0
                       }
                     "
                     style="width: 100%"
@@ -53,12 +77,9 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="三级项目" prop="thirdLevelId">
-                  <el-select
-                    v-model="searchForm.thirdLevelId"
-                    style="width: 100%"
-                  >
+              <el-col :sm="24" :md="12" :xl="4">
+                <el-form-item label="三级项目" prop="level3">
+                  <el-select v-model="search.l3Id" style="width: 100%">
                     <el-option
                       v-for="item in growthStore.level3"
                       :key="item.id"
@@ -68,14 +89,14 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item label="项目名称" prop="growName">
-                  <el-input v-model="searchForm.growName" />
+              <el-col :sm="24" :md="12" :xl="4">
+                <el-form-item label="项目名称" prop="growthItemName">
+                  <el-input v-model="search.growthItemName" />
                 </el-form-item>
               </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
+              <el-col :sm="24" :md="12" :xl="4">
                 <el-form-item label="状态" prop="state">
-                  <el-select v-model="searchForm.state" class="w-full">
+                  <el-select v-model="search.state" class="w-full">
                     <el-option
                       v-for="item in AUDIT_STATUS.getDict()"
                       :key="item.value"
@@ -85,23 +106,36 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :sm="24" :md="12" :xl="8">
-                <el-form-item>
-                  <el-space>
-                    <el-button
-                      type="primary"
-                      @click="fetchList"
-                      :loading="loading"
-                    >
-                      <el-icon><Search /></el-icon>
-                      查询
-                    </el-button>
-                    <el-button @click="searchFormRef?.resetFields()">
-                      <el-icon><Close /></el-icon>
-                      清空
-                    </el-button>
-                  </el-space>
-                </el-form-item>
+              <el-col :sm="24" :md="12" :xl="12">
+                <el-space>
+                  <el-button
+                    type="primary"
+                    icon="Search"
+                    :loading="loading"
+                    plain
+                    @click="fetchData"
+                  >
+                    查询
+                  </el-button>
+                  <el-button
+                    icon="Close"
+                    plain
+                    @click="searchRef?.resetFields()"
+                  >
+                    清空
+                  </el-button>
+                  <el-button
+                    icon="Refresh"
+                    :loading="loading"
+                    plain
+                    @click="fetchData"
+                  >
+                    刷新
+                  </el-button>
+                  <el-button type="primary" icon="Plus" plain @click="addRow">
+                    申请成长积分
+                  </el-button>
+                </el-space>
               </el-col>
             </el-row>
           </el-form>
@@ -109,19 +143,6 @@
       </el-row>
     </el-card>
     <el-card>
-      <template #header>
-        <el-space>
-          <el-button type="primary" @click="addRow">
-            <el-icon><Plus /></el-icon>
-            申请成长积分
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button :disabled="loading" circle @click="fetchList">
-            <el-icon><Refresh /></el-icon>
-          </el-button>
-        </el-space>
-      </template>
-
       <el-table
         :data="tableData"
         border
@@ -131,31 +152,43 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="growName"
+          prop="yearName"
+          label="学年"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="semesterName"
+          label="学期"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="growthItemName"
           label="项目名称"
           show-overflow-tooltip
           align="center"
         />
         <el-table-column
-          prop="thirdLevelName"
+          prop="l3Name"
           label="三级项目"
           show-overflow-tooltip
           align="center"
         />
         <el-table-column
-          prop="secondLevelName"
+          prop="l2Name"
           label="二级项目"
           show-overflow-tooltip
           align="center"
         />
         <el-table-column
-          prop="firstLevelName"
+          prop="l1Name"
           label="一级项目"
           show-overflow-tooltip
           align="center"
         />
         <el-table-column
-          prop="auditor"
+          prop="auditorName"
           label="审核人"
           show-overflow-tooltip
           align="center"
@@ -179,21 +212,24 @@
             <el-tag v-show="row.state === AUDIT_STATUS.PASS" type="success">
               {{ AUDIT_STATUS.getKey('PASS') }}
             </el-tag>
-            <el-tag v-show="row.state === AUDIT_STATUS.REFUSE" type="danger">
-              {{ AUDIT_STATUS.getKey('REFUSE') }}
-            </el-tag>
-            <el-tag v-show="row.state === AUDIT_STATUS.RETURN" type="warning">
-              {{ AUDIT_STATUS.getKey('RETURN') }}
+            <el-tag v-show="row.state === AUDIT_STATUS.NO_PASS" type="danger">
+              {{ AUDIT_STATUS.getKey('NO_PASS') }}
             </el-tag>
           </template>
         </el-table-column>
+        <el-table-column
+          prop="growthItemScore"
+          label="项目积分"
+          show-overflow-tooltip
+          align="center"
+        />
         <el-table-column label="操作" width="400" align="center">
           <template #default="{ row }">
             <el-button @click="auditDetailsRef.open(row)">审核信息</el-button>
             <el-button
               :disabled="
                 row.state !== AUDIT_STATUS.TO_BE_SUBMITTED &&
-                row.state !== AUDIT_STATUS.RETURN
+                row.state !== AUDIT_STATUS.NO_PASS
               "
               @click="submitRow(row.id)"
             >
@@ -202,7 +238,7 @@
             <el-button
               :disabled="
                 row.state !== AUDIT_STATUS.TO_BE_SUBMITTED &&
-                row.state !== AUDIT_STATUS.RETURN
+                row.state !== AUDIT_STATUS.NO_PASS
               "
               @click="updateRow(row)"
             >
@@ -211,7 +247,7 @@
             <el-button
               :disabled="
                 row.state !== AUDIT_STATUS.TO_BE_SUBMITTED &&
-                row.state !== AUDIT_STATUS.RETURN
+                row.state !== AUDIT_STATUS.NO_PASS
               "
               type="danger"
               @click="delRow(row.id)"
@@ -231,7 +267,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <Pagination @size-change="fetchList" @current-change="fetchList" />
+      <Pagination @size-change="fetchData" @current-change="fetchData" />
     </el-card>
     <el-dialog
       v-model="active"
@@ -246,7 +282,7 @@
             v-model="form.growId"
             placeholder="请选择所属项目"
             clearable
-            :options="GROW_ITEM"
+            :options="studentApplyGrowthItems"
             :props="cascadeProps"
             style="width: 100%"
           />
@@ -305,25 +341,26 @@
 
 <script setup lang="ts" name="Apply">
 import { ref, onMounted, reactive, computed } from 'vue'
-import { ElMessage, ElMessageBox, genFileId } from 'element-plus'
+import {
+  ElMessage,
+  ElMessageBox,
+  type CascaderProps,
+  genFileId,
+} from 'element-plus'
 import {
   reqStudentGrowthItems,
   applyGrowItem,
-  pageGrowApplyRecord,
+  reqPageStudentApplyRecord,
   updateAudGrow,
   deleteAudGrow,
   submitGrowItem,
 } from '@/api/apply'
-import type { AudGrow } from '@/api/apply/type'
-import { getToken } from '@/utils/auth'
-import { AUDIT_STATUS } from '@/utils/dict'
-import { requiredRule } from '@/utils/rules'
 import { useRouter } from 'vue-router'
-import { ArrowLeft } from '@element-plus/icons-vue'
+import { getToken } from '@/utils/auth'
+import { requiredRule } from '@/utils/rules'
 import { formatDate } from '@/utils/util'
+import { AUDIT_STATUS } from '@/utils/dict'
 import AuditDetails from '@/components/AuditDetails/index.vue'
-import useGrowthStore from '@/store/modules/growth'
-import usePaginationStore from '@/store/modules/pagination'
 import type {
   FormInstance,
   FormRules,
@@ -333,7 +370,11 @@ import type {
   UploadFile,
   UploadFiles,
 } from 'element-plus'
-import type { StudentGrowthItems } from '@/api/apply/type'
+import type { GrowApplyRecord, StudentGrowthItems } from '@/api/apply/type'
+import useGrowthStore from '@/store/modules/growth'
+import usePaginationStore from '@/store/modules/pagination'
+import useDictionaryStore from '@/store/modules/dictionary'
+import useUserStore from '@/store/modules/user'
 
 interface TreeNode {
   id: number
@@ -344,7 +385,7 @@ interface TreeNode {
 const baseApi = import.meta.env.VITE_APP_BASE_API
 const action = baseApi + '/file/upload'
 
-const cascadeProps = {
+const cascadeProps: CascaderProps = {
   label: 'name',
   value: 'id',
   children: 'children',
@@ -354,28 +395,30 @@ const cascadeProps = {
 
 const growthStore = useGrowthStore()
 const paginationStore = usePaginationStore()
+const dictionaryStore = useDictionaryStore()
+const userStore = useUserStore()
 const router = useRouter()
 
-//DICT
-const GROW_ITEM = ref<TreeNode[]>()
+const { yearId, semesterId } = userStore.userInfo
 
-//REF
-const searchFormRef = ref<FormInstance>()
+const searchRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
 const uploadRef = ref<UploadInstance>()
 const auditDetailsRef = ref()
 
-//DATA
 const loading = ref<boolean>(false)
 const active = ref<boolean>(false)
 const title = ref<string>()
 const tableData = ref()
+const studentApplyGrowthItems = ref<TreeNode[]>([])
 
-const searchForm = ref({
-  firstLevelId: void 0,
-  secondLevelId: void 0,
-  thirdLevelId: void 0,
-  growName: void 0,
+const search = ref<any>({
+  yearId: void 0,
+  semesterId: void 0,
+  l1Id: void 0,
+  l2Id: void 0,
+  l3Id: void 0,
+  growthItemName: void 0,
   state: void 0,
 })
 const form = ref<any>({
@@ -385,32 +428,29 @@ const form = ref<any>({
   fileIds: void 0,
 })
 const rules = reactive<FormRules>({
-  growId: [requiredRule('申请项目')],
+  growthItemId: [requiredRule('申请项目')],
   reason: [requiredRule('申请说明')],
   fileIds: [requiredRule('证明附件')],
 })
 
-//INIT
-onMounted(async () => {
-  fetchList()
-  initGrowthItem()
-  // 初始化成长项目仓库数据
-  await growthStore.init()
-})
-
-//COMPUTED
 const headers = computed(() => {
   return {
     Authorization: getToken(),
   }
 })
 
-//WATCH
+onMounted(async () => {
+  await dictionaryStore.init()
+  search.value.yearId = yearId
+  search.value.semesterId = semesterId
+  await fetchData()
+  await growthStore.init()
+  await initStudentApplyGrowthItems()
+})
 
-//METHODS
-const initGrowthItem = async () => {
+const initStudentApplyGrowthItems = async () => {
   const { data } = await reqStudentGrowthItems()
-  GROW_ITEM.value = buildTree(data)
+  studentApplyGrowthItems.value = buildTree(data)
 }
 
 const buildTree = (data: StudentGrowthItems[]): TreeNode[] => {
@@ -464,12 +504,12 @@ const buildTree = (data: StudentGrowthItems[]): TreeNode[] => {
   return tree
 }
 
-const fetchList = async () => {
+const fetchData = async () => {
   loading.value = true
   try {
     const { current, size } = paginationStore
-    const query = Object.assign(searchForm.value, { current, size })
-    const { data } = await pageGrowApplyRecord(query)
+    const query = Object.assign(search.value, { current, size })
+    const { data } = await reqPageStudentApplyRecord(query)
     paginationStore.setTotal(data.total)
     tableData.value = data.records
   } finally {
@@ -481,11 +521,11 @@ const addRow = () => {
   title.value = '申请成长积分'
   active.value = true
 }
-const updateRow = (row: AudGrow) => {
+const updateRow = (row: GrowApplyRecord) => {
   title.value = '修改申请'
   active.value = true
   form.value.id = row.id
-  form.value.growId = row.growId
+  form.value.growId = row.growthItemId
   form.value.reason = row.reason
   form.value.fileIds = row.fileIds
 }
@@ -500,7 +540,7 @@ const delRow = (id: number) => {
       try {
         const data = await deleteAudGrow(id)
         ElMessage.success(data.message)
-        fetchList()
+        await fetchData()
       } finally {
         loading.value = false
       }
@@ -519,7 +559,7 @@ const submitRow = (id: number) => {
       try {
         const data = await submitGrowItem(id)
         ElMessage.success(data.message)
-        fetchList()
+        await fetchData()
       } finally {
         loading.value = false
       }
@@ -541,7 +581,7 @@ const submitForm = async () => {
       const data = await updateAudGrow(form.value)
       ElMessage.success(data.message)
     }
-    fetchList()
+    await fetchData()
     active.value = false
   } finally {
     loading.value = false
@@ -602,10 +642,16 @@ const resetForm = () => {
   form.value = {
     id: void 0,
     growId: void 0,
-    reason: '',
-    fileIds: '',
+    reason: void 0,
+    fileIds: void 0,
   }
   formRef.value?.resetFields()
   uploadRef.value?.clearFiles()
 }
 </script>
+
+<style scoped lang="scss">
+.el-card {
+  margin: 10px;
+}
+</style>

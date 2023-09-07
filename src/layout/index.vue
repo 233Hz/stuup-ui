@@ -12,14 +12,14 @@
           <Breadcrumb />
         </div>
         <div class="main">
-          <router-view v-slot="{ Component, route }">
-            <keep-alive :include="permissionStore.getCachedView">
+          <router-view>
+            <template #default="{ Component, route }">
               <transition name="fade">
-                <div class="w-full h-full relative" :key="route.fullPath">
-                  <component :is="Component" />
-                </div>
+                <keep-alive :include="permissionStore.getCachedView">
+                  <component :is="Component" :key="route.fullPath" />
+                </keep-alive>
               </transition>
-            </keep-alive>
+            </template>
           </router-view>
         </div>
       </div>

@@ -1,35 +1,35 @@
 <template>
   <el-row>
     <el-col :span="24">
-      <el-form ref="searchFormRef" :model="searchForm" label-width="80px">
+      <el-form ref="searchRef" :model="searchForm" label-width="80px">
         <el-row>
           <el-col :sm="24" :md="8" :xl="8">
-            <el-form-item label="用户名" prop="username">
+            <el-form-item label="学生姓名" prop="username">
               <el-input
                 v-model="searchForm.username"
-                placeholder="请输入用户名"
+                placeholder="请输入学生姓名"
               />
             </el-form-item>
           </el-col>
           <el-col :sm="24" :md="8" :xl="8">
-            <el-form-item label="教师工号" prop="teacherNo">
+            <el-form-item label="学号" prop="teacherNo">
               <el-input
-                v-model="searchForm.teacherNo"
-                placeholder="请输入教师工号"
+                v-model="searchForm.loginName"
+                placeholder="请输入学号"
               />
             </el-form-item>
           </el-col>
           <el-col :sm="24" :md="8" :xl="8">
-            <el-form-item label="所属部门" prop="deptId">
+            <el-form-item label="所属班级" prop="classId">
               <el-select
-                v-model="searchForm.deptId"
-                placeholder="请选择所属部门"
+                v-model="searchForm.classId"
+                placeholder="请选择所属班级"
               >
                 <el-option
-                  v-for="item in dictionaryStore.dept"
-                  :key="item.oid"
-                  :label="item.value"
-                  :value="item.oid"
+                  v-for="item in dictionaryStore.class"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
                 />
               </el-select>
             </el-form-item>
@@ -43,7 +43,7 @@
           <el-button type="primary" @click="fetchList" :loading="loading">
             查询
           </el-button>
-          <el-button @click="searchFormRef?.resetFields()">清空</el-button>
+          <el-button @click="searchRef?.resetFields()">清空</el-button>
         </el-space>
       </div>
     </el-col>
@@ -67,14 +67,14 @@
       align="center"
     />
     <el-table-column
-      prop="teacherNo"
+      prop="loginName"
       label="工号"
       show-overflow-tooltip
       align="center"
     />
     <el-table-column
-      prop="deptName"
-      label="所属部门"
+      prop="className"
+      label="所属班级"
       show-overflow-tooltip
       align="center"
     />
@@ -96,31 +96,32 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { getSimpleUserPage } from '@/api/system/user'
+import { reqPaginateGrowthItemUser } from '@/api/grow/config'
 import { ElTable } from 'element-plus'
-import { DictionaryType } from '@/store/modules/dictionary'
-import useDictionaryStore from '@/store/modules/dictionary'
+import { USER_TYPE } from '@/utils/dict'
 import type { FormInstance } from 'element-plus'
-import type { SimpleUserVO } from '@/api/system/user/type'
+import type { GrowthItemUser } from '@/api/grow/config/type'
+import useDictionaryStore from '@/store/modules/dictionary'
 
 const dictionaryStore = useDictionaryStore()
 
-const searchFormRef = ref<FormInstance>()
+const searchRef = ref<FormInstance>()
 const tableRef = ref<InstanceType<typeof ElTable>>()
 const loading = ref<boolean>(false)
 const total = ref<number>(0)
-const tableData = ref<SimpleUserVO[]>()
+const tableData = ref<GrowthItemUser[]>([])
 const searchForm = ref({
   current: 1,
   size: 10,
+  userType: USER_TYPE.STUDENT,
   username: void 0,
-  teacherNo: void 0,
-  deptId: void 0,
+  loginName: void 0,
+  classId: void 0,
 })
 
 onMounted(async () => {
-  await dictionaryStore.init(DictionaryType.DEPT)
-  fetchList()
+  await fetchList()
+  await dictionaryStore.init()
 })
 
 /**
@@ -129,7 +130,7 @@ onMounted(async () => {
 const fetchList = async () => {
   loading.value = true
   try {
-    const { data } = await getSimpleUserPage(searchForm.value)
+    const { data } = await reqPaginateGrowthItemUser(searchForm.value)
     total.value = data.total
     tableData.value = data.records
   } finally {
@@ -141,7 +142,7 @@ const fetchList = async () => {
  * 表格选中改变处理
  * @param val
  */
-const tableSelectChangeHandler = (val: SimpleUserVO[]) => {
+const tableSelectChangeHandler = (val: any[]) => {
   emit('selectChange', val)
 }
 
@@ -167,7 +168,7 @@ const pageSizeChangeHandler = (val: number) => {
  * 重置
  */
 const reset = () => {
-  searchFormRef.value?.resetFields()
+  searchRef.value?.resetFields()
   tableRef.value?.clearSelection()
 }
 
@@ -185,12 +186,12 @@ const clearSelection = () => {
 const cancelSelect = (userId: number) => {
   const row = tableRef.value
     ?.getSelectionRows()
-    ?.find((row: SimpleUserVO) => row.id === userId)
+    ?.find((row: GrowthItemUser) => row.id === userId)
   if (row) tableRef.value?.toggleRowSelection(row, false)
 }
 
 const emit = defineEmits<{
-  selectChange: [selected: SimpleUserVO[]]
+  selectChange: [selected: GrowthItemUser[]]
 }>()
 defineExpose({ reset, clearSelection, cancelSelect })
 </script>

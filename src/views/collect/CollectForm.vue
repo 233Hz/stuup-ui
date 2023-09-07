@@ -47,12 +47,12 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { getUserGrowthItems, downTemp } from '@/api/grow/config'
+import { reqSelfApplyItem, downTemp } from '@/api/grow/config'
 import type { GrowthItemVO } from '@/api/grow/config/type'
 import { ElMessage } from 'element-plus'
 import bus from '@/utils/bus'
 
-const baseApi = import.meta.env.VITE_APP_BASE_API
+const baseApi = import.meta.env.VITE_SERVE
 const action = baseApi + '/grow/import'
 
 const fromRef = ref()
@@ -70,7 +70,7 @@ onMounted(() => {
 })
 
 const initGrowthItem = async () => {
-  const { data: res } = await getUserGrowthItems()
+  const { data: res } = await reqSelfApplyItem('teacher')
   growItems.value = res
   form.recCode = growItems.value[0].code
 }

@@ -12,3 +12,7 @@ export const downFile = (storageName: string, originalName?: string) => {
 export const getFileListForIds = async (ids: string) => {
   return get<FileVO[]>('/file/files/' + ids)
 }
+
+export const reqFileUrl = (fileName: string) => {
+  return get<string>('/file/getFileUrl', { fileName })
+}

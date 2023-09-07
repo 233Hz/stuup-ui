@@ -1,6 +1,11 @@
 <template>
   <div class="w-full h-400">
-    <el-table :data="listData" style="width: 100%" height="400">
+    <el-table
+      :data="listData"
+      style="width: 100%"
+      height="400"
+      header-row-class-name="text-#03aa8c"
+    >
       <el-table-column
         prop="awardName"
         label="获奖名称"

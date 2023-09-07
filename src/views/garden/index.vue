@@ -20,7 +20,7 @@
           {{ total }}
           <span>人</span>
         </h1>
-        <el-form ref="searchFormRef" :inline="true" :model="searchForm">
+        <el-form ref="searchRef" :inline="true" :model="searchForm">
           <el-form-item prop="studentName">
             <el-input v-model="searchForm.studentName" placeholder="学生姓名" />
           </el-form-item>
@@ -39,7 +39,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="fetchList">查询</el-button>
-            <el-button @click="searchFormRef?.resetFields()">重置</el-button>
+            <el-button @click="searchRef?.resetFields()">重置</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -61,7 +61,7 @@
             </div>
             <div class="list-item-content">
               <h4>{{ item.studentName }}</h4>
-              <h6>所属年级： {{ item.gradeName }}</h6>
+              <h6>所属年级： {{ item.gradeNameSet }}</h6>
               <p>所属班级： {{ item.className }}</p>
             </div>
             <div class="list-item-score">
@@ -103,14 +103,13 @@ import type { GrowGardenVO } from '@/api/garden/type'
 import { GARDEN_TYPE } from '@/utils/dict'
 import icon from '@/assets/image/default_avatar.png'
 import useDictionaryStore from '@/store/modules/dictionary'
-import { DictionaryType } from '@/store/modules/dictionary'
 
 const dictionaryStore = useDictionaryStore()
 
 const route = useRoute()
 const router = useRouter()
 
-const searchFormRef = ref<FormInstance>()
+const searchRef = ref<FormInstance>()
 
 const searchForm = ref({
   current: 1,
@@ -126,8 +125,8 @@ const listData = ref<GrowGardenVO[]>([])
 const loading = ref<boolean>(false)
 
 onMounted(async () => {
-  await dictionaryStore.init(DictionaryType.DEPT)
-  fetchList()
+  await fetchList()
+  await dictionaryStore.init()
 })
 
 const fetchList = async () => {

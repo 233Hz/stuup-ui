@@ -5,7 +5,7 @@
         <el-row>
           <el-col :span="24">
             <el-form
-              ref="searchFormRef"
+              ref="searchRef"
               :model="searchForm"
               label-width="80px"
               :disabled="loading"
@@ -37,7 +37,7 @@
           <el-button type="primary" @click="fetchList" :loading="loading">
             查询
           </el-button>
-          <el-button @click="searchFormRef?.resetFields()">清空</el-button>
+          <el-button @click="searchRef?.resetFields()">清空</el-button>
         </el-space>
       </div>
     </el-card>
@@ -114,7 +114,7 @@ const router = useRouter()
 const paginationStore = usePaginationStore()
 
 // REF
-const searchFormRef = ref()
+const searchRef = ref()
 
 // DATA
 const loading = ref(false)

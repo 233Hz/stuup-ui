@@ -5,11 +5,7 @@
         <template #header>
           <el-row>
             <el-col :span="24">
-              <el-form
-                ref="searchFormRef"
-                :model="searchForm"
-                label-width="80px"
-              >
+              <el-form ref="searchRef" :model="searchForm" label-width="80px">
                 <el-row>
                   <el-col :sm="24" :md="12" :xl="8">
                     <el-form-item label="学年" prop="yearId">
@@ -99,7 +95,7 @@
             <el-button type="primary" @click="fetchList" :loading="loading">
               查询
             </el-button>
-            <el-button @click="searchFormRef?.resetFields()">清空</el-button>
+            <el-button @click="searchRef?.resetFields()">清空</el-button>
           </el-space>
         </div>
       </el-card>
@@ -226,13 +222,12 @@
 
 <script setup lang="ts" name="Collect">
 import { ref, onMounted } from 'vue'
-import { ElMessage, type FormInstance } from 'element-plus'
-import { getRecLogPage } from '@/api/collect/index'
+import { getRecLogPage } from '@/api/collect'
 import { manualTask } from '@/api/grow/config'
-import { DictionaryType } from '@/store/modules/dictionary'
 import { formatDate } from '@/utils/util'
-import type { GrowthTreeVO } from '@/api/grow/config/type'
 import bus from '@/utils/bus'
+import { ElMessage, type FormInstance } from 'element-plus'
+import type { GrowthTreeVO } from '@/api/grow/config/type'
 import CollectForm from './CollectForm.vue'
 import CollectDetails from './CollectDetails.vue'
 import useGrowthStore from '@/store/modules/growth'
@@ -249,8 +244,8 @@ bus.on('upload-success', () => {
 
 onMounted(async () => {
   await growthStore.init()
-  await dictionaryStore.init(DictionaryType.YEAR, DictionaryType.GRADE)
-  fetchList()
+  await fetchList()
+  await dictionaryStore.init()
 })
 
 // Ref
@@ -267,7 +262,7 @@ const searchForm = ref({
   threeLevelId: void 0,
   growName: void 0,
 })
-const searchFormRef = ref<FormInstance>()
+const searchRef = ref<FormInstance>()
 
 const fetchList = async () => {
   loading.value = true

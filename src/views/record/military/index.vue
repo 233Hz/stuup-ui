@@ -5,11 +5,7 @@
         <template #header>
           <el-row>
             <el-col :span="24">
-              <el-form
-                ref="searchFormRef"
-                :model="searchForm"
-                label-width="80px"
-              >
+              <el-form ref="searchRef" :model="searchForm" label-width="80px">
                 <el-row>
                   <el-col :sm="24" :md="12" :xl="8">
                     <el-form-item label="学年" prop="yearId">
@@ -61,7 +57,7 @@
             <el-button type="primary" @click="fetchList" :loading="loading">
               查询
             </el-button>
-            <el-button @click="searchFormRef?.resetFields()">清空</el-button>
+            <el-button @click="searchRef?.resetFields()">清空</el-button>
           </el-space>
         </div>
       </el-card>
@@ -96,7 +92,7 @@
             align="center"
           />
           <el-table-column
-            prop="gradeName"
+            prop="gradeNameSet"
             label="年级"
             show-overflow-tooltip
             align="center"
@@ -170,12 +166,11 @@
 
 <script setup lang="ts" name="Military">
 import { ref, onMounted } from 'vue'
-import type { FormInstance } from 'element-plus'
-import { getRecMilitaryPage } from '@/api/record/military/index'
-import type { RecMilitaryVO } from '@/api/record/military/type'
+import { getRecMilitaryPage } from '@/api/record/military'
 import { MILITARY_LEVEL, WHETHER, REC_CODE } from '@/utils/dict'
 import { downRecord } from '@/api/record'
-import { DictionaryType } from '@/store/modules/dictionary'
+import type { FormInstance } from 'element-plus'
+import type { RecMilitaryVO } from '@/api/record/military/type'
 import useDictionaryStore from '@/store/modules/dictionary'
 import useUserStore from '@/store/modules/user'
 import usePaginationStore from '@/store/modules/pagination'
@@ -185,12 +180,12 @@ const userStore = useUserStore()
 const paginationStore = usePaginationStore()
 
 onMounted(async () => {
-  await dictionaryStore.init(DictionaryType.YEAR, DictionaryType.GRADE)
-  fetchList()
+  await fetchList()
+  await dictionaryStore.init()
 })
 
 // REF
-const searchFormRef = ref<FormInstance>()
+const searchRef = ref<FormInstance>()
 
 // DATA
 const loading = ref<boolean>(false)

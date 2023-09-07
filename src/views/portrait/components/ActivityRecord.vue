@@ -1,6 +1,11 @@
 <template>
   <div class="w-full h-400">
-    <el-table :data="listData" style="width: 100%" height="400">
+    <el-table
+      :data="listData"
+      style="width: 100%"
+      height="400"
+      header-row-class-name="text-#03aa8c"
+    >
       <el-table-column
         prop="activityName"
         label="活动名称"
@@ -18,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { reqActivityRecord } from '@/api/portrait/index'
 
 const listData = ref()

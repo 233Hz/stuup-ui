@@ -5,11 +5,7 @@
         <template #header>
           <el-row>
             <el-col :span="24">
-              <el-form
-                ref="searchFormRef"
-                :model="searchForm"
-                label-width="120px"
-              >
+              <el-form ref="searchRef" :model="searchForm" label-width="120px">
                 <el-row>
                   <el-col :sm="24" :md="12" :xl="8">
                     <el-form-item label="一级项目" prop="firstLevelId">
@@ -196,7 +192,7 @@
             align="center"
           />
           <el-table-column
-            prop="gradeName"
+            prop="gradeNameSet"
             label="年级"
             show-overflow-tooltip
             align="center"
@@ -250,8 +246,7 @@
 
 <script setup lang="ts" name="GrowScore">
 import { ref, onMounted } from 'vue'
-import { getRecScorePage } from '@/api/growScore/index'
-import { DictionaryType } from '@/store/modules/dictionary'
+import { getRecScorePage } from '@/api/growScore'
 import { formatDate } from '@/utils/util'
 import type { FormInstance } from 'element-plus'
 import type { RecScoreVO } from '@/api/growScore/type'
@@ -264,9 +259,9 @@ const growthStore = useGrowthStore()
 const paginationStore = usePaginationStore()
 
 onMounted(async () => {
-  await dictionaryStore.init(DictionaryType.YEAR, DictionaryType.GRADE)
+  await fetchList()
   await growthStore.init()
-  fetchList()
+  await dictionaryStore.init()
 })
 
 const loading = ref<boolean>(false)
@@ -285,7 +280,7 @@ const searchForm = ref({
   startTime: void 0,
   endTime: void 0,
 })
-const searchFormRef = ref<FormInstance>()
+const searchRef = ref<FormInstance>()
 
 const handleSearch = () => {
   const timeRange = searchForm.value.datatimeRange

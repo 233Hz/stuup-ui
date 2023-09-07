@@ -46,7 +46,7 @@
             placeholder="请选择父项目"
             clearable
             :options="growthStore.level1"
-            :props="cascaderProps"
+            :props="cascadeProps"
             style="width: 100%"
           />
         </el-form-item>
@@ -86,11 +86,11 @@
 
 <script setup lang="ts">
 import { onMounted, ref, reactive, watch, h } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
 import { saveOrUpdateGrowth, delGrowth } from '@/api/grow/config'
-import { GrowthVO, GrowthTreeVO } from '@/api/grow/config/type'
 import { ElMessage, ElMessageBox, ElTree } from 'element-plus'
 import bus from '@/utils/bus'
+import type { FormInstance, FormRules, CascaderProps } from 'element-plus'
+import type { GrowthTreeVO } from '@/api/grow/config/type'
 import useGrowthStore from '@/store/modules/growth'
 
 const growthStore = useGrowthStore()
@@ -100,7 +100,7 @@ const props = {
   children: 'children',
 }
 
-const cascaderProps = {
+const cascadeProps: CascaderProps = {
   label: 'name',
   value: 'id',
   children: 'children',
@@ -116,12 +116,12 @@ const filterText = ref<string>()
 
 const treeRef = ref<InstanceType<typeof ElTree>>()
 const formRef = ref<FormInstance>()
-const form = ref<GrowthVO>({
-  id: undefined,
-  pid: undefined,
-  name: '',
-  description: '',
-  sort: undefined,
+const form = ref<any>({
+  id: void 0,
+  pid: void 0,
+  name: void 0,
+  description: void 0,
+  sort: void 0,
 })
 const rules = reactive<FormRules>({
   name: [{ required: true, message: '请填写项目名称', trigger: 'blur' }],
@@ -223,11 +223,11 @@ const handleDialogClose = () => {
 
 const resetForm = () => {
   form.value = {
-    id: undefined,
-    pid: undefined,
-    name: '',
-    description: '',
-    sort: undefined,
+    id: void 0,
+    pid: void 0,
+    name: void 0,
+    description: void 0,
+    sort: void 0,
   }
   formRef.value?.resetFields()
 }

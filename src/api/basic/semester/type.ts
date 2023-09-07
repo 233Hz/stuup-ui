@@ -1,13 +1,7 @@
-export interface StudentSemesterInfo {
-  id: number
-  name: string
-  isCurrent: 1 | 2
-}
-export type StudentSemesterInfoList = StudentSemesterInfo[]
-
 export interface SemesterVO {
   id: number
   yearId: number
+  year?: number
   yearName: string
   name: string
   startTime: Date
@@ -21,4 +15,9 @@ export interface SemesterDTO {
   name: string
   startTime: Date
   endTime: Date
+}
+
+export interface SemesterDict {
+  id: number
+  name: string
 }

@@ -1,5 +1,52 @@
 <template>
-  <div shadow="never" class="p-20 w-full h-full" v-loading="loading">
+  <div class="p-20 w-full h-full" v-loading="loading">
+    <el-card shadow="never" class="my-10">
+      <el-form ref="searchRef" :model="search">
+        <el-row :gutter="20">
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="专业" prop="majorName">
+              <el-input v-model="search.majorName" />
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="系部" prop="facultyName">
+              <el-select v-model="search.facultyName" style="width: 100%">
+                <el-option
+                  v-for="item in searchData.facultyNameSet"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-space>
+              <el-button
+                type="primary"
+                icon="Search"
+                :loading="loading"
+                plain
+                @click="filterSearchHandler"
+              >
+                查询
+              </el-button>
+              <el-button icon="Close" @click="searchRef?.resetFields()" plain>
+                清空
+              </el-button>
+              <el-button
+                icon="Refresh"
+                :loading="loading"
+                plain
+                @click="fetchData"
+              >
+                刷新
+              </el-button>
+            </el-space>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-card>
     <el-auto-resizer>
       <template #default="{ height, width }">
         <el-table-v2
@@ -17,32 +64,16 @@
   </div>
 </template>
 
-<script setup lang="tsx" name="RankingMajor">
+<script setup lang="ts" name="RankingMajor">
 import { ref, onMounted } from 'vue'
 import type { Column } from 'element-plus'
 import type { MajorRankVO } from '@/api/ranking/major/type'
-import { getMajorRank } from '@/api/ranking/major/index'
-import { ElButton, ElSelectV2, ElIcon, ElPopover } from 'element-plus'
-import { Filter } from '@element-plus/icons-vue'
+import { getMajorRank } from '@/api/ranking/major'
 
-import type { HeaderCellSlotProps } from 'element-plus'
-
-// TYPE
-interface FilterFormType {
-  majorName: string
-  facultyName: string
+interface SearchDataType {
+  facultyNameSet: Set<string>
 }
 
-type FilterDataItem = {
-  label: string
-  value: string
-}
-
-interface FilterDataType {
-  facultyName: readonly FilterDataItem[]
-}
-
-// CONST
 const columns: Column[] = [
   {
     align: 'center',
@@ -57,50 +88,6 @@ const columns: Column[] = [
     dataKey: 'majorName',
     title: '专业名称',
     width: 400,
-    // @ts-ignore
-    headerCellRenderer: (props: HeaderCellSlotProps) => {
-      return (
-        <div class="flex items-center justify-center">
-          <span class="mr-2 size-14 weight-700">{props.column.title}</span>
-          <ElPopover
-            v-model:visible={visible1.value}
-            trigger="click"
-            {...{ width: 200 }}
-          >
-            {{
-              default: () => (
-                <div>
-                  <div>
-                    <el-input
-                      v-model={filterForm.value.majorName}
-                      placeholder="请输入专业名称"
-                    />
-                  </div>
-                  <div class="flex items-center justify-center mt-4">
-                    <ElButton text onClick={onFilter}>
-                      确 认
-                    </ElButton>
-                    <ElButton
-                      text
-                      onClick={() =>
-                        onReset(props.column.dataKey as keyof FilterFormType)
-                      }
-                    >
-                      清 空
-                    </ElButton>
-                  </div>
-                </div>
-              ),
-              reference: () => (
-                <ElIcon class="cursor-pointer">
-                  <Filter />
-                </ElIcon>
-              ),
-            }}
-          </ElPopover>
-        </div>
-      )
-    },
   },
   {
     align: 'center',
@@ -108,52 +95,6 @@ const columns: Column[] = [
     dataKey: 'facultyName',
     title: '所属系部',
     width: 400,
-    // @ts-ignore
-    headerCellRenderer: (props: HeaderCellSlotProps) => {
-      return (
-        <div class="flex items-center justify-center">
-          <span class="mr-2 size-14 weight-700">{props.column.title}</span>
-          <ElPopover
-            v-model:visible={visible2.value}
-            trigger="click"
-            {...{ width: 200 }}
-          >
-            {{
-              default: () => (
-                <div>
-                  <div>
-                    <ElSelectV2
-                      v-model={filterForm.value.facultyName}
-                      options={[...filterData.facultyName]}
-                      placeholder="请选择系部"
-                      teleported={false}
-                    />
-                  </div>
-                  <div class="flex items-center justify-center mt-4">
-                    <ElButton text onClick={onFilter}>
-                      确 认
-                    </ElButton>
-                    <ElButton
-                      text
-                      onClick={() =>
-                        onReset(props.column.dataKey as keyof FilterFormType)
-                      }
-                    >
-                      清 空
-                    </ElButton>
-                  </div>
-                </div>
-              ),
-              reference: () => (
-                <ElIcon class="cursor-pointer">
-                  <Filter />
-                </ElIcon>
-              ),
-            }}
-          </ElPopover>
-        </div>
-      )
-    },
   },
   {
     align: 'center',
@@ -163,7 +104,6 @@ const columns: Column[] = [
     width: 200,
   },
 ]
-
 const cellProps = ({ columnIndex }: { columnIndex: number }) => {
   const key = `hovering-col-${columnIndex}`
   return {
@@ -176,64 +116,49 @@ const cellProps = ({ columnIndex }: { columnIndex: number }) => {
     },
   }
 }
-
-const filterData: FilterDataType = {
-  facultyName: [],
-}
-
-// DATA
-let data: readonly MajorRankVO[]
+let dataSource: readonly MajorRankVO[]
+const searchRef = ref()
 const loading = ref<boolean>(false)
-const tableData = ref<MajorRankVO[]>([])
+const tableData = ref<any>([])
 const kls = ref<string>('')
-const visible1 = ref(false)
-const visible2 = ref(false)
-const filterForm = ref<FilterFormType>({
-  facultyName: '',
-  majorName: '',
+const search = ref({
+  className: void 0,
+  gradeName: void 0,
+  facultyName: void 0,
+  majorName: void 0,
+})
+const searchData = ref<SearchDataType>({
+  facultyNameSet: new Set(),
 })
 
-// ONMOUNTED
-onMounted(() => {
-  fetchList()
+onMounted(async () => {
+  await fetchData()
 })
 
-// METHOD
-const fetchList = async () => {
+const fetchData = async () => {
   loading.value = true
   try {
-    const { data: res } = await getMajorRank()
-    data = Object.freeze(res)
-    tableData.value = [...data]
-    let facultyName = new Set<string>()
-    data.forEach((item) => facultyName.add(item.facultyName))
-    filterData.facultyName = [...facultyName].map((item) => {
-      return {
-        label: item,
-        value: item,
-      }
-    })
+    const { data } = await getMajorRank()
+    dataSource = Object.freeze(data)
+    tableData.value = dataSource
+    dataSource.forEach(
+      (item) =>
+        item.facultyName &&
+        searchData.value.facultyNameSet.add(item.facultyName),
+    )
   } finally {
     loading.value = false
   }
 }
 
-const onFilter = () => {
-  const { majorName, facultyName } = filterForm.value
-
-  tableData.value = data.filter((item) => {
+const filterSearchHandler = () => {
+  const { majorName, facultyName } = search.value
+  tableData.value = dataSource.filter((item) => {
     if (majorName && !item.majorName.includes(majorName)) {
       return false
     }
-    if (facultyName && item.facultyName !== facultyName) {
-      return false
-    }
-    return true
+    return !(facultyName && item.facultyName !== facultyName)
   })
-}
-const onReset = (columnKey: keyof FilterFormType) => {
-  filterForm.value[columnKey] = ''
-  onFilter()
 }
 </script>
 
