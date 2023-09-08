@@ -1,104 +1,48 @@
 <template>
   <div class="h-full">
     <dv-border-box10>
-      <div class="h-full p-10">
-        <div ref="chartRef" class="w-full h-full" />
+      <div class="h-full relative">
+        <p class="absolute w-full t-10 text-white fs-16 font-bold text-center">
+          本月访问人次
+        </p>
+        <div class="h-full p-10 flex justify-center items-center">
+          <dv-decoration9 style="width: 240px; height: 240px">
+            <dv-digital-flop :config="config" />
+          </dv-decoration9>
+        </div>
       </div>
     </dv-border-box10>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
-import * as echarts from 'echarts'
-import { BorderBox10 as DvBorderBox10 } from '@kjgl77/datav-vue3'
-import CustomTheme from '@/config/echarts/CustomTheme.json'
-import { reqCountDailyVisits } from '@/api/screen'
-import type { DailyVisits } from '@/api/screen/type'
+import { onMounted, onUnmounted, ref } from 'vue'
+import {
+  BorderBox10 as DvBorderBox10,
+  Decoration9 as DvDecoration9,
+  DigitalFlop as DvDigitalFlop,
+} from '@kjgl77/datav-vue3'
+import { countVisitsThisMonth } from '@/api/screen'
 
-type ECharts = echarts.ECharts
-type EChartOption = echarts.EChartOption
-
-const option: EChartOption = {
-  title: {
-    text: '每日访问量',
-  },
-  tooltip: {},
-  xAxis: {
-    type: 'category',
-  },
-  yAxis: {
-    type: 'value',
-  },
-  series: [
-    {
-      type: 'line',
-    },
-  ],
-  graphic: {
-    elements: [
-      {
-        type: 'text',
-        left: 'center',
-        top: 'middle',
-        invisible: true,
-        style: {
-          fill: '#fff',
-          text: '暂无数据',
-          fontSize: 30,
-        },
-      },
-    ],
-  },
-}
-
-const chartRef = ref()
-let chart: echarts.ECharts
-const chartData = ref<DailyVisits[]>()
-
-watch(chartData, (newVal) => {
-  if (newVal && newVal?.length) {
-    let x: string[] = []
-    let y: number[] = []
-    newVal.forEach((item) => {
-      x.push(item.date)
-      y.push(item.count)
-    })
-    chart.setOption({
-      xAxis: {
-        data: x,
-      },
-      series: [
-        {
-          data: y,
-        },
-      ],
-    })
-  } else {
-    chart.setOption({
-      graphic: {
-        invisible: false,
-      },
-    })
-  }
+let timer: number
+const config = ref({
+  number: [0],
+  content: '{nt}人次',
 })
 
-const fetch = async () => {
-  try {
-    chart.showLoading()
-    const { data } = await reqCountDailyVisits()
-    chartData.value = data
-  } catch (error) {
-    console.log(error)
-  } finally {
-    chart.hideLoading()
-  }
+const fetchData = async () => {
+  const { data } = await countVisitsThisMonth()
+  config.value.number[0] = data
 }
 
 onMounted(() => {
-  echarts.registerTheme('CustomTheme', CustomTheme)
-  chart = echarts.init(chartRef.value, 'CustomTheme')
-  chart.setOption(option)
-  fetch()
+  fetchData()
+  timer = setInterval(() => {
+    fetchData()
+  }, 1000)
+})
+
+onUnmounted(() => {
+  clearInterval(timer)
 })
 </script>

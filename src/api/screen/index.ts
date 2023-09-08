@@ -19,6 +19,7 @@ enum API {
   STUDENT_GROWTH_MONITOR = '/screen/studentGrowthMonitor',
   COUNT_DAILY_VISITS = '/screen/countDailyVisits',
   COUNT_REVIEW_OF_EACH_CLASS = '/screen/countReviewOfEachClass',
+  COUNT_VISITS_THIS_MONTH = '/screen/countVisitsThisMonth',
 }
 
 export const reqCountMajorPopulations = () =>
@@ -44,3 +45,6 @@ export const reqCountDailyVisits = () =>
 
 export const countReviewOfEachClass = () =>
   get<ReviewOfEachClassVO[]>(API.COUNT_REVIEW_OF_EACH_CLASS)
+
+export const countVisitsThisMonth = () =>
+  get<number>(API.COUNT_VISITS_THIS_MONTH)
