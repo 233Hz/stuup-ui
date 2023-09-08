@@ -28,7 +28,6 @@ const option: EChartOption = {
       endValue: 15,
       filterMode: 'empty',
       zoomLock: true, // 是否锁定选择区域（或叫做数据窗口）的大小
-      // @ts-ignore
       brushSelect: false,
       fillerColor: 'rgb(3, 187, 154)',
     },
@@ -41,11 +40,14 @@ const option: EChartOption = {
     },
   ],
   title: {
-    text: '各专业人数',
+    text: '各班级项目申请情况对比',
   },
   tooltip: {
     trigger: 'axis',
     formatter: '{b}',
+  },
+  legend: {
+    top: 30,
   },
   xAxis: {
     type: 'category',
@@ -56,7 +58,7 @@ const option: EChartOption = {
   series: [
     {
       type: 'bar',
-      // @ts-ignore
+      name: '学生申请项目数',
       showBackground: true,
       backgroundStyle: {
         color: 'rgba(180, 180, 180, 0.2)',
@@ -65,13 +67,12 @@ const option: EChartOption = {
         show: true,
         position: 'top',
         color: '#29fcff',
-        // @ts-ignore
-        formatter: '{c}人',
+        formatter: '{c}次',
       },
     },
     {
       type: 'bar',
-      // @ts-ignore
+      name: '班主任审核项目数',
       showBackground: true,
       backgroundStyle: {
         color: 'rgba(180, 180, 180, 0.2)',
@@ -80,8 +81,7 @@ const option: EChartOption = {
         show: true,
         position: 'top',
         color: '#29fcff',
-        // @ts-ignore
-        formatter: '{c}人',
+        formatter: '{c}次',
       },
     },
   ],
@@ -103,7 +103,7 @@ const option: EChartOption = {
 }
 
 const chartRef = ref()
-let chart: echarts.ECharts
+let chart: ECharts
 const chartData = ref<ReviewOfEachClassVO[]>()
 
 watch(chartData, (newVal) => {
@@ -114,7 +114,7 @@ watch(chartData, (newVal) => {
     newVal.forEach((item) => {
       x.push(item.className)
       y1.push(item.applyCount)
-      y2.push(item.auditCount)
+      y2.push(item.auditCount + 10)
     })
     chart.setOption({
       xAxis: {
