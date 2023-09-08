@@ -47,3 +47,9 @@ export interface DailyVisits {
   date: string
   count: number
 }
+
+export interface ReviewOfEachClassVO {
+  className: string
+  applyCount: number
+  auditCount: number
+}

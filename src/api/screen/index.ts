@@ -1,12 +1,13 @@
 import { get } from '@/api/api'
 import type {
-  MajorPopulationsList,
-  ScreenImportantData,
-  Near3YearsAtSchoolNumList,
   AwardsByCompetitionList,
-  GrowthScoreCountList,
-  StudentGrowthMonitorList,
   DailyVisits,
+  GrowthScoreCountList,
+  MajorPopulationsList,
+  Near3YearsAtSchoolNumList,
+  ReviewOfEachClassVO,
+  ScreenImportantData,
+  StudentGrowthMonitorList,
 } from './type'
 
 enum API {
@@ -17,6 +18,7 @@ enum API {
   GROWTH_SCORE_COMPARE = '/screen/countGrowthScoreCompare',
   STUDENT_GROWTH_MONITOR = '/screen/studentGrowthMonitor',
   COUNT_DAILY_VISITS = '/screen/countDailyVisits',
+  COUNT_REVIEW_OF_EACH_CLASS = '/screen/countReviewOfEachClass',
 }
 
 export const reqCountMajorPopulations = () =>
@@ -39,3 +41,6 @@ export const reqStudentGrowthMonitor = () =>
 
 export const reqCountDailyVisits = () =>
   get<DailyVisits[]>(API.COUNT_DAILY_VISITS)
+
+export const countReviewOfEachClass = () =>
+  get<ReviewOfEachClassVO[]>(API.COUNT_REVIEW_OF_EACH_CLASS)

@@ -34,12 +34,16 @@ export const option2: Record<string, Option> = {
     name: '举办活动次数',
     icon: 'data-screen-activity',
   },
-  passRate: {
-    name: '合格率',
-    icon: 'data-screen-qualified',
-  },
   scholarshipNum: {
     name: '获得奖学金人数',
     icon: 'data-screen-scholarship',
+  },
+  applyCount: {
+    name: '学生申请项目数',
+    icon: 'data-screen-apply',
+  },
+  auditCount: {
+    name: '班主任审核项目数',
+    icon: 'data-screen-apply',
   },
 }

@@ -174,15 +174,11 @@
 </template>
 
 <script setup lang="ts" name="Major">
-import { ref, onMounted, reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import {
-  getMajorPage,
-  saveOrUpdateMajor,
-  delMajor,
-} from '@/api/basic/major/index'
-import type { Major } from '@/api/basic/major/type'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { delMajor, getMajorPage, saveOrUpdateMajor } from '@/api/basic/major'
+import type { Major } from '@/api/basic/major/type'
 import { EFFECTIVENESS } from '@/utils/dict'
 import useDictionaryStore from '@/store/modules/dictionary'
 import usePaginationStore from '@/store/modules/pagination'

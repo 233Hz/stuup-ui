@@ -25,7 +25,7 @@
               <div
                 class="flex-2 h-full text-center flex flex-col justify-center gap-20"
               >
-                <h3 class="fs-18 font-semibold text-white">{{ item.name }}</h3>
+                <h3 class="fs-16 font-semibold text-white">{{ item.name }}</h3>
                 <p class="fs-24 font-bold text-#29fcff">
                   {{ !isNull(item.value) ? item.value : '暂无数据' }}
                 </p>
@@ -60,7 +60,7 @@
               <div
                 class="flex-3 h-full text-center flex flex-col justify-center gap-20"
               >
-                <h3 class="fs-18 font-semibold text-white">{{ item.name }}</h3>
+                <h3 class="fs-16 font-semibold text-white">{{ item.name }}</h3>
                 <p class="fs-24 font-bold text-#29fcff">
                   {{ !isNull(item.value) ? item.value : '暂无数据' }}
                 </p>
@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { BorderBox10 as DvBorderBox10 } from '@kjgl77/datav-vue3'
 import { option1, option2 } from './config'
 import { reqImportantData } from '@/api/screen'
