@@ -1,19 +1,11 @@
 <template>
   <div class="wrapper">
-    <div class="wrapper-left">
-      <div class="back-btn">
-        <el-button @click="router.back()" style="margin: 10px">
-          <el-icon><ArrowLeft /></el-icon>
-          返回
-        </el-button>
-      </div>
-      <!-- <div class="info-content">
-        <div class="my-avatar">
-          <img :src="icon" />
-        </div>
-      </div> -->
-    </div>
-    <div class="wrapper-right">
+    <el-page-header icon="ArrowLeft" @back="router.back()" class="my-10">
+      <template #content>
+        <span class="text-large font-600 mr-3">成长花园</span>
+      </template>
+    </el-page-header>
+    <div class="wrapper-content">
       <div class="search">
         <h1>
           <span>{{ GARDEN_TYPE.getKeyForValue(String(route.params.id)) }}</span>
@@ -24,11 +16,11 @@
           <el-form-item prop="studentName">
             <el-input v-model="searchForm.studentName" placeholder="学生姓名" />
           </el-form-item>
-          <el-form-item prop="className">
+          <el-form-item prop="className" v-if="!userStore.isStudent">
             <el-input v-model="searchForm.className" placeholder="班级名称" />
           </el-form-item>
-          <el-form-item prop="gradeId">
-            <el-select v-model="searchForm.gradeId">
+          <el-form-item prop="gradeId" v-if="!userStore.isStudent">
+            <el-select v-model="searchForm.gradeId" placeholder="请选择年级">
               <el-option
                 v-for="item in dictionaryStore.grade"
                 :key="item.oid"
@@ -57,11 +49,11 @@
               {{ calculateRank(index) }}
             </div>
             <div class="list-item-avatar">
-              <img :src="icon" />
+              <img :src="item.avatar || defaultAvatar" alt="头像" />
             </div>
             <div class="list-item-content">
               <h4>{{ item.studentName }}</h4>
-              <h6>所属年级： {{ item.gradeNameSet }}</h6>
+              <h6>所属年级： {{ item.gradeName }}</h6>
               <p>所属班级： {{ item.className }}</p>
             </div>
             <div class="list-item-score">
@@ -69,13 +61,7 @@
               <span>{{ item.score }}</span>
             </div>
           </li>
-          <li
-            class="list-item"
-            style="text-align: center"
-            v-show="listData.length === 0"
-          >
-            没了有哦~~~
-          </li>
+          <el-empty description="没有同学在这个花园" v-show="!hasData" />
         </ul>
         <div class="pagination">
           <el-pagination
@@ -95,15 +81,17 @@
 </template>
 
 <script setup lang="ts" name="Garden">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { FormInstance } from 'element-plus'
 import { getGrowGarden } from '@/api/garden'
 import type { GrowGardenVO } from '@/api/garden/type'
 import { GARDEN_TYPE } from '@/utils/dict'
-import icon from '@/assets/image/default_avatar.png'
+import defaultAvatar from '@/assets/image/default_avatar.png'
+import useUserStore from '@/store/modules/user'
 import useDictionaryStore from '@/store/modules/dictionary'
 
+const userStore = useUserStore()
 const dictionaryStore = useDictionaryStore()
 
 const route = useRoute()
@@ -123,6 +111,10 @@ const searchForm = ref({
 const total = ref<number>(0)
 const listData = ref<GrowGardenVO[]>([])
 const loading = ref<boolean>(false)
+
+const hasData = computed(() => {
+  return listData.value && listData.value.length
+})
 
 onMounted(async () => {
   await fetchList()
@@ -158,40 +150,13 @@ const handleCurrentChange = (val: number) => {
   transform: translateX(-50%);
   width: 1280px;
   margin: 20px;
-  background-color: #fff;
   border-radius: 4px;
 
-  display: flex;
-
-  &-left {
-    width: 200px;
-
-    .back-btn {
-      border-bottom: var(--border);
-    }
-
-    .info-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-
-      .my-avatar {
-        width: 150px;
-        height: 150px;
-
-        > img {
-          width: 100%;
-          height: 100%;
-        }
-      }
-    }
-  }
-
-  &-right {
+  &-content {
     flex: 1;
     box-sizing: border-box;
-    border-left: var(--border);
     padding: 20px;
+    background-color: #fff;
 
     .search {
       display: flex;

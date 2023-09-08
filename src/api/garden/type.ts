@@ -5,4 +5,5 @@ export interface GrowGardenVO {
   className: string
   classTeacher: string
   score: number
+  avatar?: string
 }

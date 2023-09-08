@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia'
-import { setToken, removeToken } from '@/utils/auth'
+import { removeToken, setToken } from '@/utils/auth'
 import type { UserInfoState } from './types/type'
 import { reqLogin } from '@/api/login'
 import { LoginForm } from '@/api/login/type'
 import { resetRouter } from '@/router'
-import { useWebCache, STORAGE_KEY } from '@/utils/cache'
+import { STORAGE_KEY, useWebCache } from '@/utils/cache'
+import { USER_TYPE } from '@/utils/dict'
+
 const webCache = useWebCache()
 
 const useUserStore = defineStore('User', {
@@ -12,6 +14,11 @@ const useUserStore = defineStore('User', {
     return {
       userInfo: webCache.get(STORAGE_KEY.USER_INFO),
     }
+  },
+  getters: {
+    isStudent(): boolean {
+      return this.userInfo.userType === USER_TYPE.STUDENT
+    },
   },
   actions: {
     async userLogin(data: LoginForm) {
