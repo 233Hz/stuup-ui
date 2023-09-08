@@ -114,7 +114,7 @@ watch(chartData, (newVal) => {
     newVal.forEach((item) => {
       x.push(item.className)
       y1.push(item.applyCount)
-      y2.push(item.auditCount + 10)
+      y2.push(item.auditCount)
     })
     chart.setOption({
       xAxis: {
