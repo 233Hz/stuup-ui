@@ -1,12 +1,13 @@
-import { get, post, del, download } from '@/api/api'
+import { del, download, get, post } from '@/api/api'
 import { Page, PageResult } from '@/types/global'
 import type {
-  GrowthTreeVO,
-  GrowthVO,
-  GrowthItemVO,
-  SetGrowUserForm,
   GrowthItemUser,
   GrowthItemUserQuery,
+  GrowthItemVO,
+  GrowthRuleDesc,
+  GrowthTreeVO,
+  GrowthVO,
+  SetGrowUserForm,
 } from './type'
 
 export const getGrowthTree = async () => {
@@ -55,4 +56,8 @@ export const getGrowItemUser = async (growthItemId: number) => {
 
 export const reqPaginateGrowthItemUser = async (query: GrowthItemUserQuery) => {
   return await get<PageResult<GrowthItemUser[]>>('/growUser/page/user', query)
+}
+
+export const reqGrowthRuleDesc = async () => {
+  return await get<GrowthRuleDesc[]>('/growthItem/rule/desc')
 }

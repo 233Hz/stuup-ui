@@ -55,3 +55,18 @@ export interface GrowthItemUserQuery extends Page {
   deptId?: number
   classId?: number
 }
+
+export interface GrowthRuleDesc {
+  id: number
+  l1Id: number
+  l2Id?: number
+  l3Id?: number
+  l1: string
+  l2?: string
+  l3?: string
+  name: number
+  cycle: string
+  cycleUpperLimit?: string
+  score: string
+  calculateType: string
+}

@@ -15,11 +15,16 @@
         icon="home-icon-back"
       />
       <menu-item
-        title="智慧提醒"
+        title="我的消息"
         path="/self/notify"
         icon="home-icon-message"
       />
       <menu-item title="个人中心" path="/self/center" icon="home-icon-self" />
+      <menu-item
+        title="积分规则说明"
+        icon="home-icon-rule-desc"
+        @click="ruleDescClickHandler"
+      />
     </div>
   </div>
 </template>
@@ -33,6 +38,10 @@ import MenuItem from './MenuItem.vue'
 const permissionStore = usePermissionStore()
 
 const frontRoute = filterRouter(permissionStore.routes, MENU_FLAG.FRONT)
-</script>
 
-<style scoped lang="scss"></style>
+const ruleDescClickHandler = () => emit('rule-desc-click')
+
+const emit = defineEmits<{
+  (e: 'rule-desc-click'): void
+}>()
+</script>

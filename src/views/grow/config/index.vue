@@ -1,9 +1,9 @@
 <template>
   <el-row :gutter="10" style="margin: 20px">
-    <el-col :sm="24" :xl="6">
+    <el-col :span="6">
       <growth-tree />
     </el-col>
-    <el-col :sm="24" :xl="18">
+    <el-col :span="18">
       <growth-item-table />
     </el-col>
   </el-row>

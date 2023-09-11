@@ -14,11 +14,11 @@
         <div class="main">
           <router-view>
             <template #default="{ Component, route }">
-              <transition name="fade">
-                <keep-alive :include="permissionStore.getCachedView">
-                  <component :is="Component" :key="route.fullPath" />
-                </keep-alive>
-              </transition>
+              <!--              <transition name="fade">-->
+              <keep-alive :include="permissionStore.getCachedView">
+                <component :is="Component" :key="route.fullPath" />
+              </keep-alive>
+              <!--              </transition>-->
             </template>
           </router-view>
         </div>

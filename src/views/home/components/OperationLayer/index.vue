@@ -34,22 +34,23 @@
       <!-- 用户信息 and 菜单 -->
       <div class="absolute t-0 l-0 flex">
         <Self v-if="isStudent" />
-        <Menu />
+        <Menu @rule-desc-click="ruleDescRef.show()" />
       </div>
       <Level class="absolute t-200 l-0" v-if="isStudent" />
       <!-- 用户等级 -->
       <current-level class="absolute b-140 l-460" v-if="isStudent" />
     </div>
+    <rule-desc ref="ruleDescRef" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { GARDEN_TYPE, USER_TYPE } from '@/utils/dict'
-import { reqUnCollectScore, reqUpdateRecordState } from '@/api/home/index'
-import { UnCollectScore } from '@/api/home/type'
 import { flowerHint } from './const'
+import { GARDEN_TYPE, USER_TYPE } from '@/utils/dict'
+import { reqUnCollectScore, reqUpdateRecordState } from '@/api/home'
+import type { UnCollectScore } from '@/api/home/type'
 import { ElMessageBox } from 'element-plus'
 import useUserStore from '@/store/modules/user'
 import bus from '@/utils/bus'
@@ -57,12 +58,14 @@ import Self from './Self/index.vue'
 import Menu from './Menu/index.vue'
 import Level from './Level/index.vue'
 import CurrentLevel from './CurrentLevel/index.vue'
+import RuleDesc from './RuleDesc/index.vue'
 
 const router = useRouter()
 const userStore = useUserStore()
 
 const wrapperRef = ref()
 const tipRef = ref()
+const ruleDescRef = ref()
 const show_hint = ref<boolean>(false)
 const unCollectScores = ref<UnCollectScore[]>()
 

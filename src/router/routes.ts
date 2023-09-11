@@ -85,7 +85,7 @@ export const constantRoute: RouteRecordRaw[] = [
       {
         path: '/self/notify',
         name: 'SelfNotify',
-        component: () => import('@/views/self/notify/index.vue'),
+        component: () => import('@/views/self/message/index.vue'),
         meta: {
           title: '我的通知',
           hidden: true,
@@ -95,30 +95,6 @@ export const constantRoute: RouteRecordRaw[] = [
       },
     ],
   },
-  // {
-  //   path: '/',
-  //   name: 'BackAdmin',
-  //   component: () => import('@/layout/index.vue'),
-  //   meta: {
-  //     title: '',
-  //     hidden: true,
-  //     icon: '',
-  //     flag: 3,
-  //   },
-  //   children: [
-  //     {
-  //       path: '/dashboard',
-  //       name: 'Dashboard',
-  //       component: () => import('@/views/dashboard/index.vue'),
-  //       meta: {
-  //         title: '首页',
-  //         hidden: true,
-  //         icon: 'home-icon-back',
-  //         flag: 3,
-  //       },
-  //     },
-  //   ],
-  // },
   {
     path: '/screen',
     name: 'Screen',
