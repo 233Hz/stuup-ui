@@ -7,6 +7,7 @@ export interface SemesterVO {
   startTime: Date
   endTime: Date
   createTime: Date
+  isCurrent: number
 }
 
 export interface SemesterDTO {

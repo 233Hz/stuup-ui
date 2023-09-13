@@ -2,8 +2,8 @@ import { get, post } from '@/api/api'
 import type { FlowerVO, FlowerForm } from './type'
 
 enum API {
-  GET_FLOWERS_EXCHANGE_NUM_URL = '/growthModel/flowers',
-  SET_FLOWERS_EXCHANGE_NUM_URL = '/growthModel/setFlowerConfig',
+  GET_FLOWERS_EXCHANGE_NUM_URL = '/growthModel',
+  SET_FLOWERS_EXCHANGE_NUM_URL = '/growthModel',
 }
 
 /**

@@ -61,7 +61,7 @@
             align="center"
           />
           <el-table-column
-            prop="facultyNameSet"
+            prop="facultyName"
             label="系部名称"
             show-overflow-tooltip
             align="center"

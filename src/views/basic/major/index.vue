@@ -61,13 +61,13 @@
             align="center"
           />
           <el-table-column
-            prop="majorNameSet"
+            prop="majorName"
             label="专业名称"
             show-overflow-tooltip
             align="center"
           />
           <el-table-column
-            prop="facultyNameSet"
+            prop="facultyName"
             label="所属系部"
             show-overflow-tooltip
             align="center"
@@ -115,7 +115,7 @@
         <el-form-item label="专业编号" prop="majorCode">
           <el-input v-model="form.majorCode" placeholder="请输入专业编号" />
         </el-form-item>
-        <el-form-item label="专业名称" prop="majorNameSet">
+        <el-form-item label="专业名称" prop="majorName">
           <el-input v-model="form.majorName" placeholder="请输入专业名称" />
         </el-form-item>
         <el-form-item label="所属系部" prop="facultyId">

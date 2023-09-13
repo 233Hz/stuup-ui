@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card shadow="never">
-      <el-form ref="searchRef" :model="search" label-width="100px">
+      <el-form ref="searchRef" :model="search">
         <el-row :gutter="20">
           <el-col :sm="24" :md="12" :xl="4">
             <el-form-item label="学年">
@@ -87,7 +87,7 @@
               <el-input v-model="search.growthItemName" />
             </el-form-item>
           </el-col>
-          <el-col :sm="24" :md="12" :xl="12">
+          <el-form-item>
             <el-space>
               <el-button
                 type="primary"
@@ -110,7 +110,7 @@
                 刷新
               </el-button>
             </el-space>
-          </el-col>
+          </el-form-item>
         </el-row>
       </el-form>
     </el-card>
@@ -257,11 +257,9 @@ const userStore = useUserStore()
 
 const { yearId, semesterId } = userStore.userInfo
 
-//REF
 const searchRef = ref<FormInstance>()
 const auditDetailsRef = ref()
 
-// DATA
 const loading = ref<boolean>(false)
 const tableData = ref()
 const search = ref<any>({
@@ -274,20 +272,20 @@ const search = ref<any>({
 })
 
 onMounted(async () => {
+  await fetchData({ yearId, semesterId })
+  await growthStore.init()
   await dictionaryStore.init()
   search.value.yearId = yearId
   search.value.semesterId = semesterId
-  await fetchData()
-  await growthStore.init()
 })
 
 //METHODS
 
-const fetchData = async () => {
+const fetchData = async (params?: any) => {
   loading.value = true
   try {
     const { current, size } = paginationStore
-    const query = Object.assign(search.value, { current, size })
+    const query = Object.assign(search.value, params, { current, size })
     const { data } = await reqPageStudentAudit(query)
     paginationStore.setTotal(data.total)
     tableData.value = data.records

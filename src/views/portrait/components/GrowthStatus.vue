@@ -4,9 +4,12 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import * as echarts from 'echarts'
 import { reqGrowthAnalysis } from '@/api/portrait'
 import { PortraitGrowthAnalysisList } from '@/api/portrait/type'
+
+const route = useRoute()
 
 type ECharts = echarts.ECharts
 type EChartOption = echarts.EChartOption
@@ -89,7 +92,7 @@ watch(chartData, (newVal) => {
 const fetchData = async () => {
   try {
     chart.showLoading()
-    const { data } = await reqGrowthAnalysis()
+    const { data } = await reqGrowthAnalysis(+route.params.id)
     chartData.value = data
   } catch (error) {
     console.log(error)

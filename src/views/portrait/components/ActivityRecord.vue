@@ -24,7 +24,10 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { reqActivityRecord } from '@/api/portrait/index'
+import { useRoute } from 'vue-router'
+import { reqActivityRecord } from '@/api/portrait'
+
+const route = useRoute()
 
 const listData = ref()
 
@@ -33,7 +36,7 @@ onMounted(() => {
 })
 
 const getData = async () => {
-  const { data } = await reqActivityRecord()
+  const { data } = await reqActivityRecord(+route.params.id)
   listData.value = data
 }
 </script>

@@ -20,9 +20,12 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import icon from '@/assets/svg/home-apply.svg'
+import { useRoute } from 'vue-router'
 import { reqGrowthData } from '@/api/portrait'
 import { PortraitGrowthData } from '@/api/portrait/type'
+import icon from '@/assets/svg/home-apply.svg'
+
+const route = useRoute()
 
 const props = defineProps<{
   semesterId: number | undefined
@@ -68,9 +71,9 @@ const data = ref<GrowthData[]>([
 
 watch(
   () => props.semesterId,
-  async (newVal) => {
-    if (!newVal) return
-    const { data: res } = await reqGrowthData(newVal)
+  async (semesterId) => {
+    if (!semesterId) return
+    const { data: res } = await reqGrowthData(+route.params.id, semesterId)
     data.value.forEach((item) => {
       const value = res[item.key]
       if (value !== null) {

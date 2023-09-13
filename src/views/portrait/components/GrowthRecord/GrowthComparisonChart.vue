@@ -4,10 +4,12 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
-import { reqGrowthComparison, reqStudyGrade } from '@/api/portrait'
+import { useRoute } from 'vue-router'
+import { reqGrowthComparison } from '@/api/portrait'
 import useUserStore from '@/store/modules/user'
 import * as echarts from 'echarts'
 
+const route = useRoute()
 const userStore = useUserStore()
 
 interface Data {
@@ -231,10 +233,10 @@ const props = defineProps<{
 
 watch(
   () => props.semesterId,
-  async (newVal) => {
-    if (newVal) {
+  async (semesterId) => {
+    if (semesterId) {
       // const data = generateData()
-      const data = await fetchData(newVal)
+      const data = await fetchData(semesterId)
       if (data && data.length) {
         const x: string[] = []
         const y1: number[] = []
@@ -281,11 +283,9 @@ watch(
  * @param semesterId
  */
 const fetchData = async (semesterId: number) => {
-  const { studentId } = userStore.userInfo
-  if (!studentId) return null
   try {
     chart.showLoading()
-    const { data } = await reqGrowthComparison(semesterId, studentId)
+    const { data } = await reqGrowthComparison(+route.params.id, semesterId)
     return data
     // source.value = data
   } catch (error) {

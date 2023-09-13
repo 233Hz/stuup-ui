@@ -93,6 +93,17 @@ export const constantRoute: RouteRecordRaw[] = [
           flag: 3,
         },
       },
+      {
+        path: '/portrait/:id',
+        name: 'Portrait',
+        component: () => import('@/views/portrait/index.vue'),
+        meta: {
+          title: '我的成长画像',
+          hidden: true,
+          icon: 'home-icon-portrait',
+          flag: 1,
+        },
+      },
     ],
   },
   {

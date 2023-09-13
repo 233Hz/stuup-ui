@@ -4,9 +4,12 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import * as echarts from 'echarts'
 import { reqRankingCurve } from '@/api/portrait'
 import { PortraitRankingCurveList } from '@/api/portrait/type'
+
+const route = useRoute()
 
 interface DataType {
   value: number
@@ -56,7 +59,7 @@ const option: EChartOption = {
 }
 
 const chartRef = ref()
-let chart: echarts.ECharts
+let chart: ECharts
 const chartData = ref<PortraitRankingCurveList>()
 
 watch(
@@ -96,7 +99,7 @@ watch(
 const fetchData = async () => {
   try {
     chart.showLoading()
-    const { data } = await reqRankingCurve()
+    const { data } = await reqRankingCurve(+route.params.id)
     chartData.value = data
   } catch (error) {
     console.log(error)

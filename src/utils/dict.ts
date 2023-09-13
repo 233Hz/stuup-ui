@@ -104,7 +104,7 @@ export const SEX = new Enum({
 /**
  * 教师状态
  */
-export const TESCHER_STATE = new Enum({
+export const TEACHER_STATE = new Enum({
   ON_JOB: ['在职', 1],
   DIMISSION: ['离职', 2],
 })

@@ -34,8 +34,11 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { reqAwardRecord } from '@/api/portrait'
 import { AWARD_LEVEL } from '@/utils/dict'
+
+const route = useRoute()
 
 const listData = ref()
 
@@ -44,7 +47,7 @@ onMounted(() => {
 })
 
 const getData = async () => {
-  const { data } = await reqAwardRecord()
+  const { data } = await reqAwardRecord(+route.params.id)
   listData.value = data
 }
 </script>

@@ -4,9 +4,12 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import * as echarts from 'echarts'
 import { reqCapacityEvaluator } from '@/api/portrait'
 import { PortraitCapacityEvaluatorList } from '@/api/portrait/type'
+
+const route = useRoute()
 
 type ECharts = echarts.ECharts
 type EChartOption = echarts.EChartOption
@@ -52,7 +55,7 @@ const option: EChartOption = {
 }
 
 let chartRef = ref()
-let chart: echarts.ECharts
+let chart: ECharts
 const chartData = ref<PortraitCapacityEvaluatorList>()
 
 watch(chartData, (newVal) => {
@@ -91,8 +94,8 @@ watch(chartData, (newVal) => {
 const fetchData = async () => {
   try {
     chart.showLoading()
-    const { data } = await reqCapacityEvaluator()
-    chartData.value = []
+    const { data } = await reqCapacityEvaluator(+route.params.id)
+    chartData.value = data
   } catch (error) {
     console.log(error)
   } finally {

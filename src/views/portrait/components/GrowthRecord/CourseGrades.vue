@@ -18,13 +18,20 @@
         label="成长对比"
         header-align="center"
         align="center"
-      />
+      >
+        <template #default="{ row }">
+          <svg-icon v-if="row.state" name="rise" />
+          <svg-icon v-else name="drop" />
+          <!--          <svg-icon v-else name="unchanged" />-->
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
+import { PROGRESS_STATE } from '@/utils/dict'
 
 const props = defineProps<{
   semesterId: number | undefined
@@ -49,7 +56,7 @@ const generateCourseData = () => {
     return {
       courseName: `课程${index + 1}`,
       score: Math.floor(Math.random() * 80) + 20,
-      state: random > 0.5 ? '⬆️' : '⬇️',
+      state: random > 0.5,
     }
   })
 }

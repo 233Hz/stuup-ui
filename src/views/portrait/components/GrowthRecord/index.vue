@@ -24,24 +24,29 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { reqStudentSemester } from '@/api/basic/student'
 import { WHETHER } from '@/utils/dict'
 import useUserStore from '@/store/modules/user'
 import GrowthData from './GrowthData.vue'
 import GrowthComparisonChart from './GrowthComparisonChart.vue'
 import CourseGrades from './CourseGrades.vue'
 
+const route = useRoute()
 const userStore = useUserStore()
 
 const semester = ref()
 const active = ref<number>()
 
-onMounted(() => {
-  const { semesters } = userStore.userInfo
-  if (semesters && semesters.length > 0) {
-    semester.value = semesters
-    active.value = semesters.find((item) => item.isCurrent === WHETHER.YES)?.id
-  }
+onMounted(async () => {
+  await initSemester()
 })
+
+const initSemester = async () => {
+  const { data } = await reqStudentSemester(+route.params.id)
+  semester.value = data
+  active.value = data.find((item) => item.isCurrent === WHETHER.YES)?.id
+}
 
 const handleTagClick = (id: number) => (active.value = id)
 </script>

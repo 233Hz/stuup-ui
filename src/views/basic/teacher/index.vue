@@ -93,7 +93,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="facultyNameSet"
+            prop="facultyName"
             label="所属系部"
             show-overflow-tooltip
             align="center"
@@ -129,7 +129,7 @@
             align="center"
           >
             <template #default="{ row }">
-              {{ TESCHER_STATE.getKeyForValue(row.state) }}
+              {{ TEACHER_STATE.getKeyForValue(row.state) }}
             </template>
           </el-table-column>
           <!-- <el-table-column label="操作" width="200" align="center">
@@ -198,7 +198,7 @@
         <el-form-item label="状态" prop="state">
           <el-radio-group v-model="form.state">
             <el-radio
-              v-for="item in TESCHER_STATE.getDict()"
+              v-for="item in TEACHER_STATE.getDict()"
               :key="item.value"
               :label="item.value"
               border
@@ -230,7 +230,7 @@
 import { ref, onMounted, reactive } from 'vue'
 import { getTeacherPage, saveTeacher } from '@/api/basic/teacher'
 import { ElMessage } from 'element-plus'
-import { SEX, TESCHER_STATE } from '@/utils/dict'
+import { SEX, TEACHER_STATE } from '@/utils/dict'
 import type { FormInstance, FormRules } from 'element-plus'
 import type { TeacherVO } from '@/api/basic/teacher/type'
 import useDictionaryStore from '@/store/modules/dictionary'

@@ -308,20 +308,20 @@ const search = ref<any>({
 const hasSelection = computed(() => selectionIds.value.length > 0)
 
 onMounted(async () => {
+  await fetchData({ yearId, semesterId })
+  await growthStore.init()
   await dictionaryStore.init()
   search.value.yearId = yearId
   search.value.semesterId = semesterId
-  await fetchData()
-  await growthStore.init()
 })
 
 //METHODS
 
-const fetchData = async () => {
+const fetchData = async (params?: any) => {
   loading.value = true
   try {
     const { current, size } = paginationStore
-    const query = Object.assign(search.value, { current, size })
+    const query = Object.assign(search.value, params, { current, size })
     const { data } = await reqPageStudentUnionAudit(query)
     paginationStore.setTotal(data.total)
     tableData.value = data.records

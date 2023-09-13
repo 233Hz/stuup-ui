@@ -4,8 +4,11 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import * as echarts from 'echarts'
 import { reqStudyGrade } from '@/api/portrait'
+
+const route = useRoute()
 
 interface Data {
   name: string
@@ -213,7 +216,7 @@ const generateData = () => {
 const fetchData = async () => {
   try {
     chart.showLoading()
-    const { data } = await reqStudyGrade()
+    const { data } = await reqStudyGrade(+route.params.id)
     // source.value = data
   } catch (error) {
     console.log(error)

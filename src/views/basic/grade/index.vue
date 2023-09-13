@@ -55,7 +55,7 @@
           style="width: 100%"
         >
           <el-table-column
-            prop="gradeNameSet"
+            prop="gradeName"
             label="年级名称"
             show-overflow-tooltip
             align="center"

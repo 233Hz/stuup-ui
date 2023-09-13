@@ -99,19 +99,19 @@
             align="center"
           />
           <el-table-column
-            prop="facultyNameSet"
+            prop="facultyName"
             label="所属系部"
             show-overflow-tooltip
             align="center"
           />
           <el-table-column
-            prop="gradeNameSet"
+            prop="gradeName"
             label="所属年级"
             show-overflow-tooltip
             align="center"
           />
           <el-table-column
-            prop="majorNameSet"
+            prop="majorName"
             label="所属专业"
             show-overflow-tooltip
             align="center"

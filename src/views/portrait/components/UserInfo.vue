@@ -32,7 +32,7 @@
       <p class="fs-18">
         <span class="text-gray-500 mr-24">专业:</span>
         <span class="text-gray-400">
-          {{ userInfo?.majorNameSet }}
+          {{ userInfo?.majorName }}
         </span>
       </p>
       <div class="flex mt-24 items-center gap-24">
@@ -105,16 +105,20 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { reqBasicInfo } from '@/api/portrait/index'
-import { PortraitBasicInfo } from '@/api/portrait/type'
+import { useRoute } from 'vue-router'
+import { reqBasicInfo } from '@/api/portrait'
+import useUserStore from '@/store/modules/user'
 import useFlowersStore from '@/store/modules/flowers'
 import defaultAvatar from '@/assets/image/default_avatar.png'
+import type { PortraitBasicInfo } from '@/api/portrait/type'
 
+const route = useRoute()
+const userStore = useUserStore()
 const flowersStore = useFlowersStore()
 const userInfo = ref<PortraitBasicInfo>()
 
 onMounted(async () => {
-  let { data } = await reqBasicInfo()
+  const { data } = await reqBasicInfo(+route.params.id)
   userInfo.value = data
 })
 </script>
