@@ -213,8 +213,7 @@ export const AUDIT_STATUS = new Enum({
 export const AUDIT_LOG_STATUS = new Enum({
   SUBMIT: ['提交', 2],
   PASS: ['通过', 3],
-  REFUSE: ['拒绝', 4],
-  RETURN: ['退回', 5],
+  NO_PASS: ['不通过', 4],
 })
 
 /**

@@ -68,5 +68,3 @@ const props = withDefaults(defineProps<Props>(), {
   ],
 })
 </script>
-
-<style scoped lang="scss"></style>

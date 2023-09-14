@@ -232,10 +232,12 @@
         />
         <el-table-column
           prop="score"
-          label="获得积分"
+          label="扣除积分"
           show-overflow-tooltip
           align="center"
-        />
+        >
+          <template #default="{ row }">-{{ row.score }}</template>
+        </el-table-column>
         <el-table-column
           prop="createTime"
           label="获取时间"

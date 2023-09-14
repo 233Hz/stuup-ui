@@ -2,7 +2,7 @@
   <el-drawer
     v-model="active"
     title="设置角色权限"
-    size="30%"
+    size="40%"
     @close="handleClose"
   >
     <template #footer>
