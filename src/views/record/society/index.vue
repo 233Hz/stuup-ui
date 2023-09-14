@@ -171,7 +171,11 @@
             label="角色"
             show-overflow-tooltip
             align="center"
-          />
+          >
+            <template #default="{ row }">
+              {{ ACTIVE_ROLE.getKeyForValue(row.role) }}
+            </template>
+          </el-table-column>
         </el-table>
         <Pagination @size-change="fetchList" @current-change="fetchList" />
       </el-card>
@@ -180,9 +184,9 @@
 </template>
 
 <script setup lang="ts" name="Society">
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { getRecSocietyPage } from '@/api/record/society'
-import { AWARD_LEVEL, REC_CODE } from '@/utils/dict'
+import { ACTIVE_ROLE, AWARD_LEVEL, REC_CODE } from '@/utils/dict'
 import { downRecord } from '@/api/record'
 import type { FormInstance } from 'element-plus'
 import type { RecSocietyVO } from '@/api/record/society/type'

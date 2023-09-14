@@ -170,7 +170,11 @@
             label="角色"
             show-overflow-tooltip
             align="center"
-          />
+          >
+            <template #default="{ row }">
+              {{ ACTIVE_ROLE.getKeyForValue(row.role) }}
+            </template>
+          </el-table-column>
         </el-table>
         <Pagination @size-change="fetchList" @current-change="fetchList" />
       </el-card>
@@ -179,10 +183,10 @@
 </template>
 
 <script setup lang="ts" name="Caucus">
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { getRecCaucusPage } from '@/api/record/caucus'
 import { downRecord } from '@/api/record'
-import { AWARD_LEVEL, REC_CODE } from '@/utils/dict'
+import { ACTIVE_ROLE, AWARD_LEVEL, REC_CODE } from '@/utils/dict'
 import type { FormInstance } from 'element-plus'
 import type { RecCaucusVO } from '@/api/record/caucus/type'
 import useDictionaryStore from '@/store/modules/dictionary'

@@ -225,3 +225,12 @@ export const DIALOG_TYPE = new Enum({
   EDIT: ['修改', 2],
   VIEW: ['查看', 3],
 })
+
+/**
+ * 活动角色
+ */
+export const ACTIVE_ROLE = new Enum({
+  PARTICIPATOR: ['参与者', 1],
+  MODERATOR: ['主持者', 2],
+  MASTERMINDS: ['策划者', 3],
+})
