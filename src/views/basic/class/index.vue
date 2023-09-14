@@ -206,12 +206,12 @@
             placeholder="请选择班主任"
             style="width: 100%"
           >
-            <el-option
+            <!-- <el-option
               v-for="item in []"
               :key="item.oid"
               :label="item.value"
               :value="item.oid"
-            />
+            /> -->
           </el-select>
         </el-form-item>
         <el-form-item label="管理员" prop="adminId">
@@ -220,12 +220,12 @@
             placeholder="请选择管理员"
             style="width: 100%"
           >
-            <el-option
+            <!-- <el-option
               v-for="item in []"
               :key="item.oid"
               :label="item.value"
               :value="item.oid"
-            />
+            /> -->
           </el-select>
         </el-form-item>
         <el-form-item label="人数" prop="count">

@@ -93,13 +93,13 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
           @size-change="
-            (val) => {
+            (val: number) => {
               page.size = val
               fetchData()
             }
           "
           @current-change="
-            (val) => {
+            (val: number) => {
               page.current = val
               fetchData()
             }

@@ -28,6 +28,7 @@ const option: EChartOption = {
       endValue: 15,
       filterMode: 'empty',
       zoomLock: true, // 是否锁定选择区域（或叫做数据窗口）的大小
+      // @ts-ignore
       brushSelect: false,
       fillerColor: 'rgb(3, 187, 154)',
     },
@@ -67,6 +68,7 @@ const option: EChartOption = {
         show: true,
         position: 'top',
         color: '#29fcff',
+        // @ts-ignore
         formatter: '{c}次',
       },
     },
@@ -81,6 +83,7 @@ const option: EChartOption = {
         show: true,
         position: 'top',
         color: '#29fcff',
+        // @ts-ignore
         formatter: '{c}次',
       },
     },

@@ -54,6 +54,7 @@ const option: EChartOption = {
       stack: '课程成绩',
       barWidth: barWidth,
       emphasis: {
+        // @ts-ignore
         focus: 'series',
       },
     },
@@ -63,6 +64,7 @@ const option: EChartOption = {
       stack: '课程成绩',
       barWidth: barWidth,
       emphasis: {
+        // @ts-ignore
         focus: 'series',
       },
     },
@@ -72,6 +74,7 @@ const option: EChartOption = {
       stack: '课程成绩',
       barWidth: barWidth,
       emphasis: {
+        // @ts-ignore
         focus: 'series',
       },
     },
@@ -81,6 +84,7 @@ const option: EChartOption = {
       stack: '课程成绩',
       barWidth: barWidth,
       emphasis: {
+        // @ts-ignore
         focus: 'series',
       },
     },
@@ -90,6 +94,7 @@ const option: EChartOption = {
       stack: '课程成绩',
       barWidth: barWidth,
       emphasis: {
+        // @ts-ignore
         focus: 'series',
       },
     },
@@ -99,6 +104,7 @@ const option: EChartOption = {
       stack: '课程成绩',
       barWidth: barWidth,
       emphasis: {
+        // @ts-ignore
         focus: 'series',
       },
     },

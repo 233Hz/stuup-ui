@@ -145,6 +145,7 @@ const option: EChartOption = {
       symbolOffset: ['-81%', -5],
       symbolPosition: 'end',
       z: 15,
+      // @ts-ignore
       color: 'rgba(45, 206, 177,0.9)',
       zlevel: 2,
     },
@@ -155,6 +156,7 @@ const option: EChartOption = {
       symbolOffset: ['81%', -5],
       symbolPosition: 'end',
       z: 15,
+      // @ts-ignore
       color: 'rgba(2, 175, 249,1)',
       zlevel: 2,
     },
@@ -164,7 +166,9 @@ const option: EChartOption = {
       barGap: '60%',
       barWidth: barWidth,
       itemStyle: {
+        // @ts-ignore
         color: color1,
+        // @ts-ignore
         borderColor: color1,
         borderWidth: 1,
         borderType: 'solid',
@@ -184,7 +188,9 @@ const option: EChartOption = {
       barGap: '60%',
       barWidth: barWidth,
       itemStyle: {
+        // @ts-ignore
         color: color2,
+        // @ts-ignore
         borderColor: color2,
         borderWidth: 1,
         borderType: 'solid',

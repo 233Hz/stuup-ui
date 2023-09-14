@@ -323,10 +323,10 @@ const searchFormReset = () => {
     className: void 0,
     studentName: void 0,
     studentNo: void 0,
-    datatimeRange: [],
     startTime: void 0,
     endTime: void 0,
   }
+  datatimeRange.value = []
 }
 </script>
 
