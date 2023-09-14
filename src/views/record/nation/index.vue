@@ -173,7 +173,7 @@
             align="center"
           />
           <el-table-column
-            prop="hours"
+            prop="hour"
             label="累计时间（课时）"
             show-overflow-tooltip
             align="center"
@@ -186,7 +186,7 @@
 </template>
 
 <script setup lang="ts" name="Nation">
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { getRecNationPage } from '@/api/record/nation'
 import { AWARD_LEVEL, REC_CODE } from '@/utils/dict'
 import { downRecord } from '@/api/record'

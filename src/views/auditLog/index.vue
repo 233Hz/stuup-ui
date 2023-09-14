@@ -99,6 +99,18 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="状态" prop="state">
+              <el-select v-model="search.state" class="w-full">
+                <el-option
+                  v-for="item in AUDIT_STATUS.getDict()"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col :sm="24" :md="12" :xl="12">
             <el-space>
               <el-button
@@ -250,15 +262,15 @@
 </template>
 
 <script setup lang="ts" name="Audit">
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { reqPageAudit } from '@/api/audit'
 import { formatDate } from '@/utils/util'
 import { AUDIT_STATUS } from '@/utils/dict'
-import type { FormInstance } from 'element-plus'
 import useGrowthStore from '@/store/modules/growth'
 import usePaginationStore from '@/store/modules/pagination'
 import useDictionaryStore from '@/store/modules/dictionary'
 import useUserStore from '@/store/modules/user'
+import type { FormInstance } from 'element-plus'
 import AuditDetails from '@/components/AuditDetails/index.vue'
 
 const growthStore = useGrowthStore()
@@ -280,6 +292,7 @@ const search = ref<any>({
   l3Id: void 0,
   growthItemName: void 0,
   classId: void 0,
+  state: void 0,
 })
 
 onMounted(async () => {
