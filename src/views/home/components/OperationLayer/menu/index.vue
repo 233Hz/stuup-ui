@@ -15,6 +15,12 @@
         icon="home-icon-back"
       />
       <menu-item
+        v-if="userStore.userInfo.userType === USER_TYPE.STUDENT"
+        title="我的成长画像"
+        icon="home-icon-portrait"
+        :path="portraitPath"
+      />
+      <menu-item
         title="我的消息"
         path="/self/notify"
         icon="home-icon-message"
@@ -30,14 +36,18 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import useUserStore from '@/store/modules/user'
 import usePermissionStore from '@/store/modules/permission'
 import { filterRouter } from '@/utils/util'
-import { MENU_FLAG } from '@/utils/dict'
+import { MENU_FLAG, USER_TYPE } from '@/utils/dict'
 import MenuItem from './MenuItem.vue'
 
+const userStore = useUserStore()
 const permissionStore = usePermissionStore()
 
 const frontRoute = filterRouter(permissionStore.routes, MENU_FLAG.FRONT)
+const portraitPath = computed(() => `/portrait/${userStore.userInfo.studentId}`)
 
 const ruleDescClickHandler = () => emit('rule-desc-click')
 

@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { reqWholeSchoolTop10Ranking } from '@/api/home'
 import { WholeSchoolTop10List } from '@/api/home/type'
 import useFlowersStore from '@/store/modules/flowers'
@@ -126,16 +126,6 @@ const rankingColorHandle = (ranking: number) => {
       width: 100%;
       height: 80px;
       padding: 5px 0;
-
-      &:nth-child(1) .ranking {
-        background-color: #ffb628 !important;
-      }
-      &:nth-child(2) .ranking {
-        background-color: #94b6db !important;
-      }
-      &:nth-child(3) .ranking {
-        background-color: #f2a897 !important;
-      }
 
       .item-wrapper {
         position: relative;
