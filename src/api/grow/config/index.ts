@@ -19,7 +19,7 @@ export const saveOrUpdateGrowth = async (data: GrowthVO) => {
 }
 
 export const delGrowth = async (id: number) => {
-  return await post('/growth/del/' + id)
+  return await del('/growth/del/' + id)
 }
 
 export const getGrowthItemPage = async (params: Page) => {

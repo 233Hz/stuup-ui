@@ -7,9 +7,9 @@
             <el-form ref="searchRef" :model="searchForm" label-width="80px">
               <el-row>
                 <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="角色名称" prop="roleName">
+                  <el-form-item label="角色名称" prop="key">
                     <el-input
-                      v-model="searchForm.roleName"
+                      v-model="searchForm.key"
                       placeholder="请输入角色名称"
                     />
                   </el-form-item>
@@ -127,12 +127,12 @@
 </template>
 
 <script setup lang="ts" name="Role">
-import { ref, onMounted, reactive } from 'vue'
-import { getRolePage, saveRole, delRole } from '@/api/system/role/index'
+import { onMounted, reactive, ref } from 'vue'
+import { delRole, getRolePage, saveRole } from '@/api/system/role/index'
 import { RoleVO } from '@/api/system/role/type'
+import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { formatDate } from '@/utils/util'
-import type { FormInstance, FormRules } from 'element-plus'
 import MenuTree from './MenuTree/index.vue'
 import usePaginationStore from '@/store/modules/pagination'
 
@@ -147,7 +147,7 @@ const dialog_active = ref<boolean>(false)
 const dialog_title = ref<string>('')
 const tableData = ref<RoleVO[]>()
 const searchForm = ref({
-  roleName: void 0,
+  key: void 0,
 })
 const form = ref<any>({
   oid: void 0,
@@ -155,7 +155,7 @@ const form = ref<any>({
   roleDesc: void 0,
 })
 const rules = reactive<FormRules>({
-  roleName: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
+  key: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
 })
 const searchRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()

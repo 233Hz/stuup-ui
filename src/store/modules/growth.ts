@@ -11,11 +11,10 @@ const useGrowthStore = defineStore('Growth', {
     isInit: false,
   }),
   actions: {
-    // 获取成长树
-    async init() {
+    async init(refresh: boolean = false) {
       this.level2 = []
       this.level3 = []
-      if (this.isInit) return
+      if (this.isInit && !refresh) return
       const { data } = await getGrowthTree()
       this.level1 = data
       this.isInit = true

@@ -3,9 +3,14 @@
     <template #header>
       <div class="flex justify-between items-center">
         <span class="fs-18 font-600">{{ props.title }}</span>
-        <el-button type="success" text bg @click="router.push('/self/notify')">
+        <el-button
+          type="success"
+          text
+          bg
+          icon="DArrowRight"
+          @click="() => props.morePath && router.push(props.morePath)"
+        >
           更多
-          <el-icon><DArrowRight /></el-icon>
         </el-button>
       </div>
     </template>
@@ -40,6 +45,7 @@ interface Props {
   title?: string
   loading?: boolean
   messages?: Notify[]
+  morePath?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {

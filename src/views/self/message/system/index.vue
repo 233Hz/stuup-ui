@@ -4,7 +4,7 @@
       <template #header>
         <el-page-header icon="ArrowLeft" @back="router.back()">
           <template #content>
-            <span class="text-large font-600 mr-3">通知公告</span>
+            <span class="text-large font-600 mr-3">智慧提醒</span>
           </template>
         </el-page-header>
       </template>
@@ -110,10 +110,10 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="MessageSystem">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { reqMyNotifyPage } from '@/api/system/announcement'
+import { reqMySystemPage } from '@/api/system/announcement'
 import { formatDate } from '@/utils/util'
 
 const router = useRouter()
@@ -131,11 +131,12 @@ const searchForm = ref({
 onMounted(async () => {
   await fetchData()
 })
+
 const fetchData = async () => {
   loading.value = true
   try {
     const query = Object.assign(searchForm.value, page.value)
-    const { data } = await reqMyNotifyPage(query)
+    const { data } = await reqMySystemPage(query)
     total.value = data.total
     tableData.value = data.records
   } finally {

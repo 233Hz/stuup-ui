@@ -283,24 +283,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, h } from 'vue'
+import { h, onMounted, ref, watch } from 'vue'
 import {
+  delGrowthItem,
   getGrowthItemPage,
   saveOrUpdateGrowthItem,
-  delGrowthItem,
 } from '@/api/grow/config'
-import { ElMessage, ElMessageBox, CascaderProps } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
+import { CascaderProps, ElMessage, ElMessageBox } from 'element-plus'
 import {
-  PERIOD,
-  DIALOG_TYPE,
   CALCULATE_TYPE,
+  DIALOG_TYPE,
   GROWTH_GATHERER,
   GROWTH_GATHERER_TYPE,
+  PERIOD,
 } from '@/utils/dict'
 import { requiredRule } from '@/utils/rules'
 import { formatDate } from '@/utils/util'
 import type { GrowthItemVO } from '@/api/grow/config/type'
-import type { FormInstance, FormRules } from 'element-plus'
 import bus from '@/utils/bus'
 import useGrowthStore from '@/store/modules/growth'
 import usePaginationStore from '@/store/modules/pagination'
@@ -374,8 +374,9 @@ onMounted(() => {
 watch(
   () => form.value.scorePeriod,
   (newValue) => {
-    if (newValue !== PERIOD.UNLIMITED) {
+    if (newValue === PERIOD.UNLIMITED) {
       form.value.scoreUpperLimit = void 0
+    } else {
       form.value.collectLimit = void 0
     }
   },

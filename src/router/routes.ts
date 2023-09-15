@@ -83,17 +83,6 @@ export const constantRoute: RouteRecordRaw[] = [
         },
       },
       {
-        path: '/self/notify',
-        name: 'SelfNotify',
-        component: () => import('@/views/self/message/index.vue'),
-        meta: {
-          title: '我的通知',
-          hidden: true,
-          icon: '',
-          flag: 3,
-        },
-      },
-      {
         path: '/portrait/:id',
         name: 'Portrait',
         component: () => import('@/views/portrait/index.vue'),
@@ -114,6 +103,28 @@ export const constantRoute: RouteRecordRaw[] = [
       title: '可视化',
       hidden: false,
       icon: 'home-icon-screen',
+      flag: 1,
+    },
+  },
+  {
+    path: '/self/message/notify',
+    name: 'MessageNotify',
+    component: () => import('@/views/self/message/notify/index.vue'),
+    meta: {
+      title: '通知公告',
+      hidden: false,
+      icon: 'home-icon-message-notify',
+      flag: 1,
+    },
+  },
+  {
+    path: '/self/message/system',
+    name: 'MessageSystem',
+    component: () => import('@/views/self/message/system/index.vue'),
+    meta: {
+      title: '智慧提醒',
+      hidden: false,
+      icon: 'home-icon-message-system',
       flag: 1,
     },
   },

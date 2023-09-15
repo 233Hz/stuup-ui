@@ -85,11 +85,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, reactive, watch, h } from 'vue'
-import { saveOrUpdateGrowth, delGrowth } from '@/api/grow/config'
+import { h, onMounted, reactive, ref, watch } from 'vue'
+import { delGrowth, saveOrUpdateGrowth } from '@/api/grow/config'
+import type { CascaderProps, FormInstance, FormRules } from 'element-plus'
 import { ElMessage, ElMessageBox, ElTree } from 'element-plus'
 import bus from '@/utils/bus'
-import type { FormInstance, FormRules, CascaderProps } from 'element-plus'
 import type { GrowthTreeVO } from '@/api/grow/config/type'
 import useGrowthStore from '@/store/modules/growth'
 
@@ -165,7 +165,7 @@ const delRow = () => {
       try {
         const res = await delGrowth(form.value.id!)
         ElMessage.success(res.message)
-        growthStore.init()
+        growthStore.init(true)
       } finally {
         loading.value = false
       }
@@ -190,17 +190,19 @@ const handleNodeClick = (nodeData: GrowthTreeVO, e: any) => {
 }
 
 const submitForm = async () => {
+  console.log(form.value)
+
   if (!formRef) return
   const valid = await formRef.value?.validate()
   if (!valid) return
-  if (form.value.id === form.value.pid)
+  if (form.value.id && form.value.id === form.value.pid && form.value.pid)
     return ElMessage.warning('父项目不能为自己')
   loading.value = true
   try {
     const res = await saveOrUpdateGrowth(form.value)
     ElMessage.success(res.message)
     active.value = false
-    await growthStore.init()
+    await growthStore.init(true)
   } finally {
     loading.value = false
   }

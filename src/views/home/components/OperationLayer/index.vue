@@ -26,15 +26,18 @@
         @click="router.push(`/garden/${GARDEN_TYPE.XHH}`)"
       />
       <div class="sun" @click="bus.emit('show-rank')">荣誉榜</div>
-      <span class="absolute block t-0 r-150">
-        <el-link type="danger" icon="CloseBold" @click="handleLogout">
-          退出登录
-        </el-link>
+      <span class="absolute block t-0 r-150 flex">
+        <el-tooltip effect="light" content="成长积分规则" placement="bottom">
+          <menu-item icon="home-icon-rule-desc" @click="ruleDescRef.show()" />
+        </el-tooltip>
+        <el-tooltip effect="light" content="退出登录" placement="bottom">
+          <menu-item icon="home-icon-logout" @click="handleLogout" />
+        </el-tooltip>
       </span>
       <!-- 用户信息 and 菜单 -->
       <div class="absolute t-0 l-0 flex">
         <Self v-if="isStudent" />
-        <Menu @rule-desc-click="ruleDescRef.show()" />
+        <Menu />
       </div>
       <Level class="absolute t-200 l-0" v-if="isStudent" />
       <!-- 用户等级 -->
@@ -59,6 +62,7 @@ import Menu from './Menu/index.vue'
 import Level from './Level/index.vue'
 import CurrentLevel from './CurrentLevel/index.vue'
 import RuleDesc from './RuleDesc/index.vue'
+import MenuItem from './Menu/MenuItem.vue'
 
 const router = useRouter()
 const userStore = useUserStore()

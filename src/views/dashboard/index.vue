@@ -6,6 +6,7 @@
           title="通知公告"
           :loading="loading"
           :messages="notifyMsgs"
+          more-path="/self/message/notify"
         />
       </el-col>
       <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="mb-20">
@@ -13,6 +14,7 @@
           title="智慧提醒"
           :loading="loading"
           :messages="systemMsgs"
+          more-path="/self/message/system"
         />
       </el-col>
       <el-col :span="24">

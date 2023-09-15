@@ -1,5 +1,5 @@
 <template>
-  <div class="w-500">
+  <div>
     <div class="relative flex flex-wrap">
       <menu-item
         v-for="item in frontRoute"
@@ -20,17 +20,7 @@
         icon="home-icon-portrait"
         :path="portraitPath"
       />
-      <menu-item
-        title="我的消息"
-        path="/self/notify"
-        icon="home-icon-message"
-      />
       <menu-item title="个人中心" path="/self/center" icon="home-icon-self" />
-      <menu-item
-        title="积分规则说明"
-        icon="home-icon-rule-desc"
-        @click="ruleDescClickHandler"
-      />
     </div>
   </div>
 </template>
@@ -46,12 +36,8 @@ import MenuItem from './MenuItem.vue'
 const userStore = useUserStore()
 const permissionStore = usePermissionStore()
 
-const frontRoute = filterRouter(permissionStore.routes, MENU_FLAG.FRONT)
+const frontRoute = computed(() => {
+  return filterRouter(permissionStore.routes, MENU_FLAG.FRONT)
+})
 const portraitPath = computed(() => `/portrait/${userStore.userInfo.studentId}`)
-
-const ruleDescClickHandler = () => emit('rule-desc-click')
-
-const emit = defineEmits<{
-  (e: 'rule-desc-click'): void
-}>()
 </script>
