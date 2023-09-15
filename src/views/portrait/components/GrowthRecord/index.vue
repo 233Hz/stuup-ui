@@ -45,7 +45,8 @@ onMounted(async () => {
 const initSemester = async () => {
   const { data } = await reqStudentSemester(+route.params.id)
   semester.value = data
-  active.value = data.find((item) => item.isCurrent === WHETHER.YES)?.id
+  active.value =
+    data.find((item) => item.isCurrent === WHETHER.YES)?.id || data[0]?.id
 }
 
 const handleTagClick = (id: number) => (active.value = id)
