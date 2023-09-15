@@ -336,6 +336,7 @@ const fetchData = async () => {
 const searchFormReset = () => {
   searchForm.value = {
     yearId: void 0,
+    semesterId: void 0,
     l1Id: void 0,
     l2Id: void 0,
     l3Id: void 0,
