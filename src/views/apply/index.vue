@@ -225,8 +225,13 @@
         />
         <el-table-column label="操作" width="400" align="center">
           <template #default="{ row }">
-            <el-button @click="auditDetailsRef.open(row)">审核信息</el-button>
+            <el-button text bg @click="auditDetailsRef.open(row)">
+              审核信息
+            </el-button>
             <el-button
+              type="primary"
+              text
+              bg
               :disabled="
                 row.state !== AUDIT_STATUS.TO_BE_SUBMITTED &&
                 row.state !== AUDIT_STATUS.NO_PASS
@@ -236,6 +241,8 @@
               提交
             </el-button>
             <el-button
+              text
+              bg
               :disabled="
                 row.state !== AUDIT_STATUS.TO_BE_SUBMITTED &&
                 row.state !== AUDIT_STATUS.NO_PASS
@@ -245,6 +252,8 @@
               修改
             </el-button>
             <el-button
+              text
+              bg
               :disabled="
                 row.state !== AUDIT_STATUS.TO_BE_SUBMITTED &&
                 row.state !== AUDIT_STATUS.NO_PASS
@@ -340,20 +349,29 @@
 </template>
 
 <script setup lang="ts" name="Apply">
-import { ref, onMounted, reactive, computed } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
+import type {
+  FormInstance,
+  FormRules,
+  UploadFile,
+  UploadFiles,
+  UploadInstance,
+  UploadProps,
+  UploadRawFile,
+} from 'element-plus'
 import {
+  type CascaderProps,
   ElMessage,
   ElMessageBox,
-  type CascaderProps,
   genFileId,
 } from 'element-plus'
 import {
-  reqStudentGrowthItems,
   applyGrowItem,
-  reqPageStudentApplyRecord,
-  updateAudGrow,
   deleteAudGrow,
+  reqPageStudentApplyRecord,
+  reqStudentGrowthItems,
   submitGrowItem,
+  updateAudGrow,
 } from '@/api/apply'
 import { useRouter } from 'vue-router'
 import { getToken } from '@/utils/auth'
@@ -361,15 +379,6 @@ import { requiredRule } from '@/utils/rules'
 import { formatDate } from '@/utils/util'
 import { AUDIT_STATUS } from '@/utils/dict'
 import AuditDetails from '@/components/AuditDetails/index.vue'
-import type {
-  FormInstance,
-  FormRules,
-  UploadInstance,
-  UploadProps,
-  UploadRawFile,
-  UploadFile,
-  UploadFiles,
-} from 'element-plus'
 import type { GrowApplyRecord, StudentGrowthItems } from '@/api/apply/type'
 import useGrowthStore from '@/store/modules/growth'
 import usePaginationStore from '@/store/modules/pagination'
