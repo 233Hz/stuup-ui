@@ -201,6 +201,12 @@
           align="center"
         />
         <el-table-column
+          prop="semesterName"
+          label="学年"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
           prop="gradeName"
           label="年级"
           show-overflow-tooltip

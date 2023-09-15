@@ -10,7 +10,7 @@
       计算积分（每月）
     </el-button>
     <el-button type="success" @click="handleTask(4)">
-      计算期积分（每学）
+      计算期积分（每学期）
     </el-button>
     <el-button type="success" @click="handleTask(5)">
       计算积分（每年）
@@ -19,12 +19,9 @@
       生成当前学年和学期
     </el-button>
     <el-button type="success" @click="handleTask(7)">
-      统计本月榜单数据
-    </el-button>
-    <el-button type="success" @click="handleTask(8)">
       成长计算每日定时补偿
     </el-button>
-    <el-button type="success" @click="handleTask(9)">
+    <el-button type="success" @click="handleTask(8)">
       自动采集未收集的水滴
     </el-button>
   </el-card>

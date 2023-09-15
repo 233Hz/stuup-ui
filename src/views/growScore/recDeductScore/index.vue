@@ -76,6 +76,18 @@
             </el-form-item>
           </el-col>
           <el-col :sm="24" :md="12" :xl="6">
+            <el-form-item label="学年" prop="semesterId">
+              <el-select v-model="searchForm.semesterId" style="width: 100%">
+                <el-option
+                  v-for="item in dictionaryStore.semester"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="6">
             <el-form-item label="年级" prop="gradeId">
               <el-select v-model="searchForm.gradeId" style="width: 100%">
                 <el-option
@@ -201,6 +213,12 @@
           align="center"
         />
         <el-table-column
+          prop="semesterName"
+          label="学年"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
           prop="gradeName"
           label="年级"
           show-overflow-tooltip
@@ -279,6 +297,7 @@ const tableData = ref<RecScoreVO[]>()
 const datatimeRange = ref([])
 const searchForm = ref({
   yearId: void 0,
+  semesterId: void 0,
   l1Id: void 0,
   l2Id: void 0,
   l3Id: void 0,
