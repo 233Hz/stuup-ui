@@ -262,24 +262,24 @@
   </div>
 </template>
 
-<script setup lang="ts" name="Audit">
-import { ref, onMounted, computed } from 'vue'
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
 import {
-  reqPageStudentUnionAudit,
-  reqAuditPass,
-  reqAuditNoPass,
-  reqAuditBatchPass,
   reqAuditBatchNoPass,
+  reqAuditBatchPass,
+  reqAuditNoPass,
+  reqAuditPass,
+  reqPageStudentUnionAudit,
 } from '@/api/audit'
 import { formatDate } from '@/utils/util'
 import { AUDIT_STATUS } from '@/utils/dict'
 import { GrowAuditRecord } from '@/api/audit/type'
 import type { FormInstance, TableInstance } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import useGrowthStore from '@/store/modules/growth'
 import usePaginationStore from '@/store/modules/pagination'
 import useDictionaryStore from '@/store/modules/dictionary'
 import useUserStore from '@/store/modules/user'
-import { ElMessage, ElMessageBox } from 'element-plus'
 import AuditDetails from '@/components/AuditDetails/index.vue'
 
 const growthStore = useGrowthStore()

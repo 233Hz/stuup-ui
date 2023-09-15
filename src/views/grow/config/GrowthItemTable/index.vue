@@ -135,7 +135,7 @@
             <template #default="{ row }">
               <el-button @click="updateRow(row)">修改</el-button>
               <el-button
-                v-show="row.gatherer === GROWTH_GATHERER_TYPE.ASSIGN"
+                v-show="row.gatherer !== GROWTH_GATHERER.STUDENT"
                 @click="setGrowUserDrawerRef.open(row.id, row.gatherer)"
               >
                 设置项目负责人
@@ -268,12 +268,13 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="active = false">
-          <el-icon><Close /></el-icon>
-          取消
-        </el-button>
-        <el-button type="primary" :loading="loading" @click="submitForm">
-          <el-icon><Check /></el-icon>
+        <el-button icon="Close" @click="active = false">取消</el-button>
+        <el-button
+          type="primary"
+          icon="Check"
+          :loading="loading"
+          @click="submitForm"
+        >
           提交
         </el-button>
       </template>

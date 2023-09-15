@@ -237,13 +237,13 @@
   </div>
 </template>
 
-<script setup lang="ts" name="Audit">
-import { ref, onMounted } from 'vue'
-import { reqPageStudentAudit, reqAuditPass, reqAuditNoPass } from '@/api/audit'
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import { reqAuditNoPass, reqAuditPass, reqPageStudentAudit } from '@/api/audit'
 import { formatDate } from '@/utils/util'
+import type { FormInstance } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { AUDIT_STATUS } from '@/utils/dict'
-import type { FormInstance } from 'element-plus'
 import useGrowthStore from '@/store/modules/growth'
 import usePaginationStore from '@/store/modules/pagination'
 import useDictionaryStore from '@/store/modules/dictionary'

@@ -11,7 +11,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Audit">
 import { ref } from 'vue'
 import StudentAudit from './StudentAudit/index.vue'
 import StudentUnionAudit from './StudentUnionAudit/index.vue'
