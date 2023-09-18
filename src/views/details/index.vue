@@ -1,51 +1,56 @@
 <template>
-  <div class="details">
-    <div class="header">
-      <el-page-header :icon="ArrowLeft" @back="router.back()">
+  <div
+    class="w-full h-full overflow-auto"
+    style="
+      background-color: #74ebd5;
+      background-image: linear-gradient(180deg, #74ebd5 0%, #9face6 100%);
+    "
+  >
+    <div class="w-1000 m-auto">
+      <el-page-header icon="ArrowLeft" @back="router.back()" class="my-10">
         <template #content>
           <span class="text-large font-600 mr-3">我的成长明细</span>
         </template>
       </el-page-header>
-      <div class="score">
-        <div class="score-wrapper">
-          <div class="content">
-            <p class="total-text">当前总积分</p>
-            <h1 class="total-score">
-              {{ totalScore }}
-              <span class="fs-24">分</span>
-            </h1>
-          </div>
+      <div
+        class="h-300 bg-white br-20 shadow-md flex flex-col justify-center items-center"
+      >
+        <p class="fs-24 text-gray-500">当前总积分</p>
+        <p class="mt-20">
+          <span class="fs-48">{{ totalScore }}</span>
+          <span class="fs-24">分</span>
+        </p>
+      </div>
+      <div
+        class="flex items-center bg-white shadow-md my-10 p-20 br-8"
+        v-for="item in tableData"
+      >
+        <div class="flex-1 flex flex-col justify-around gap-20">
+          <p class="fs-20 font-bold">{{ item.name }}</p>
+          <p class="text-gray-400 fs-16" v-if="item.description">
+            {{ item.description }}
+          </p>
+        </div>
+        <div class="w-100 text-center">
+          <span class="fs-32 font-bold">{{ item.score }}</span>
+        </div>
+        <div class="w-160 text-center text-gray-500">
+          <span class="fs-18">
+            {{ formatDate(item.createTime, 'YYYY-MM-DD') }}
+          </span>
         </div>
       </div>
-    </div>
-    <div class="main">
-      <el-auto-resizer>
-        <template #default="{ height, width }">
-          <el-table-v2
-            :columns="columns"
-            :data="tableData"
-            :width="width"
-            :height="height"
-            :row-height="100"
-            row-class="fs-18 font-bold"
-            row-key="id"
-            fixed
-            @end-reached="onEndReachedHandle"
-          >
-            <template #footer>
-              <div class="text-center fs-20 bg-#f7f7f7">
-                <span v-show="loading">
-                  <el-icon class="is-loading" size="30">
-                    <Loading />
-                  </el-icon>
-                  加载更多中
-                </span>
-                <span v-if="!loading && !hasData">没有更多了</span>
-              </div>
-            </template>
-          </el-table-v2>
-        </template>
-      </el-auto-resizer>
+      <div class="flex justify-center my-20">
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="total"
+          @current-change="(val: number) => {
+            page.current = val
+            fetchData()
+          }"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -55,53 +60,17 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { studentScoreDetails } from '@/api/details'
 import { formatDate } from '@/utils/util'
-import { ArrowLeft } from '@element-plus/icons-vue'
-import type { Column } from 'element-plus'
 
 const router = useRouter()
 
+const total = ref(0)
 const page = ref({
   current: 1,
-  size: 20,
+  size: 10,
 })
 const loading = ref(false)
 const totalScore = ref(0)
 const tableData = ref<any[]>([])
-const hasData = ref(true)
-
-const columns: Column[] = [
-  {
-    key: 'name',
-    dataKey: 'name',
-    title: '项目名称',
-    width: 900,
-    cellRenderer: ({ rowData }) => (
-      <div>
-        <p>{rowData.name}</p>
-        {rowData.description ? (
-          <p class="fs-14 text-#969696 mt-10">{rowData.description}</p>
-        ) : null}
-      </div>
-    ),
-  },
-  {
-    align: 'center',
-    key: 'score',
-    dataKey: 'score',
-    title: '获得分数',
-    width: 100,
-  },
-  {
-    align: 'center',
-    key: 'createTime',
-    dataKey: 'createTime',
-    title: '获得时间',
-    width: 200,
-    cellRenderer: ({ cellData }) => (
-      <span>{formatDate(cellData, 'YYYY-MM-DD')}</span>
-    ),
-  },
-]
 
 onMounted(() => {
   fetchData()
@@ -111,25 +80,17 @@ const fetchData = async () => {
   try {
     loading.value = true
     const {
-      data: { totalScore: score, records },
+      data: { totalScore: score, detailPage },
     } = await studentScoreDetails(page.value)
     totalScore.value = score
-    if (records.length < page.value.size) {
-      hasData.value = false
-    }
-    records.forEach((item) => {
+    total.value = detailPage.total
+    detailPage.records.forEach((item) => {
       item.score = Number(item.score) > 0 ? '+' + item.score : item.score
-      tableData.value.push(item)
     })
+    tableData.value = detailPage.records
   } finally {
     loading.value = false
   }
-}
-
-const onEndReachedHandle = () => {
-  if (!hasData.value) return
-  page.value.current++
-  fetchData()
 }
 </script>
 
@@ -139,14 +100,8 @@ const onEndReachedHandle = () => {
   height: 100%;
   margin: auto;
   position: relative;
-  background-color: #f7f7f7;
-  display: flex;
-  flex-direction: column;
 
   .header {
-    background-color: #8bc6ec;
-    background-image: linear-gradient(135deg, #8bc6ec 0%, #9599e2 100%);
-
     .score {
       width: 100%;
       height: 300px;
@@ -179,13 +134,6 @@ const onEndReachedHandle = () => {
         }
       }
     }
-  }
-
-  .main {
-    flex: 1;
-    width: 100%;
-    height: 100%;
-    background-color: red;
   }
 }
 </style>

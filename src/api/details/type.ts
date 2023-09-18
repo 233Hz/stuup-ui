@@ -1,3 +1,5 @@
+import { PageResult } from '@/types/global'
+
 export interface ScoreDetails {
   id: number
   name: string
@@ -8,5 +10,5 @@ export interface ScoreDetails {
 
 export interface StudentScoreDetailsVO {
   totalScore: number
-  records: ScoreDetails[]
+  detailPage: PageResult<ScoreDetails[]>
 }
