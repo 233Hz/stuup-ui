@@ -18,23 +18,91 @@ const option: EChartOption = {
   tooltip: {
     trigger: 'item',
   },
-  grid: {
-    top: '50%',
-    bottom: '50%',
-    left: '50%',
-    right: '50%',
+  legend: {
+    data: ['我的积分', '平均积分'],
+    bottom: 0,
   },
   radar: {
-    shape: 'circle',
-    axisName: {
-      fontSize: 18,
-      color: '#03aa8c',
+    name: {
+      textStyle: {
+        color: '#f87171',
+        fontSize: '16',
+        borderRadius: 3,
+        padding: [3, 5],
+      },
+    },
+    nameGap: '2',
+    splitArea: {
+      areaStyle: {
+        color: [
+          'rgba(0,255,255, 0.1)',
+          'rgba(0,255,255, 0.2)',
+          'rgba(0,255,255, 0.3)',
+          'rgba(0,255,255, 0.4)',
+          'rgba(0,255,255, 0.5)',
+          'rgba(0,255,255, 0.6)',
+        ].reverse(),
+        shadowColor: 'rgba(0, 0, 0, 1)',
+        shadowBlur: 30,
+        shadowOffsetX: 10,
+        shadowOffsetY: 10,
+      },
+    },
+    axisLine: {
+      lineStyle: {
+        color: 'rgba(0,206,209, 0.3)',
+      },
+    },
+    splitLine: {
+      lineStyle: {
+        width: 1,
+        color: [
+          'rgba(0,206,209, 0.1)',
+          'rgba(0,206,209, 0.2)',
+          'rgba(0,206,209, 0.3)',
+          'rgba(0,206,209, 0.4)',
+          'rgba(0,206,209, 0.5)',
+          'rgba(0,206,209, 0.6)',
+        ].reverse(),
+      },
     },
   },
   series: [
     {
-      name: '成长综合评价',
+      name: '我的积分',
       type: 'radar',
+      areaStyle: {
+        color: 'rgba(127,255,210, 0.5)',
+      },
+      symbol: 'circle',
+      symbolSize: 12,
+      itemStyle: {
+        color: 'rgba(127,255,210,0.8)',
+        borderColor: 'rgba(127,255,210,0.2)',
+        borderWidth: 10,
+      },
+      lineStyle: {
+        color: 'rgba(127,255,210, 0.6)',
+        width: 2,
+      },
+    },
+    {
+      name: '平均积分',
+      type: 'radar',
+      areaStyle: {
+        color: 'rgba(255,237,145, 0.5)',
+      },
+      symbol: 'circle',
+      symbolSize: 12,
+      itemStyle: {
+        color: 'rgba(255,237,145,0.8)',
+        borderColor: 'rgba(255,237,145,0.2)',
+        borderWidth: 10,
+      },
+      lineStyle: {
+        color: 'rgba(255,237,145, 0.6)',
+        width: 2,
+      },
     },
   ],
   graphic: {
@@ -61,13 +129,15 @@ const chartData = ref<PortraitCapacityEvaluatorList>()
 watch(chartData, (newVal) => {
   if (newVal && newVal?.length) {
     const indicator: { name: string; max: number }[] = []
-    const value: number[] = []
+    const data1: number[] = []
+    const data2: number[] = []
     newVal.forEach((item) => {
       indicator.push({
-        name: `${item.indicatorName}（${item.indicatorScore}分）`,
-        max: item.indicatorAvgScore,
+        name: `${item.indicatorName}（${item.myScore}分）`,
+        max: item.highestScore,
       })
-      value.push(item.indicatorScore)
+      data1.push(item.myScore)
+      data2.push(item.avgScore)
     })
     chart.setOption({
       radar: { indicator },
@@ -75,8 +145,14 @@ watch(chartData, (newVal) => {
         {
           data: [
             {
-              value,
-              name: '成长方向',
+              value: data1,
+            },
+          ],
+        },
+        {
+          data: [
+            {
+              value: data2,
             },
           ],
         },

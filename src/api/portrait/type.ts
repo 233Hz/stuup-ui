@@ -14,8 +14,9 @@ export interface PortraitBasicInfo {
 
 export interface PortraitCapacityEvaluator {
   indicatorName: string
-  indicatorScore: number
-  indicatorAvgScore: number
+  highestScore: number
+  myScore: number
+  avgScore: number
 }
 export type PortraitCapacityEvaluatorList = PortraitCapacityEvaluator[]
 

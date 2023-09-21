@@ -21,8 +21,7 @@ watchEffect(() => {
         width: el.getBoundingClientRect().width + 'px',
         height: el.getBoundingClientRect().height + 'px',
         background: '#e5e5e5',
-        // @ts-ignore
-        borderRadius: getComputedStyle(el).borderRadius,
+        borderRadius: getComputedStyle(el as HTMLElement).borderRadius,
       },
     }),
   )
