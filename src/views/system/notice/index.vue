@@ -1,131 +1,146 @@
 <template>
   <div>
-    <div style="padding: 10px 20px">
-      <el-card style="margin: 10px 0">
-        <template #header>
-          <el-row>
-            <el-col :span="24">
-              <el-form ref="searchRef" :model="searchForm" label-width="80px">
-                <el-row>
-                  <el-col :sm="24" :md="12" :xl="8">
-                    <el-form-item label="通知标题" prop="title">
-                      <el-input v-model="searchForm.title" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :sm="24" :md="12" :xl="8">
-                    <el-form-item label="发布状态" prop="state">
-                      <el-select v-model="searchForm.state" class="w-full">
-                        <el-option
-                          v-for="item in ANNOUNCEMENT_STATE.getDict()"
-                          :label="item.label"
-                          :value="item.value"
-                        />
-                      </el-select>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-              </el-form>
-            </el-col>
-          </el-row>
-        </template>
-        <div style="text-align: center">
-          <el-space>
-            <el-button type="primary" @click="fetchList" :loading="loading">
-              查询
-            </el-button>
-            <el-button @click="searchRef?.resetFields()">清空</el-button>
-          </el-space>
-        </div>
-      </el-card>
-      <el-card>
-        <template #header>
-          <el-space>
-            <el-button type="primary" @click="addRow">
-              <el-icon>
-                <Plus />
-              </el-icon>
-              发布公告
-            </el-button>
-            <el-divider direction="vertical" />
-            <el-button :disabled="loading" circle @click="fetchList">
-              <el-icon>
-                <Refresh />
-              </el-icon>
-            </el-button>
-          </el-space>
-        </template>
+    <el-card>
+      <el-form ref="searchRef" :model="searchForm">
+        <el-row :gutter="20">
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="通知标题" prop="title">
+              <el-input v-model="searchForm.title" />
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="发布状态" prop="state">
+              <el-select v-model="searchForm.state" class="w-full">
+                <el-option
+                  v-for="item in ANNOUNCEMENT_STATE.getDict()"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item>
+              <el-space>
+                <el-button
+                  type="primary"
+                  icon="Search"
+                  plain
+                  :loading="loading"
+                  @click="fetchList"
+                >
+                  查询
+                </el-button>
+                <el-button icon="Close" plain @click="searchRef?.resetFields()">
+                  清空
+                </el-button>
+                <el-button
+                  type="primary"
+                  icon="Plus"
+                  plain
+                  v-permission="'notice_publish_edit'"
+                  @click="addRow"
+                >
+                  发布公告
+                </el-button>
+                <el-button
+                  icon="Refresh"
+                  plain
+                  circle
+                  :disabled="loading"
+                  @click="fetchList"
+                />
+              </el-space>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-card>
+    <el-card>
+      <template #header>
+        <el-space></el-space>
+      </template>
 
-        <el-table
-          :data="tableData"
-          border
-          stripe
-          v-loading="loading"
-          empty-text="空空如也~~"
-          style="width: 100%"
-        >
-          <el-table-column
-            prop="title"
-            label="公告标题"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            prop="createTime"
-            label="发布时间"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            prop="createUser"
-            label="发布人"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            label="发布状态"
-            show-overflow-tooltip
-            align="center"
-          >
-            <template #default="{ row }">
-              {{ ANNOUNCEMENT_STATE.getKeyForValue(row.state) }}
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="400" align="center">
-            <template #default="{ row }">
-              <el-button @click="perviewRow(row.id)">预览</el-button>
-              <el-button
-                :disabled="row.state === ANNOUNCEMENT_STATE.PUBLISHED"
-                @click="updateRow(row)"
-              >
-                修改
-              </el-button>
-              <el-button
-                type="warning"
-                @click="publishRow(row.id, row.title)"
-                v-show="row.state === ANNOUNCEMENT_STATE.PUBLISHED"
-              >
-                撤回
-              </el-button>
-              <el-button
-                type="success"
-                @click="publishRow(row.id, row.title)"
-                v-show="row.state === ANNOUNCEMENT_STATE.UNPUBLISHED"
-              >
-                发布
-              </el-button>
-              <el-button
-                :disabled="row.state === ANNOUNCEMENT_STATE.PUBLISHED"
-                @click="delRow(row.id, row.title)"
-                type="danger"
-              >
-                删除
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <Pagination @size-change="fetchList" @current-change="fetchList" />
-      </el-card>
-    </div>
+      <el-table
+        :data="tableData"
+        border
+        stripe
+        v-loading="loading"
+        empty-text="空空如也~~"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="title"
+          label="公告标题"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="createTime"
+          label="发布时间"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="createUser"
+          label="发布人"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column label="发布状态" show-overflow-tooltip align="center">
+          <template #default="{ row }">
+            {{ ANNOUNCEMENT_STATE.getKeyForValue(row.state) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="400" align="center">
+          <template #default="{ row }">
+            <el-button bg text icon="View" @click="previewRow(row.id)">
+              预览
+            </el-button>
+            <el-button
+              bg
+              text
+              v-permission="'notice_publish_edit'"
+              :disabled="row.state === ANNOUNCEMENT_STATE.PUBLISHED"
+              @click="updateRow(row)"
+            >
+              修改
+            </el-button>
+            <el-button
+              bg
+              text
+              type="warning"
+              v-permission="'notice_publish_edit'"
+              v-show="row.state === ANNOUNCEMENT_STATE.PUBLISHED"
+              @click="publishRow(row.id, row.title)"
+            >
+              撤回
+            </el-button>
+            <el-button
+              bg
+              text
+              type="success"
+              v-permission="'notice_publish_edit'"
+              v-show="row.state === ANNOUNCEMENT_STATE.UNPUBLISHED"
+              @click="publishRow(row.id, row.title)"
+            >
+              发布
+            </el-button>
+            <el-button
+              bg
+              text
+              type="danger"
+              v-permission="'notice_del'"
+              :disabled="row.state === ANNOUNCEMENT_STATE.PUBLISHED"
+              @click="delRow(row.id, row.title)"
+            >
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <Pagination @size-change="fetchList" @current-change="fetchList" />
+    </el-card>
     <el-dialog
       v-model="active"
       :title="title"
@@ -260,8 +275,8 @@ const form = ref<any>({
   content: void 0,
 })
 const rules = reactive<FormRules>({
-  title: [requiredRule('公告标题')],
-  scope: [requiredRule('请选择公告范围')],
+  title: [requiredRule('公告标题不能为空')],
+  scope: [requiredRule('公告范围不能为空')],
   userIds: [],
 })
 
@@ -300,7 +315,7 @@ const fetchList = async () => {
   }
 }
 
-const perviewRow = (id: number) => {
+const previewRow = (id: number) => {
   title.value = '查看'
   active.value = true
   router.push('/article/' + id)
@@ -338,7 +353,7 @@ const delRow = (id: number, title: string) => {
       loading.value = true
       try {
         const res = await delNotify(id)
-        ElMessage.success(res.message)
+        ElMessage.success(res.msg)
         fetchList()
       } finally {
         loading.value = false
@@ -362,7 +377,7 @@ const publishRow = (id: number, title: string) => {
       loading.value = true
       try {
         const res = await publishNotify(id)
-        ElMessage.success(res.message)
+        ElMessage.success(res.msg)
         fetchList()
       } finally {
         loading.value = false
@@ -378,7 +393,7 @@ const submitForm = async (publish: boolean) => {
   loading.value = true
   try {
     const res = await saveOrUpdateNotify(Object.assign({ publish }, form.value))
-    ElMessage.success(res.message)
+    ElMessage.success(res.msg)
     active.value = false
     fetchList()
   } finally {
@@ -399,3 +414,9 @@ const resetForm = () => {
   editorRef.value.unFullScreen()
 }
 </script>
+
+<style scoped>
+.el-card {
+  margin: 10px;
+}
+</style>

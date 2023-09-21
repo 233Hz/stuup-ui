@@ -1,47 +1,51 @@
 <template>
-  <div style="padding: 10px 20px">
-    <el-card style="margin: 10px 0">
-      <template #header>
-        <el-row>
-          <el-col :span="24">
-            <el-form ref="searchRef" :model="searchForm" label-width="80px">
-              <el-row>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="角色名称" prop="key">
-                    <el-input
-                      v-model="searchForm.key"
-                      placeholder="请输入角色名称"
-                    />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
+  <div>
+    <el-card>
+      <el-form ref="searchRef" :model="searchForm">
+        <el-row :gutter="20">
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="角色名称" prop="key">
+              <el-input v-model="searchForm.key" placeholder="请输入角色名称" />
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item>
+              <el-space>
+                <el-button
+                  type="primary"
+                  icon="Search"
+                  plain
+                  @click="fetchData"
+                  :loading="loading"
+                >
+                  查询
+                </el-button>
+                <el-button icon="Close" plain @click="searchRef?.resetFields()">
+                  清空
+                </el-button>
+                <el-button
+                  type="primary"
+                  icon="Plus"
+                  plain
+                  v-permission="'role_add_edit'"
+                  @click="addRow"
+                >
+                  添加
+                </el-button>
+                <el-button
+                  icon="Refresh"
+                  plain
+                  circle
+                  :disabled="loading"
+                  @click="fetchData"
+                />
+              </el-space>
+            </el-form-item>
           </el-col>
         </el-row>
-      </template>
-      <div style="text-align: center">
-        <el-space>
-          <el-button type="primary" @click="fetchList" :loading="loading">
-            查询
-          </el-button>
-          <el-button @click="searchRef?.resetFields()">清空</el-button>
-        </el-space>
-      </div>
+      </el-form>
     </el-card>
     <el-card>
-      <template #header>
-        <el-space>
-          <el-button type="primary" @click="addRow">
-            <el-icon><Plus /></el-icon>
-            添加
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button :disabled="loading" circle @click="fetchList">
-            <el-icon><Refresh /></el-icon>
-          </el-button>
-        </el-space>
-      </template>
-
       <el-table
         :data="tableData"
         border
@@ -57,6 +61,12 @@
           align="center"
         />
         <el-table-column
+          prop="roleCode"
+          label="角色编号"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
           prop="roleDesc"
           label="角色描述"
           show-overflow-tooltip
@@ -64,10 +74,35 @@
         />
         <el-table-column label="操作" width="400" align="center">
           <template #default="{ row }">
-            <el-button @click="updateRow(row)">修改</el-button>
-            <el-button @click="openRoleMenuTree(row.oid)">角色权限</el-button>
+            <el-button
+              bg
+              text
+              icon="Edit"
+              v-permission="'role_add_edit'"
+              @click="updateRow(row)"
+            >
+              修改
+            </el-button>
+            <el-button
+              bg
+              text
+              icon="Setting"
+              v-permission="'role_auth'"
+              @click="openRoleMenuTree(row.oid)"
+            >
+              角色权限
+            </el-button>
             <!-- <el-button>角色用户</el-button> -->
-            <el-button @click="delRow(row.oid)" type="danger">删除</el-button>
+            <el-button
+              bg
+              text
+              type="danger"
+              icon="Delete"
+              v-permission="'role_del'"
+              @click="delRow(row.oid)"
+            >
+              删除
+            </el-button>
           </template>
         </el-table-column>
         <el-table-column
@@ -82,7 +117,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <Pagination @size-change="fetchList" @current-change="fetchList" />
+      <Pagination @size-change="fetchData" @current-change="fetchData" />
     </el-card>
     <el-dialog
       v-model="dialog_active"
@@ -101,6 +136,9 @@
         <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="form.roleName" placeholder="请输入角色名称" />
         </el-form-item>
+        <el-form-item label="角色编号" prop="roleCode">
+          <el-input v-model="form.roleCode" placeholder="请输入角色编号" />
+        </el-form-item>
         <el-form-item label="角色描述" prop="roleDesc">
           <el-input
             v-model="form.roleDesc"
@@ -112,17 +150,18 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="dialog_active = false">
-          <el-icon><Close /></el-icon>
-          取消
-        </el-button>
-        <el-button type="primary" :loading="loading" @click="submitForm">
-          <el-icon><Check /></el-icon>
-          提交
+        <el-button icon="Close" @click="dialog_active = false">取 消</el-button>
+        <el-button
+          type="primary"
+          icon="Check"
+          :loading="loading"
+          @click="submitForm"
+        >
+          提 交
         </el-button>
       </template>
     </el-dialog>
-    <menu-tree ref="menuTreeRef" />
+    <Drawer ref="drawerRef" />
   </div>
 </template>
 
@@ -130,16 +169,17 @@
 import { onMounted, reactive, ref } from 'vue'
 import { delRole, getRolePage, saveRole } from '@/api/system/role/index'
 import { RoleVO } from '@/api/system/role/type'
-import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { formatDate } from '@/utils/util'
-import MenuTree from './MenuTree/index.vue'
+import { requiredRule } from '@/utils/rules'
+import type { FormInstance, FormRules } from 'element-plus'
+import Drawer from './drawer.vue'
 import usePaginationStore from '@/store/modules/pagination'
 
 const paginationStore = usePaginationStore()
 
 onMounted(() => {
-  fetchList()
+  fetchData()
 })
 
 const loading = ref<boolean>(false)
@@ -152,16 +192,18 @@ const searchForm = ref({
 const form = ref<any>({
   oid: void 0,
   roleName: void 0,
+  roleCode: void 0,
   roleDesc: void 0,
 })
 const rules = reactive<FormRules>({
-  key: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
+  roleName: [requiredRule('角色名称不能为空')],
+  roleCode: [requiredRule('角色编号不能为空')],
 })
 const searchRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
-const menuTreeRef = ref()
+const drawerRef = ref()
 
-const fetchList = async () => {
+const fetchData = async () => {
   loading.value = true
   try {
     const { current, size } = paginationStore
@@ -183,6 +225,7 @@ const updateRow = (row: RoleVO) => {
   dialog_active.value = true
   form.value.oid = row.oid
   form.value.roleName = row.roleName
+  form.value.roleCode = row.roleCode
   form.value.roleDesc = row.roleDesc
 }
 const delRow = (oid: number) => {
@@ -195,8 +238,8 @@ const delRow = (oid: number) => {
       loading.value = true
       try {
         const res = await delRole(oid)
-        ElMessage.success(res.message)
-        fetchList()
+        ElMessage.success(res.msg)
+        fetchData()
       } finally {
         loading.value = false
       }
@@ -211,16 +254,16 @@ const submitForm = async () => {
   loading.value = true
   try {
     const res = await saveRole(form.value)
-    ElMessage.success(res.message)
+    ElMessage.success(res.msg)
     dialog_active.value = false
-    fetchList()
+    fetchData()
   } finally {
     loading.value = false
   }
 }
 
 const openRoleMenuTree = async (roleId: number) => {
-  menuTreeRef.value?.open(roleId)
+  drawerRef.value?.open(roleId)
 }
 
 const resetForm = () => {
@@ -232,3 +275,9 @@ const resetForm = () => {
   formRef.value?.resetFields()
 }
 </script>
+
+<style scoped>
+.el-card {
+  margin: 10px;
+}
+</style>

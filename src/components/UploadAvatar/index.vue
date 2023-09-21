@@ -21,7 +21,7 @@ import useUserStore from '@/store/modules/user'
 const userStore = useUserStore()
 
 const loading = ref(false)
-const avatarSrc = ref(userStore.userInfo.avatar || default_avatar)
+const avatarSrc = ref(userStore.userInfo.avatarUrl || default_avatar)
 const openSelectFile = async () => {
   loading.value = true
   try {
@@ -39,7 +39,7 @@ const openSelectFile = async () => {
     const res = await updateAvatar(fileRes.id)
     avatarSrc.value = res.data
     userStore.updateAvatar(res.data)
-    ElMessage.success(res.message)
+    ElMessage.success(res.msg)
   } catch (err) {
     console.log(err)
   } finally {

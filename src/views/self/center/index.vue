@@ -114,9 +114,9 @@ const submitForm = async () => {
   loading.value = true
   try {
     const res = await updatePassword(form.value)
-    ElMessage.success(res.message)
-    userStore.userLogout()
-    window.location.reload()
+    ElMessage.success(res.msg)
+    await userStore.userLogout()
+    ElMessage.warning('密码已修改，请重新登录')
   } catch (error) {
     formRef.value.resetFields()
   } finally {

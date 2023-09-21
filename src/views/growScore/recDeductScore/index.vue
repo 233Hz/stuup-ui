@@ -1,8 +1,8 @@
 <template>
   <div>
     <el-card>
-      <el-form ref="searchRef" :model="searchForm" label-width="120px">
-        <el-row>
+      <el-form ref="searchRef" :model="searchForm">
+        <el-row :gutter="20">
           <el-col :sm="24" :md="12" :xl="6">
             <el-form-item label="一级项目" prop="firstLevelId">
               <el-select
@@ -132,6 +132,7 @@
                 <el-button
                   icon="Search"
                   type="primary"
+                  plain
                   :loading="loading"
                   @click="handleSearch"
                 >
@@ -139,6 +140,7 @@
                 </el-button>
                 <el-button
                   icon="Close"
+                  plain
                   @click="
                     () => {
                       searchFormReset()
@@ -150,11 +152,10 @@
                 </el-button>
                 <el-button
                   icon="Refresh"
-                  :disabled="loading"
+                  circle
+                  :loading="loading"
                   @click="fetchData"
-                >
-                  刷新
-                </el-button>
+                />
               </el-space>
             </el-form-item>
           </el-col>

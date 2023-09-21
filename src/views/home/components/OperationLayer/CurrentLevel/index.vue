@@ -16,7 +16,7 @@ import useFlowersStore from '@/store/modules/flowers'
 const userStore = useUserStore()
 const flowersStore = useFlowersStore()
 const flower = computed(() => {
-  return flowersStore.calculateFlowerNewLevel(userStore.userInfo.totalScore)
+  return flowersStore.calculateFlowerNewLevel(userStore.growthInfo.totalScore)
 })
 </script>
 

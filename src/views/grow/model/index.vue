@@ -18,6 +18,7 @@
           </span>
         </p>
         <el-button
+          v-permission="'growth_model_setting'"
           @click="
             () => {
               flowersStore.getFlowerConversionNum(key) &&

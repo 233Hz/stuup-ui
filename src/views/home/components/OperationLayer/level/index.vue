@@ -5,7 +5,7 @@
       <div
         class="relative w-100 h-100 rounded-full p-5 bg-green-100 border-4 border-green-500 border-solid"
         v-for="(item, index) in flowersStore.calculateFlowerLevelIgnore(
-          userStore.userInfo.totalScore,
+          userStore.growthInfo.totalScore,
         )"
         :key="index"
       >

@@ -1,91 +1,98 @@
 <template>
   <div>
-    <div style="padding: 10px 20px">
-      <el-card style="margin: 10px 0">
-        <template #header>
-          <el-row>
-            <el-col :span="24">
-              <el-form ref="searchRef" :model="searchForm" label-width="80px">
-                <el-row>
-                  <el-col :sm="24" :md="12" :xl="8">
-                    <el-form-item label="部门名称" prop="key">
-                      <el-input
-                        v-model="searchForm.key"
-                        placeholder="请输入部门名称"
-                      />
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-              </el-form>
-            </el-col>
-          </el-row>
-        </template>
-
-        <div style="text-align: center">
-          <el-space>
-            <el-button type="primary" @click="fetchList" :loading="loading">
-              查询
-            </el-button>
-            <el-button @click="searchRef?.resetFields()">清空</el-button>
-          </el-space>
-        </div>
-      </el-card>
-      <el-card>
-        <template #header>
-          <el-space>
-            <!-- <el-button type="primary" @click="addRow">
-            <el-icon><Plus /></el-icon>
-            添加
-          </el-button> -->
-            <el-divider direction="vertical" />
-            <el-button :disabled="loading" circle @click="fetchList">
-              <el-icon>
-                <Refresh />
-              </el-icon>
-            </el-button>
-          </el-space>
-        </template>
-
-        <el-table
-          :data="tableData"
-          border
-          stripe
-          v-loading="loading"
-          empty-text="空空如也~~"
-          style="width: 100%"
+    <el-card>
+      <el-form ref="searchRef" :model="searchForm">
+        <el-row :gutter="20">
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="部门名称" prop="key">
+              <el-input v-model="searchForm.key" placeholder="请输入部门名称" />
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item>
+              <el-space>
+                <el-button
+                  type="primary"
+                  icon="Search"
+                  plain
+                  :loading="loading"
+                  @click="fetchList"
+                >
+                  查询
+                </el-button>
+                <el-button icon="Close" plain @click="searchRef?.resetFields()">
+                  清空
+                </el-button>
+                <!-- <el-button type="primary" icon="Plus" plain @click="addRow">
+                  添加
+                </el-button> -->
+                <el-button
+                  icon="Refresh"
+                  plain
+                  circle
+                  :disabled="loading"
+                  @click="fetchList"
+                />
+              </el-space>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-card>
+    <el-card>
+      <el-table
+        :data="tableData"
+        border
+        stripe
+        v-loading="loading"
+        empty-text="空空如也~~"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="deptName"
+          label="部门名称"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="createTime"
+          label="创建时间"
+          show-overflow-tooltip
+          align="center"
         >
-          <el-table-column
-            prop="deptName"
-            label="部门名称"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            prop="createTime"
-            label="创建时间"
-            show-overflow-tooltip
-            align="center"
-          >
-            <template #default="{ row }">
-              {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="200" align="center">
-            <template #default="{ row }">
-              <el-button @click="updateRow(row)">修改</el-button>
-              <el-button @click="delRow(row.oid)" type="danger">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="page-r">
-          <Pagination @size-change="fetchList" @current-change="fetchList" />
-        </div>
-      </el-card>
-    </div>
-    <el-dialog
+          <template #default="{ row }">
+            {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="操作" width="200" align="center">
+          <template #default="{ row }">
+            <el-button
+              bg
+              text
+              type="primary"
+              icon="Edit"
+              @click="updateRow(row)"
+            >
+              修改
+            </el-button>
+            <el-button
+              bg
+              text
+              type="danger"
+              icon="Delete"
+              @click="delRow(row.oid)"
+            >
+              删除
+            </el-button>
+          </template>
+        </el-table-column> -->
+      </el-table>
+      <Pagination @size-change="fetchList" @current-change="fetchList" />
+    </el-card>
+    <!-- <el-dialog
       v-model="dialog_active"
       :title="dialog_title"
-      width="500"
+      width="30%"
       draggable
       @close="resetForm"
     >
@@ -114,7 +121,7 @@
           提交
         </el-button>
       </template>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -183,7 +190,7 @@ const delRow = (oid: number) => {
       loading.value = true
       try {
         const res = await delDept(oid.toString())
-        ElMessage.success(res.message)
+        ElMessage.success(res.msg)
         fetchList()
       } finally {
         loading.value = false
@@ -199,7 +206,7 @@ const submitForm = async () => {
   loading.value = true
   try {
     const res = await saveOrUpdateDept(form.value)
-    ElMessage.success(res.message)
+    ElMessage.success(res.msg)
     dialog_active.value = false
     fetchList()
   } finally {
@@ -214,3 +221,9 @@ const resetForm = () => {
   formRef.value?.resetFields()
 }
 </script>
+
+<style scoped>
+.el-card {
+  margin: 10px;
+}
+</style>

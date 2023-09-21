@@ -168,7 +168,6 @@ const handleLogout = () => {
   })
     .then(async () => {
       await userStore.userLogout()
-      window.location.reload()
     })
     .catch(() => {})
 }

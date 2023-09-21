@@ -43,3 +43,19 @@ export const filterRouter = (
     }
   })
 }
+
+/**
+ * 转换树形对象
+ * @param list  需要转换的数组
+ * @param cb    转换的方法
+ * @returns
+ */
+export const convertTree = <T extends { children?: T[] }, K>(
+  list: T[],
+  cb: (item: T) => K,
+): K[] => {
+  return list.flatMap((item) => {
+    const children = item.children ? convertTree(item.children, cb) : []
+    return { ...cb(item), children }
+  })
+}

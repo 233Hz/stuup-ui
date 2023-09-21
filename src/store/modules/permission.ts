@@ -1,15 +1,14 @@
 import { defineStore } from 'pinia'
 import { constantRoute } from '@/router/routes'
-import type { PermissionState } from './types/type'
-import type { RouteRecordRaw } from 'vue-router'
-import type { UserMenu } from '@/api/system/user/type'
-import { reqUserAuthority } from '@/api/system/user/index'
 import { MENU_TYPE, WHETHER } from '@/utils/dict'
+import type { RouteRecordRaw } from 'vue-router'
+import type { PermissionState } from './types/type'
+import type { Menu } from '@/api/login/type'
 
 const Layout = () => import('@/layout/index.vue')
 const compModels = import.meta.glob('../../views/**/index.vue')
 
-interface MenuTree extends UserMenu {
+interface MenuTree extends Menu {
   children?: MenuTree[]
 }
 
@@ -30,22 +29,18 @@ const usePermissionStore = defineStore('Permission', {
     /**
      * 生成路由
      */
-    async generateRoutes(): Promise<void> {
-      return new Promise((resolve) => {
-        reqUserAuthority().then(({ data }) => {
-          this.hasBackEntrance = data.some((menu) => menu.path === '/dashboard')
-          // 过滤出缓存路由名
-          this.cachedView = new Set(
-            data
-              .filter((menu) => menu.keepAlive === WHETHER.YES)
-              .map((menu) => menu.code),
-          )
-          // 生成路由
-          const asyncRouter = formatRouter(data)
-          this.routes = constantRoute.concat(asyncRouter)
-          resolve()
-        })
-      })
+    generateRoutes(menus: Menu[]): RouteRecordRaw[] {
+      this.hasBackEntrance = menus.some((menu) => menu.path === '/dashboard')
+      // 过滤出缓存路由名
+      this.cachedView = new Set(
+        menus
+          .filter((menu) => menu.keepAlive === WHETHER.YES)
+          .map((menu) => menu.code),
+      )
+      // 生成路由
+      const asyncRouter = formatRouter(menus)
+      this.routes = constantRoute.concat(asyncRouter)
+      return this.routes
     },
   },
 })
@@ -85,9 +80,9 @@ const isFirstLevelMenu = (menu: MenuTree): boolean => {
   )
 }
 
-const formatRouter = (menus: UserMenu[]): RouteRecordRaw[] => {
-  const menuObj: Record<number, UserMenu> = {}
-  menus.forEach((menu) => (menuObj[menu.oid!] = menu))
+const formatRouter = (menus: Menu[]): RouteRecordRaw[] => {
+  const menuObj: Record<number, Menu> = {}
+  menus.forEach((menu) => (menuObj[menu.id!] = menu))
   const routerTree: MenuTree[] = []
   menus.forEach((menu) => {
     const parentRouter: MenuTree = menuObj[menu.pid!]
@@ -102,7 +97,7 @@ const formatRouter = (menus: UserMenu[]): RouteRecordRaw[] => {
     }
   })
 
-  const findPath = (menu: UserMenu): string => {
+  const findPath = (menu: Menu): string => {
     const menuPath = menu.path
     const parent = menuObj[menu.pid!]
     if (parent) {
@@ -123,10 +118,10 @@ const formatRouter = (menus: UserMenu[]): RouteRecordRaw[] => {
         flag: menu.flag,
         icon: menu.icon || '',
         hidden: false,
-        useLayout: menu.useLayout,
+        layout: menu.layout,
         keepAlive: menu.keepAlive,
       }
-      if (onlyFirstLevelMenu(menu) && menu.useLayout === WHETHER.YES) {
+      if (onlyFirstLevelMenu(menu) && menu.layout === WHETHER.YES) {
         return {
           path: '',
           name: `${menu.code}Parent`,
@@ -141,11 +136,7 @@ const formatRouter = (menus: UserMenu[]): RouteRecordRaw[] => {
             },
           ],
         }
-      } else if (
-        isFirstLevelMenu(menu) &&
-        menu.type === MENU_TYPE.CATALOG &&
-        menu.useLayout === WHETHER.YES
-      ) {
+      } else if (isFirstLevelMenu(menu) && menu.layout === WHETHER.YES) {
         return {
           path,
           name: menu.code,

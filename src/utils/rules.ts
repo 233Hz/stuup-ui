@@ -1,3 +1,10 @@
-export const requiredRule = (fieldName: string) => {
-  return { required: true, message: fieldName + '不能为空', trigger: 'change' }
+export const requiredRule = (
+  errorMessage: string,
+  trigger: string = 'blur',
+) => {
+  return {
+    required: true,
+    message: errorMessage,
+    trigger: trigger,
+  }
 }

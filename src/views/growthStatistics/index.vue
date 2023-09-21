@@ -283,7 +283,7 @@ const cellProps = ({ columnIndex }: { columnIndex: number }) => {
 
 let dataSource: readonly GrowthStatisticsVO[] = []
 const kls = ref<string>('')
-const { yearId, semesterId } = userStore.userInfo
+const { yearId, semesterId } = userStore.otherInfo
 
 const searchRef = ref()
 const tableData = ref<any>([])

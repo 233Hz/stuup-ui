@@ -5,7 +5,11 @@
         <el-row :gutter="20">
           <el-col :sm="24" :md="12" :xl="4">
             <el-form-item label="学年">
-              <el-select v-model="search.yearId" style="width: 100%">
+              <el-select
+                v-model="search.yearId"
+                style="width: 100%"
+                placeholder="请选择查询学年"
+              >
                 <el-option
                   v-for="item in dictionaryStore.year"
                   :key="item.oid"
@@ -17,7 +21,11 @@
           </el-col>
           <el-col :sm="24" :md="12" :xl="4">
             <el-form-item label="学期">
-              <el-select v-model="search.semesterId" style="width: 100%">
+              <el-select
+                v-model="search.semesterId"
+                style="width: 100%"
+                placeholder="请选择查询学期"
+              >
                 <el-option
                   v-for="item in dictionaryStore.semester"
                   :key="item.id"
@@ -39,6 +47,7 @@
                   }
                 "
                 style="width: 100%"
+                placeholder="请选择查询一级项目"
               >
                 <el-option
                   v-for="item in growthStore.level1"
@@ -60,6 +69,7 @@
                   }
                 "
                 style="width: 100%"
+                placeholder="请选择查询二级项目"
               >
                 <el-option
                   v-for="item in growthStore.level2"
@@ -72,7 +82,11 @@
           </el-col>
           <el-col :sm="24" :md="12" :xl="4">
             <el-form-item label="三级项目" prop="l3Id">
-              <el-select v-model="search.l3Id" style="width: 100%">
+              <el-select
+                v-model="search.l3Id"
+                style="width: 100%"
+                placeholder="请选择查询三级项目"
+              >
                 <el-option
                   v-for="item in growthStore.level3"
                   :key="item.id"
@@ -84,7 +98,10 @@
           </el-col>
           <el-col :sm="24" :md="12" :xl="4">
             <el-form-item label="项目名称" prop="growthItemName">
-              <el-input v-model="search.growthItemName" />
+              <el-input
+                v-model="search.growthItemName"
+                placeholder="请输入项目名称"
+              />
             </el-form-item>
           </el-col>
           <el-col :sm="24" :md="12" :xl="12">
@@ -287,7 +304,7 @@ const paginationStore = usePaginationStore()
 const dictionaryStore = useDictionaryStore()
 const userStore = useUserStore()
 
-const { yearId, semesterId } = userStore.userInfo
+const { yearId, semesterId } = userStore.otherInfo
 
 const searchRef = ref<FormInstance>()
 const tableRef = ref<TableInstance>()
@@ -340,7 +357,7 @@ const passRow = (id: number) => {
       loading.value = true
       try {
         const data = await reqAuditPass(id)
-        ElMessage.success(data.message)
+        ElMessage.success(data.msg)
         await fetchData()
       } finally {
         loading.value = false
@@ -360,7 +377,7 @@ const noPassRow = (id: number) => {
       loading.value = true
       try {
         const data = await reqAuditNoPass(id, value)
-        ElMessage.success(data.message)
+        ElMessage.success(data.msg)
         await fetchData()
       } finally {
         loading.value = false
@@ -381,7 +398,7 @@ const batchPass = () => {
       loading.value = true
       try {
         const data = await reqAuditBatchPass(selectionIds.value)
-        ElMessage.success(data.message)
+        ElMessage.success(data.msg)
         selectionIds.value = []
         tableRef.value?.clearSelection()
         await fetchData()
@@ -403,7 +420,7 @@ const batchNoPass = () => {
       loading.value = true
       try {
         const data = await reqAuditBatchNoPass(selectionIds.value, value)
-        ElMessage.success(data.message)
+        ElMessage.success(data.msg)
         selectionIds.value = []
         tableRef.value?.clearSelection()
         await fetchData()

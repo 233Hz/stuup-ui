@@ -2,16 +2,34 @@
   <el-card style="margin-top: 10px">
     <template #header>
       <el-space>
-        <el-button type="primary" :loading="loading" @click="addRow">
-          <el-icon><Plus /></el-icon>
+        <el-button
+          type="primary"
+          icon="Plus"
+          plain
+          v-permission="'growth_add_edit'"
+          :loading="loading"
+          @click="addRow"
+        >
           添加
         </el-button>
-        <el-button type="primary" :loading="loading" @click="updateRow">
-          <el-icon><Edit /></el-icon>
+        <el-button
+          type="primary"
+          icon="Edit"
+          plain
+          v-permission="'growth_add_edit'"
+          :loading="loading"
+          @click="updateRow"
+        >
           修改
         </el-button>
-        <el-button type="danger" :loading="loading" @click="delRow">
-          <el-icon><Delete /></el-icon>
+        <el-button
+          type="danger"
+          icon="Delete"
+          plain
+          v-permission="'growth_del'"
+          :loading="loading"
+          @click="delRow"
+        >
           删除
         </el-button>
       </el-space>
@@ -164,7 +182,7 @@ const delRow = () => {
       loading.value = true
       try {
         const res = await delGrowth(form.value.id!)
-        ElMessage.success(res.message)
+        ElMessage.success(res.msg)
         growthStore.init(true)
       } finally {
         loading.value = false
@@ -200,7 +218,7 @@ const submitForm = async () => {
   loading.value = true
   try {
     const res = await saveOrUpdateGrowth(form.value)
-    ElMessage.success(res.message)
+    ElMessage.success(res.msg)
     active.value = false
     await growthStore.init(true)
   } finally {

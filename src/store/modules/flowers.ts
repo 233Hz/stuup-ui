@@ -7,6 +7,7 @@ import type {
   FlowerMaxStage,
 } from './types/type'
 import type { FlowerVO } from '@/api/grow/model/type'
+import type { FlowerConfig } from '@/api/login/type'
 
 import bmh_seed from '@/assets/image/FlowerLevel/bmh1.png'
 import bmh_sprout from '@/assets/image/FlowerLevel/bmh2.png'
@@ -89,7 +90,6 @@ const useFlowersStore = defineStore('Flowers', {
           name: '西红花成品',
         },
       },
-      isExist: false,
     }
   },
   getters: {},
@@ -106,10 +106,9 @@ const useFlowersStore = defineStore('Flowers', {
         return null
       }
     },
-    async getFlowers() {
-      const { data } = await reqFlowerExchangeNum()
-      this.flowerConversionOption = data
-      this.flowers = Object.entries(data)
+    setFlowerModel(flowerConfig: FlowerConfig) {
+      this.flowerConversionOption = flowerConfig
+      this.flowers = Object.entries(flowerConfig)
         .map(([key, value]) => {
           return {
             key,
@@ -119,7 +118,6 @@ const useFlowersStore = defineStore('Flowers', {
           }
         })
         .sort((a, b) => b.conversionCount - a.conversionCount)
-      this.isExist = true
     },
 
     /**

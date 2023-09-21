@@ -5,19 +5,11 @@
       <el-space>
         <el-button
           icon="FullScreen"
-          type="success"
           circle
-          text
-          bg
+          plain
           @click="fullScreen"
         ></el-button>
-        <el-button
-          icon="ArrowLeft"
-          type="success"
-          text
-          bg
-          @click="router.push('/home')"
-        >
+        <el-button icon="ArrowLeftBold" @click="router.push('/home')">
           回到前台
         </el-button>
         <el-dropdown>
@@ -50,7 +42,7 @@
 import Logo from '../logo/index.vue'
 import useUserStore from '@/store/modules/user'
 import { ElMessageBox } from 'element-plus'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 let router = useRouter()
 const userStore = useUserStore()
@@ -77,7 +69,6 @@ const handlerLogout = () => {
   })
     .then(async () => {
       await userStore.userLogout()
-      window.location.reload()
     })
     .catch(() => {})
 }

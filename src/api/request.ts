@@ -3,10 +3,16 @@ import axios, {
   AxiosInstance,
   AxiosResponse,
 } from 'axios'
-import { getToken, setToken } from '@/utils/auth'
-import { ElMessage } from 'element-plus'
+import { STORAGE_KEY, useWebCache } from '@/utils/cache'
+import { getToken } from '@/utils/auth'
+import { reqOpenSafe } from '@/api/login/index'
 import useUserStore from '@/store/modules/user'
 import pinia from '@/store'
+import type { SaTokenInfo } from '@/types/global'
+import { ElMessage, ElMessageBox } from 'element-plus'
+
+const webCache = useWebCache<SaTokenInfo>()
+const userStore = useUserStore(pinia)
 
 const request: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
@@ -17,8 +23,9 @@ const request: AxiosInstance = axios.create({
 request.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     // 设置token
-    if (getToken()) {
-      config.headers.Authorization = getToken()
+    const tokenName = webCache.get(STORAGE_KEY.TOKEN_INFO)?.tokenName
+    if (tokenName && getToken()) {
+      config.headers[tokenName] = getToken()
     }
     return config
   },
@@ -39,21 +46,45 @@ request.interceptors.response.use(
     }
     const { data } = response
     const code = data.code
-    const msg = data.message
+    const msg = data.msg
 
     if (code === 1002) {
-      ElMessage.error('登录超时,请重新登录')
-      const userStore = useUserStore(pinia)
-      userStore.userLogout()
-      window.location.reload()
-    } else if (code === 1004) {
-      const refreshToken = data.token
-      // 获取当前失败的请求
+      userStore.userLogout().then(() => {
+        ElMessage.error('登录超时,请重新登录')
+        return Promise.reject(msg)
+      })
+    } else if ([11016, 11012].includes(code)) {
+      userStore.userLogout().then(() => {
+        ElMessage.error(msg)
+        return Promise.reject(msg)
+      })
+    } else if (code === 11071) {
+      // 二级认证未通过
       const config = response.config
-      // 更新本地token
-      setToken(refreshToken)
-      // 重试当前请求并返回promise
-      return request(config)
+      ElMessage.warning('请进行二级认证')
+      return new Promise((resolve, reject) => {
+        ElMessageBox.prompt('请输入密码', '二次认证', {
+          inputPattern: /^.+$/,
+          inputPlaceholder: '请输入密码',
+          confirmButtonText: '确 认',
+          cancelButtonText: '取 消',
+          inputErrorMessage: '请输入密码',
+        })
+          .then(async ({ value }) => {
+            reqOpenSafe(data.data, value)
+              .then((res) => {
+                ElMessage.success(res.data)
+                resolve(request(config))
+              })
+              .catch((error) => {
+                reject(error)
+              })
+          })
+          .catch(() => {
+            ElMessage.error(msg)
+            reject(msg)
+          })
+      })
     } else if (code !== 0) {
       ElMessage.error(msg)
       return Promise.reject(msg)
@@ -62,7 +93,7 @@ request.interceptors.response.use(
   },
   (error: any) => {
     // 处理响应错误
-    ElMessage.error(error.message)
+    ElMessage.error(error.msg)
     return Promise.reject(error)
   },
 )

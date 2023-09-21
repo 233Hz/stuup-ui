@@ -1,6 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router'
 import type { FlowerVO } from '@/api/grow/model/type'
-import type { LoginUserVO } from '@/api/login/type'
 import type { GrowthTreeVO } from '@/api/grow/config/type'
 import type { FacultyDict } from '@/api/basic/faculty/type'
 import type { GradeDict } from '@/api/basic/grade/type'
@@ -10,9 +9,17 @@ import type { DeptDict } from '@/api/basic/dept/type'
 import type { RoleDictVO } from '@/api/system/role/type'
 import type { Class } from '@/api/basic/class/type'
 import type { SemesterDict } from '@/api/basic/semester/type'
+import type { SaTokenInfo } from '@/types/global'
+import type { UserInfo, GrowthInfo, OtherInfo } from '@/api/login/type'
 
 export interface UserInfoState {
-  userInfo: LoginUserVO
+  userInfo: UserInfo
+  tokenInfo: SaTokenInfo
+  roles: string[]
+  permissions: string[]
+  growthInfo: GrowthInfo
+  otherInfo: OtherInfo
+  isSet: boolean
 }
 
 export interface PermissionState {
@@ -39,7 +46,6 @@ export interface FlowersState {
   flowerConversionOption: FlowerVO
   flowers: Flower[]
   readonly flowerIconOption: Record<string, { src: string; name: string }>
-  isExist: boolean
 }
 
 export interface GrowthState {

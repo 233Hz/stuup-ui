@@ -1,11 +1,15 @@
 <template>
   <div>
     <el-card shadow="never">
-      <el-form ref="searchRef" :model="search" label-width="100px">
+      <el-form ref="searchRef" :model="search">
         <el-row :gutter="20">
           <el-col :sm="24" :md="12" :xl="4">
             <el-form-item label="学年">
-              <el-select v-model="search.yearId" style="width: 100%">
+              <el-select
+                v-model="search.yearId"
+                style="width: 100%"
+                placeholder="请选择查询学年"
+              >
                 <el-option
                   v-for="item in dictionaryStore.year"
                   :key="item.oid"
@@ -17,7 +21,11 @@
           </el-col>
           <el-col :sm="24" :md="12" :xl="4">
             <el-form-item label="学期">
-              <el-select v-model="search.semesterId" style="width: 100%">
+              <el-select
+                v-model="search.semesterId"
+                style="width: 100%"
+                placeholder="请选择查询学期"
+              >
                 <el-option
                   v-for="item in dictionaryStore.semester"
                   :key="item.id"
@@ -39,6 +47,7 @@
                   }
                 "
                 style="width: 100%"
+                placeholder="请选择查询一级项目"
               >
                 <el-option
                   v-for="item in growthStore.level1"
@@ -60,6 +69,7 @@
                   }
                 "
                 style="width: 100%"
+                placeholder="请选择查询二级项目"
               >
                 <el-option
                   v-for="item in growthStore.level2"
@@ -72,7 +82,11 @@
           </el-col>
           <el-col :sm="24" :md="12" :xl="4">
             <el-form-item label="三级项目" prop="l3Id">
-              <el-select v-model="search.l3Id" style="width: 100%">
+              <el-select
+                v-model="search.l3Id"
+                style="width: 100%"
+                placeholder="请选择查询三级项目"
+              >
                 <el-option
                   v-for="item in growthStore.level3"
                   :key="item.id"
@@ -84,12 +98,19 @@
           </el-col>
           <el-col :sm="24" :md="12" :xl="4">
             <el-form-item label="项目名称" prop="growthItemName">
-              <el-input v-model="search.growthItemName" />
+              <el-input
+                v-model="search.growthItemName"
+                placeholder="请输入项目名称"
+              />
             </el-form-item>
           </el-col>
           <el-col :sm="24" :md="12" :xl="4">
             <el-form-item label="班级" prop="classId">
-              <el-select v-model="search.classId" style="width: 100%">
+              <el-select
+                v-model="search.classId"
+                style="width: 100%"
+                placeholder="请选择查询班级"
+              >
                 <el-option
                   v-for="item in dictionaryStore.class"
                   :key="item.id"
@@ -101,7 +122,11 @@
           </el-col>
           <el-col :sm="24" :md="12" :xl="4">
             <el-form-item label="状态" prop="state">
-              <el-select v-model="search.state" class="w-full">
+              <el-select
+                v-model="search.state"
+                class="w-full"
+                placeholder="请选择查询状态"
+              >
                 <el-option
                   v-for="item in AUDIT_STATUS.getDict()"
                   :key="item.value"
@@ -277,7 +302,7 @@ const growthStore = useGrowthStore()
 const paginationStore = usePaginationStore()
 const dictionaryStore = useDictionaryStore()
 const userStore = useUserStore()
-const { yearId, semesterId } = userStore.userInfo
+const { yearId, semesterId } = userStore.otherInfo
 
 const searchRef = ref<FormInstance>()
 const auditDetailsRef = ref()

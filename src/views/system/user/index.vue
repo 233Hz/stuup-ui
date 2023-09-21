@@ -1,182 +1,197 @@
 <template>
   <div>
-    <div style="padding: 10px 20px">
-      <el-card style="margin: 10px 0">
-        <template #header>
-          <el-row>
-            <el-col :span="24">
-              <el-form ref="searchRef" :model="searchForm" label-width="120px">
-                <el-row>
-                  <el-col :sm="24" :md="12" :xl="8">
-                    <el-form-item label="用户名/手机号" prop="key">
-                      <el-input
-                        v-model="searchForm.key"
-                        placeholder="请输入用户名/手机号"
-                      />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :sm="24" :md="12" :xl="8">
-                    <el-form-item label="状态" prop="state">
-                      <el-select
-                        v-model="searchForm.state"
-                        placeholder="请选择状态"
-                        style="width: 100%"
-                      >
-                        <el-option
-                          v-for="item in USER_STATE.getDict()"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                        />
-                      </el-select>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-              </el-form>
-            </el-col>
-          </el-row>
-        </template>
-        <div style="text-align: center">
-          <el-space>
-            <el-button type="primary" @click="fetchList" :loading="loading">
-              查询
-            </el-button>
-            <el-button @click="searchRef?.resetFields()">清空</el-button>
-          </el-space>
-        </div>
-      </el-card>
-      <el-card>
-        <template #header>
-          <el-space>
-            <el-button type="primary" @click="addRow">
-              <el-icon>
-                <Plus />
-              </el-icon>
-              添加
-            </el-button>
-            <el-divider direction="vertical" />
-            <el-button :disabled="loading" circle @click="fetchList">
-              <el-icon>
-                <Refresh />
-              </el-icon>
-            </el-button>
-          </el-space>
-        </template>
-
-        <el-table
-          :data="tableData"
-          border
-          stripe
-          v-loading="loading"
-          empty-text="空空如也~~"
-          style="width: 100%"
+    <el-card>
+      <el-form ref="searchRef" :model="searchForm">
+        <el-row :gutter="20">
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="用户名/手机号" prop="key">
+              <el-input v-model="searchForm.key" />
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="状态" prop="state">
+              <el-select
+                v-model="searchForm.state"
+                placeholder="请选择状态"
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="item in USER_STATE.getDict()"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item>
+              <el-space>
+                <el-button
+                  type="primary"
+                  icon="Search"
+                  plain
+                  @click="fetchData"
+                  :loading="loading"
+                >
+                  查询
+                </el-button>
+                <el-button icon="Close" plain @click="searchRef?.resetFields()">
+                  清空
+                </el-button>
+                <el-button
+                  type="primary"
+                  icon="Plus"
+                  plain
+                  v-permission="'user_add_edit'"
+                  @click="addRow"
+                >
+                  添加
+                </el-button>
+                <el-button
+                  icon="Refresh"
+                  plain
+                  :disabled="loading"
+                  circle
+                  @click="fetchData"
+                />
+              </el-space>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-card>
+    <el-card>
+      <el-table
+        :data="tableData"
+        border
+        stripe
+        v-loading="loading"
+        empty-text="空空如也~~"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="loginName"
+          label="登入账号"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="userName"
+          label="用户姓名"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="sex"
+          label="性别"
+          show-overflow-tooltip
+          align="center"
         >
-          <el-table-column
-            prop="loginName"
-            label="登入账号"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            prop="userName"
-            label="用户姓名"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            prop="sex"
-            label="性别"
-            show-overflow-tooltip
-            align="center"
-          >
-            <template #default="{ row }">
-              {{ SEX.getKeyForValue(row.sex) }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="mobile"
-            label="手机号"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            prop="degree"
-            label="文化程度"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            prop="teacherType"
-            label="教师类型"
-            show-overflow-tooltip
-            align="center"
-          >
-            <template #default="{ row }">
-              {{ TEACHER_TYPE.getKeyForValue(row.teacherType) }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="userType"
-            label="用户类型"
-            show-overflow-tooltip
-            align="center"
-          >
-            <template #default="{ row }">
-              {{ USER_TYPE.getKeyForValue(row.userType) }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="deptName"
-            label="所属部门"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            prop="idCard"
-            label="身份证号"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            prop="birthday"
-            label="出生年月"
-            show-overflow-tooltip
-            align="center"
-          >
-            <template #default="{ row }">
-              {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="roleNames"
-            label="用户角色"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            prop="state"
-            label="状态"
-            show-overflow-tooltip
-            align="center"
-          >
-            <template #default="{ row }">
-              {{ USER_STATE.getKeyForValue(row.state) }}
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="200" align="center">
-            <template #default="{ row }">
-              <el-button @click="updateRow(row)">修改</el-button>
-              <el-button @click="delRow(row.oid)" type="danger">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <Pagination @size-change="fetchList" @current-change="fetchList" />
-      </el-card>
-    </div>
+          <template #default="{ row }">
+            {{ SEX.getKeyForValue(row.sex) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="mobile"
+          label="手机号"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="degree"
+          label="文化程度"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="teacherType"
+          label="教师类型"
+          show-overflow-tooltip
+          align="center"
+        >
+          <template #default="{ row }">
+            {{ TEACHER_TYPE.getKeyForValue(row.teacherType) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="userType"
+          label="用户类型"
+          show-overflow-tooltip
+          align="center"
+        >
+          <template #default="{ row }">
+            {{ USER_TYPE.getKeyForValue(row.userType) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="deptName"
+          label="所属部门"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="idCard"
+          label="身份证号"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="birthday"
+          label="出生年月"
+          show-overflow-tooltip
+          align="center"
+        >
+          <template #default="{ row }">
+            {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="roleNames"
+          label="用户角色"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="state"
+          label="状态"
+          show-overflow-tooltip
+          align="center"
+        >
+          <template #default="{ row }">
+            {{ USER_STATE.getKeyForValue(row.state) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="200" align="center">
+          <template #default="{ row }">
+            <el-button
+              bg
+              text
+              icon="Edit"
+              v-permission="'user_add_edit'"
+              @click="updateRow(row)"
+            >
+              修改
+            </el-button>
+            <el-button
+              type="danger"
+              bg
+              text
+              icon="Delete"
+              v-permission="'user_del'"
+              @click="delRow(row.oid)"
+            >
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <Pagination @size-change="fetchData" @current-change="fetchData" />
+    </el-card>
     <el-dialog
       v-model="active"
       :title="title"
-      width="500"
+      width="30%"
       draggable
       @close="resetForm"
     >
@@ -294,17 +309,14 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="active = false">
-          <el-icon>
-            <Close />
-          </el-icon>
-          取消
-        </el-button>
-        <el-button type="primary" :loading="loading" @click="submitForm">
-          <el-icon>
-            <Check />
-          </el-icon>
-          提交
+        <el-button icon="Close" @click="active = false">取 消</el-button>
+        <el-button
+          type="primary"
+          icon="Check"
+          :loading="loading"
+          @click="submitForm"
+        >
+          提 交
         </el-button>
       </template>
     </el-dialog>
@@ -326,7 +338,7 @@ const dictionaryStore = useDictionaryStore()
 const paginationStore = usePaginationStore()
 
 onMounted(async () => {
-  await fetchList()
+  await fetchData()
   await dictionaryStore.init()
 })
 
@@ -362,7 +374,7 @@ const rules = reactive<FormRules>({
 const searchRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
 
-const fetchList = async () => {
+const fetchData = async () => {
   loading.value = true
   try {
     const { current, size } = paginationStore
@@ -403,13 +415,12 @@ const delRow = (oid: number) => {
     type: 'warning',
   })
     .then(async () => {
-      loading.value = true
       try {
         const res = await delUser(oid.toString())
-        ElMessage.success(res.message)
-        fetchList()
-      } finally {
-        loading.value = false
+        ElMessage.success(res.msg)
+        fetchData()
+      } catch (error) {
+        console.trace(error)
       }
     })
     .catch(() => {})
@@ -422,9 +433,9 @@ const submitForm = async () => {
   loading.value = true
   try {
     const res = await saveOrUpdateUser(form.value)
-    ElMessage.success(res.message)
+    ElMessage.success(res.msg)
     active.value = false
-    fetchList()
+    fetchData()
   } finally {
     loading.value = false
   }
@@ -449,3 +460,9 @@ const resetForm = () => {
   formRef.value?.resetFields()
 }
 </script>
+
+<style scoped>
+.el-card {
+  margin: 10px;
+}
+</style>

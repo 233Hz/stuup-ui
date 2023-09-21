@@ -33,6 +33,7 @@
       node-key="value"
       show-checkbox
       default-expand-all
+      check-strictly
       :data="treeData"
       :props="props"
       :default-checked-keys="checkKeys"
@@ -80,11 +81,16 @@ const handleIsExpandAll = () => {
 
 const open = async (id: number) => {
   roleId.value = id
+  active.value = true
   try {
+    loading.value = true
     const { data: res } = await getRoleMenu(id)
     checkKeys.value = res
-    active.value = true
-  } catch {}
+  } catch (error) {
+    console.trace(error)
+  } finally {
+    loading.value = false
+  }
 }
 
 const initMenuTree = async () => {
@@ -102,14 +108,15 @@ const handleRoleMenu = async () => {
         .getCheckedKeys()
         .concat(treeRef.value.getHalfCheckedKeys()) as number[]
       const res = await setRoleMenu(roleId.value, keys)
-      ElMessage.success(res.message)
+      ElMessage.success(res.msg)
       active.value = false
     }
+  } catch (error) {
+    console.trace(error)
   } finally {
     loading.value = false
   }
 }
-
 const handleClose = () => {
   roleId.value = undefined
   isSelectAll.value = false

@@ -1,8 +1,30 @@
+export interface SaTokenInfo {
+  tokenName: string
+  tokenValue: string
+  isLogin: boolean
+  loginId: any
+  loginType: string
+  tokenTimeout: number
+  sessionTimeout: number
+  tokenSessionTimeout: number
+  tokenActiveTimeout: number
+  loginDevice: string
+  tag: string
+}
+
 export interface ResponseData<T> {
   code: number
-  message: string
+  msg: string
   data: T
-  token?: string
+  tokenInfo?: SaTokenInfo
+  roleCodeList?: string[]
+  permissionList?: string[]
+}
+
+export interface SaResult<T> {
+  code: number
+  msg: string
+  data: T
 }
 
 export interface Page {

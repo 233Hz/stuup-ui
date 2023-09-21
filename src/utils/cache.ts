@@ -1,6 +1,6 @@
 export type StorageType = 'localStorage' | 'sessionStorage'
 
-class WebCache {
+class WebCache<T> {
   storage: Storage
 
   constructor(type: StorageType) {
@@ -8,12 +8,12 @@ class WebCache {
       type === 'localStorage' ? window.localStorage : window.sessionStorage
   }
 
-  set(key: string, value: any) {
+  set(key: string, value: T) {
     const data = JSON.stringify(value)
     this.storage.setItem(key, data)
   }
 
-  get(key: string) {
+  get(key: string): T | undefined {
     const value = this.storage.getItem(key)
     if (value) return JSON.parse(value)
   }
@@ -32,8 +32,9 @@ class WebCache {
 }
 
 export const STORAGE_KEY = {
+  TOKEN_INFO: 'token_info',
   USER_INFO: 'user_info',
 }
 
-export const useWebCache = (type: StorageType = 'localStorage') =>
-  new WebCache(type)
+export const useWebCache = <T>(type: StorageType = 'localStorage') =>
+  new WebCache<T>(type)

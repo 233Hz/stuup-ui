@@ -1,60 +1,64 @@
 <template>
-  <div style="padding: 10px 20px">
+  <div>
     <el-card style="margin: 10px 0">
-      <template #header>
-        <el-row>
-          <el-col :span="24">
-            <el-form ref="searchRef" :model="searchForm" label-width="100px">
-              <el-row>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="所属学年" prop="yearId">
-                    <el-select
-                      v-model="searchForm.yearId"
-                      placeholder="请选择"
-                      class="w-full"
-                    >
-                      <el-option
-                        v-for="item in dictionaryStore.year"
-                        :key="item.oid"
-                        :label="item.value"
-                        :value="item.oid"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :sm="24" :md="12" :xl="8">
-                  <el-form-item label="学期名称" prop="name">
-                    <el-input v-model="searchForm.name" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
+      <el-form ref="searchRef" :model="searchForm">
+        <el-row :gutter="20">
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="所属学年" prop="yearId">
+              <el-select
+                v-model="searchForm.yearId"
+                placeholder="请选择所属学年"
+                class="w-full"
+              >
+                <el-option
+                  v-for="item in dictionaryStore.year"
+                  :key="item.oid"
+                  :label="item.value"
+                  :value="item.oid"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item label="学期名称" prop="name">
+              <el-input
+                v-model="searchForm.name"
+                placeholder="请输入学期名称"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="4">
+            <el-form-item>
+              <el-space>
+                <el-button
+                  type="primary"
+                  icon="Search"
+                  plain
+                  @click="fetchList"
+                  :loading="loading"
+                >
+                  查询
+                </el-button>
+                <el-button icon="Close" plain @click="searchRef?.resetFields()">
+                  清空
+                </el-button>
+                <!-- <el-button type="primary" icon="Plus" plain :disabled="loading" @click="addRow">
+                  添加
+                </el-button> -->
+                <el-button
+                  icon="Refresh"
+                  plain
+                  circle
+                  :disabled="loading"
+                  @click="fetchList"
+                />
+              </el-space>
+            </el-form-item>
           </el-col>
         </el-row>
-      </template>
-      <div style="text-align: center">
-        <el-space>
-          <el-button type="primary" @click="fetchList" :loading="loading">
-            查询
-          </el-button>
-          <el-button @click="searchRef?.resetFields()">清空</el-button>
-        </el-space>
-      </div>
+      </el-form>
     </el-card>
     <el-card>
-      <template #header>
-        <el-space>
-          <!-- <el-button type="primary" :disabled="loading" @click="addRow">
-            <el-icon class="mr-4"><Plus /></el-icon>
-            添加
-          </el-button> -->
-          <el-divider direction="vertical" />
-          <el-button :disabled="loading" circle @click="fetchList">
-            <el-icon><Refresh /></el-icon>
-          </el-button>
-        </el-space>
-      </template>
-
       <el-table
         :data="tableData"
         border
@@ -102,25 +106,13 @@
             <el-tag v-show="row.isCurrent === WHETHER.YES">当前学期</el-tag>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="操作" align="center">
-          <template #default="{ row }">
-            <el-button
-              :disabled="row.isCurrent === WHETHER.YES"
-              @click="setCurrent(row.id)"
-              :type="row.isCurrent === WHETHER.YES ? 'success' : ''">
-              {{ row.isCurrent === WHETHER.YES ? '当前学期' : '设置为当前学期' }}
-            </el-button>
-            <el-button :disabled="loading" @click="updateRow(row)">修改</el-button>
-            <el-button type="danger" :disabled="loading" @click="delRow(row.id)">删除</el-button>
-          </template>
-        </el-table-column> -->
       </el-table>
       <Pagination @size-change="fetchList" @current-change="fetchList" />
     </el-card>
-    <el-dialog
+    <!-- <el-dialog
       v-model="active"
       :title="title"
-      width="500"
+      width="30%"
       draggable
       @close="resetForm"
     >
@@ -167,7 +159,7 @@
           提交
         </el-button>
       </template>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -213,9 +205,9 @@ const form = ref<any>({
   dateRange: [],
 })
 const rules = {
-  yearId: [requiredRule('所属学年')],
-  name: [requiredRule('学期名称')],
-  dateRange: [requiredRule('起止时间')],
+  yearId: [requiredRule('所属学年不能为空')],
+  name: [requiredRule('学期名称不能为空')],
+  dateRange: [requiredRule('起止时间不能为空')],
 }
 const searchForm = ref({
   yearId: void 0,
@@ -247,7 +239,7 @@ const setCurrent = (id: number) => {
       loading.value = true
       try {
         const res = await setCurrentSemester(id)
-        ElMessage.success(res.message)
+        ElMessage.success(res.msg)
         fetchList()
       } finally {
         loading.value = false
@@ -277,7 +269,7 @@ const delRow = (id: number) => {
       loading.value = true
       try {
         const res = await delSemester(id)
-        ElMessage.success(res.message)
+        ElMessage.success(res.msg)
         fetchList()
       } finally {
         loading.value = false
@@ -300,7 +292,7 @@ const submitForm = async () => {
   })
   try {
     const res = await saveOrUpdateSemester(formData)
-    ElMessage.success(res.message)
+    ElMessage.success(res.msg)
     active.value = false
     fetchList()
   } finally {
@@ -317,3 +309,9 @@ const resetForm = () => {
   formRef.value?.resetFields()
 }
 </script>
+
+<style scoped>
+.el-card {
+  margin: 10px;
+}
+</style>

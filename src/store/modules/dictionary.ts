@@ -41,7 +41,6 @@ const useDictionaryStore = defineStore('BasicInfo', {
       const { data: semesterData } = await reqSemesterList()
       this.semester = semesterData
       this.isInit = true
-      console.log('aaa')
     },
   },
 })

@@ -3,18 +3,18 @@
     <div class="wrapper">
       <div class="content">
         <div class="avatar" @click="router.push('/self/center')">
-          <img :src="userStore.userInfo.avatar || defaultAvatar" />
+          <img :src="userStore.userInfo.avatarUrl || defaultAvatar" />
         </div>
         <div class="info">
           <p class="name">{{ userStore.userInfo.userName }}</p>
           <p class="ranking">
             全校排名:
-            <span>{{ userStore.userInfo.ranking || '暂无排名' }}</span>
+            <span>{{ userStore.growthInfo.rank || '暂无排名' }}</span>
           </p>
         </div>
         <div class="score">
           <p>成长总积分</p>
-          <p>{{ userStore.userInfo.totalScore || 0 }}</p>
+          <p>{{ userStore.growthInfo.totalScore }}</p>
         </div>
       </div>
     </div>

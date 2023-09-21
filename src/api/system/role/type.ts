@@ -1,6 +1,7 @@
 export interface RoleVO {
   oid?: number
   roleName: string
+  roleCode: string
   roleDesc: string
   createUserAdmin?: string
   createTime?: Date

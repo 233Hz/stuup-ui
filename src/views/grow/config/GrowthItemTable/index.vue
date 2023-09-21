@@ -1,162 +1,186 @@
 <template>
-  <el-row style="margin-top: 10px">
-    <el-col :span="24">
-      <el-card>
-        <template #header>
-          <el-row>
-            <el-col :span="24">
-              <el-form ref="searchRef" :model="searchForm" label-width="120px">
-                <el-row>
-                  <el-col :sm="24" :md="12" :xl="8">
-                    <el-form-item label="项目名称" prop="name">
-                      <el-input
-                        v-model="searchForm.name"
-                        placeholder="请输入项目名称"
-                      />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :sm="24" :md="12" :xl="8">
-                    <el-form-item label="分值计算类型" prop="calculateType">
-                      <el-select
-                        v-model="searchForm.calculateType"
-                        placeholder="请选择分值计算类型"
-                        style="width: 100%"
-                      >
-                        <el-option label="录入加分" :value="1" />
-                        <el-option label="录入扣分" :value="2" />
-                      </el-select>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-              </el-form>
-            </el-col>
-          </el-row>
-        </template>
-        <div style="text-align: center">
-          <el-space>
-            <el-button type="primary" @click="fetchList" :loading="loading">
-              查询
-            </el-button>
-            <el-button @click="resetSearchHandle">清空</el-button>
-          </el-space>
-        </div>
-      </el-card>
-    </el-col>
-    <el-col :span="24">
-      <el-card style="margin: 10px 0">
-        <template #header>
-          <el-space>
-            <el-button type="primary" @click="addRow">
-              <el-icon><Plus /></el-icon>
-              添加
-            </el-button>
-            <el-divider direction="vertical" />
-            <el-button :disabled="loading" circle @click="fetchList">
-              <el-icon><Refresh /></el-icon>
-            </el-button>
-          </el-space>
-        </template>
-
-        <el-table
-          :data="tableData"
-          border
-          stripe
-          v-loading="loading"
-          empty-text="空空如也~~"
-          style="width: 100%"
-        >
-          <el-table-column
-            prop="name"
-            label="项目名称"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            prop="code"
-            label="项目编号"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            prop="description"
-            label="填报说明"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            prop="scorePeriod"
-            label="分值刷新周期"
-            show-overflow-tooltip
-            align="center"
-          >
-            <template #default="{ row }">
-              {{ PERIOD.getKeyForValue(row.scorePeriod) }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="scoreUpperLimit"
-            label="周期内分值的上限"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            prop="collectLimit"
-            label="可采集次数"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            prop="calculateType"
-            label="分值计算类型"
-            show-overflow-tooltip
-            align="center"
-          >
-            <template #default="{ row }">
-              {{ CALCULATE_TYPE.getKeyForValue(row.calculateType) }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="score"
-            label="项目可获得分值"
-            show-overflow-tooltip
-            align="center"
-          />
-          <el-table-column
-            prop="gatherer"
-            label="项目采集类型"
-            show-overflow-tooltip
-            align="center"
-          >
-            <template #default="{ row }">
-              {{ GROWTH_GATHERER.getKeyForValue(row.gatherer) }}
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="300" align="center">
-            <template #default="{ row }">
-              <el-button @click="updateRow(row)">修改</el-button>
-              <el-button
-                v-show="row.gatherer !== GROWTH_GATHERER.STUDENT"
-                @click="setGrowUserDrawerRef.open(row.id, row.gatherer)"
+  <div>
+    <el-card>
+      <el-form ref="searchRef" :model="searchForm">
+        <el-row :gutter="20">
+          <el-col :sm="24" :md="12" :xl="6">
+            <el-form-item label="项目名称" prop="name">
+              <el-input
+                v-model="searchForm.name"
+                placeholder="请输入项目名称"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="6">
+            <el-form-item label="分值计算类型" prop="calculateType">
+              <el-select
+                v-model="searchForm.calculateType"
+                placeholder="请选择分值计算类型"
+                style="width: 100%"
               >
-                设置项目负责人
-              </el-button>
-              <el-button @click="delRow(row)" type="danger">删除</el-button>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="createTime"
-            label="创建时间"
-            show-overflow-tooltip
-            align="center"
-          >
-            <template #default="{ row }">
-              {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
-            </template>
-          </el-table-column>
-        </el-table>
-        <Pagination @size-change="fetchList" @current-change="fetchList" />
-      </el-card>
-    </el-col>
+                <el-option label="录入加分" :value="1" />
+                <el-option label="录入扣分" :value="2" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :sm="24" :md="12" :xl="6">
+            <el-form-item>
+              <el-space>
+                <el-button
+                  type="primary"
+                  icon="Search"
+                  plain
+                  @click="fetchList"
+                  :loading="loading"
+                >
+                  查询
+                </el-button>
+                <el-button icon="Close" plain @click="resetSearchHandle">
+                  清空
+                </el-button>
+                <el-button
+                  type="primary"
+                  icon="Plus"
+                  plain
+                  v-permission="'growth_item_add_edit'"
+                  @click="addRow"
+                >
+                  添加
+                </el-button>
+                <el-button
+                  icon="Refresh"
+                  plain
+                  :disabled="loading"
+                  circle
+                  @click="fetchList"
+                />
+              </el-space>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-card>
+    <el-card>
+      <el-table
+        :data="tableData"
+        border
+        stripe
+        v-loading="loading"
+        empty-text="空空如也~~"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="name"
+          label="项目名称"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="code"
+          label="项目编号"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="description"
+          label="填报说明"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="scorePeriod"
+          label="分值刷新周期"
+          show-overflow-tooltip
+          align="center"
+        >
+          <template #default="{ row }">
+            {{ PERIOD.getKeyForValue(row.scorePeriod) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="scoreUpperLimit"
+          label="周期内分值的上限"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="collectLimit"
+          label="可采集次数"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="calculateType"
+          label="分值计算类型"
+          show-overflow-tooltip
+          align="center"
+        >
+          <template #default="{ row }">
+            {{ CALCULATE_TYPE.getKeyForValue(row.calculateType) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="score"
+          label="项目可获得分值"
+          show-overflow-tooltip
+          align="center"
+        />
+        <el-table-column
+          prop="gatherer"
+          label="项目采集类型"
+          show-overflow-tooltip
+          align="center"
+        >
+          <template #default="{ row }">
+            {{ GROWTH_GATHERER.getKeyForValue(row.gatherer) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="400" align="center">
+          <template #default="{ row }">
+            <el-button
+              bg
+              text
+              icon="Edit"
+              v-permission="'growth_item_add_edit'"
+              @click="updateRow(row)"
+            >
+              修改
+            </el-button>
+            <el-button
+              bg
+              text
+              icon="Setting"
+              v-permission="'growth_item_admin'"
+              v-show="row.gatherer !== GROWTH_GATHERER.STUDENT"
+              @click="setGrowUserDrawerRef.open(row.id, row.gatherer)"
+            >
+              设置项目负责人
+            </el-button>
+            <el-button
+              bg
+              text
+              type="danger"
+              icon="Delete"
+              v-permission="'growth_item_del'"
+              @click="delRow(row)"
+            >
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="创建时间"
+          show-overflow-tooltip
+          align="center"
+        >
+          <template #default="{ row }">
+            {{ formatDate(row.createTime, 'YYYY-MM-DD') }}
+          </template>
+        </el-table-column>
+      </el-table>
+      <Pagination @size-change="fetchList" @current-change="fetchList" />
+    </el-card>
     <el-dialog
       v-model="active"
       :title="DIALOG_TYPE.getKeyForValue(dialogType)"
@@ -268,19 +292,19 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button icon="Close" @click="active = false">取消</el-button>
+        <el-button icon="Close" @click="active = false">取 消</el-button>
         <el-button
           type="primary"
           icon="Check"
           :loading="loading"
           @click="submitForm"
         >
-          提交
+          提 交
         </el-button>
       </template>
     </el-dialog>
     <set-grow-user-drawer ref="setGrowUserDrawerRef" />
-  </el-row>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -358,11 +382,11 @@ const form = ref<any>({
   gatherer: void 0,
 })
 const rules = ref<FormRules>({
-  growthItems: [requiredRule('所属项目')],
-  name: [requiredRule('项目名称')],
-  scorePeriod: [requiredRule('分值刷新周期')],
-  calculateType: [requiredRule('分值计算类型')],
-  score: [requiredRule('项目可获得分值')],
+  growthItems: [requiredRule('所属项目不能为空')],
+  name: [requiredRule('项目名称不能为空')],
+  scorePeriod: [requiredRule('分值刷新周期不能为空')],
+  calculateType: [requiredRule('分值计算类型不能为空')],
+  score: [requiredRule('项目可获得分值不能为空')],
 })
 
 /* ONMOUNTED */
@@ -444,7 +468,7 @@ const delRow = (row: GrowthItemVO) => {
       try {
         if (!row.id) return console.error('项目id不存在')
         const res = await delGrowthItem(row.id)
-        ElMessage.success(res.message)
+        ElMessage.success(res.msg)
         await fetchList()
       } finally {
         loading.value = false
@@ -469,7 +493,7 @@ const submitForm = async () => {
   }
   try {
     const res = await saveOrUpdateGrowthItem(form.value as GrowthItemVO)
-    ElMessage.success(res.message)
+    ElMessage.success(res.msg)
     active.value = false
     await fetchList()
   } finally {
@@ -503,3 +527,9 @@ const resetSearchHandle = () => {
   }
 }
 </script>
+
+<style scoped>
+.el-card {
+  margin: 10px;
+}
+</style>

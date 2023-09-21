@@ -338,7 +338,7 @@ const dictionaryStore = useDictionaryStore()
 const growthStore = useGrowthStore()
 const userStore = useUserStore()
 
-const { yearId, semesterId } = userStore.userInfo
+const { yearId, semesterId } = userStore.otherInfo
 
 const dialogRef = ref()
 const searchRef = ref()

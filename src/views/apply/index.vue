@@ -408,7 +408,7 @@ const dictionaryStore = useDictionaryStore()
 const userStore = useUserStore()
 const router = useRouter()
 
-const { yearId, semesterId } = userStore.userInfo
+const { yearId, semesterId } = userStore.otherInfo
 
 const searchRef = ref<FormInstance>()
 const formRef = ref<FormInstance>()
@@ -437,9 +437,9 @@ const form = ref<any>({
   fileIds: void 0,
 })
 const rules = reactive<FormRules>({
-  growthItemId: [requiredRule('申请项目')],
-  reason: [requiredRule('申请说明')],
-  fileIds: [requiredRule('证明附件')],
+  growthItemId: [requiredRule('申请项目不能为空')],
+  reason: [requiredRule('申请说明不能为空')],
+  fileIds: [requiredRule('请上传证明附件')],
 })
 
 const headers = computed(() => {
@@ -548,7 +548,7 @@ const delRow = (id: number) => {
       loading.value = true
       try {
         const data = await deleteAudGrow(id)
-        ElMessage.success(data.message)
+        ElMessage.success(data.msg)
         await fetchData()
       } finally {
         loading.value = false
@@ -567,7 +567,7 @@ const submitRow = (id: number) => {
       loading.value = true
       try {
         const data = await submitGrowItem(id)
-        ElMessage.success(data.message)
+        ElMessage.success(data.msg)
         await fetchData()
       } finally {
         loading.value = false
@@ -584,11 +584,11 @@ const submitForm = async () => {
   try {
     if (title.value === '申请成长积分') {
       const data = await applyGrowItem(form.value)
-      ElMessage.success(data.message)
+      ElMessage.success(data.msg)
     }
     if (title.value === '修改申请') {
       const data = await updateAudGrow(form.value)
-      ElMessage.success(data.message)
+      ElMessage.success(data.msg)
     }
     await fetchData()
     active.value = false
