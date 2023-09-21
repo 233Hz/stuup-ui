@@ -1,4 +1,4 @@
-import { App, reactive, watchEffect, h, render } from 'vue'
+import { App, reactive, watchEffect, h, render, VNode } from 'vue'
 
 const state = reactive<{
   loading: boolean
@@ -12,7 +12,7 @@ const state = reactive<{
 
 watchEffect(() => {
   // 创建 vnode
-  const children = state.list.map((el: HTMLElement) =>
+  const children = state.list.map((el) =>
     h('div', {
       style: {
         position: 'absolute',
@@ -21,6 +21,7 @@ watchEffect(() => {
         width: el.getBoundingClientRect().width + 'px',
         height: el.getBoundingClientRect().height + 'px',
         background: '#e5e5e5',
+        // @ts-ignore
         borderRadius: getComputedStyle(el).borderRadius,
       },
     }),
@@ -48,10 +49,12 @@ export const skeleton = (app: App<Element>) => {
   app.directive('skeleton-item', {
     mounted(el: HTMLElement, binding) {
       // 保存 el
+      // @ts-ignore
       state.list.push(el)
     },
     unmounted(el: HTMLElement) {
       // 删除 el
+      // @ts-ignore
       const i = state.list.indexOf(el)
       if (i == -1) return
       state.list.splice(i, 1)

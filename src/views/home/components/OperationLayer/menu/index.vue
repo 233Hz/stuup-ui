@@ -39,5 +39,7 @@ const permissionStore = usePermissionStore()
 const frontRoute = computed(() => {
   return filterRouter(permissionStore.routes, MENU_FLAG.FRONT)
 })
-const portraitPath = computed(() => `/portrait/${userStore.userInfo.studentId}`)
+const portraitPath = computed(
+  () => `/portrait/${userStore.otherInfo.studentId}`,
+)
 </script>

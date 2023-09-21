@@ -126,7 +126,7 @@ const init = () => {
       const idStr = idArr?.join(',')
       await reqUpdateRecordState(idStr!)
       // 通知显示升级动画
-      bus.emit('collect-drop', userStore.userInfo.totalScore)
+      bus.emit('collect-drop', userStore.growthInfo.totalScore)
     }
   })
 }
