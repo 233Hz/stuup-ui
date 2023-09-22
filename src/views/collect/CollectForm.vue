@@ -35,9 +35,16 @@
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="active = false">取 消</el-button>
-        <el-button type="success" @click="handleDownTemp">下载模板</el-button>
-        <el-button type="primary" @click="uploadExcelRef.submit()">
+        <el-button icon="Close" plain @click="active = false">取 消</el-button>
+        <el-button type="success" icon="Download" plain @click="handleDownTemp">
+          下载模板
+        </el-button>
+        <el-button
+          type="primary"
+          icon="Upload"
+          plain
+          @click="uploadExcelRef.submit()"
+        >
           导入
         </el-button>
       </span>
