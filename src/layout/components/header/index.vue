@@ -12,40 +12,18 @@
         <el-button icon="ArrowLeftBold" @click="router.push('/home')">
           回到前台
         </el-button>
-        <el-dropdown>
-          <span class="el-dropdown-link">
-            {{ userStore.userInfo.userName }}
-            <el-icon class="el-icon--right">
-              <arrow-down />
-            </el-icon>
-          </span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item @click="router.push('/self/center')">
-                个人中心
-              </el-dropdown-item>
-              <el-dropdown-item @click="router.push('/self/notify')">
-                消息通知
-              </el-dropdown-item>
-              <el-dropdown-item @click="handlerLogout">
-                退出登入
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
+        <self-drop-down />
       </el-space>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import Logo from '../logo/index.vue'
-import useUserStore from '@/store/modules/user'
-import { ElMessageBox } from 'element-plus'
 import { useRouter } from 'vue-router'
+import Logo from '../logo/index.vue'
+import SelfDropDown from './self-dropdown/index.vue'
 
 let router = useRouter()
-const userStore = useUserStore()
 
 //全屏按钮点击的回调
 const fullScreen = () => {
@@ -59,18 +37,6 @@ const fullScreen = () => {
     //变为不是全屏模式->退出全屏模式
     document.exitFullscreen()
   }
-}
-
-const handlerLogout = () => {
-  ElMessageBox.confirm('确认退出？', '退出登入', {
-    confirmButtonText: '确认',
-    cancelButtonText: '取消',
-    type: 'warning',
-  })
-    .then(async () => {
-      await userStore.userLogout()
-    })
-    .catch(() => {})
 }
 </script>
 
