@@ -55,7 +55,7 @@ import { onMounted, ref } from 'vue'
 import { reqWholeSchoolTop10Ranking } from '@/api/home'
 import { WholeSchoolTop10List } from '@/api/home/type'
 import useFlowersStore from '@/store/modules/flowers'
-import defaultAvatar from '@/assets/image/default_avatar.png'
+import defaultAvatar from '@/assets/icons/default-avatar.svg'
 
 const flowersStore = useFlowersStore()
 

@@ -87,7 +87,7 @@ import type { FormInstance } from 'element-plus'
 import { getGrowGarden } from '@/api/garden'
 import type { GrowGardenVO } from '@/api/garden/type'
 import { GARDEN_TYPE } from '@/utils/dict'
-import defaultAvatar from '@/assets/image/default_avatar.png'
+import defaultAvatar from '@/assets/icons/default-avatar.svg'
 import useUserStore from '@/store/modules/user'
 import useDictionaryStore from '@/store/modules/dictionary'
 

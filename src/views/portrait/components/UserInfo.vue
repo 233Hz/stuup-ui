@@ -109,7 +109,7 @@ import { useRoute } from 'vue-router'
 import { reqBasicInfo } from '@/api/portrait'
 import useUserStore from '@/store/modules/user'
 import useFlowersStore from '@/store/modules/flowers'
-import defaultAvatar from '@/assets/image/default_avatar.png'
+import defaultAvatar from '@/assets/icons/default-avatar.svg'
 import type { PortraitBasicInfo } from '@/api/portrait/type'
 
 const route = useRoute()

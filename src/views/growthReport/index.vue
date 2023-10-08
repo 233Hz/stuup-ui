@@ -137,7 +137,7 @@
 </template>
 
 <script setup lang="ts" name="GrowthReport">
-import defaultAvatar from '@/assets/image/default_avatar.png'
+import defaultAvatar from '@/assets/icons/default-avatar.svg'
 import CompartChart from './components/CompareChart.vue'
 import SemesterScoreChart from './components/SemesterScoreChart.vue'
 import SemesterRankChart from './components/SemesterRankChart.vue'

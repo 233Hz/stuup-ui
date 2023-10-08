@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import useUserStore from '@/store/modules/user'
-import defaultAvatar from '@/assets/image/default_avatar.png'
+import defaultAvatar from '@/assets/icons/default-avatar.svg'
 
 const router = useRouter()
 const userStore = useUserStore()

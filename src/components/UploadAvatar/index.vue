@@ -15,7 +15,7 @@ import { ref } from 'vue'
 import { uploadFile } from '@/api/file'
 import { updateAvatar } from '@/api/system/user'
 import { ElMessage } from 'element-plus'
-import default_avatar from '@/assets/image/default_avatar.png'
+import default_avatar from '@/assets/icons/default-avatar.svg'
 import useUserStore from '@/store/modules/user'
 
 const userStore = useUserStore()
