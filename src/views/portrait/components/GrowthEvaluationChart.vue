@@ -25,7 +25,7 @@ const option: EChartOption = {
   radar: {
     name: {
       textStyle: {
-        color: '#f87171',
+        color: '#38bdf8',
         fontSize: '16',
         borderRadius: 3,
         padding: [3, 5],

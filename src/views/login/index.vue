@@ -4,7 +4,7 @@
       <div class="picture">
         <img src="/logo.png" alt="logo" />
       </div>
-      <div class="title">{{ setting.title }}</div>
+      <div class="title">{{ title }}</div>
     </div>
     <section class="login-content">
       <div class="login-image">
@@ -50,13 +50,12 @@ import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import useUserStore from '@/store/modules/user'
-import useFlowersStore from '@/store/modules/flowers'
 import setting from '@/setting'
 
+const title = import.meta.env.VITE_APP_TITLE
 const userStore = useUserStore()
-const flowersStore = useFlowersStore()
-const $route = useRoute()
-const $router = useRouter()
+const router = useRouter()
+const route = useRoute()
 
 const formRef = ref()
 const loading = ref<boolean>(false)
@@ -83,8 +82,8 @@ const handleLogin = async () => {
     loading.value = true
     const data = await userStore.userLogin(form.value)
     //判断登录的时候,路由路径当中是否有query参数，如果有就往query参数挑战，没有跳转到首页
-    let redirect: any = $route.query.redirect
-    $router.push({ path: redirect || '/home' })
+    let redirect: any = route.query.redirect
+    router.push({ path: redirect || '/home' })
     ElMessage.success(data.msg)
   } catch (error) {
     console.error(error)

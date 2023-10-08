@@ -3,7 +3,7 @@
     <div class="picture">
       <img src="/logo.png" alt="logo" />
     </div>
-    <div class="title">{{ setting.title }}</div>
+    <div class="title">{{ title }}</div>
   </div>
 </template>
 
@@ -12,6 +12,7 @@ import setting from '@/setting'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const title = import.meta.env.VITE_APP_TITLE
 </script>
 
 <style scoped lang="scss">
@@ -40,6 +41,7 @@ $logo-picture-height: 99px;
     height: 100%;
     font-size: 24px;
     font-weight: 600;
+    color: white;
     line-height: var(--header-height);
   }
 }

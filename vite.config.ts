@@ -6,6 +6,7 @@ import vue from '@vitejs/plugin-vue'
 import unocss from 'unocss/vite'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import vueSetupExtend from 'vite-plugin-vue-setup-extend'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -24,6 +25,13 @@ export default defineConfig(({ command, mode }) => {
       }),
       unocss(),
       vueSetupExtend(),
+      visualizer({
+        gzipSize: true,
+        brotliSize: true,
+        emitFile: false,
+        filename: 'test.html', //分析图生成的文件名
+        open: true, //如果存在本地服务端口，将在打包后自动展示
+      }),
     ],
     resolve: {
       alias: {
