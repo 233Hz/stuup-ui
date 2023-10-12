@@ -6,9 +6,6 @@
         <el-dropdown-item @click="router.push('/self/center')">
           个人中心
         </el-dropdown-item>
-        <el-dropdown-item @click="router.push('/self/notify')">
-          消息通知
-        </el-dropdown-item>
         <el-dropdown-item @click="handlerLogout">退出登入</el-dropdown-item>
       </el-dropdown-menu>
     </template>

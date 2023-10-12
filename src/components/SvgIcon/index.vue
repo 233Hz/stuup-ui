@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <svg :style="{ width: width, height: height }">
+  <div :style="{ width: width, height: height }">
+    <svg style="width: 100%; height: 100%">
       <use :xlink:href="prefix + name" :fill="color"></use>
     </svg>
   </div>

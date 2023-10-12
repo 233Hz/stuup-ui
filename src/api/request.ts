@@ -93,7 +93,7 @@ request.interceptors.response.use(
   },
   (error: any) => {
     // 处理响应错误
-    ElMessage.error(error.msg)
+    ElMessage.error('网络错误，请稍后重试')
     return Promise.reject(error)
   },
 )
