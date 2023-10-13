@@ -1,7 +1,7 @@
 <script setup lang="ts">
 interface Props {
-  backgroundColor: string
-  borderLeftColor: string
+  backgroundColor?: string
+  borderLeftColor?: string
 }
 
 const { backgroundColor } = withDefaults(defineProps<Props>(), {
