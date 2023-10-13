@@ -4,32 +4,25 @@ import CustomItem from '../../../CustomItem/index.vue'
 </script>
 
 <template>
-  <module-card header-left-text="遵纪自律" :header-class="['bg-[#2594ff33]']">
+  <module-card header-left-text="文明修养（违规）" color="#2594ff33">
     <div class="p-[10px]">
       <custom-item>
         <p>
-          纪律处分
+          仪表仪容违规
           <span class="text-[24px] text-bold mx-[10px] text-[#2594ff]">1</span>
           次
         </p>
       </custom-item>
       <custom-item>
         <p>
-          迟到早退
+          文明礼仪违规
           <span class="text-[24px] text-bold mx-[10px] text-[#2594ff]">1</span>
           次
         </p>
       </custom-item>
       <custom-item>
         <p>
-          上课缺勤
-          <span class="text-[24px] text-bold mx-[10px] text-[#2594ff]">1</span>
-          次
-        </p>
-      </custom-item>
-      <custom-item>
-        <p>
-          不准时出操
+          卫生环境违规
           <span class="text-[24px] text-bold mx-[10px] text-[#2594ff]">1</span>
           次
         </p>
@@ -37,3 +30,5 @@ import CustomItem from '../../../CustomItem/index.vue'
     </div>
   </module-card>
 </template>
+
+<style scoped lang="scss"></style>

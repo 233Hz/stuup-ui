@@ -5,7 +5,7 @@ import CustomTag from '../../../CustomTag/index.vue'
 </script>
 
 <template>
-  <module-card header-left-text="思想品德" :header-class="['bg-[#2594ff33]']">
+  <module-card header-left-text="思想品德" color="#2594ff33">
     <template #headerRight>
       <span>
         共获得
@@ -37,14 +37,7 @@ import CustomTag from '../../../CustomTag/index.vue'
       </custom-item>
       <custom-item>
         <p>
-          参加案例法制相关活动
-          <span class="text-[24px] text-bold mx-[10px] text-[#2594ff]">1</span>
-          次
-        </p>
-      </custom-item>
-      <custom-item>
-        <p>
-          参加案例法制相关活动
+          参加安全法制相关活动
           <span class="text-[24px] text-bold mx-[10px] text-[#2594ff]">1</span>
           次
         </p>

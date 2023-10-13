@@ -14,13 +14,15 @@
     >
       <el-form-item label="成长项目" prop="rec_code">
         <el-radio-group v-model="form.recCode">
-          <el-row>
-            <el-col :span="8" v-for="item in applyForProjects" :key="item.id">
-              <el-radio :label="item.code" border style="margin: 5px">
-                {{ item.name }}
-              </el-radio>
-            </el-col>
-          </el-row>
+          <el-radio
+            v-for="item in coverApplyGrowthItem"
+            :key="item.id"
+            :label="item.code"
+            border
+            style="margin: 5px"
+          >
+            {{ item.name }}
+          </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item>
@@ -46,27 +48,49 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { reqSelfApplyItem, downTemp } from '@/api/grow/config'
-import { GrowthItemVO } from '@/api/grow/config/type'
+import { UserApplyGrowthItems } from '@/api/grow/config/type'
 
 const baseApi = import.meta.env.VITE_SERVE
 const action = baseApi + '/audGrow/apply/import'
 const uploadExcelRef = ref()
 const show = ref(false)
 const loading = ref(false)
-const applyForProjects = ref<GrowthItemVO[]>([])
+const applyGrowthItem = ref<UserApplyGrowthItems[]>([])
 const form = ref<any>({
   recCode: void 0,
 })
 const open = () => (show.value = true)
-const fetchSelfApplyItem = async () => {
+
+const coverApplyGrowthItem = computed(() => {
+  return applyGrowthItem.value.map((item) => {
+    let name = ''
+    if (item.l1Name) {
+      name += `${item.l1Name}--`
+    }
+    if (item.l2Name) {
+      name += `${item.l1Name}--`
+    }
+    if (item.l3Name) {
+      name += `${item.l1Name}--`
+    }
+    name += item.name
+    return {
+      id: item.id,
+      code: item.code,
+      name,
+    }
+  })
+})
+
+const fetchApplyGrowthItem = async () => {
   const { data } = await reqSelfApplyItem('studentUnion')
-  applyForProjects.value = data
+  applyGrowthItem.value = data
 }
 const downTempHandler = () => downTemp(form.value.recCode)
 onMounted(async () => {
-  await fetchSelfApplyItem()
+  await fetchApplyGrowthItem()
 })
 const uploadSuccessHandler = () => {
   show.value = false

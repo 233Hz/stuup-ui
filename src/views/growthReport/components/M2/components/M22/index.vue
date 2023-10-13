@@ -4,11 +4,7 @@ import CustomItem from '../../../CustomItem/index.vue'
 </script>
 
 <template>
-  <module-card
-    header-left-text="职业资格证书"
-    :header-class="['bg-[#fd3d7f33]']"
-    class="h-full"
-  >
+  <module-card header-left-text="职业资格证书" color="#fd3d7f33" class="h-full">
     <div class="p-[10px]">
       <custom-item background-color="#fd3d7f1a" border-left-color="#fd3d7f">
         <p>教师资格证</p>

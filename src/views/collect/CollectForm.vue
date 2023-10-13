@@ -14,13 +14,15 @@
     >
       <el-form-item label="成长项目" prop="rec_code">
         <el-radio-group v-model="form.recCode">
-          <el-row>
-            <el-col :span="8" v-for="item in growItems" :key="item.id">
-              <el-radio :label="item.code" border style="margin: 5px">
-                {{ item.name }}
-              </el-radio>
-            </el-col>
-          </el-row>
+          <el-radio
+            v-for="item in coverApplyGrowthItem"
+            :key="item.id"
+            :label="item.code"
+            border
+            style="margin: 5px"
+          >
+            {{ item.name }}
+          </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item>
@@ -53,11 +55,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, computed } from 'vue'
 import { reqSelfApplyItem, downTemp } from '@/api/grow/config'
-import type { GrowthItemVO } from '@/api/grow/config/type'
 import { ElMessage } from 'element-plus'
 import bus from '@/utils/bus'
+import type { UserApplyGrowthItems } from '@/api/grow/config/type'
 
 const baseApi = import.meta.env.VITE_SERVE
 const action = baseApi + '/grow/import'
@@ -67,9 +69,30 @@ const uploadExcelRef = ref()
 
 const active = ref<boolean>(false)
 const loading = ref<boolean>(false)
-const growItems = ref<GrowthItemVO[]>([])
+const applyGrowthItem = ref<UserApplyGrowthItems[]>([])
 const form = reactive({
   recCode: '',
+})
+
+const coverApplyGrowthItem = computed(() => {
+  return applyGrowthItem.value.map((item) => {
+    let name = ''
+    if (item.l1Name) {
+      name += `${item.l1Name}--`
+    }
+    if (item.l2Name) {
+      name += `${item.l1Name}--`
+    }
+    if (item.l3Name) {
+      name += `${item.l1Name}--`
+    }
+    name += item.name
+    return {
+      id: item.id,
+      code: item.code,
+      name,
+    }
+  })
 })
 
 onMounted(() => {
@@ -78,12 +101,13 @@ onMounted(() => {
 
 const initGrowthItem = async () => {
   const { data: res } = await reqSelfApplyItem('teacher')
-  growItems.value = res
-  form.recCode = growItems.value[0].code
+  applyGrowthItem.value = res
+  form.recCode = applyGrowthItem.value[0].code
 }
 
 const open = () => {
-  if (growItems.value.length === 0) return ElMessage.error('没有可以导入的项目')
+  if (applyGrowthItem.value.length === 0)
+    return ElMessage.error('没有可以导入的项目')
   active.value = true
 }
 
@@ -97,7 +121,7 @@ const handleSuccess = () => {
 }
 
 const handleClose = () => {
-  form.recCode = growItems.value[0].code
+  form.recCode = applyGrowthItem.value[0].code
   uploadExcelRef.value.reset()
 }
 

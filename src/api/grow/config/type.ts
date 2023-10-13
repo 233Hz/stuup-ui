@@ -70,3 +70,15 @@ export interface GrowthRuleDesc {
   score: string
   calculateType: string
 }
+
+export interface UserApplyGrowthItems {
+  id: number
+  code: string
+  name: string
+  l1Id: number
+  l2Id: number
+  l3Id: number
+  l1Name: string
+  l2Name: string
+  l3Name: string
+}

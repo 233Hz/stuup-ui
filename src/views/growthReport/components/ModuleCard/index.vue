@@ -4,37 +4,30 @@ interface Props {
   headerLeftText?: string
   headerRightText?: string
   headerHeight?: number
-  cardClass?: string[]
-  headerClass?: string[]
-  contentClass?: string[]
+  color?: string
 }
-const {
-  showHeader,
-  headerLeftText,
-  headerRightText,
-  headerHeight,
-  cardClass,
-  headerClass,
-  contentClass,
-} = withDefaults(defineProps<Props>(), {
-  showHeader: true,
-  headerHeight: 40,
-  headerClass: () => ['bg-[#409eff66]'],
-})
+const { showHeader, headerLeftText, headerRightText, headerHeight, color } =
+  withDefaults(defineProps<Props>(), {
+    showHeader: true,
+    headerHeight: 40,
+    color: '#409eff66',
+  })
 </script>
 
 <template>
   <div
-    class="bg-[rgba(255,255,255,0.1)] rounded-[8px] relative overflow-hidden"
-    :class="cardClass"
+    class="relative overflow-hidden border-solid border-l-[1px] border-b-[1px] border-r-[1px] box-border"
+    :style="{
+      borderColor: color,
+    }"
   >
     <div
       v-if="showHeader"
       class="w-full text-bold text-[18px] text-white px-[10px] flex"
-      :class="headerClass"
       :style="{
         height: headerHeight + 'px',
         lineHeight: headerHeight + 'px',
+        backgroundColor: color,
       }"
     >
       <slot name="header" :text="{ headerLeftText, headerRightText }">
@@ -50,7 +43,7 @@ const {
         </div>
       </slot>
     </div>
-    <div :class="contentClass">
+    <div>
       <slot></slot>
     </div>
   </div>

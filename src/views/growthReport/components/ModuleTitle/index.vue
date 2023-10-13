@@ -36,7 +36,7 @@ const { title, background1, background2, backgroundWidth, titleGHeight } =
       :class="background2"
       class="absolute bottom-0 left-0 h-[2px] w-full"
     ></div>
-    <p :class="titleClass">
+    <p>
       <slot :title="title">{{ title }}</slot>
     </p>
   </div>

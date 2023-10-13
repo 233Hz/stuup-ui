@@ -8,6 +8,7 @@ import type {
   GrowthTreeVO,
   GrowthVO,
   SetGrowUserForm,
+  UserApplyGrowthItems,
 } from './type'
 
 export const getGrowthTree = async () => {
@@ -35,7 +36,7 @@ export const delGrowthItem = async (id: number) => {
 }
 
 export const reqSelfApplyItem = async (type: 'teacher' | 'studentUnion') => {
-  return await get<GrowthItemVO[]>('/growthItem/self/apply', { type })
+  return await get<UserApplyGrowthItems[]>('/growthItem/self/apply', { type })
 }
 
 export const manualTask = async (num: number) => {

@@ -1,5 +1,6 @@
 import { get, post, del } from '@/api/api'
-import { Page, PageResult } from '@/types/global'
+import { PageResult } from '@/types/global'
+import {} from '@/utils/dict'
 import type {
   StudentGrowthItems,
   GrowthItemApplyForm,
@@ -9,7 +10,9 @@ import type {
 } from './type'
 
 export const reqStudentGrowthItems = async () => {
-  return get<StudentGrowthItems[]>('/growthItem/studentGrowthItems')
+  return get<StudentGrowthItems[]>('/growthItem/self/apply', {
+    type: 'student',
+  })
 }
 export const reqPageStudentApplyRecord = async (params: PageRecordQuery) => {
   return get<PageResult<GrowApplyRecord[]>>(

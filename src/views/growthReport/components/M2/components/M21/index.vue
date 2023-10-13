@@ -53,7 +53,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <module-card header-left-text="学科成绩" :header-class="['bg-[#fd3d7f33]']">
+  <module-card header-left-text="学科成绩" color="#fd3d7f33">
     <template #headerRight>
       <el-select
         v-model="semester"

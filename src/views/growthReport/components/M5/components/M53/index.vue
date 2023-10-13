@@ -19,7 +19,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <module-card header-left-text="志原者活动学分" color="#00d2c933">
+  <module-card header-left-text="生产劳动实践学分" color="#00d2c933">
     <div class="p-[10px]">
       <table class="w-full">
         <thead align="center">

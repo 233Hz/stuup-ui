@@ -24,11 +24,7 @@ const data1 = ref([
 </script>
 
 <template>
-  <module-card
-    header-left-text="双创比赛"
-    :header-class="['bg-[#fd3d7f33]']"
-    class="h-full"
-  >
+  <module-card header-left-text="双创比赛" color="#fd3d7f33" class="h-full">
     <div class="p-[10px]">
       <div class="flex gap-[10px]">
         <div
