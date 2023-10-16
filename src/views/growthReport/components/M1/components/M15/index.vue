@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import ModuleCard from '../../../ModuleCard/index.vue'
+import type { IndividualHonors } from '@/api/growthReport/type'
+
+const { data } = defineProps<{
+  data?: IndividualHonors
+}>()
 </script>
 
 <template>
@@ -8,7 +13,9 @@ import ModuleCard from '../../../ModuleCard/index.vue'
       <div class="col-span-3 p-[10px]">
         <div class="item">
           <div class="item_value">
-            <div class="item_number">1</div>
+            <div class="item_number">
+              {{ data?.countNationalScholarships || 0 }}
+            </div>
             <div class="item_units">次</div>
           </div>
           <div class="item_name">获得国家级奖学金</div>
@@ -17,7 +24,9 @@ import ModuleCard from '../../../ModuleCard/index.vue'
       <div class="col-span-3 p-[10px]">
         <div class="item">
           <div class="item_value">
-            <div class="item_number">1</div>
+            <div class="item_number">
+              {{ data?.countMunicipalHonors || 0 }}
+            </div>
             <div class="item_units">次</div>
           </div>
           <div class="item_name">获得市级荣誉</div>
@@ -26,7 +35,9 @@ import ModuleCard from '../../../ModuleCard/index.vue'
       <div class="col-span-2 p-[10px]">
         <div class="item">
           <div class="item_value">
-            <div class="item_number">1</div>
+            <div class="item_number">
+              {{ data?.countDistrictLevelIndustryHonors || 0 }}
+            </div>
             <div class="item_units">次</div>
           </div>
           <div class="item_name">获得区级（行业）荣誉</div>
@@ -35,7 +46,9 @@ import ModuleCard from '../../../ModuleCard/index.vue'
       <div class="col-span-2 p-[10px]">
         <div class="item">
           <div class="item_value">
-            <div class="item_number">1</div>
+            <div class="item_number">
+              {{ data?.countSchoolScholarships || 0 }}
+            </div>
             <div class="item_units">次</div>
           </div>
           <div class="item_name">获得校级奖学金</div>
@@ -44,7 +57,9 @@ import ModuleCard from '../../../ModuleCard/index.vue'
       <div class="col-span-2 p-[10px]">
         <div class="item">
           <div class="item_value">
-            <div class="item_number">1</div>
+            <div class="item_number">
+              {{ data?.countMiyoshiStudent || 0 }}
+            </div>
             <div class="item_units">次</div>
           </div>
           <div class="item_name">三好学生</div>
@@ -53,7 +68,9 @@ import ModuleCard from '../../../ModuleCard/index.vue'
       <div class="col-span-3 p-[10px]">
         <div class="item">
           <div class="item_value">
-            <div class="item_number">1</div>
+            <div class="item_number">
+              {{ data?.countOutstandingStudentRegimentCadres || 0 }}
+            </div>
             <div class="item_units">次</div>
           </div>
           <div class="item_name">优秀学生（团）干部</div>
@@ -62,7 +79,9 @@ import ModuleCard from '../../../ModuleCard/index.vue'
       <div class="col-span-3 p-[10px]">
         <div class="item">
           <div class="item_value">
-            <div class="item_number">1</div>
+            <div class="item_number">
+              {{ data?.countGoodStudentsInPharmacySchool || 0 }}
+            </div>
             <div class="item_units">次</div>
           </div>
           <div class="item_name">药校好学子</div>

@@ -1,5 +1,21 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import ModuleCard from '../../../ModuleCard/index.vue'
+import CustomItem from '../../../CustomItem/index.vue'
+import type { PhysicalLiteracy } from '@/api/growthReport/type'
+
+const { data } = defineProps<{
+  data?: PhysicalLiteracy
+}>()
+
+const isParticipateInCompetitions = computed(() => {
+  return !(
+    (data?.countNationalLevel || 0) === 0 ||
+    (0 === 0 && data?.countMunicipalLevel) ||
+    (0 === 0 && data?.countDistrictIndustryLevel) ||
+    (0 === 0 && data?.countSchoolLevel)
+  )
+})
 </script>
 
 <template>
@@ -17,7 +33,7 @@ import ModuleCard from '../../../ModuleCard/index.vue'
             <p class="text-[24px] font-bold">国家级</p>
             <p class="text-[18px] mt-[20px]">
               <span class="mx-[4px] text-[24px] text-bold text-[#fca93c]">
-                1
+                {{ data?.countNationalLevel || 0 }}
               </span>
               次
             </p>
@@ -34,7 +50,7 @@ import ModuleCard from '../../../ModuleCard/index.vue'
             <p class="text-[24px] font-bold">市级</p>
             <p class="text-[18px] mt-[20px]">
               <span class="mx-[4px] text-[24px] text-bold text-[#fca93c]">
-                1
+                {{ data?.countMunicipalLevel || 0 }}
               </span>
               次
             </p>
@@ -51,7 +67,7 @@ import ModuleCard from '../../../ModuleCard/index.vue'
             <p class="text-[24px] font-bold">行（区）级</p>
             <p class="text-[18px] mt-[20px]">
               <span class="mx-[4px] text-[24px] text-bold text-[#fca93c]">
-                1
+                {{ data?.countDistrictIndustryLevel || 0 }}
               </span>
               次
             </p>
@@ -68,13 +84,20 @@ import ModuleCard from '../../../ModuleCard/index.vue'
             <p class="text-[24px] font-bold">校级</p>
             <p class="text-[18px] mt-[20px]">
               <span class="mx-[4px] text-[24px] text-bold text-[#fca93c]">
-                1
+                {{ data?.countSchoolLevel || 0 }}
               </span>
               次
             </p>
           </div>
         </div>
       </div>
+      <custom-item
+        v-if="!isParticipateInCompetitions"
+        background-color="#fca93c1a"
+        :show-left-border="false"
+      >
+        <p class="text-center">未参加过体育比赛</p>
+      </custom-item>
     </module-card>
   </div>
 </template>

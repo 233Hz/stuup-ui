@@ -1,29 +1,31 @@
 <script setup lang="ts">
 import ModuleCard from '../../../ModuleCard/index.vue'
 import CustomItem from '../../../CustomItem/index.vue'
+
+const { data } = defineProps<{
+  data?: string[]
+}>()
 </script>
 
 <template>
   <module-card header-left-text="职业素养" color="#fd3d7f33" class="h-full">
     <div class="p-[10px]">
-      <custom-item background-color="#fd3d7f1a" border-left-color="transparent">
-        <p class="text-center">未参加过职业素养类比赛</p>
+      <custom-item
+        v-if="data && data.length > 0"
+        v-for="item in data"
+        :key="item"
+        background-color="#fd3d7f1a"
+        border-left-color="#fd3d7f"
+      >
+        <p>{{ item }}</p>
+      </custom-item>
+      <custom-item
+        v-else
+        background-color="#fd3d7f1a"
+        :show-left-border="false"
+      >
+        <p class="text-center">未参加过职业素养比赛</p>
       </custom-item>
     </div>
   </module-card>
 </template>
-
-<style scoped lang="scss">
-table,
-th,
-td {
-  border: 1px solid white;
-  vertical-align: middle;
-}
-
-th,
-td {
-  line-height: 30px;
-  color: white;
-}
-</style>

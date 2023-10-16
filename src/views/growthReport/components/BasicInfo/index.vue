@@ -1,82 +1,70 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import defaultAvatar from '@/assets/icons/default-avatar.svg'
 import ModuleTitle from '../ModuleTitle/index.vue'
+import { reqGrowthReportBasicInfo } from '@/api/growthReport'
 
-const data = ref([
-  {
-    key: 'name',
-    name: '姓名:',
-    icon: 'report-icon-name',
-    value: '张三',
-  },
-  {
-    key: 'gender',
-    name: '性别:',
-    icon: 'report-icon-gender',
-    value: '男',
-  },
-  {
-    key: 'nation',
-    name: '民族:',
-    icon: 'report-icon-nation',
-    value: '汉族',
-  },
-  {
-    key: 'class',
-    name: '班级:',
-    icon: 'report-icon-class',
-    value: '202301班',
-  },
-  {
-    key: 'major',
-    name: '专业:',
-    icon: 'report-icon-major',
-    value: '云计算',
-  },
-  {
-    key: 'address',
-    name: '家庭住址:',
+interface ConfigMap {
+  [key: string]: {
+    label: string
+    default: string
+    icon: string
+  }
+}
+
+const configMap: ConfigMap = {
+  studentName: { label: '姓名', default: '无', icon: 'report-icon-name' },
+  gender: { label: '张三', default: '无', icon: 'report-icon-gender' },
+  ethnicGroup: { label: '民族', default: '无', icon: 'report-icon-nation' },
+  className: { label: '班级', default: '无', icon: 'report-icon-class' },
+  majorName: { label: '专业', default: '无', icon: 'report-icon-major' },
+  homeAddress: {
+    label: '家庭住址',
+    default: '无',
     icon: 'report-icon-address',
-    value: '上海市浦东新区',
   },
-  {
-    key: 'birthday',
-    name: '出生年月:',
+  dateOfBirth: {
+    label: '出生年月',
+    default: '无',
     icon: 'report-icon-birthday',
-    value: '2023-01-01',
   },
-  {
-    key: 'political',
-    name: '政治面貌:',
+  politicalStatus: {
+    label: '政治面貌',
+    default: '无',
     icon: 'report-icon-political',
-    value: '共青团员',
   },
-  {
-    key: 'idCard',
-    name: '身份证号:',
-    icon: 'report-icon-id-card',
-    value: '921321200012128764',
-  },
-  {
-    key: 'phone',
-    name: '联系电话:',
-    icon: 'report-icon-phone',
-    value: '138888888888',
-  },
-  {
-    key: 'studyStatus',
-    name: '学业状态:',
+  idCard: { label: '身份证号', default: '无', icon: 'report-icon-id-card' },
+  phone: { label: '联系电话', default: '无', icon: 'report-icon-phone' },
+  academicStatus: {
+    label: '学业状态',
+    default: '无',
     icon: 'report-icon-study-status',
-    value: '在校',
   },
-  {
-    key: 'military',
-    name: '军事训练等级:',
+  militaryTrainingLevel: {
+    label: '军事训练等级',
+    default: '无',
     icon: 'report-icon-military',
-    value: '优秀',
   },
-])
+}
+
+const data = ref()
+
+const fetchData = async () => {
+  const { data: res } = await reqGrowthReportBasicInfo()
+
+  data.value = Object.keys(configMap).map((key) => {
+    return {
+      key,
+      icon: configMap[key].icon,
+      label: configMap[key].label,
+      value: res[key] || configMap[key].default,
+    }
+  })
+}
+
+onMounted(() => {
+  fetchData()
+})
 </script>
 
 <template>
@@ -101,7 +89,7 @@ const data = ref([
             />
           </div>
           <div class="flex-1 leading-[24px]">
-            <p class="text-[14px] text-white font-bold">{{ item.name }}</p>
+            <p class="text-[14px] text-white font-bold">{{ item.label }}</p>
             <p class="text-[16px] text-[#f88a00] font-thin">{{ item.value }}</p>
           </div>
         </div>

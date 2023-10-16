@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import ModuleCard from '../../../ModuleCard/index.vue'
 import CustomItem from '../../../CustomItem/index.vue'
+import type { AArtisticActivities } from '@/api/growthReport/type'
+
+const { data } = defineProps<{
+  data?: AArtisticActivities
+}>()
 </script>
 
 <template>
@@ -9,7 +14,9 @@ import CustomItem from '../../../CustomItem/index.vue'
       <custom-item background-color="#916dff1a" border-left-color="#916dff">
         <p>
           参加才艺活动次数
-          <span class="text-[24px] text-bold mx-[10px] text-[#916dff]">15</span>
+          <span class="text-[24px] text-bold mx-[10px] text-[#916dff]">
+            {{ data?.countTalentActivities || 0 }}
+          </span>
           次
         </p>
       </custom-item>

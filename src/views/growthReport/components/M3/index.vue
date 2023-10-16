@@ -1,7 +1,31 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import ModuleTitle from '../ModuleTitle/index.vue'
 import M31 from './components/M31/index.vue'
 import M32 from './components/M32/index.vue'
+import {
+  reqGrowthReportExerciseAndPhysicalAndMentalHealth,
+  type PsychologicalLiteracy,
+  type PhysicalLiteracy,
+} from '@/api/growthReport'
+import useUserStore from '@/store/modules/user'
+
+const userStore = useUserStore()
+
+const psychologicalLiteracy = ref<PsychologicalLiteracy>()
+const physicalLiteracy = ref<PhysicalLiteracy>()
+
+const fetchData = async () => {
+  const { data: res } = await reqGrowthReportExerciseAndPhysicalAndMentalHealth(
+    userStore.otherInfo.studentId,
+  )
+  psychologicalLiteracy.value = res.psychologicalLiteracy
+  physicalLiteracy.value = res.physicalLiteracy
+}
+
+onMounted(() => {
+  fetchData()
+})
 </script>
 
 <template>
@@ -11,8 +35,8 @@ import M32 from './components/M32/index.vue'
       :background1="['bg-gradient-to-r from-[#fca93c] to-[#050c19]']"
       :background2="['bg-gradient-to-r from-[#fca93c] to-[#050c19]']"
     />
-    <M31 />
-    <M32 />
+    <M31 :data="psychologicalLiteracy" />
+    <M32 :data="physicalLiteracy" />
   </div>
 </template>
 

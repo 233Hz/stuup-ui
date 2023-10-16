@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import ModuleCard from '../../../ModuleCard/index.vue'
 import CustomItem from '../../../CustomItem/index.vue'
+import type { PsychologicalLiteracy } from '@/api/growthReport/type'
+
+const { data } = defineProps<{
+  data?: PsychologicalLiteracy
+}>()
 </script>
 
 <template>
@@ -9,14 +14,18 @@ import CustomItem from '../../../CustomItem/index.vue'
       <custom-item background-color="#fca93c1a" border-left-color="#fca93c">
         <p>
           参加心理剧或心理月展示活动
-          <span class="text-[24px] text-bold mx-[10px] text-[#fca93c]">1</span>
+          <span class="text-[24px] text-bold mx-[10px] text-[#fca93c]">
+            {{ data?.countPsychodramaOrPsychoMonthShowcase || 0 }}
+          </span>
           次
         </p>
       </custom-item>
       <custom-item background-color="#fca93c1a" border-left-color="#fca93c">
         <p>
           参与心理中心活动
-          <span class="text-[24px] text-bold mx-[10px] text-[#fca93c]">1</span>
+          <span class="text-[24px] text-bold mx-[10px] text-[#fca93c]">
+            {{ data?.countPsychologicalCenter || 0 }}
+          </span>
           次
         </p>
       </custom-item>

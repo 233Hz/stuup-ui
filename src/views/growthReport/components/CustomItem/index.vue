@@ -2,12 +2,17 @@
 interface Props {
   backgroundColor?: string
   borderLeftColor?: string
+  showLeftBorder?: boolean
 }
 
-const { backgroundColor } = withDefaults(defineProps<Props>(), {
-  backgroundColor: '#2594ff1a',
-  borderLeftColor: '#2594ff',
-})
+const { backgroundColor, borderLeftColor, showLeftBorder } = withDefaults(
+  defineProps<Props>(),
+  {
+    backgroundColor: '#2594ff1a',
+    borderLeftColor: '#2594ff',
+    showLeftBorder: true,
+  },
+)
 </script>
 
 <template>
@@ -15,6 +20,7 @@ const { backgroundColor } = withDefaults(defineProps<Props>(), {
     class="container"
     :style="{
       backgroundColor: backgroundColor,
+      borderLeft: showLeftBorder ? '4px solid' : 'none',
       borderColor: borderLeftColor,
     }"
   >
@@ -25,7 +31,6 @@ const { backgroundColor } = withDefaults(defineProps<Props>(), {
 <style scoped lang="scss">
 .container {
   border-radius: 4px;
-  border-left: 4px solid;
   padding: 8px 16px;
   color: #fff;
   margin: 10px 0;
