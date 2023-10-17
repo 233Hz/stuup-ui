@@ -1,21 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import ModuleCard from '../../../ModuleCard/index.vue'
+import type { CreditCompletion } from '@/api/growthReport/type'
 
-const data = ref()
-
-const mock_data = () => {
-  return Array.from({ length: 6 }).map((_, index) => {
-    return {
-      semester: `第${index + 1}学期`,
-      state: Math.random() > 0.5 ? '已完成' : '未完成',
-    }
-  })
-}
-
-onMounted(() => {
-  data.value = mock_data()
-})
+defineProps<{
+  data?: CreditCompletion[]
+}>()
 </script>
 
 <template>
@@ -28,10 +17,15 @@ onMounted(() => {
             <th>学分完成情况</th>
           </tr>
         </thead>
-        <tbody align="center">
-          <tr v-for="(item, index) in data" :key="index">
-            <td>{{ item.semester }}</td>
-            <td>{{ item.state }}</td>
+        <tbody align="center" v-if="data && data.length > 0">
+          <tr v-for="item in data" :key="item.semesterId">
+            <td>{{ item.semesterName }}</td>
+            <td>{{ item.completion }}</td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr>
+            <th colspan="2">暂无数据</th>
           </tr>
         </tbody>
       </table>

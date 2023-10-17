@@ -10,9 +10,10 @@ import {
   type TalentShow,
   type ArtSocieties,
 } from '@/api/growthReport'
-import useUserStore from '@/store/modules/user'
 
-const userStore = useUserStore()
+const { studentId } = defineProps<{
+  studentId?: number
+}>()
 
 const artisticActivities = ref<AArtisticActivities>()
 const talentShow = ref<TalentShow>()
@@ -20,7 +21,7 @@ const artSocieties = ref<ArtSocieties>()
 
 const fetchData = async () => {
   const { data: res } = await reqGrowthReportAestheticAndArtisticAccomplishment(
-    userStore.otherInfo.studentId,
+    studentId,
   )
   artisticActivities.value = res.artisticActivities
   talentShow.value = res.talentShow
@@ -40,8 +41,8 @@ onMounted(() => {
       :background2="['bg-gradient-to-r from-[#916dff] to-[#050c19]']"
     />
 
-    <M41 :data="AArtisticActivities" />
-    <M42 :data="TalentShow" />
+    <M41 :data="artisticActivities" />
+    <M42 :data="talentShow" />
     <M43 />
   </div>
 </template>

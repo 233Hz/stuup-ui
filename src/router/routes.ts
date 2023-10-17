@@ -68,11 +68,6 @@ export const constantRoute: RouteRecordRaw[] = [
         name: 'Test',
         component: () => import('@/views/test/index.vue'),
       },
-      {
-        path: '/test1',
-        name: 'GrowthReport',
-        component: () => import('@/views/growthReport/index.vue'),
-      },
     ],
   },
   {

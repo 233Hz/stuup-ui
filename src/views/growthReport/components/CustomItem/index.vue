@@ -5,14 +5,11 @@ interface Props {
   showLeftBorder?: boolean
 }
 
-const { backgroundColor, borderLeftColor, showLeftBorder } = withDefaults(
-  defineProps<Props>(),
-  {
-    backgroundColor: '#2594ff1a',
-    borderLeftColor: '#2594ff',
-    showLeftBorder: true,
-  },
-)
+withDefaults(defineProps<Props>(), {
+  backgroundColor: '#2594ff1a',
+  borderLeftColor: '#2594ff',
+  showLeftBorder: true,
+})
 </script>
 
 <template>

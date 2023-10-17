@@ -4,7 +4,7 @@ import ModuleCard from '../../../ModuleCard/index.vue'
 import CustomItem from '../../../CustomItem/index.vue'
 import type { DoubleInnovationCompetition } from '@/api/growthReport/type.ts'
 
-const { data } = defineProps<{
+defineProps<{
   data?: DoubleInnovationCompetition
 }>()
 </script>

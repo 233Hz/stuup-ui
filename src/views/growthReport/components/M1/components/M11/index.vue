@@ -4,7 +4,7 @@ import CustomItem from '../../../CustomItem/index.vue'
 import CustomTag from '../../../CustomTag/index.vue'
 import type { IdeologicalCharacter } from '@/api/growthReport/type'
 
-const { data } = defineProps<{
+defineProps<{
   data?: IdeologicalCharacter
 }>()
 </script>
@@ -14,7 +14,9 @@ const { data } = defineProps<{
     <template #headerRight>
       <span>
         共获得
-        <span class="font-bold text-[#2594ff] text-[24px]">0</span>
+        <span class="font-bold text-[#2594ff] text-[24px]">
+          {{ data?.countIdeologicalCharacterTotalScore || 0 }}
+        </span>
         成长积分
       </span>
     </template>

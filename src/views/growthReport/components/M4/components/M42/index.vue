@@ -4,7 +4,7 @@ import CustomItem from '../../../CustomItem/index.vue'
 import CustomTag from '../../../CustomTag/index.vue'
 import type { TalentShow } from '@/api/growthReport/type'
 
-const { data } = defineProps<{
+defineProps<{
   data?: TalentShow
 }>()
 </script>

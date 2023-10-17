@@ -2,7 +2,7 @@
 import ModuleCard from '../../../ModuleCard/index.vue'
 import type { IndividualHonors } from '@/api/growthReport/type'
 
-const { data } = defineProps<{
+defineProps<{
   data?: IndividualHonors
 }>()
 </script>

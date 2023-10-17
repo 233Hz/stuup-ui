@@ -6,12 +6,12 @@ interface Props {
   headerHeight?: number
   color?: string
 }
-const { showHeader, headerLeftText, headerRightText, headerHeight, color } =
-  withDefaults(defineProps<Props>(), {
-    showHeader: true,
-    headerHeight: 40,
-    color: '#409eff66',
-  })
+
+withDefaults(defineProps<Props>(), {
+  showHeader: true,
+  headerHeight: 40,
+  color: '#409eff66',
+})
 </script>
 
 <template>

@@ -3,7 +3,7 @@ import ModuleCard from '../../../ModuleCard/index.vue'
 import CustomItem from '../../../CustomItem/index.vue'
 import type { LArtisticActivities } from '@/api/growthReport'
 
-const { data } = defineProps<{
+defineProps<{
   data?: LArtisticActivities
 }>()
 </script>

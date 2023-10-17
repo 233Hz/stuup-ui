@@ -9,18 +9,17 @@ import {
   type LArtisticActivities,
   type CreditCompletion,
 } from '@/api/growthReport'
-import useUserStore from '@/store/modules/user'
 
-const userStore = useUserStore()
+const { studentId } = defineProps<{
+  studentId?: number
+}>()
 
 const artisticActivities = ref<LArtisticActivities>()
 const creditsForShiharaActivities = ref<CreditCompletion[]>()
 const productionLaborPracticeCredits = ref<CreditCompletion[]>()
 
 const fetchData = async () => {
-  const { data: res } = await reqGrowthReportLaborAndProfessionalism(
-    userStore.otherInfo.studentId,
-  )
+  const { data: res } = await reqGrowthReportLaborAndProfessionalism(studentId)
   artisticActivities.value = res.artisticActivities
   creditsForShiharaActivities.value = res.creditsForShiharaActivities
   productionLaborPracticeCredits.value = res.productionLaborPracticeCredits
@@ -40,8 +39,8 @@ onMounted(() => {
     />
     <M51 :data="artisticActivities" />
     <div class="flex gap-[10px]">
-      <div class="flex-1"><M52 /></div>
-      <div class="flex-1"><M53 /></div>
+      <div class="flex-1"><M52 :data="creditsForShiharaActivities" /></div>
+      <div class="flex-1"><M53 :data="productionLaborPracticeCredits" /></div>
     </div>
   </div>
 </template>

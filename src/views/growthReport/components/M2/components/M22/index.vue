@@ -2,7 +2,7 @@
 import ModuleCard from '../../../ModuleCard/index.vue'
 import CustomItem from '../../../CustomItem/index.vue'
 
-const { data } = defineProps<{
+defineProps<{
   data?: string[]
 }>()
 </script>

@@ -4,6 +4,10 @@ import defaultAvatar from '@/assets/icons/default-avatar.svg'
 import ModuleTitle from '../ModuleTitle/index.vue'
 import { reqGrowthReportBasicInfo } from '@/api/growthReport'
 
+const { studentId } = defineProps<{
+  studentId?: number
+}>()
+
 interface ConfigMap {
   [key: string]: {
     label: string
@@ -47,11 +51,12 @@ const configMap: ConfigMap = {
   },
 }
 
+const avatar = ref<string>()
 const data = ref()
 
 const fetchData = async () => {
-  const { data: res } = await reqGrowthReportBasicInfo()
-
+  const { data: res } = await reqGrowthReportBasicInfo(studentId)
+  avatar.value = res.avatarUrl
   data.value = Object.keys(configMap).map((key) => {
     return {
       key,
@@ -76,7 +81,11 @@ onMounted(() => {
     />
     <div class="flex gap-[40px]">
       <div class="w-[200px] h-[200px]">
-        <img class="w-full h-full object-fit" :src="defaultAvatar" alt="头像" />
+        <img
+          class="w-full h-full object-fit"
+          :src="avatar || defaultAvatar"
+          alt="头像"
+        />
       </div>
       <div class="flex-1 grid grid-cols-3 gap-[10px]">
         <div class="flex gap-[20px]" v-for="item in data" :key="item.key">

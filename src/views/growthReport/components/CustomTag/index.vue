@@ -4,7 +4,7 @@ interface Props {
   borderColor?: string
   radius?: number
 }
-const { text, borderColor, radius } = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   text: '标签',
   borderColor: '#fff',
   radius: 0,

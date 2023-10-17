@@ -8,16 +8,17 @@ import {
   type PsychologicalLiteracy,
   type PhysicalLiteracy,
 } from '@/api/growthReport'
-import useUserStore from '@/store/modules/user'
 
-const userStore = useUserStore()
+const { studentId } = defineProps<{
+  studentId?: number
+}>()
 
 const psychologicalLiteracy = ref<PsychologicalLiteracy>()
 const physicalLiteracy = ref<PhysicalLiteracy>()
 
 const fetchData = async () => {
   const { data: res } = await reqGrowthReportExerciseAndPhysicalAndMentalHealth(
-    userStore.otherInfo.studentId,
+    studentId,
   )
   psychologicalLiteracy.value = res.psychologicalLiteracy
   physicalLiteracy.value = res.physicalLiteracy

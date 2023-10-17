@@ -13,9 +13,10 @@ import {
   type BeDisciplinedAndSelfDisciplined,
   type IndividualHonors,
 } from '@/api/growthReport'
-import useUserStore from '@/store/modules/user'
 
-const userStore = useUserStore()
+const { studentId } = defineProps<{
+  studentId?: number
+}>()
 
 const ideologicalCharacter = ref<IdeologicalCharacter>()
 const civilizedCultivation = ref<CivilizedCultivation>()
@@ -23,9 +24,7 @@ const beDisciplinedAndSelfDisciplined = ref<BeDisciplinedAndSelfDisciplined>()
 const individualHonors = ref<IndividualHonors>()
 
 const fetchData = async () => {
-  const { data: res } = await reqGrowthReportEthicsAndCitizenship(
-    userStore.otherInfo.studentId,
-  )
+  const { data: res } = await reqGrowthReportEthicsAndCitizenship(studentId)
   ideologicalCharacter.value = res.ideologicalCharacter
   civilizedCultivation.value = res.civilizedCultivation
   beDisciplinedAndSelfDisciplined.value = res.beDisciplinedAndSelfDisciplined

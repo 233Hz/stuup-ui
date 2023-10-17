@@ -7,14 +7,13 @@ interface Props {
   titleGHeight?: number
 }
 
-const { title, background1, background2, backgroundWidth, titleGHeight } =
-  withDefaults(defineProps<Props>(), {
-    background1: () => ['bg-gradient-to-r', 'from-[#409eff66]', 'to-[#050c19]'],
-    background2: () => ['bg-gradient-to-r', 'from-[#409eff66]', 'to-[#050c19]'],
-    backgroundWidth: 100,
-    height: 42,
-    titleGHeight: 42,
-  })
+withDefaults(defineProps<Props>(), {
+  background1: () => ['bg-gradient-to-r', 'from-[#409eff66]', 'to-[#050c19]'],
+  background2: () => ['bg-gradient-to-r', 'from-[#409eff66]', 'to-[#050c19]'],
+  backgroundWidth: 100,
+  height: 42,
+  titleGHeight: 42,
+})
 </script>
 
 <template>

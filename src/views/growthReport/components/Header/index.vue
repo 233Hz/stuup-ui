@@ -2,11 +2,8 @@
 
 <template>
   <div class="text-center">
-    <h1>
-      <span class="header_year">2023</span>
-    </h1>
     <p>
-      <span class="header_title">上学期成长报告</span>
+      <span class="header_title">学生成长报告</span>
     </p>
   </div>
 </template>
@@ -31,7 +28,7 @@
 }
 
 .header_title {
-  font-size: 42px;
+  font-size: 60px;
   font-weight: 600;
   background-image: linear-gradient(
     to right,

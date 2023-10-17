@@ -13,6 +13,7 @@ export interface BasicInfo {
   phone?: string
   academicStatus?: string
   militaryTrainingLevel?: string
+  avatarUrl?: string
 
   [key: string]: any
 }
@@ -23,6 +24,7 @@ export interface IdeologicalCharacter {
   countCurrentPoliticsStudy?: number
   countSecurityRuleOfLaw?: number
   participatingSocieties?: string[]
+  countIdeologicalCharacterTotalScore: number
 }
 export interface CivilizedCultivation {
   countMobileRedFlags?: number

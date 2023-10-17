@@ -10,9 +10,10 @@ import {
   type SubjectGrades,
   type DoubleInnovationCompetition,
 } from '@/api/growthReport'
-import useUserStore from '@/store/modules/user'
 
-const userStore = useUserStore()
+const { studentId } = defineProps<{
+  studentId?: number
+}>()
 
 const subjectGrades = ref<SubjectGrades>()
 const professionalQualifications = ref<string[]>()
@@ -21,7 +22,7 @@ const doubleInnovationCompetition = ref<DoubleInnovationCompetition>()
 
 const fetchData = async () => {
   const { data: res } = await reqGrowthReportSkillsAndLearningLiteracy(
-    userStore.otherInfo.studentId,
+    studentId,
   )
   subjectGrades.value = res.subjectGrades
   professionalQualifications.value = res.professionalQualifications
