@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import ModuleCard from '../../../ModuleCard/index.vue'
 import CustomItem from '../../../CustomItem/index.vue'
-import type { DoubleInnovationCompetition } from '@/api/growthReport/type.ts'
+import type { DoubleInnovationCompetition } from '@/api/growthReport/type'
 
 defineProps<{
   data?: DoubleInnovationCompetition
@@ -94,10 +93,6 @@ defineProps<{
       <div class="flex gap-[10px]">
         <div class="flex-1">
           <custom-item
-            v-if="
-              data?.nationalLevelRecords &&
-              data?.nationalLevelRecords.length > 0
-            "
             v-for="item in data?.nationalLevelRecords"
             :key="item"
             :show-left-border="false"
@@ -106,7 +101,12 @@ defineProps<{
             <p class="text-center">{{ item }}</p>
           </custom-item>
           <custom-item
-            v-else
+            v-if="
+              !(
+                data?.nationalLevelRecords &&
+                data.nationalLevelRecords.length > 0
+              )
+            "
             :show-left-border="false"
             background-color="#fd3d7f1a"
           >
@@ -115,10 +115,6 @@ defineProps<{
         </div>
         <div class="flex-1">
           <custom-item
-            v-if="
-              data?.municipalLevelRecords &&
-              data?.municipalLevelRecords.length > 0
-            "
             v-for="item in data?.municipalLevelRecords"
             :key="item"
             :show-left-border="false"
@@ -127,7 +123,12 @@ defineProps<{
             <p class="text-center">{{ item }}</p>
           </custom-item>
           <custom-item
-            v-else
+            v-if="
+              !(
+                data?.municipalLevelRecords &&
+                data.municipalLevelRecords.length > 0
+              )
+            "
             :show-left-border="false"
             background-color="#fd3d7f1a"
           >
@@ -136,10 +137,6 @@ defineProps<{
         </div>
         <div class="flex-1">
           <custom-item
-            v-if="
-              data?.districtIndustryLevelRecords &&
-              data?.districtIndustryLevelRecords.length > 0
-            "
             v-for="item in data?.districtIndustryLevelRecords"
             :key="item"
             :show-left-border="false"
@@ -148,7 +145,12 @@ defineProps<{
             <p class="text-center">{{ item }}</p>
           </custom-item>
           <custom-item
-            v-else
+            v-if="
+              !(
+                data?.districtIndustryLevelRecords &&
+                data.districtIndustryLevelRecords.length > 0
+              )
+            "
             :show-left-border="false"
             background-color="#fd3d7f1a"
           >
@@ -157,9 +159,6 @@ defineProps<{
         </div>
         <div class="flex-1">
           <custom-item
-            v-if="
-              data?.schoolLevelRecords && data?.schoolLevelRecords.length > 0
-            "
             v-for="item in data?.schoolLevelRecords"
             :key="item"
             :show-left-border="false"
@@ -168,7 +167,9 @@ defineProps<{
             <p class="text-center">{{ item }}</p>
           </custom-item>
           <custom-item
-            v-else
+            v-if="
+              !(data?.schoolLevelRecords && data.schoolLevelRecords.length > 0)
+            "
             :show-left-border="false"
             background-color="#fd3d7f1a"
           >
