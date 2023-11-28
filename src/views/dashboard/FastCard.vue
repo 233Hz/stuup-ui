@@ -5,11 +5,11 @@
         <div
           v-for="item in props.fasts"
           :key="item.path"
-          class="select-none text-center fs-18 text-#1a8e00 font-bold mb-40 cursor-pointer"
+          class="select-none fs-18 text-#1a8e00 font-bold mb-40 cursor-pointer flex flex-col justify-center items-center"
           @click="router.push(item.path)"
         >
           <svg-icon :name="item.icon" width="150px" height="150px" />
-          {{ item.name }}
+          <span>{{ item.name }}</span>
         </div>
       </div>
     </el-skeleton>

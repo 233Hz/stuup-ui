@@ -26,12 +26,9 @@
 
 <script setup lang="ts" name="Dashboard">
 import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { reqMyNotifyPage, reqMySystemPage } from '@/api/system/announcement'
 import MessageCard from './MessageCard.vue'
 import FastCard from './FastCard.vue'
-
-const router = useRouter()
 
 const loading = ref<boolean>(false)
 const systemMsgs = ref()
