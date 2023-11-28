@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { constantRoute } from '@/router/routes'
-import { MENU_TYPE, WHETHER } from '@/utils/dict'
+import { WHETHER } from '@/utils/dict'
 import type { RouteRecordRaw } from 'vue-router'
 import type { PermissionState } from './types/type'
 import type { Menu } from '@/api/login/type'

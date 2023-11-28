@@ -1,4 +1,4 @@
-import { defineConfig, ConfigEnv, loadEnv } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import path from 'path'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import { viteMockServe } from 'vite-plugin-mock'
@@ -45,12 +45,9 @@ export default defineConfig(({ command, mode }) => {
         },
       },
     },
-    build: {
-      assetInlineLimit: 0,
-    },
     server: {
       host: '0.0.0.0',
-      port: env.VITE_PROP,
+      port: 9494,
       proxy: {
         [env.VITE_APP_BASE_API]: {
           //获取数据的服务器地址设置
