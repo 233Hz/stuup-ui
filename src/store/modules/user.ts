@@ -8,6 +8,7 @@ import { USER_TYPE } from '@/utils/dict'
 import type { UserInfoState } from './types/type'
 import type { UserInfo, GrowthInfo, OtherInfo } from '@/api/login/type'
 import type { SaTokenInfo } from '@/types/global'
+import { passwordRegex } from '@/utils/regex'
 
 const webCache = useWebCache<SaTokenInfo>()
 
@@ -45,6 +46,7 @@ const useUserStore = defineStore('User', {
         semesterId: 0,
       },
       isSet: false,
+      updatePasswordTips: false,
     }
   },
   getters: {
@@ -56,6 +58,9 @@ const useUserStore = defineStore('User', {
     async userLogin(data: LoginForm) {
       try {
         const result = await reqLogin(data)
+        if (!passwordRegex.test(data.password)) {
+          this.updatePasswordTips = true
+        }
         const tokenInfo = result.tokenInfo!
         this.tokenInfo.tokenName = tokenInfo.tokenName
         this.tokenInfo.tokenValue = tokenInfo.tokenValue
@@ -120,6 +125,9 @@ const useUserStore = defineStore('User', {
     },
     updateTotalScore(score: number) {
       this.growthInfo.totalScore += score
+    },
+    cancelUpdatePasswordTips() {
+      this.updatePasswordTips = false
     },
   },
 })

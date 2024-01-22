@@ -17,6 +17,7 @@ enum API {
   USER_INFO = '/user/info',
   UPDATE_PASSWORD = '/user/updatePassword',
   UPDATE_AVATAR = '/user/updateAvatar',
+  SET_USER_PASSWORD = '/user/setPassword',
 }
 
 export const getUserList = async () => {
@@ -64,3 +65,6 @@ export const updatePassword = async (data: UpdatePasswordForm) => {
 export const updateAvatar = async (avatarId: number) => {
   return get<string>(API.UPDATE_AVATAR, { avatarId })
 }
+
+export const setUserPassword = async (userId: number, password: string) =>
+  post<boolean>(API.SET_USER_PASSWORD, { userId, password })

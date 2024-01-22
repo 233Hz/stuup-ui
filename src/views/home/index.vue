@@ -20,6 +20,29 @@ import AnimationLayer from './components/AnimationLayer/index.vue'
 import OperationLayer from './components/OperationLayer/index.vue'
 import GrowthAnimation from './components/GrowthAnimation/index.vue'
 import Rank from './components/Rank/index.vue'
+import { ElMessageBox } from 'element-plus'
+import useUserStore from '@/store/modules/user'
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const userStore = useUserStore()
+
+onMounted(() => {
+  if (userStore.updatePasswordTips) {
+    ElMessageBox.confirm('当前密码较弱，建议修改密码', '提示', {
+      confirmButtonText: '前去修改',
+      cancelButtonText: '暂不修改',
+    })
+      .then(() => {
+        router.push('/self/center')
+      })
+      .catch(() => {})
+      .finally(() => {
+        userStore.cancelUpdatePasswordTips()
+      })
+  }
+})
 </script>
 
 <style lang="scss" scoped>

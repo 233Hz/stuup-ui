@@ -162,7 +162,7 @@
             {{ USER_STATE.getKeyForValue(row.state) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" align="center">
+        <el-table-column label="操作" width="340" align="center">
           <template #default="{ row }">
             <el-button
               bg
@@ -182,6 +182,15 @@
               @click="delRow(row.oid)"
             >
               删除
+            </el-button>
+            <el-button
+              bg
+              text
+              icon="Setting"
+              v-permission="'user_set_password'"
+              @click="setPassword(row.oid)"
+            >
+              修改密码
             </el-button>
           </template>
         </el-table-column>
@@ -288,6 +297,7 @@
           >
             <el-option
               v-for="item in dictionaryStore.role"
+              :key="item.oid"
               :label="item.value"
               :value="item.oid"
             />
@@ -333,6 +343,8 @@ import type { FormInstance, FormRules } from 'element-plus'
 import type { UserVO } from '@/api/system/user/type'
 import useDictionaryStore from '@/store/modules/dictionary'
 import usePaginationStore from '@/store/modules/pagination'
+import { passwordRegex } from '@/utils/regex'
+import { setUserPassword } from '@/api/system/user'
 
 const dictionaryStore = useDictionaryStore()
 const paginationStore = usePaginationStore()
@@ -426,8 +438,22 @@ const delRow = (oid: number) => {
     .catch(() => {})
 }
 
+const setPassword = (id: number) => {
+  ElMessageBox.prompt('请输入要修改的密码', '提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    inputPattern: passwordRegex,
+    inputErrorMessage: '密码必须包括字母大小写、数字、特殊字符',
+  })
+    .then(async ({ value }) => {
+      const { msg } = await setUserPassword(id, value)
+      ElMessage.success(msg)
+    })
+    .catch(() => {})
+}
+
 const submitForm = async () => {
-  if (!formRef) return
+  if (!formRef.value) return
   const valid = await formRef.value?.validate()
   if (!valid) return
   loading.value = true

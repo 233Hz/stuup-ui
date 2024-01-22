@@ -20,6 +20,7 @@ export interface UserInfoState {
   growthInfo: GrowthInfo
   otherInfo: OtherInfo
   isSet: boolean
+  updatePasswordTips: boolean
 }
 
 export interface PermissionState {

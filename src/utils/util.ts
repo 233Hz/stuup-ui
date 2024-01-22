@@ -13,7 +13,7 @@ export const formatDate = (
   const minute = date.getMinutes()
   const second = date.getSeconds()
 
-  const preArr = Array.apply(null, Array(10)).map((item, index) => '0' + index)
+  const preArr = Array.from({ length: 10 }).map((item, index) => '0' + index)
 
   return format
     .replace(/YYYY/g, String(year))

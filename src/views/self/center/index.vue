@@ -68,6 +68,7 @@ import { ElMessage } from 'element-plus'
 import { Loading, Edit, RefreshLeft } from '@element-plus/icons-vue'
 import { updatePassword } from '@/api/system/user'
 import useUserStore from '@/store/modules/user'
+import { passwordRegex } from '@/utils/regex'
 
 const validateRpassword = (rule: any, value: any, callback: any) => {
   if (value === '') {
@@ -90,11 +91,18 @@ const rules = {
     message: '请输入原密码',
     trigger: 'blur',
   },
-  npassword: {
-    required: true,
-    message: '请输入新密码',
-    trigger: 'blur',
-  },
+  npassword: [
+    {
+      required: true,
+      message: '请输入新密码',
+      trigger: 'blur',
+    },
+    {
+      pattern: passwordRegex,
+      message: '密码必须包括字母大小写、数字、特殊字符',
+      trigger: 'blur',
+    },
+  ],
   rpassword: {
     required: true,
     validator: validateRpassword,
