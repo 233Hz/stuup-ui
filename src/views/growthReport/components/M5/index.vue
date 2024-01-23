@@ -10,7 +10,7 @@ import {
   type CreditCompletion,
 } from '@/api/growthReport'
 
-const { studentId } = defineProps<{
+const props = defineProps<{
   studentId?: number
 }>()
 
@@ -19,7 +19,9 @@ const creditsForShiharaActivities = ref<CreditCompletion[]>()
 const productionLaborPracticeCredits = ref<CreditCompletion[]>()
 
 const fetchData = async () => {
-  const { data: res } = await reqGrowthReportLaborAndProfessionalism(studentId)
+  const { data: res } = await reqGrowthReportLaborAndProfessionalism(
+    props.studentId,
+  )
   artisticActivities.value = res.artisticActivities
   creditsForShiharaActivities.value = res.creditsForShiharaActivities
   productionLaborPracticeCredits.value = res.productionLaborPracticeCredits
@@ -34,8 +36,7 @@ onMounted(() => {
   <div>
     <module-title
       title="劳动与职业素养"
-      :background1="['bg-gradient-to-r from-[#00d2c9] to-[#050c19]']"
-      :background2="['bg-gradient-to-r from-[#00d2c9] to-[#050c19]']"
+      :background2="['bg-gradient-to-r from-[#17c492] to-[#ffffff]']"
     />
     <M51 :data="artisticActivities" />
     <div class="flex gap-[10px]">

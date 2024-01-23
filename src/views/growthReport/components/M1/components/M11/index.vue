@@ -10,62 +10,65 @@ defineProps<{
 </script>
 
 <template>
-  <module-card header-left-text="思想品德" color="#2594ff33">
+  <module-card header-left-text="思想品德" color="#17c492">
     <template #headerRight>
       <span>
         共获得
-        <span class="font-bold text-[#2594ff] text-[24px]">
+        <span class="font-bold text-[24px]">
           {{ data?.countIdeologicalCharacterTotalScore || 0 }}
         </span>
         成长积分
       </span>
     </template>
     <div class="p-[10px]">
-      <custom-item>
+      <custom-item background-color="#f4f4f5" border-left-color="#17c492">
         <p>
           参加爱国爱校相关活动
-          <span class="text-[24px] text-bold mx-[10px] text-[#2594ff]">
+          <span class="text-[24px] text-bold mx-[10px] text-[#17c492]">
             {{ data?.countLoveTheCountryAndTheSchool || 0 }}
           </span>
           次
         </p>
       </custom-item>
-      <custom-item>
+      <custom-item background-color="#f4f4f5" border-left-color="#17c492">
         <p>
           参加时政学习相关活动
-          <span class="text-[24px] text-bold mx-[10px] text-[#2594ff]">
+          <span class="text-[24px] text-bold mx-[10px] text-[#17c492]">
             {{ data?.countCurrentPoliticsStudy || 0 }}
           </span>
           次
         </p>
       </custom-item>
-      <custom-item>
+      <custom-item background-color="#f4f4f5" border-left-color="#17c492">
         <p>
           参加安全法制相关活动
-          <span class="text-[24px] text-bold mx-[10px] text-[#2594ff]">
+          <span class="text-[24px] text-bold mx-[10px] text-[#17c492]">
             {{ data?.countSecurityRuleOfLaw || 0 }}
           </span>
           次
         </p>
       </custom-item>
-      <custom-item>
+      <custom-item background-color="#f4f4f5" border-left-color="#17c492">
         <p>
           <span>加入过的社团</span>
         </p>
         <div class="mt-[10px]">
-          <custom-tag
-            class="mr-[10px] mb-[10px]"
+          <template
             v-if="
               data?.participatingSocieties &&
               data.participatingSocieties.length > 0
             "
-            v-for="item in data?.participatingSocieties"
-            :key="item"
-            border-color="#2594ff"
-            :text="item"
-          />
-          <custom-item :show-left-border="false">
-            <p class="text-center">未参加过任何社团</p>
+          >
+            <custom-tag
+              class="mr-[10px] mb-[10px]"
+              v-for="item in data?.participatingSocieties"
+              :key="item"
+              border-color="#17c492"
+              :text="item"
+            />
+          </template>
+          <custom-item :show-left-border="false" background-color="#17c492">
+            <p class="text-center text-white">未参加过任何社团</p>
           </custom-item>
         </div>
       </custom-item>

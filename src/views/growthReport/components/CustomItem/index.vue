@@ -29,7 +29,6 @@ withDefaults(defineProps<Props>(), {
 .container {
   border-radius: 4px;
   padding: 8px 16px;
-  color: #fff;
   margin: 10px 0;
 }
 </style>

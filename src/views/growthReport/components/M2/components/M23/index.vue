@@ -8,24 +8,23 @@ defineProps<{
 </script>
 
 <template>
-  <module-card header-left-text="职业素养" color="#fd3d7f33" class="h-full">
+  <module-card header-left-text="职业素养" color="#17c492" class="h-full">
     <div class="p-[10px]">
-      <custom-item
-        v-if="data && data.length > 0"
-        v-for="item in data"
-        :key="item"
-        background-color="#fd3d7f1a"
-        border-left-color="#fd3d7f"
-      >
-        <p>{{ item }}</p>
-      </custom-item>
-      <custom-item
-        v-else
-        background-color="#fd3d7f1a"
-        :show-left-border="false"
-      >
-        <p class="text-center">未参加过职业素养比赛</p>
-      </custom-item>
+      <template v-if="data && data.length > 0">
+        <custom-item
+          v-for="item in data"
+          :key="item"
+          background-color="#f4f4f5"
+          border-left-color="#17c492"
+        >
+          <p>{{ item }}</p>
+        </custom-item>
+      </template>
+      <template v-else>
+        <custom-item background-color="#17c492" :show-left-border="false">
+          <p class="text-center text-white">未参加过职业素养比赛</p>
+        </custom-item>
+      </template>
     </div>
   </module-card>
 </template>

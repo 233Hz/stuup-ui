@@ -8,7 +8,7 @@ defineProps<{
 </script>
 
 <template>
-  <module-card header-left-text="个人荣誉" color="#2594ff33">
+  <module-card header-left-text="个人荣誉" color="#17c492">
     <div class="grid grid-cols-6 grid-rows-3 gap-[10px] p-[10px]">
       <div class="col-span-3 p-[10px]">
         <div class="item">
@@ -109,7 +109,7 @@ defineProps<{
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      background-color: #2594ff;
+      background-color: #17c492;
       text-align: center;
       line-height: 80px;
       font-size: 42px;
@@ -119,21 +119,21 @@ defineProps<{
 
     .item_units {
       font-size: 14px;
-      color: white;
+      /* color: white; */
     }
 
     .item_name {
       text-align: center;
       line-height: 28px;
       font-size: 14px;
-      color: white;
+      /* color: white; */
     }
   }
   .item_name {
     text-align: center;
     line-height: 28px;
     font-size: 14px;
-    color: white;
+    /* color: white; */
   }
 }
 </style>

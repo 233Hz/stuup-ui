@@ -9,7 +9,7 @@ defineProps<{
 </script>
 
 <template>
-  <module-card header-left-text="双创比赛" color="#fd3d7f33" class="h-full">
+  <module-card header-left-text="双创比赛" color="#17c492" class="h-full">
     <div class="p-[10px]">
       <div class="flex gap-[10px]">
         <div class="flex-1 p-[10px]">
@@ -18,12 +18,12 @@ defineProps<{
               name="nation-level"
               width="80px"
               height="80px"
-              color="#fd3d7f"
+              color="#17c492"
             />
-            <div class="flex-1 flex flex-col justify-center text-white">
+            <div class="flex-1 flex flex-col justify-center">
               <p class="text-[24px] font-bold">国家级</p>
               <p class="text-[18px] mt-[20px]">
-                <span class="text-[24px] text-bold text-[#fd3d7f] mx-[4px]">
+                <span class="text-[24px] text-bold text-[#17c492] mx-[4px]">
                   {{ data?.countNationalLevel || 0 }}
                 </span>
                 次
@@ -37,12 +37,12 @@ defineProps<{
               name="city-level"
               width="80px"
               height="80px"
-              color="#fd3d7f"
+              color="#17c492"
             />
-            <div class="flex-1 flex flex-col justify-center text-white">
+            <div class="flex-1 flex flex-col justify-center">
               <p class="text-[24px] font-bold">市级</p>
               <p class="text-[18px] mt-[20px]">
-                <span class="text-[24px] text-bold text-[#fd3d7f] mx-[4px]">
+                <span class="text-[24px] text-bold text-[#17c492] mx-[4px]">
                   {{ data?.countMunicipalLevel || 0 }}
                 </span>
                 次
@@ -56,12 +56,12 @@ defineProps<{
               name="district-level"
               width="80px"
               height="80px"
-              color="#fd3d7f"
+              color="#17c492"
             />
-            <div class="flex-1 flex flex-col justify-center text-white">
+            <div class="flex-1 flex flex-col justify-center">
               <p class="text-[24px] font-bold">区（行业）级</p>
               <p class="text-[18px] mt-[20px]">
-                <span class="text-[24px] text-bold text-[#fd3d7f] mx-[4px]">
+                <span class="text-[24px] text-bold text-[#17c492] mx-[4px]">
                   {{ data?.countDistrictIndustryLevel || 0 }}
                 </span>
                 次
@@ -75,12 +75,12 @@ defineProps<{
               name="school-level"
               width="80px"
               height="80px"
-              color="#fd3d7f"
+              color="#17c492"
             />
-            <div class="flex-1 flex flex-col justify-center text-white">
+            <div class="flex-1 flex flex-col justify-center">
               <p class="text-[24px] font-bold">校级</p>
               <p class="text-[18px] mt-[20px]">
-                <span class="text-[24px] text-bold text-[#fd3d7f] mx-[4px]">
+                <span class="text-[24px] text-bold text-[#17c492] mx-[4px]">
                   {{ data?.countSchoolLevel || 0 }}
                 </span>
                 次
@@ -96,7 +96,7 @@ defineProps<{
             v-for="item in data?.nationalLevelRecords"
             :key="item"
             :show-left-border="false"
-            background-color="#fd3d7f1a"
+            background-color="#17c492"
           >
             <p class="text-center">{{ item }}</p>
           </custom-item>
@@ -108,9 +108,9 @@ defineProps<{
               )
             "
             :show-left-border="false"
-            background-color="#fd3d7f1a"
+            background-color="#17c492"
           >
-            <p class="text-center">未参加任何国家级比赛</p>
+            <p class="text-center text-white">未参加任何国家级比赛</p>
           </custom-item>
         </div>
         <div class="flex-1">
@@ -118,7 +118,7 @@ defineProps<{
             v-for="item in data?.municipalLevelRecords"
             :key="item"
             :show-left-border="false"
-            background-color="#fd3d7f1a"
+            background-color="#17c492"
           >
             <p class="text-center">{{ item }}</p>
           </custom-item>
@@ -130,9 +130,9 @@ defineProps<{
               )
             "
             :show-left-border="false"
-            background-color="#fd3d7f1a"
+            background-color="#17c492"
           >
-            <p class="text-center">未参加任何市级比赛</p>
+            <p class="text-center text-white">未参加任何市级比赛</p>
           </custom-item>
         </div>
         <div class="flex-1">
@@ -140,9 +140,9 @@ defineProps<{
             v-for="item in data?.districtIndustryLevelRecords"
             :key="item"
             :show-left-border="false"
-            background-color="#fd3d7f1a"
+            background-color="#17c492"
           >
-            <p class="text-center">{{ item }}</p>
+            <p class="text-center text-white">{{ item }}</p>
           </custom-item>
           <custom-item
             v-if="
@@ -152,9 +152,9 @@ defineProps<{
               )
             "
             :show-left-border="false"
-            background-color="#fd3d7f1a"
+            background-color="#17c492"
           >
-            <p class="text-center">未参加任何区（行）级比赛</p>
+            <p class="text-center text-white">未参加任何区（行）级比赛</p>
           </custom-item>
         </div>
         <div class="flex-1">
@@ -162,7 +162,7 @@ defineProps<{
             v-for="item in data?.schoolLevelRecords"
             :key="item"
             :show-left-border="false"
-            background-color="#fd3d7f1a"
+            background-color="#17c492"
           >
             <p class="text-center">{{ item }}</p>
           </custom-item>
@@ -171,9 +171,9 @@ defineProps<{
               !(data?.schoolLevelRecords && data.schoolLevelRecords.length > 0)
             "
             :show-left-border="false"
-            background-color="#fd3d7f1a"
+            background-color="#17c492"
           >
-            <p class="text-center">未参加任何校级比赛</p>
+            <p class="text-center text-white">未参加任何校级比赛</p>
           </custom-item>
         </div>
       </div>

@@ -11,7 +11,7 @@ import {
   type ArtSocieties,
 } from '@/api/growthReport'
 
-const { studentId } = defineProps<{
+const props = defineProps<{
   studentId?: number
 }>()
 
@@ -21,7 +21,7 @@ const artSocieties = ref<ArtSocieties>()
 
 const fetchData = async () => {
   const { data: res } = await reqGrowthReportAestheticAndArtisticAccomplishment(
-    studentId,
+    props.studentId,
   )
   artisticActivities.value = res.artisticActivities
   talentShow.value = res.talentShow
@@ -37,8 +37,7 @@ onMounted(() => {
   <div>
     <module-title
       title="审美与艺术修养"
-      :background1="['bg-gradient-to-r from-[#916dff] to-[#050c19]']"
-      :background2="['bg-gradient-to-r from-[#916dff] to-[#050c19]']"
+      :background2="['bg-gradient-to-r from-[#17c492] to-[#ffffff]']"
     />
 
     <M41 :data="artisticActivities" />

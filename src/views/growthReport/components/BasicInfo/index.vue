@@ -4,7 +4,7 @@ import defaultAvatar from '@/assets/icons/default-avatar.svg'
 import ModuleTitle from '../ModuleTitle/index.vue'
 import { reqGrowthReportBasicInfo } from '@/api/growthReport'
 
-const { studentId } = defineProps<{
+const props = defineProps<{
   studentId?: number
 }>()
 
@@ -55,7 +55,7 @@ const avatar = ref<string>()
 const data = ref()
 
 const fetchData = async () => {
-  const { data: res } = await reqGrowthReportBasicInfo(studentId)
+  const { data: res } = await reqGrowthReportBasicInfo(props.studentId)
   avatar.value = res.avatarUrl
   data.value = Object.keys(configMap).map((key) => {
     return {
@@ -76,8 +76,7 @@ onMounted(() => {
   <div>
     <module-title
       title="基本信息"
-      :background1="['bg-gradient-to-r from-[#f88a00] to-[#050c19]']"
-      :background2="['bg-gradient-to-r from-[#f88a00] to-[#050c19]']"
+      :background2="['bg-gradient-to-r from-[#17c492] to-[#ffffff]']"
     />
     <div class="flex gap-[40px]">
       <div class="w-[200px] h-[200px]">
@@ -90,16 +89,11 @@ onMounted(() => {
       <div class="flex-1 grid grid-cols-3 gap-[10px]">
         <div class="flex gap-[20px]" v-for="item in data" :key="item.key">
           <div class="w-[60px] h-[60px]">
-            <svg-icon
-              :name="item.icon"
-              width="50px"
-              height="50px"
-              color="#ffffff"
-            />
+            <svg-icon :name="item.icon" width="50px" height="50px" />
           </div>
           <div class="flex-1 leading-[24px]">
-            <p class="text-[14px] text-white font-bold">{{ item.label }}</p>
-            <p class="text-[16px] text-[#f88a00] font-thin">{{ item.value }}</p>
+            <p class="text-[14px] font-bold">{{ item.label }}</p>
+            <p class="text-[16px] text-[#17c492] font-thin">{{ item.value }}</p>
           </div>
         </div>
       </div>

@@ -9,12 +9,12 @@ defineProps<{
 </script>
 
 <template>
-  <module-card header-left-text="艺术社团" color="#916dff33">
+  <module-card header-left-text="艺术社团" color="#17c492">
     <div class="p-[10px]">
-      <custom-item background-color="#916dff1a" border-left-color="#916dff">
+      <custom-item background-color="#f4f4f5" border-left-color="#17c492">
         <p>
           参加学校及以上组织的艺术社团
-          <span class="text-[24px] text-bold mx-[10px] text-[#916dff]">
+          <span class="text-[24px] text-bold mx-[10px] text-[#17c492]">
             {{ data?.countArtSocieties || 0 }}
           </span>
           次

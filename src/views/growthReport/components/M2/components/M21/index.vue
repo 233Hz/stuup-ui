@@ -53,7 +53,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <module-card header-left-text="学科成绩" color="#fd3d7f33">
+  <module-card header-left-text="学科成绩" color="#17c492">
     <template #headerRight>
       <el-select
         v-model="semester"
@@ -99,17 +99,16 @@ onMounted(() => {
 table,
 th,
 td {
-  border: 1px solid #fd3d7f;
+  border: 1px solid #17c492;
   vertical-align: middle;
 }
 
 th,
 td {
   line-height: 30px;
-  color: white;
 }
 
 thead {
-  background-color: #fd3d7f4d;
+  background-color: #17c4924d;
 }
 </style>

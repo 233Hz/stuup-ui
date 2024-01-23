@@ -9,7 +9,7 @@ import {
   type PhysicalLiteracy,
 } from '@/api/growthReport'
 
-const { studentId } = defineProps<{
+const props = defineProps<{
   studentId?: number
 }>()
 
@@ -18,7 +18,7 @@ const physicalLiteracy = ref<PhysicalLiteracy>()
 
 const fetchData = async () => {
   const { data: res } = await reqGrowthReportExerciseAndPhysicalAndMentalHealth(
-    studentId,
+    props.studentId,
   )
   psychologicalLiteracy.value = res.psychologicalLiteracy
   physicalLiteracy.value = res.physicalLiteracy
@@ -33,8 +33,7 @@ onMounted(() => {
   <div>
     <module-title
       title="运动与身心健康"
-      :background1="['bg-gradient-to-r from-[#fca93c] to-[#050c19]']"
-      :background2="['bg-gradient-to-r from-[#fca93c] to-[#050c19]']"
+      :background2="['bg-gradient-to-r from-[#17c492] to-[#ffffff]']"
     />
     <M31 :data="psychologicalLiteracy" />
     <M32 :data="physicalLiteracy" />

@@ -25,7 +25,6 @@ withDefaults(defineProps<Props>(), {
     }"
   >
     <div
-      :class="background1"
       class="absolute top-0 bottom-0 left-0 h-full opacity-30 z-[-1]"
       :style="{
         width: backgroundWidth + 'px',
@@ -47,7 +46,7 @@ withDefaults(defineProps<Props>(), {
   font-weight: 600;
   padding-left: 20px;
   position: relative;
-  color: white;
+  color: #17c492;
   z-index: 0;
   margin: 20px 0;
   border-radius: 4px;

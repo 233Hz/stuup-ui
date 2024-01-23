@@ -11,7 +11,7 @@ import {
   type DoubleInnovationCompetition,
 } from '@/api/growthReport'
 
-const { studentId } = defineProps<{
+const props = defineProps<{
   studentId?: number
 }>()
 
@@ -22,7 +22,7 @@ const doubleInnovationCompetition = ref<DoubleInnovationCompetition>()
 
 const fetchData = async () => {
   const { data: res } = await reqGrowthReportSkillsAndLearningLiteracy(
-    studentId,
+    props.studentId,
   )
   subjectGrades.value = res.subjectGrades
   professionalQualifications.value = res.professionalQualifications
@@ -39,8 +39,7 @@ onMounted(() => {
   <div>
     <module-title
       title="技能与学习素养"
-      :background1="['bg-gradient-to-r from-[#fd3d7f] to-[#050c19]']"
-      :background2="['bg-gradient-to-r from-[#fd3d7f] to-[#050c19]']"
+      :background2="['bg-gradient-to-r from-[#17c492] to-[#ffffff]']"
     />
     <M21 />
     <div class="flex gap-[10px]">

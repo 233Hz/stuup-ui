@@ -8,7 +8,7 @@ defineProps<{
 </script>
 
 <template>
-  <module-card header-left-text="志原者活动学分" color="#00d2c933">
+  <module-card header-left-text="志原者活动学分" color="#17c492">
     <div class="p-[10px]">
       <table class="w-full">
         <thead align="center">
@@ -37,17 +37,16 @@ defineProps<{
 table,
 th,
 td {
-  border: 1px solid #00d2c9;
+  border: 1px solid #17c492;
   vertical-align: middle;
 }
 
 th,
 td {
   line-height: 30px;
-  color: white;
 }
 
 thead {
-  background-color: #00d2c94d;
+  background-color: #17c4924d;
 }
 </style>

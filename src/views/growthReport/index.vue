@@ -1,5 +1,4 @@
 <script setup lang="ts" name="growthReport">
-import Bg from './components/Bg/index.vue'
 import BasicInfo from './components/BasicInfo/index.vue'
 import Header from './components/Header/index.vue'
 import M1 from './components/M1/index.vue'
@@ -10,10 +9,10 @@ import M5 from './components/M5/index.vue'
 </script>
 
 <template>
-  <div class="w-full h-full relative overflow-hidden">
-    <div class="absolute left-0 top-0 w-full h-full">
+  <div class="w-full h-full relative overflow-hidden bg-[#F9F9F9]">
+    <!-- <div class="absolute left-0 top-0 w-full h-full">
       <bg />
-    </div>
+    </div> -->
     <div class="w-full h-full relative overflow-y-auto">
       <div class="w-[1200px] m-auto py-[20px]">
         <Header />
