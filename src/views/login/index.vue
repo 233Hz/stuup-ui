@@ -40,7 +40,7 @@
       </div>
     </section>
     <section class="login-footer">
-      Copyright &copy;2017 泼猴信息技术(上海)有限公司AIl Rights Reserved
+      Copyright &copy;2017 上海书昂实业有限公司AIl Rights Reserved
     </section>
   </div>
 </template>
