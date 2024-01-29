@@ -582,7 +582,7 @@ const submitRow = (id: number) => {
 }
 
 const submitForm = async () => {
-  if (!formRef) return
+  if (!formRef.value) return
   const valid = await formRef.value?.validate()
   if (!valid) return
   loading.value = true
@@ -619,7 +619,7 @@ const handleFileChange = (file: UploadFile, fileList: UploadFiles) => {
     return
   }
 }
-const handleExceed: UploadProps['onExceed'] = (files, fileList) => {
+const handleExceed: UploadProps['onExceed'] = (files) => {
   ElMessageBox.confirm('上传文件超出上限，是否覆盖', '警告', {
     confirmButtonText: '确 认',
     cancelButtonText: '取 消',
