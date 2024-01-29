@@ -3,12 +3,12 @@ import { Page } from '@/types/global'
 export interface StudentGrowthItems {
   id: number
   name: string
-  firstLevelId: number
-  secondLevelId: number
-  thirdLevelId: number
-  firstLevelName: string
-  secondLevelName: string
-  thirdLevelName: string
+  l1Id: number
+  l2Id: number
+  l3Id: number
+  l1Name: string
+  l2Name: string
+  l3Name: string
 }
 
 export interface GrowthItemApplyForm {

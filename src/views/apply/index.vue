@@ -287,14 +287,18 @@
     >
       <el-form ref="formRef" :model="form" :rules="rules" label-position="top">
         <el-form-item label="申请项目" prop="growId">
-          <el-cascader
+          <el-select
             v-model="form.growId"
             placeholder="请选择所属项目"
-            clearable
-            :options="studentApplyGrowthItems"
-            :props="cascadeProps"
             style="width: 100%"
-          />
+          >
+            <el-option
+              v-for="item in studentApplyGrowthOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="申请说明" prop="reason">
           <el-input
@@ -359,12 +363,7 @@ import type {
   UploadProps,
   UploadRawFile,
 } from 'element-plus'
-import {
-  type CascaderProps,
-  ElMessage,
-  ElMessageBox,
-  genFileId,
-} from 'element-plus'
+import { ElMessage, ElMessageBox, genFileId } from 'element-plus'
 import {
   applyGrowItem,
   deleteAudGrow,
@@ -385,22 +384,8 @@ import usePaginationStore from '@/store/modules/pagination'
 import useDictionaryStore from '@/store/modules/dictionary'
 import useUserStore from '@/store/modules/user'
 
-interface TreeNode {
-  id: number
-  name: string
-  children?: TreeNode[]
-}
-
 const baseApi = import.meta.env.VITE_APP_BASE_API
 const action = baseApi + '/file/upload'
-
-const cascadeProps: CascaderProps = {
-  label: 'name',
-  value: 'id',
-  children: 'children',
-  expandTrigger: 'hover',
-  emitPath: false,
-}
 
 const growthStore = useGrowthStore()
 const paginationStore = usePaginationStore()
@@ -419,7 +404,27 @@ const loading = ref<boolean>(false)
 const active = ref<boolean>(false)
 const title = ref<string>()
 const tableData = ref()
-const studentApplyGrowthItems = ref<TreeNode[]>([])
+const studentApplyGrowthItems = ref<StudentGrowthItems[]>([])
+
+const studentApplyGrowthOptions = computed(() => {
+  return studentApplyGrowthItems.value.map((item) => {
+    let str = ''
+    if (item.l1Name) {
+      str += `${item.l1Name}--`
+    }
+    if (item.l2Name) {
+      str += `${item.l2Name}--`
+    }
+    if (item.l3Name) {
+      str += `${item.l3Name}--`
+    }
+    if (item.name) str += item.name
+    return {
+      label: str,
+      value: item.id,
+    }
+  })
+})
 
 const search = ref<any>({
   yearId: void 0,
@@ -459,59 +464,59 @@ onMounted(async () => {
 
 const initStudentApplyGrowthItems = async () => {
   const { data } = await reqStudentGrowthItems()
-  studentApplyGrowthItems.value = buildTree(data)
+  studentApplyGrowthItems.value = data
 }
 
-const buildTree = (data: StudentGrowthItems[]): TreeNode[] => {
-  const tree: TreeNode[] = []
+// const buildTree = (data: StudentGrowthItems[]): TreeNode[] => {
+//   const tree: TreeNode[] = []
 
-  for (const item of data) {
-    const firstLevelId = item.firstLevelId
-    const secondLevelId = item.secondLevelId
-    const thirdLevelId = item.thirdLevelId
-    const firstLevel = item.firstLevelName
-    const secondLevel = item.secondLevelName
-    const thirdLevel = item.thirdLevelName
-    const id = item.id
-    const name = item.name
+//   for (const item of data) {
+//     const firstLevelId = item.firstLevelId
+//     const secondLevelId = item.secondLevelId
+//     const thirdLevelId = item.thirdLevelId
+//     const firstLevel = item.firstLevelName
+//     const secondLevel = item.secondLevelName
+//     const thirdLevel = item.thirdLevelName
+//     const id = item.id
+//     const name = item.name
 
-    let firstLevelNode = tree.find((node) => node.id === firstLevelId)
-    if (!firstLevelNode) {
-      firstLevelNode = { id: firstLevelId, name: firstLevel, children: [] }
-      tree.push(firstLevelNode)
-    }
+//     let firstLevelNode = tree.find((node) => node.id === firstLevelId)
+//     if (!firstLevelNode) {
+//       firstLevelNode = { id: firstLevelId, name: firstLevel, children: [] }
+//       tree.push(firstLevelNode)
+//     }
 
-    let secondLevelNode: TreeNode | undefined
-    if (secondLevel) {
-      secondLevelNode = firstLevelNode.children?.find(
-        (node) => node.id === secondLevelId,
-      )
-      if (!secondLevelNode) {
-        secondLevelNode = { id: secondLevelId, name: secondLevel, children: [] }
-        firstLevelNode.children?.push(secondLevelNode)
-      }
-    } else {
-      secondLevelNode = firstLevelNode
-    }
+//     let secondLevelNode: TreeNode | undefined
+//     if (secondLevel) {
+//       secondLevelNode = firstLevelNode.children?.find(
+//         (node) => node.id === secondLevelId,
+//       )
+//       if (!secondLevelNode) {
+//         secondLevelNode = { id: secondLevelId, name: secondLevel, children: [] }
+//         firstLevelNode.children?.push(secondLevelNode)
+//       }
+//     } else {
+//       secondLevelNode = firstLevelNode
+//     }
 
-    let thirdLevelNode: TreeNode | undefined
-    if (thirdLevel) {
-      thirdLevelNode = secondLevelNode.children?.find(
-        (node) => node.id === thirdLevelId,
-      )
-      if (!thirdLevelNode) {
-        thirdLevelNode = { id: thirdLevelId, name: thirdLevel, children: [] }
-        secondLevelNode.children?.push(thirdLevelNode)
-      }
-    } else {
-      thirdLevelNode = secondLevelNode
-    }
+//     let thirdLevelNode: TreeNode | undefined
+//     if (thirdLevel) {
+//       thirdLevelNode = secondLevelNode.children?.find(
+//         (node) => node.id === thirdLevelId,
+//       )
+//       if (!thirdLevelNode) {
+//         thirdLevelNode = { id: thirdLevelId, name: thirdLevel, children: [] }
+//         secondLevelNode.children?.push(thirdLevelNode)
+//       }
+//     } else {
+//       thirdLevelNode = secondLevelNode
+//     }
 
-    thirdLevelNode.children?.push({ id, name })
-  }
+//     thirdLevelNode.children?.push({ id, name })
+//   }
 
-  return tree
-}
+//   return tree
+// }
 
 const fetchData = async () => {
   loading.value = true
