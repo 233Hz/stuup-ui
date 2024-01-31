@@ -1,18 +1,20 @@
 <template>
   <div class="logo" v-if="setting.showLogo" @click="router.push('/dashboard')">
     <div class="picture">
-      <img src="/logo.png" alt="logo" />
+      <img :src="logo" alt="logo" />
     </div>
-    <div class="title">{{ title }}</div>
+    <div class="title">{{ webTitle }}</div>
   </div>
 </template>
 
 <script setup lang="ts">
 import setting from '@/setting'
+import getWebInfo from '@/utils/website'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const title = import.meta.env.VITE_APP_TITLE
+
+const { logo, webTitle } = getWebInfo()
 </script>
 
 <style scoped lang="scss">

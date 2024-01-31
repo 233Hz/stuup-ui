@@ -2,9 +2,9 @@
   <div class="login-container">
     <div class="logo" v-if="setting.showLogo">
       <div class="picture">
-        <img src="/logo.png" alt="logo" />
+        <img :src="logo" alt="logo" />
       </div>
-      <div class="title">{{ title }}</div>
+      <div class="title">{{ webTitle }}</div>
     </div>
     <section class="login-content">
       <div class="login-image">
@@ -40,7 +40,7 @@
       </div>
     </section>
     <section class="login-footer">
-      Copyright &copy;2017 上海书昂实业有限公司AIl Rights Reserved
+      {{ copyright }}
     </section>
   </div>
 </template>
@@ -51,8 +51,10 @@ import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import useUserStore from '@/store/modules/user'
 import setting from '@/setting'
+import getWebInfo from '@/utils/website'
 
-const title = import.meta.env.VITE_APP_TITLE
+const { logo, webTitle, copyright } = getWebInfo()
+
 const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()

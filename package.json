@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode dev",
     "build:test": "vue-tsc && vite build --mode test",
-    "build:pro": "vue-tsc && vite build --mode production",
+    "build:pro": "vue-tsc && vite build --mode prod",
     "preview": "vite preview",
     "lint": "eslint src",
     "fix": "eslint src --fix",

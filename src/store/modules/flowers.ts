@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { reqFlowerExchangeNum } from '@/api/grow/model'
 import type {
   FlowersState,
   Flower,
